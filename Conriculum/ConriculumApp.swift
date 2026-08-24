@@ -5,6 +5,7 @@
 //  Created by Seoyeong_Kim on 8/21/26.
 //
 
+import ComposableArchitecture
 import SwiftUI
 
 @main

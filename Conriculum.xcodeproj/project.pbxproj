@@ -6,11 +6,32 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		A10000000000000000000001 /* ComposableArchitecture in Frameworks */ = {isa = PBXBuildFile; productRef = A1000000000000000000000F /* ComposableArchitecture */; };
+		A10000000000000000000002 /* ComposableArchitecture in Frameworks */ = {isa = PBXBuildFile; productRef = A10000000000000000000010 /* ComposableArchitecture */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		A10000000000000000000009 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = F1A9027230381ED500FC7493 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = F1A9027930381ED500FC7493;
+			remoteInfo = Conriculum;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
+		A10000000000000000000003 /* ConriculumTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ConriculumTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		F1A9027A30381ED500FC7493 /* Conriculum.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Conriculum.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
+		A10000000000000000000004 /* ConriculumTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = ConriculumTests;
+			sourceTree = "<group>";
+		};
 		F1A9027C30381ED500FC7493 /* Conriculum */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = Conriculum;
@@ -19,10 +40,19 @@
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		A10000000000000000000005 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A10000000000000000000002 /* ComposableArchitecture in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		F1A9027730381ED500FC7493 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A10000000000000000000001 /* ComposableArchitecture in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -33,6 +63,7 @@
 			isa = PBXGroup;
 			children = (
 				F1A9027C30381ED500FC7493 /* Conriculum */,
+				A10000000000000000000004 /* ConriculumTests */,
 				F1A9027B30381ED500FC7493 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -41,6 +72,7 @@
 			isa = PBXGroup;
 			children = (
 				F1A9027A30381ED500FC7493 /* Conriculum.app */,
+				A10000000000000000000003 /* ConriculumTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -48,6 +80,30 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		A10000000000000000000008 /* ConriculumTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A1000000000000000000000D /* Build configuration list for PBXNativeTarget "ConriculumTests" */;
+			buildPhases = (
+				A10000000000000000000007 /* Sources */,
+				A10000000000000000000005 /* Frameworks */,
+				A10000000000000000000006 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				A1000000000000000000000A /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				A10000000000000000000004 /* ConriculumTests */,
+			);
+			name = ConriculumTests;
+			packageProductDependencies = (
+				A10000000000000000000010 /* ComposableArchitecture */,
+			);
+			productName = ConriculumTests;
+			productReference = A10000000000000000000003 /* ConriculumTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		F1A9027930381ED500FC7493 /* Conriculum */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = F1A9028530381ED600FC7493 /* Build configuration list for PBXNativeTarget "Conriculum" */;
@@ -65,6 +121,7 @@
 			);
 			name = Conriculum;
 			packageProductDependencies = (
+				A1000000000000000000000F /* ComposableArchitecture */,
 			);
 			productName = Conriculum;
 			productReference = F1A9027A30381ED500FC7493 /* Conriculum.app */;
@@ -80,6 +137,10 @@
 				LastSwiftUpdateCheck = 2660;
 				LastUpgradeCheck = 2660;
 				TargetAttributes = {
+					A10000000000000000000008 = {
+						CreatedOnToolsVersion = 26.6;
+						TestTargetID = F1A9027930381ED500FC7493;
+					};
 					F1A9027930381ED500FC7493 = {
 						CreatedOnToolsVersion = 26.6;
 					};
@@ -96,15 +157,26 @@
 			minimizedProjectReferenceProxies = 1;
 			preferredProjectObjectVersion = 77;
 			productRefGroup = F1A9027B30381ED500FC7493 /* Products */;
+			packageReferences = (
+				A1000000000000000000000E /* XCRemoteSwiftPackageReference "swift-composable-architecture" */,
+			);
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
 				F1A9027930381ED500FC7493 /* Conriculum */,
+				A10000000000000000000008 /* ConriculumTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		A10000000000000000000006 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		F1A9027830381ED500FC7493 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -115,6 +187,13 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		A10000000000000000000007 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		F1A9027630381ED500FC7493 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -124,7 +203,55 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		A1000000000000000000000A /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = F1A9027930381ED500FC7493 /* Conriculum */;
+			targetProxy = A10000000000000000000009 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
 /* Begin XCBuildConfiguration section */
+		A1000000000000000000000B /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = NKD752LBMV;
+				GENERATE_INFOPLIST_FILE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 26.3;
+				PRODUCT_BUNDLE_IDENTIFIER = com.Hamo.ConriculumTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Conriculum.app/Contents/MacOS/Conriculum";
+			};
+			name = Debug;
+		};
+		A1000000000000000000000C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = NKD752LBMV;
+				GENERATE_INFOPLIST_FILE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 26.3;
+				PRODUCT_BUNDLE_IDENTIFIER = com.Hamo.ConriculumTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Conriculum.app/Contents/MacOS/Conriculum";
+			};
+			name = Release;
+		};
 		F1A9028330381ED600FC7493 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -312,6 +439,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		A1000000000000000000000D /* Build configuration list for PBXNativeTarget "ConriculumTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A1000000000000000000000B /* Debug */,
+				A1000000000000000000000C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		F1A9027530381ED500FC7493 /* Build configuration list for PBXProject "Conriculum" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
@@ -331,6 +467,30 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		A1000000000000000000000E /* XCRemoteSwiftPackageReference "swift-composable-architecture" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/pointfreeco/swift-composable-architecture";
+			requirement = {
+				kind = exactVersion;
+				version = 1.26.1;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		A1000000000000000000000F /* ComposableArchitecture */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = A1000000000000000000000E /* XCRemoteSwiftPackageReference "swift-composable-architecture" */;
+			productName = ComposableArchitecture;
+		};
+		A10000000000000000000010 /* ComposableArchitecture */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = A1000000000000000000000E /* XCRemoteSwiftPackageReference "swift-composable-architecture" */;
+			productName = ComposableArchitecture;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = F1A9027230381ED500FC7493 /* Project object */;
 }
