@@ -1,0 +1,175 @@
+{
+  "schemaVersion": 1,
+  "identities": [
+    {
+      "kind": "learningPath",
+      "stableID": "learning-path-swift-computational-thinking",
+      "sourcePath": "학습 체계/00 학습 체계 지도.md"
+    },
+    {
+      "kind": "stage",
+      "stableID": "stage-01",
+      "sourcePath": "학습 체계/Stage 1 - Swift로 문제를 표현할 준비/00 Stage 1 지도.md"
+    },
+    {
+      "kind": "chapter",
+      "stableID": "chapter-02",
+      "sourcePath": "학습 체계/Stage 1 - Swift로 문제를 표현할 준비/Chapter 2 - 정보를 값과 타입으로 표현하기/00 Chapter 2 지도.md"
+    },
+    {
+      "kind": "page",
+      "stableID": "chapter-02-overview",
+      "sourcePath": "학습 체계/Stage 1 - Swift로 문제를 표현할 준비/Chapter 2 - 정보를 값과 타입으로 표현하기/00 Chapter 2 지도.md"
+    },
+    {
+      "kind": "page",
+      "stableID": "chapter-02-page-01",
+      "sourcePath": "학습 체계/Stage 1 - Swift로 문제를 표현할 준비/Chapter 2 - 정보를 값과 타입으로 표현하기/01 현실의 정보를 값으로 바라보기.md"
+    },
+    {
+      "kind": "page",
+      "stableID": "chapter-02-page-02",
+      "sourcePath": "학습 체계/Stage 1 - Swift로 문제를 표현할 준비/Chapter 2 - 정보를 값과 타입으로 표현하기/02 값의 종류 비교하기.md"
+    },
+    {
+      "kind": "page",
+      "stableID": "chapter-02-page-03",
+      "sourcePath": "학습 체계/Stage 1 - Swift로 문제를 표현할 준비/Chapter 2 - 정보를 값과 타입으로 표현하기/03 정보에 맞는 타입 선택하기.md"
+    },
+    {
+      "kind": "page",
+      "stableID": "chapter-02-page-04",
+      "sourcePath": "학습 체계/Stage 1 - Swift로 문제를 표현할 준비/Chapter 2 - 정보를 값과 타입으로 표현하기/04 의미가 드러나는 이름 붙이기.md"
+    },
+    {
+      "kind": "page",
+      "stableID": "chapter-02-page-05",
+      "sourcePath": "학습 체계/Stage 1 - Swift로 문제를 표현할 준비/Chapter 2 - 정보를 값과 타입으로 표현하기/05 변하지 않는 값을 선언하기.md"
+    },
+    {
+      "kind": "page",
+      "stableID": "chapter-02-page-06",
+      "sourcePath": "학습 체계/Stage 1 - Swift로 문제를 표현할 준비/Chapter 2 - 정보를 값과 타입으로 표현하기/06 타입 명시와 타입 추론 비교하기.md"
+    },
+    {
+      "kind": "page",
+      "stableID": "chapter-02-page-07",
+      "sourcePath": "학습 체계/Stage 1 - Swift로 문제를 표현할 준비/Chapter 2 - 정보를 값과 타입으로 표현하기/07 여러 정보를 값으로 구조화하기.md"
+    },
+    {
+      "kind": "page",
+      "stableID": "chapter-02-page-08",
+      "sourcePath": "학습 체계/Stage 1 - Swift로 문제를 표현할 준비/Chapter 2 - 정보를 값과 타입으로 표현하기/08 새로운 문제에 적용하고 돌아보기.md"
+    },
+    {
+      "kind": "knowledgeConcept",
+      "stableID": "concept-value",
+      "sourcePath": "지식 체계/02 값과 타입/값.md"
+    },
+    {
+      "kind": "knowledgeConcept",
+      "stableID": "concept-literal",
+      "sourcePath": "지식 체계/02 값과 타입/리터럴.md"
+    },
+    {
+      "kind": "knowledgeConcept",
+      "stableID": "concept-type",
+      "sourcePath": "지식 체계/02 값과 타입/타입.md"
+    },
+    {
+      "kind": "knowledgeConcept",
+      "stableID": "concept-string",
+      "sourcePath": "지식 체계/02 값과 타입/String.md"
+    },
+    {
+      "kind": "knowledgeConcept",
+      "stableID": "concept-int",
+      "sourcePath": "지식 체계/02 값과 타입/Int.md"
+    },
+    {
+      "kind": "knowledgeConcept",
+      "stableID": "concept-double",
+      "sourcePath": "지식 체계/02 값과 타입/Double.md"
+    },
+    {
+      "kind": "knowledgeConcept",
+      "stableID": "concept-bool",
+      "sourcePath": "지식 체계/02 값과 타입/Bool.md"
+    },
+    {
+      "kind": "knowledgeConcept",
+      "stableID": "concept-type-selection",
+      "sourcePath": "지식 체계/02 값과 타입/타입 선택.md"
+    },
+    {
+      "kind": "knowledgeConcept",
+      "stableID": "concept-identifier-naming",
+      "sourcePath": "지식 체계/02 값과 타입/식별자와 이름 짓기.md"
+    },
+    {
+      "kind": "knowledgeConcept",
+      "stableID": "concept-constants-variables",
+      "sourcePath": "지식 체계/02 값과 타입/상수와 변수.md"
+    },
+    {
+      "kind": "knowledgeConcept",
+      "stableID": "concept-type-inference-annotation",
+      "sourcePath": "지식 체계/02 값과 타입/타입 추론과 타입 명시.md"
+    },
+    {
+      "kind": "knowledgeConcept",
+      "stableID": "concept-related-value-grouping",
+      "sourcePath": "지식 체계/02 값과 타입/관련된 값 묶기.md"
+    },
+    {
+      "kind": "knowledgeConcept",
+      "stableID": "concept-concrete-values-rules",
+      "sourcePath": "지식 체계/01 문제 해결과 컴퓨팅 사고/구체적인 값과 일반적인 규칙.md"
+    },
+    {
+      "kind": "knowledgeConcept",
+      "stableID": "concept-problem-boundary",
+      "sourcePath": "지식 체계/01 문제 해결과 컴퓨팅 사고/문제의 경계.md"
+    },
+    {
+      "kind": "knowledgeConcept",
+      "stableID": "concept-input-rule-output",
+      "sourcePath": "지식 체계/01 문제 해결과 컴퓨팅 사고/입력 규칙 출력 구조.md"
+    },
+    {
+      "kind": "knowledgeConcept",
+      "stableID": "concept-input",
+      "sourcePath": "지식 체계/01 문제 해결과 컴퓨팅 사고/입력.md"
+    },
+    {
+      "kind": "knowledgeConcept",
+      "stableID": "concept-output",
+      "sourcePath": "지식 체계/01 문제 해결과 컴퓨팅 사고/출력.md"
+    },
+    {
+      "kind": "knowledgeConcept",
+      "stableID": "concept-expressions-operations",
+      "sourcePath": "지식 체계/03 표현식과 연산/00 분류 안내.md"
+    },
+    {
+      "kind": "knowledgeConcept",
+      "stableID": "concept-execution-flow",
+      "sourcePath": "지식 체계/04 실행 흐름/00 분류 안내.md"
+    },
+    {
+      "kind": "knowledgeConcept",
+      "stableID": "concept-functions-abstraction",
+      "sourcePath": "지식 체계/05 함수와 추상화/00 분류 안내.md"
+    },
+    {
+      "kind": "knowledgeConcept",
+      "stableID": "concept-type-modeling",
+      "sourcePath": "지식 체계/07 타입 모델링/00 분류 안내.md"
+    },
+    {
+      "kind": "knowledgeConcept",
+      "stableID": "concept-swiftui-interface",
+      "sourcePath": "지식 체계/12 SwiftUI와 사용자 인터페이스/00 분류 안내.md"
+    }
+  ]
+}

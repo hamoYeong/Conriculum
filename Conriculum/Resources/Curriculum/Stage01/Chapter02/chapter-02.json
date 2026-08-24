@@ -1,0 +1,954 @@
+{
+  "id": "chapter-02",
+  "stageID": "stage-01",
+  "order": 2,
+  "title": "정보를 값과 타입으로 표현하기",
+  "summary": "현실의 정보를 Swift가 저장하고 읽을 수 있는 이름 붙은 값으로 선언하고 선택 근거를 설명한다.",
+  "overview": {
+    "id": "chapter-02-overview",
+    "kind": "overview",
+    "order": null,
+    "title": "Chapter 2 지도",
+    "goal": "현실의 정보를 값·타입·이름·변경 가능성·타입 표기로 판단하는 전체 경로를 이해한다.",
+    "sections": [
+      {
+        "id": "section-overview-situation",
+        "order": 1,
+        "title": "이 챕터가 하는 일",
+        "content": {
+          "tag": "situation",
+          "payload": {
+            "title": "현실의 정보를 이름 붙은 Swift 값으로 옮기기",
+            "description": "Chapter 1에서 입력으로 찾은 현실의 정보를 Swift가 저장하고 읽을 수 있는 선언으로 옮긴다. 결과물은 계산식이나 완성된 앱이 아니라 다음 챕터가 안전하게 사용할 이름 붙은 값이다.",
+            "materials": [
+              {"label":"학습 흐름","text":"현실의 정보 → 구체적인 값 → 타입 선택 → 의미 있는 이름 → let과 타입 표기 → 역할에 따른 값 묶기"}
+            ],
+            "firstQuestion": "새로운 현실의 정보를 Swift 선언으로 옮길 때 어떤 결정을 차례로 내려야 할까?"
+          }
+        }
+      },
+      {
+        "id": "section-overview-process",
+        "order": 2,
+        "title": "완료 기준",
+        "content": {
+          "tag": "processGuide",
+          "payload": {
+            "steps": [
+              {"order":1,"title":"값 찾기","question":"자연어에서 하나로 정해진 구체적인 정보는 무엇인가?"},
+              {"order":2,"title":"타입 선택","question":"의미와 이후 할 일에 맞는 타입은 무엇인가?"},
+              {"order":3,"title":"이름 짓기","question":"값의 대상과 역할이 식별자에 드러나는가?"},
+              {"order":4,"title":"변경 약속","question":"현재 책임 안에서 같은 이름에 새 값을 넣어야 하는가?"},
+              {"order":5,"title":"타입 표기","question":"추론 결과와 의도를 보고 타입을 직접 적을지 선택했는가?"},
+              {"order":6,"title":"값 묶기","question":"한 사례의 값들을 역할과 경계로 설명할 수 있는가?"}
+            ],
+            "completionDescription": "새 문제의 정보를 선언하고 각 선택의 근거를 설명한다."
+          }
+        }
+      },
+      {
+        "id": "section-overview-knowledge-link",
+        "order": 3,
+        "title": "핵심 지식",
+        "content": {
+          "tag": "knowledgeLink",
+          "payload": {
+            "links": [
+              {"conceptID":"concept-value","role":"primary","usage":"현실의 설명에서 프로그램이 직접 다룰 정보를 찾는다.","displayTiming":"챕터 진입 시"},
+              {"conceptID":"concept-type-selection","role":"primary","usage":"의미와 할 일을 근거로 표현 방식을 고른다.","displayTiming":"챕터 진입 시"},
+              {"conceptID":"concept-related-value-grouping","role":"supporting","usage":"여러 선언을 한 사례의 역할로 정리한다.","displayTiming":"후반 경로 안내 시"}
+            ]
+          }
+        }
+      }
+    ],
+    "activities": [],
+    "knowledgeLinks": [
+      {"conceptID":"concept-value","role":"primary","usage":"구체적인 정보를 값으로 읽는 출발점이다.","displayTiming":"챕터 진입 시"},
+      {"conceptID":"concept-type-selection","role":"primary","usage":"정보의 의미와 이후 할 일을 타입 선택으로 연결한다.","displayTiming":"챕터 진입 시"},
+      {"conceptID":"concept-identifier-naming","role":"supporting","usage":"선택한 값의 역할을 코드에 남긴다.","displayTiming":"학습 경로 안내 시"}
+    ],
+    "knowledgeContext": {
+      "currentlyUsedConceptIDs": ["concept-value","concept-type-selection","concept-identifier-naming"],
+      "currentlyUsedSummary": "Chapter 2의 전체 판단 흐름에 직접 쓰는 지식을 우선한다.",
+      "changedKnowledgeSummary": "이번 Chapter에서 확인해 저장한 개인 표현과 연결을 최근 수정 순으로 보여 준다.",
+      "nearbyKnowledge": [
+        {"conceptID":"concept-expressions-operations","reason":"이름 붙은 값은 다음 챕터에서 계산의 재료가 된다."},
+        {"conceptID":"concept-type-modeling","reason":"관련된 값의 경계는 이후 사용자 정의 타입으로 확장된다."}
+      ],
+      "refreshTriggers": ["개인 표현 저장", "개인 관계 저장"],
+      "emptyStateMessage": "아직 확인해 반영한 나의 표현이나 연결이 없다.",
+      "focusModeSummary": "현재 학습 단계의 직접 개념과 저장된 변화 유무만 유지한다."
+    },
+    "navigation": {
+      "previous": null,
+      "next": {"pageID":"chapter-02-page-01","label":"현실의 정보를 값으로 바라보기"}
+    }
+  },
+  "pages": [
+    {
+      "id": "chapter-02-page-01",
+      "kind": "lesson",
+      "order": 1,
+      "title": "현실의 정보를 값으로 바라보기",
+      "goal": "현실의 설명에서 프로그램이 하나씩 다룰 구체적인 값을 찾고 값과 규칙을 구분한다.",
+      "sections": [
+        {
+          "id":"section-page01-recall","order":1,"content":{"tag":"knowledgeRecall","payload":{
+            "questions":["Chapter 1의 주문 문제에서 결과를 바꾸는 입력은 무엇이었는가?"],
+            "memorySentence":"상품 금액과 회원 여부는 입력이고 할인 정책은 여러 입력에 반복되는 규칙이었다.",
+            "connection":"입력으로 찾은 정보를 Swift 안에 놓으려면 먼저 구체적인 값을 골라야 한다."
+          }}
+        },
+        {
+          "id":"section-page01-situation","order":2,"content":{"tag":"situation","payload":{
+            "title":"주문 확인 화면을 만들 정보 찾기",
+            "description":"이번 주문의 상품 금액은 20,000원이고 회원 주문이다. 주문자 닉네임은 푸른고래이며 회원은 2,000원을 할인받는다.",
+            "materials":[
+              {"label":"상품 금액","text":"20,000원"},{"label":"회원 여부","text":"회원 주문"},{"label":"닉네임","text":"푸른고래"},{"label":"정책","text":"회원에게 2,000원 할인"}
+            ],
+            "firstQuestion":"이번 주문에서 하나로 정해진 정보와 여러 주문에 반복되는 관계를 나누어 보자."
+          }}
+        },
+        {
+          "id":"section-page01-comparison","order":3,"content":{"tag":"comparison","payload":{
+            "criterion":"이번 사례에서 하나로 정해졌는가, 다른 사례에도 같은 관계가 반복되는가?",
+            "items":[
+              {"id":"amount","title":"20_000","body":"이번 주문에서 정해진 상품 금액이다.","details":[]},
+              {"id":"member","title":"true","body":"이번 주문이 회원 주문임을 나타낸다.","details":[]},
+              {"id":"nickname","title":"\"푸른고래\"","body":"이번 주문자의 닉네임이다.","details":[]},
+              {"id":"discount-rule","title":"회원이면 2,000원 할인","body":"여러 주문의 값에 반복해서 적용되는 규칙이다.","details":[]}
+            ],
+            "observationQuestion":"주문자가 바뀌어도 남는 문장은 어느 것인가?"
+          }}
+        },
+        {
+          "id":"section-page01-value-definition","order":4,"content":{"tag":"definition","payload":{
+            "conceptID":"concept-value","title":"값","definition":"프로그램이 저장하거나 비교하거나 계산하거나 표시할 수 있도록 하나로 정해진 정보다.","scope":"이번 주문에 주어진 닉네임, 금액, 회원 여부를 값으로 본다."
+          }}
+        },
+        {
+          "id":"section-page01-literal-definition","order":5,"content":{"tag":"definition","payload":{
+            "conceptID":"concept-literal","title":"리터럴","definition":"구체적인 값을 코드에 직접 적은 표기다.","scope":"\"푸른고래\", 20_000, true처럼 값의 모습을 직접 적는다."
+          }}
+        },
+        {
+          "id":"section-page01-code","order":6,"content":{"tag":"codeExplanation","payload":{
+            "code":"\"푸른고래\"\n20_000\ntrue","language":"swift",
+            "focus":["따옴표","숫자 사이 밑줄","true 표기"],
+            "lineMeanings":["첫 줄은 글자 내용이다.","둘째 줄은 정수 20000이며 밑줄은 읽기만 돕는다.","셋째 줄은 참 상태다."],
+            "outOfScope":["타입 이름","let 선언"],"displayTiming":null
+          }}
+        },
+        {
+          "id":"section-page01-knowledge-link","order":7,"content":{"tag":"knowledgeLink","payload":{"links":[
+            {"conceptID":"concept-value","role":"primary","usage":"현실의 문장에서 값 후보를 고른다.","displayTiming":"첫 분류 제출 뒤"},
+            {"conceptID":"concept-literal","role":"primary","usage":"고른 값을 Swift 표기로 직접 적는다.","displayTiming":"첫 분류 제출 뒤"},
+            {"conceptID":"concept-concrete-values-rules","role":"prerequisite","usage":"사례의 값과 반복 규칙을 구분한다.","displayTiming":"첫 분류 제출 뒤"}
+          ]}}
+        },
+        {
+          "id":"section-page01-state","order":8,"content":{"tag":"learningStateSelection","payload":{
+            "options":[{"id":"deeper","title":"지루함(쉬움) - 더 깊게 가기","guidance":"값과 화면에 보이는 표현을 더 엄밀하게 나누는 심화 과제를 연다."}],"defaultOptionID":null
+          }}
+        },
+        {
+          "id":"section-page01-card-sorting","order":9,"activityID":"activity-page01-card-sorting","content":{"tag":"cardSorting","payload":{
+            "cards":[
+              {"id":"amount","text":"상품 금액 20,000원"},{"id":"member","text":"회원 주문"},{"id":"nickname","text":"닉네임 푸른고래"},{"id":"discount-rule","text":"회원에게 2,000원 할인"}
+            ],
+            "groups":[{"id":"instance-value","text":"이번 주문의 값"},{"id":"general-rule","text":"여러 주문의 규칙"}],
+            "interaction":"카드 하나를 한 영역에 놓고 이유를 한 문장으로 남긴다.",
+            "completionCriteria":["세 값과 한 규칙을 모두 분류한다."],
+            "feedbackCriteria":["숫자의 유무가 아니라 이번 사례에서 정해진 정보인지 반복 관계인지 되묻는다."]
+          }}
+        },
+        {
+          "id":"section-page01-matching","order":10,"activityID":"activity-page01-matching","content":{"tag":"matching","payload":{
+            "leftItems":[{"id":"nickname","text":"닉네임 푸른고래"},{"id":"amount","text":"상품 금액 20,000원"},{"id":"member","text":"회원 주문"}],
+            "rightItems":[{"id":"literal-string","text":"\"푸른고래\""},{"id":"literal-int","text":"20_000"},{"id":"literal-bool","text":"true"}],
+            "rule":"자연어 정보와 같은 내용을 나타내는 Swift 리터럴을 잇는다.",
+            "completionCriteria":["세 쌍을 모두 연결한다.","표기의 차이 하나를 설명한다."]
+          }}
+        },
+        {
+          "id":"section-page01-choice","order":11,"activityID":"activity-page01-choice","content":{"tag":"choiceWithReason","payload":{
+            "questions":[{"id":"discount-rule","prompt":"회원에게 2,000원을 할인한다는 값 하나인가, 여러 값에 적용되는 규칙인가?","options":[{"id":"value","text":"값"},{"id":"rule","text":"규칙"}]}],
+            "reasonPrompt":"선택한 기준을 한 문장으로 쓴다.",
+            "feedbackCriteria":["다른 주문에서도 반복되는 관계인지 확인하게 한다."]
+          }}
+        },
+        {
+          "id":"section-page01-expression-comparison","order":12,"content":{"tag":"personalExpressionComparison","payload":{
+            "conceptIDs":["concept-value"],"baseExpression":"프로그램이 저장하고 읽고 사용할 수 있는 구체적인 정보 하나",
+            "personalExpressionEmptyState":"나의 표현 없음","comparisonQuestion":"나의 표현만 읽어도 구체적인 값과 반복 규칙을 구분할 수 있는가?","inspectorLocation":"사이드바에서 값 개념을 선택해 연 inspector"
+          }}
+        },
+        {
+          "id":"section-page01-promotion","order":13,"activityID":"activity-page01-promotion","content":{"tag":"personalKnowledgePromotion","payload":{
+            "evidenceActivityIDs":["activity-page01-card-sorting","activity-page01-choice"],
+            "conceptIDs":["concept-value","concept-concrete-values-rules"],"candidateKind":"conceptRevision",
+            "editableDraft":"값은 이 사례에서 하나로 정해져 프로그램이 직접 다룰 수 있는 정보이고 규칙은 여러 값에 반복해서 적용하는 설명이다.",
+            "confirmationQuestion":"이 문장을 값과 규칙을 구분하는 나의 기준으로 남길까?",
+            "savedFields":["나의 설명","값 예시","규칙 예시","근거 활동 ID","수정 시각"],
+            "cancellationResult":"개인 지식은 바꾸지 않고 분류와 설명 응답만 학습 기록에 남긴다."
+          }}
+        },
+        {
+          "id":"section-page01-enrichment","order":14,"content":{"tag":"enrichmentTask","payload":{
+            "requiredStateID":"deeper","materials":[{"label":"내부 값","text":"20_000"},{"label":"화면 문구","text":"\"20,000원\""}],
+            "prompt":"저장·계산할 값과 사용자에게 표시할 글자를 분리해 각각의 역할을 설명한다.",
+            "conceptIDs":["concept-string","concept-int"]
+          }}
+        },
+        {
+          "id":"section-page01-completion","order":15,"activityID":"activity-page01-completion","content":{"tag":"completionCheck","payload":{
+            "question":"새로운 문장에서 값 하나와 규칙 하나를 각각 찾을 수 있는가?",
+            "requiredEvidence":["자연어 정보","대응하는 리터럴","값이라고 판단한 이유"],
+            "retryCondition":"정책 문장을 값으로 분류했다면 사례가 바뀌어도 남는지 다시 비교한다."
+          }}
+        }
+      ],
+      "activities": [
+        {"id":"activity-page01-card-sorting","sectionID":"section-page01-card-sorting","isRequired":true},
+        {"id":"activity-page01-matching","sectionID":"section-page01-matching","isRequired":true},
+        {"id":"activity-page01-choice","sectionID":"section-page01-choice","isRequired":true},
+        {"id":"activity-page01-promotion","sectionID":"section-page01-promotion","isRequired":false},
+        {"id":"activity-page01-completion","sectionID":"section-page01-completion","isRequired":true}
+      ],
+      "knowledgeLinks": [
+        {"conceptID":"concept-value","role":"primary","usage":"현실 정보에서 구체적인 값을 찾는다.","displayTiming":"첫 분류 제출 뒤"},
+        {"conceptID":"concept-literal","role":"primary","usage":"값을 Swift 표기로 적는다.","displayTiming":"첫 분류 제출 뒤"},
+        {"conceptID":"concept-concrete-values-rules","role":"prerequisite","usage":"값과 규칙을 구분한다.","displayTiming":"첫 분류 제출 뒤"}
+      ],
+      "knowledgeContext": {
+        "currentlyUsedConceptIDs":["concept-value","concept-literal","concept-concrete-values-rules"],
+        "currentlyUsedSummary":"현재 활동이 값 찾기인지 규칙 찾기인지에 따라 해당 개념을 먼저 펼친다.",
+        "changedKnowledgeSummary":"확인해 저장한 값과 규칙 구분 기준과 예시를 보여 준다.",
+        "nearbyKnowledge":[{"conceptID":"concept-type","reason":"찾은 값을 어떤 종류로 다룰지는 다음 페이지에서 판단한다."}],
+        "refreshTriggers":["카드 분류 이유 제출","개인 지식 저장 성공"],
+        "emptyStateMessage":"아직 확인해 반영한 값·규칙 구분 기준이 없다.",
+        "focusModeSummary":"현재 활동의 개념명과 저장된 변화 유무만 유지한다."
+      },
+      "navigation": {
+        "previous":{"pageID":"chapter-02-overview","label":"Chapter 2 지도"},
+        "next":{"pageID":"chapter-02-page-02","label":"값의 종류 비교하기"}
+      }
+    },
+    {
+      "id":"chapter-02-page-02","kind":"lesson","order":2,"title":"값의 종류 비교하기",
+      "goal":"값의 표기와 할 수 있는 일을 비교해 String, Int, Double, Bool의 차이를 설명한다.",
+      "sections":[
+        {"id":"section-page02-recall","order":1,"content":{"tag":"knowledgeRecall","payload":{
+          "questions":["\"푸른고래\", 20_000, true는 모두 값이지만 코드에서 같은 모습이었는가?"],
+          "memorySentence":"리터럴의 따옴표, 소수점, true·false는 값의 종류를 알아볼 단서다.","connection":"값의 종류가 다르면 허용되는 일도 달라진다."
+        }}},
+        {"id":"section-page02-situation","order":2,"content":{"tag":"situation","payload":{
+          "title":"주문 정보 네 가지를 어떻게 다룰까?","description":"앱은 닉네임을 표시하고 수량을 세고 별점 평균을 보여 주고 회원 여부로 판단해야 한다.",
+          "materials":[{"label":"닉네임","text":"\"푸른고래\""},{"label":"수량","text":"2"},{"label":"별점 평균","text":"4.5"},{"label":"회원 여부","text":"true"}],
+          "firstQuestion":"네 값을 서로 바꾸어 놓아도 같은 일을 할 수 있을까?"
+        }}},
+        {"id":"section-page02-comparison","order":3,"content":{"tag":"comparison","payload":{
+          "criterion":"값의 표기, 담는 정보, 주로 필요한 일",
+          "items":[
+            {"id":"string","title":"String · \"푸른고래\"","body":"글자들의 순서를 보존해 이름과 문장을 표시한다.","details":[]},
+            {"id":"int","title":"Int · 2","body":"소수 부분 없는 정수로 수량을 세고 계산한다.","details":[]},
+            {"id":"double","title":"Double · 4.5","body":"소수 부분이 있는 평균·비율·측정값을 표현한다.","details":[]},
+            {"id":"bool","title":"Bool · true","body":"참 또는 거짓의 예·아니오 상태를 나타낸다.","details":[]}
+          ],
+          "observationQuestion":"20_000과 \"20,000원\"은 같은 내용을 떠올리게 하지만 왜 다른 일을 하게 될까?"
+        }}},
+        {"id":"section-page02-definition","order":4,"content":{"tag":"definition","payload":{
+          "conceptID":"concept-type","title":"타입","definition":"값이 어떤 종류의 정보이며 어떤 사용이 허용되는지를 정하는 약속이다.","scope":"String, Int, Double, Bool 네 기본 타입부터 비교한다."
+        }}},
+        {"id":"section-page02-criteria","order":5,"content":{"tag":"decisionCriteria","payload":{
+          "questions":["글자 내용 자체가 중요한가?","소수점 없이 셀 수 있는가?","소수 부분이 필요한가?","참·거짓 두 경우로 충분한가?"],
+          "sequence":["정보가 맡을 일을 말한다.","리터럴 표기의 단서를 찾는다.","타입과 가능한 일을 연결한다."],
+          "caution":"네 타입으로 충분하지 않은 현실의 상태는 이후 타입 모델링으로 확장한다."
+        }}},
+        {"id":"section-page02-knowledge-link","order":6,"content":{"tag":"knowledgeLink","payload":{"links":[
+          {"conceptID":"concept-type","role":"primary","usage":"값의 종류와 가능한 일을 연결한다.","displayTiming":"첫 분류 뒤"},
+          {"conceptID":"concept-string","role":"supporting","usage":"글자 내용 보존을 판단한다.","displayTiming":"String 카드 선택 시"},
+          {"conceptID":"concept-int","role":"supporting","usage":"정수 계산 목적을 판단한다.","displayTiming":"Int 카드 선택 시"},
+          {"conceptID":"concept-double","role":"supporting","usage":"소수 수치 필요성을 판단한다.","displayTiming":"Double 카드 선택 시"},
+          {"conceptID":"concept-bool","role":"supporting","usage":"두 상태로 충분한지 판단한다.","displayTiming":"Bool 카드 선택 시"}
+        ]}}},
+        {"id":"section-page02-state","order":7,"content":{"tag":"learningStateSelection","payload":{
+          "options":[{"id":"deeper","title":"지루함(쉬움) - 더 깊게 가기","guidance":"겉모양이 비슷한 값도 목적에 따라 타입이 달라지는 사례를 연다."}],"defaultOptionID":null
+        }}},
+        {"id":"section-page02-card-sorting","order":8,"activityID":"activity-page02-card-sorting","content":{"tag":"cardSorting","payload":{
+          "cards":[
+            {"id":"book-title","text":"\"Swift 시작하기\""},{"id":"count","text":"3"},{"id":"ratio","text":"0.15"},{"id":"false","text":"false"},
+            {"id":"postal-code","text":"\"01234\""},{"id":"amount","text":"20_000"},{"id":"member-text","text":"\"회원\""},{"id":"true","text":"true"}
+          ],
+          "groups":[{"id":"string","text":"String"},{"id":"int","text":"Int"},{"id":"double","text":"Double"},{"id":"bool","text":"Bool"}],
+          "interaction":"값을 타입 영역에 놓고 표기에서 찾은 단서에 표시한다.","completionCriteria":["여덟 값을 모두 분류한다."],
+          "feedbackCriteria":["따옴표, 소수점, 참·거짓 표기를 관찰한 뒤 값의 의미를 확인한다."]
+        }}},
+        {"id":"section-page02-matching","order":9,"activityID":"activity-page02-matching","content":{"tag":"matching","payload":{
+          "leftItems":[{"id":"text","text":"글자를 보존한다"},{"id":"whole","text":"온전한 개수를 센다"},{"id":"fraction","text":"소수 비율을 표현한다"},{"id":"yes-no","text":"예·아니오 상태를 나타낸다"}],
+          "rightItems":[{"id":"string","text":"String"},{"id":"int","text":"Int"},{"id":"double","text":"Double"},{"id":"bool","text":"Bool"}],
+          "rule":"타입 이름과 맡기 좋은 일을 연결한다.","completionCriteria":["네 쌍을 연결한다.","각 타입의 예를 하나씩 추가한다."]
+        }}},
+        {"id":"section-page02-choice","order":10,"activityID":"activity-page02-choice","content":{"tag":"choiceWithReason","payload":{
+          "questions":[{"id":"amount-expression","prompt":"계산할 상품 금액으로 더 알맞은 값은 무엇인가?","options":[{"id":"int","text":"20_000"},{"id":"string","text":"\"20,000원\""}]}],
+          "reasonPrompt":"화면 모양이 아니라 필요한 일을 근거로 쓴다.","feedbackCriteria":["숫자로 보인다는 말보다 산술 계산에 쓸 수 있는 수라는 기준을 되돌려 준다."]
+        }}},
+        {"id":"section-page02-expression-comparison","order":11,"content":{"tag":"personalExpressionComparison","payload":{
+          "conceptIDs":["concept-string","concept-int","concept-double","concept-bool"],"baseExpression":"각 타입의 기본 정의와 대표 리터럴 표기",
+          "personalExpressionEmptyState":"아직 나의 언어로 다시 표현한 타입이 없다.","comparisonQuestion":"표기뿐 아니라 할 수 있는 일과 바로 할 수 없는 일이 드러나는가?","inspectorLocation":"사이드바에서 선택한 타입의 inspector"
+        }}},
+        {"id":"section-page02-promotion","order":12,"activityID":"activity-page02-promotion","content":{"tag":"personalKnowledgePromotion","payload":{
+          "evidenceActivityIDs":["activity-page02-matching","activity-page02-choice"],"conceptIDs":["concept-string","concept-int","concept-double","concept-bool"],
+          "candidateKind":"conceptRevision","editableDraft":"선택한 타입이 어떤 일을 위해 쓰이는 값의 종류인지 나의 문장으로 설명한다.",
+          "confirmationQuestion":"이 설명을 선택한 타입에 대한 나의 언어로 남길까?","savedFields":["대상 concept ID","나의 설명","나의 예시","근거 활동 ID","수정 시각"],
+          "cancellationResult":"개인 지식은 바꾸지 않고 분류·연결·선택 응답은 유지한다."
+        }}},
+        {"id":"section-page02-enrichment","order":13,"content":{"tag":"enrichmentTask","payload":{
+          "requiredStateID":"deeper","materials":[{"label":"우편번호","text":"\"01234\""},{"label":"재고 코드","text":"\"0007\""},{"label":"재고 수량","text":"7"}],
+          "prompt":"숫자 모양이어도 String이어야 하는 값과 Int여야 하는 값을 사용 목적에 따라 분류한다.","conceptIDs":["concept-type-selection"]
+        }}},
+        {"id":"section-page02-completion","order":14,"activityID":"activity-page02-completion","content":{"tag":"completionCheck","payload":{
+          "question":"네 기본 타입을 이름이 아니라 이 타입으로 할 일로 설명할 수 있는가?",
+          "requiredEvidence":["타입 네 개","서로 다른 예","각 타입의 사용 목적"],"retryCondition":"값의 모양만 근거라면 앱이 그 값으로 할 일을 추가한다."
+        }}}
+      ],
+      "activities":[
+        {"id":"activity-page02-card-sorting","sectionID":"section-page02-card-sorting","isRequired":true},
+        {"id":"activity-page02-matching","sectionID":"section-page02-matching","isRequired":true},
+        {"id":"activity-page02-choice","sectionID":"section-page02-choice","isRequired":true},
+        {"id":"activity-page02-promotion","sectionID":"section-page02-promotion","isRequired":false},
+        {"id":"activity-page02-completion","sectionID":"section-page02-completion","isRequired":true}
+      ],
+      "knowledgeLinks":[
+        {"conceptID":"concept-type","role":"primary","usage":"값의 종류와 허용되는 일을 비교한다.","displayTiming":"첫 분류 뒤"},
+        {"conceptID":"concept-string","role":"supporting","usage":"글자 내용을 보존한다.","displayTiming":"해당 타입 활동 시"},
+        {"conceptID":"concept-int","role":"supporting","usage":"정수 계산을 다룬다.","displayTiming":"해당 타입 활동 시"},
+        {"conceptID":"concept-double","role":"supporting","usage":"소수 수치를 다룬다.","displayTiming":"해당 타입 활동 시"},
+        {"conceptID":"concept-bool","role":"supporting","usage":"참·거짓 상태를 다룬다.","displayTiming":"해당 타입 활동 시"}
+      ],
+      "knowledgeContext":{
+        "currentlyUsedConceptIDs":["concept-type","concept-string","concept-int","concept-double","concept-bool"],
+        "currentlyUsedSummary":"타입을 먼저 보여 주고 현재 분류 카드와 연결된 기본 타입을 펼친다.",
+        "changedKnowledgeSummary":"확인해 저장한 타입별 할 수 있는 일 표현을 보여 준다.",
+        "nearbyKnowledge":[{"conceptID":"concept-type-selection","reason":"종류 비교가 실제 정보의 타입을 고르는 판단으로 이어진다."}],
+        "refreshTriggers":["타입 표현 저장"],"emptyStateMessage":"아직 나의 언어로 다시 표현한 타입이 없다.","focusModeSummary":"타입과 현재 활동에 쓰는 하위 타입 하나만 요약한다."
+      },
+      "navigation":{"previous":{"pageID":"chapter-02-page-01","label":"현실의 정보를 값으로 바라보기"},"next":{"pageID":"chapter-02-page-03","label":"정보에 맞는 타입 선택하기"}}
+    },
+    {
+      "id":"chapter-02-page-03","kind":"lesson","order":3,"title":"정보에 맞는 타입 선택하기",
+      "goal":"정보의 겉모양이 아니라 의미, 허용할 상태, 이후 할 일을 근거로 타입을 선택한다.",
+      "sections":[
+        {"id":"section-page03-recall","order":1,"content":{"tag":"knowledgeRecall","payload":{
+          "questions":["String, Int, Double, Bool은 각각 어떤 일을 맡기 좋았는가?"],"memorySentence":"타입은 값의 종류뿐 아니라 값에 허용할 일을 정한다.",
+          "connection":"실제 문제에서는 타입 이름을 알아보는 데서 멈추지 않고 어떤 표현이 목적에 맞는지 선택한다."
+        }}},
+        {"id":"section-page03-situation","order":2,"content":{"tag":"situation","payload":{
+          "title":"같은 화면 문구, 다른 내부 값","description":"주문 화면의 금액, 회원 여부, 별점은 모두 글자로 보이지만 앱은 계산·판단·소수 보존이라는 서로 다른 일을 해야 한다.",
+          "materials":[{"label":"상품 금액","text":"화면 20,000원 · 내부에서 더하고 뺀다."},{"label":"회원 여부","text":"화면 회원 · 할인 적용 여부를 판단한다."},{"label":"별점 평균","text":"화면 4.5 · 소수 부분을 보존한다."}],
+          "firstQuestion":"화면에 글자로 보인다는 이유로 세 정보를 모두 String으로 저장해도 될까?"
+        }}},
+        {"id":"section-page03-comparison","order":3,"content":{"tag":"comparison","payload":{
+          "criterion":"화면에 보이는 모양과 내부에서 필요한 일",
+          "items":[
+            {"id":"amount","title":"\"20,000원\" ↔ 20_000","body":"표시 글자와 계산할 정수의 목적이 다르다.","details":[]},
+            {"id":"member","title":"\"회원\" ↔ true","body":"표시 글자와 두 경우 상태의 목적이 다르다.","details":[]},
+            {"id":"rating","title":"\"4.5\" ↔ 4.5","body":"표시 글자와 소수 수치의 목적이 다르다.","details":[]}
+          ],"observationQuestion":"표시 형식이 바뀌어도 내부 값이 계속 맡아야 할 일은 무엇인가?"
+        }}},
+        {"id":"section-page03-criteria","order":4,"content":{"tag":"decisionCriteria","payload":{
+          "questions":["정보의 본질은 글자, 정수, 소수, 참·거짓 중 무엇인가?","계산·비교·표시·판단 중 무엇을 해야 하는가?","필요한 모든 상태를 표현하는가?","화면 표현과 내부 값을 분리했는가?"],
+          "sequence":["의미","할 일","허용할 상태","타입"],"caution":"현재 문제의 범위와 미래 요구를 구분한다."
+        }}},
+        {"id":"section-page03-definition","order":5,"content":{"tag":"definition","payload":{
+          "conceptID":"concept-type-selection","title":"타입 선택","definition":"정보의 의미와 사용 목적에 맞춰 값의 표현과 가능한 일을 정하는 판단이다.",
+          "scope":"기본 타입으로 충분한지 판단하고 부족하면 더 구체적인 타입 모델링으로 연결한다."
+        }}},
+        {"id":"section-page03-knowledge-link","order":6,"content":{"tag":"knowledgeLink","payload":{"links":[
+          {"conceptID":"concept-type-selection","role":"primary","usage":"타입 이름보다 선택 근거를 만든다.","displayTiming":"첫 선택 이유 제출 뒤"},
+          {"conceptID":"concept-string","role":"supporting","usage":"문자 내용 보존 목적을 비교한다.","displayTiming":"String 후보 선택 시"},
+          {"conceptID":"concept-int","role":"supporting","usage":"정수 계산 목적을 비교한다.","displayTiming":"Int 후보 선택 시"},
+          {"conceptID":"concept-double","role":"supporting","usage":"소수 수치 목적을 비교한다.","displayTiming":"Double 후보 선택 시"},
+          {"conceptID":"concept-bool","role":"supporting","usage":"두 상태 판단 목적을 비교한다.","displayTiming":"Bool 후보 선택 시"}
+        ]}}},
+        {"id":"section-page03-state","order":7,"content":{"tag":"learningStateSelection","payload":{
+          "options":[{"id":"deeper","title":"지루함(쉬움) - 더 깊게 가기","guidance":"요구 변경으로 기존 타입이 충분하지 않은 사례를 검토한다."}],"defaultOptionID":null
+        }}},
+        {"id":"section-page03-choice","order":8,"activityID":"activity-page03-choice","content":{"tag":"choiceWithReason","payload":{
+          "questions":[
+            {"id":"book-title","prompt":"책 제목 \"Swift 시작하기\"의 타입은?","options":[{"id":"string","text":"String"},{"id":"int","text":"Int"},{"id":"double","text":"Double"},{"id":"bool","text":"Bool"}]},
+            {"id":"quantity","prompt":"주문 수량 2의 타입은?","options":[{"id":"string","text":"String"},{"id":"int","text":"Int"},{"id":"double","text":"Double"},{"id":"bool","text":"Bool"}]},
+            {"id":"rate","prompt":"적립률 0.05의 타입은?","options":[{"id":"string","text":"String"},{"id":"int","text":"Int"},{"id":"double","text":"Double"},{"id":"bool","text":"Bool"}]},
+            {"id":"completed","prompt":"배송지 입력 완료 여부 true의 타입은?","options":[{"id":"string","text":"String"},{"id":"int","text":"Int"},{"id":"double","text":"Double"},{"id":"bool","text":"Bool"}]}
+          ],
+          "reasonPrompt":"정보를 ___ 타입으로 표현한다. 이후 ___해야 하기 때문이다.","feedbackCriteria":["표기만 맞힌 경우 타입이 허용하는 일을 다시 묻는다."]
+        }}},
+        {"id":"section-page03-card-sorting","order":9,"activityID":"activity-page03-card-sorting","content":{"tag":"cardSorting","payload":{
+          "cards":[{"id":"display-name","text":"이름을 표시함"},{"id":"add-count","text":"수량을 더함"},{"id":"multiply-rate","text":"비율을 곱함"},{"id":"judge-completion","text":"완료 여부를 판단함"},{"id":"preserve-code","text":"네 자리 코드를 그대로 보존함"}],
+          "groups":[{"id":"string","text":"String이 알맞음"},{"id":"int","text":"Int가 알맞음"},{"id":"double","text":"Double이 알맞음"},{"id":"bool","text":"Bool이 알맞음"}],
+          "interaction":"할 일 카드를 타입에 놓고 구체적인 값 예를 덧붙인다.","completionCriteria":["다섯 카드를 모두 분류한다.","네 자리 코드가 글자일 수 있는 이유를 쓴다."],
+          "feedbackCriteria":["계산 여부, 소수 필요성, 두 상태 여부, 앞자리 0 보존을 판단 기준으로 돌려준다."]
+        }}},
+        {"id":"section-page03-free-response","order":10,"activityID":"activity-page03-free-response","content":{"tag":"freeResponse","payload":{
+          "prompt":"자신의 앱 아이디어에서 정보 두 개를 골라 값, 타입, 이후 할 일을 적는다.","inputFormat":"정보 → 값 → 타입 → 할 일",
+          "requiredEvidence":["화면 모양이 아닌 프로그램이 수행할 일"],"exampleAfterSubmission":"남은 좌석 → 4 → Int → 신청 뒤 한 자리 줄인다."
+        }}},
+        {"id":"section-page03-expression-comparison","order":11,"content":{"tag":"personalExpressionComparison","payload":{
+          "conceptIDs":["concept-type-selection"],"baseExpression":"정보의 의미, 이후 할 일과 허용 상태를 근거로 타입을 선택한다.",
+          "personalExpressionEmptyState":"이번 자유 작성의 설명은 저장 전 후보로만 보여 준다.","comparisonQuestion":"화면의 겉모양이 달라져도 같은 순서로 타입을 판단할 수 있는가?","inspectorLocation":"타입 선택 inspector"
+        }}},
+        {"id":"section-page03-promotion","order":12,"activityID":"activity-page03-promotion","content":{"tag":"personalKnowledgePromotion","payload":{
+          "evidenceActivityIDs":["activity-page03-choice","activity-page03-free-response"],"conceptIDs":["concept-type-selection"],"candidateKind":"conceptRevision",
+          "editableDraft":"먼저 정보의 의미를 말하고 프로그램이 다음에 할 일을 정한 뒤 필요한 상태를 담을 수 있는 타입을 고른다.",
+          "confirmationQuestion":"이 순서를 처음 보는 정보에도 사용할 나의 타입 선택 기준으로 남길까?","savedFields":["나의 설명","판단 단계 목록","적용 예시","근거 활동 ID","수정 시각"],
+          "cancellationResult":"타입 선택 응답은 남고 개인 지식은 바뀌지 않는다."
+        }}},
+        {"id":"section-page03-enrichment","order":13,"content":{"tag":"enrichmentTask","payload":{
+          "requiredStateID":"deeper","materials":[{"label":"변경 전","text":"회원인지 아닌지만 구분한다."},{"label":"변경 후","text":"일반·실버·골드·플래티넘 등급을 구분한다."}],
+          "prompt":"Bool이 변경 후 요구를 충분히 표현하지 못하는 이유와 새 타입이 가져야 할 상태를 적는다.","conceptIDs":["concept-type-modeling"]
+        }}},
+        {"id":"section-page03-completion","order":14,"activityID":"activity-page03-completion","content":{"tag":"completionCheck","payload":{
+          "question":"처음 보는 정보에 대해 타입과 사용 목적을 함께 설명할 수 있는가?","requiredEvidence":["서로 다른 타입 두 개","각각의 의미·할 일·허용 상태"],
+          "retryCondition":"근거가 값의 겉모양뿐이면 화면 표현을 바꿔도 선택이 유지되는지 다시 묻는다."
+        }}}
+      ],
+      "activities":[
+        {"id":"activity-page03-choice","sectionID":"section-page03-choice","isRequired":true},
+        {"id":"activity-page03-card-sorting","sectionID":"section-page03-card-sorting","isRequired":true},
+        {"id":"activity-page03-free-response","sectionID":"section-page03-free-response","isRequired":true},
+        {"id":"activity-page03-promotion","sectionID":"section-page03-promotion","isRequired":false},
+        {"id":"activity-page03-completion","sectionID":"section-page03-completion","isRequired":true}
+      ],
+      "knowledgeLinks":[
+        {"conceptID":"concept-type-selection","role":"primary","usage":"의미와 할 일로 타입을 고른다.","displayTiming":"첫 이유 제출 뒤"},
+        {"conceptID":"concept-string","role":"supporting","usage":"문자 목적의 후보 타입이다.","displayTiming":"해당 후보 선택 시"},
+        {"conceptID":"concept-int","role":"supporting","usage":"정수 계산 목적의 후보 타입이다.","displayTiming":"해당 후보 선택 시"},
+        {"conceptID":"concept-double","role":"supporting","usage":"소수 수치 목적의 후보 타입이다.","displayTiming":"해당 후보 선택 시"},
+        {"conceptID":"concept-bool","role":"supporting","usage":"두 상태 판단 목적의 후보 타입이다.","displayTiming":"해당 후보 선택 시"}
+      ],
+      "knowledgeContext":{
+        "currentlyUsedConceptIDs":["concept-type-selection","concept-string","concept-int","concept-double","concept-bool"],
+        "currentlyUsedSummary":"타입 선택과 현재 문제에서 후보가 된 기본 타입만 펼친다.","changedKnowledgeSummary":"확인해 저장한 나의 타입 선택 순서와 새 타입 설명을 보여 준다.",
+        "nearbyKnowledge":[{"conceptID":"concept-identifier-naming","reason":"타입으로 가능한 일을 정한 다음 값의 역할을 이름으로 남긴다."}],
+        "refreshTriggers":["타입 선택 이유 제출","개인 지식 저장 성공"],"emptyStateMessage":"아직 확인해 반영한 나의 타입 선택 기준이 없다.",
+        "focusModeSummary":"현재 판단 중인 정보, 선택한 타입과 기준 한 문장만 요약한다."
+      },
+      "navigation":{"previous":{"pageID":"chapter-02-page-02","label":"값의 종류 비교하기"},"next":{"pageID":"chapter-02-page-04","label":"의미가 드러나는 이름 붙이기"}}
+    },
+    {
+      "id":"chapter-02-page-04","kind":"lesson","order":4,"title":"의미가 드러나는 이름 붙이기",
+      "goal":"값의 대상과 역할이 코드에서 드러나도록 Swift 식별자를 만들고 선택 근거를 설명한다.",
+      "sections":[
+        {"id":"section-page04-situation","order":1,"content":{"tag":"situation","payload":{
+          "title":"값만 남은 주문 코드 읽기","description":"주문 화면에 필요한 값 20_000, 2, true, \"푸른고래\"가 이름 없이 놓여 있다.",
+          "materials":[{"label":"값","text":"20_000 · 2 · true · \"푸른고래\""}],"firstQuestion":"두 숫자의 역할과 true가 무엇에 대한 참인지 다른 사람이 알아볼 수 있을까?"
+        }}},
+        {"id":"section-page04-comparison","order":2,"content":{"tag":"comparison","payload":{
+          "criterion":"이름만 보고 값의 대상과 역할을 구분할 수 있는가?",
+          "items":[
+            {"id":"amount","title":"value → orderAmount","body":"20_000이 주문 금액이라는 역할을 드러낸다.","details":[]},
+            {"id":"quantity","title":"number → quantity","body":"2가 주문 수량이라는 역할을 드러낸다.","details":[]},
+            {"id":"member","title":"flag → isMember","body":"true가 회원 여부라는 질문처럼 읽힌다.","details":[]},
+            {"id":"nickname","title":"name → customerNickname","body":"푸른고래가 주문자의 닉네임임을 드러낸다.","details":[]}
+          ],"observationQuestion":"타입이 같아도 orderAmount와 quantity를 구분해야 하는 이유는 무엇인가?"
+        }}},
+        {"id":"section-page04-definition","order":3,"content":{"tag":"definition","payload":{
+          "conceptID":"concept-identifier-naming","title":"식별자","definition":"코드에서 값, 함수, 타입 같은 대상을 가리키는 이름이다.","scope":"상수에 붙이는 lowerCamelCase 이름을 만든다."
+        }}},
+        {"id":"section-page04-criteria","order":4,"content":{"tag":"decisionCriteria","payload":{
+          "questions":["이 값이 무엇을 나타내는가?","비슷한 값과 구분할 대상·역할·단위가 드러나는가?","Bool 이름은 참일 때 자연스럽게 읽히는가?","value나 data 같은 맥락 없는 말에 기대지 않았는가?"],
+          "sequence":["대상","역할","필요한 구분","Swift 표기 관례"],"caution":"식별자는 영어로 쓰더라도 설명과 입력 항목명은 한국어로 유지한다."
+        }}},
+        {"id":"section-page04-code","order":5,"content":{"tag":"codeExplanation","payload":{
+          "code":"let customerNickname = \"푸른고래\"\nlet orderAmount = 20_000\nlet quantity = 2\nlet isMember = true","language":"swift",
+          "focus":["각 이름이 오른쪽 값의 의미를 보완한다."],"lineMeanings":["주문자 닉네임","주문 금액","주문 수량","회원 여부"],
+          "outOfScope":["let의 변경 약속","타입 추론의 상세 의미"],"displayTiming":null
+        }}},
+        {"id":"section-page04-knowledge-link","order":6,"content":{"tag":"knowledgeLink","payload":{"links":[
+          {"conceptID":"concept-identifier-naming","role":"primary","usage":"값의 의미를 코드 안에 남기고 비슷한 타입의 값을 구분한다.","displayTiming":"첫 이름 개선 제출 뒤"}
+        ]}}},
+        {"id":"section-page04-state","order":7,"content":{"tag":"learningStateSelection","payload":{
+          "options":[{"id":"deeper","title":"지루함(쉬움) - 더 깊게 가기","guidance":"요구 변경에서 이름이 수정 지점을 얼마나 잘 드러내는지 시험한다."}],"defaultOptionID":null
+        }}},
+        {"id":"section-page04-matching","order":8,"activityID":"activity-page04-matching","content":{"tag":"matching","payload":{
+          "leftItems":[{"id":"amount","text":"20_000"},{"id":"quantity","text":"2"},{"id":"member","text":"true"},{"id":"nickname","text":"\"푸른고래\""}],
+          "rightItems":[{"id":"orderAmount","text":"orderAmount"},{"id":"quantityName","text":"quantity"},{"id":"isMember","text":"isMember"},{"id":"customerNickname","text":"customerNickname"},{"id":"value","text":"value"},{"id":"data","text":"data"}],
+          "rule":"각 값에 가장 구체적인 이름을 연결하고 넓은 이름은 제외한다.","completionCriteria":["네 쌍을 연결한다.","value와 data를 제외한 이유를 적는다."]
+        }}},
+        {"id":"section-page04-code-assembly","order":9,"activityID":"activity-page04-code-assembly","content":{"tag":"codeAssembly","payload":{
+          "starterCode":"let value = 20_000\nlet status = true\nlet name = \"푸른고래\"",
+          "pieces":[{"id":"orderAmount","text":"orderAmount"},{"id":"isMember","text":"isMember"},{"id":"customerNickname","text":"customerNickname"}],
+          "fixedParts":["let","=","20_000","true","\"푸른고래\""],"completionCriteria":["이름만 바꾸어 세 선언의 역할이 읽히게 만든다."]
+        }}},
+        {"id":"section-page04-choice","order":10,"activityID":"activity-page04-choice","content":{"tag":"choiceWithReason","payload":{
+          "questions":[{"id":"bool-name","prompt":"회원 여부를 나타내는 이름으로 무엇이 가장 질문처럼 읽히는가?","options":[{"id":"member","text":"member"},{"id":"status","text":"status"},{"id":"isMember","text":"isMember"}]}],
+          "reasonPrompt":"true와 함께 읽었을 때 어떤 뜻이 되는지 문장으로 쓴다.","feedbackCriteria":["Bool 이름은 참일 때 자연스럽게 읽히는지 되돌려 준다."]
+        }}},
+        {"id":"section-page04-expression-comparison","order":11,"content":{"tag":"personalExpressionComparison","payload":{
+          "conceptIDs":["concept-identifier-naming"],"baseExpression":"같은 타입의 값도 문제 안의 대상과 역할이 드러나게 구분한다.",
+          "personalExpressionEmptyState":"아직 확인해 반영한 이름 짓기 기준이 없다.","comparisonQuestion":"값과 타입을 가리고 이름만 읽어도 대상과 역할을 예상할 수 있는가?","inspectorLocation":"식별자와 이름 짓기 inspector"
+        }}},
+        {"id":"section-page04-promotion","order":12,"activityID":"activity-page04-promotion","content":{"tag":"personalKnowledgePromotion","payload":{
+          "evidenceActivityIDs":["activity-page04-code-assembly","activity-page04-choice"],"conceptIDs":["concept-identifier-naming"],"candidateKind":"conceptRevision",
+          "editableDraft":"이 이름만 읽어도 같은 타입의 다른 값과 구분되고 참일 때 자연스러운 문장이 되는가?","confirmationQuestion":"이 질문과 개선 사례를 나의 이름 짓기 기준으로 남길까?",
+          "savedFields":["나의 설명","판단 질문","개선 전 이름","개선 후 이름","근거 활동 ID","수정 시각"],"cancellationResult":"작성한 코드와 이유는 유지하고 개인 지식은 수정하지 않는다."
+        }}},
+        {"id":"section-page04-enrichment","order":13,"content":{"tag":"enrichmentTask","payload":{
+          "requiredStateID":"deeper","materials":[{"label":"넓은 이름","text":"price · discount"},{"label":"역할 이름","text":"orderAmount · memberDiscountAmount"}],
+          "prompt":"적립금 사용 금액 요구가 생겼을 때 새 이름을 만들고 기존 금액과 혼동되지 않는 이유를 쓴다.","conceptIDs":["concept-functions-abstraction"]
+        }}},
+        {"id":"section-page04-completion","order":14,"activityID":"activity-page04-completion","content":{"tag":"completionCheck","payload":{
+          "question":"값만 보고 이름을 붙이지 않고 문제 속 역할을 이름에 담을 수 있는가?","requiredEvidence":["개선 전 이름","개선 후 이름","드러난 대상 또는 역할"],
+          "retryCondition":"이름이 타입만 반복한다면 같은 타입의 다른 값과 구분되는지 확인한다."
+        }}}
+      ],
+      "activities":[
+        {"id":"activity-page04-matching","sectionID":"section-page04-matching","isRequired":true},
+        {"id":"activity-page04-code-assembly","sectionID":"section-page04-code-assembly","isRequired":true},
+        {"id":"activity-page04-choice","sectionID":"section-page04-choice","isRequired":true},
+        {"id":"activity-page04-promotion","sectionID":"section-page04-promotion","isRequired":false},
+        {"id":"activity-page04-completion","sectionID":"section-page04-completion","isRequired":true}
+      ],
+      "knowledgeLinks":[{"conceptID":"concept-identifier-naming","role":"primary","usage":"값의 의미와 역할을 이름에 남긴다.","displayTiming":"첫 이름 개선 제출 뒤"}],
+      "knowledgeContext":{
+        "currentlyUsedConceptIDs":["concept-identifier-naming"],"currentlyUsedSummary":"현재 개선 전·후 식별자와 이름 짓기 기준을 함께 보여 준다.",
+        "changedKnowledgeSummary":"확인해 저장한 좋은 이름을 고르는 질문과 개선 사례를 보여 준다.",
+        "nearbyKnowledge":[{"conceptID":"concept-value","reason":"이름이 가리키는 대상을 함께 읽는다."},{"conceptID":"concept-constants-variables","reason":"다음 페이지에서 이름의 변경 약속을 선언한다."}],
+        "refreshTriggers":["이름 개선 제출","개인 지식 저장 성공"],"emptyStateMessage":"아직 확인해 반영한 이름 짓기 기준이 없다.","focusModeSummary":"현재 편집하는 식별자와 기본 개념명을 한 줄로 보여 준다."
+      },
+      "navigation":{"previous":{"pageID":"chapter-02-page-03","label":"정보에 맞는 타입 선택하기"},"next":{"pageID":"chapter-02-page-05","label":"변하지 않는 값을 선언하기"}}
+    },
+    {
+      "id":"chapter-02-page-05","kind":"lesson","order":5,"title":"변하지 않는 값을 선언하기",
+      "goal":"현재 책임과 시간 범위에서 값이 바뀌어야 하는지 판단하고 변하지 않는 값을 let으로 선언한다.",
+      "sections":[
+        {"id":"section-page05-recall","order":1,"content":{"tag":"knowledgeRecall","payload":{
+          "questions":["이름을 붙인 값은 어떤 주문 정보를 가리켰는가?"],"memorySentence":"이름은 값의 역할을 보여 주지만 나중에 다른 값을 가리킬 수 있는지는 아직 정하지 않았다.",
+          "connection":"선언은 이름과 값과 함께 변경 가능성에 대한 약속을 남긴다."
+        }}},
+        {"id":"section-page05-situation","order":2,"content":{"tag":"situation","payload":{
+          "title":"장바구니 편집과 결제 계산의 경계","description":"장바구니에서는 수량을 바꾸지만 결제 버튼을 누른 뒤 계산하는 동안 전달받은 수량과 상품 금액은 바뀌지 않아야 한다.",
+          "materials":[{"label":"흐름","text":"장바구니 편집 → 주문 확인 → 결제 계산 → 결제 완료"}],
+          "firstQuestion":"현실에서 수량은 바뀔 수 있다는 사실만으로 결제 계산 안의 수량도 var여야 할까?"
+        }}},
+        {"id":"section-page05-comparison","order":3,"content":{"tag":"comparison","payload":{
+          "criterion":"같은 이름에 다른 값을 다시 넣어야 하는가?",
+          "items":[
+            {"id":"let","title":"let","body":"처음 정한 뒤 같은 이름에 다른 값을 넣지 않는다.","details":[{"label":"알맞은 상황","text":"결제 계산에 전달된 주문 금액과 수량"}]},
+            {"id":"var","title":"var","body":"필요할 때 같은 이름에 다른 값을 다시 넣을 수 있다.","details":[{"label":"알맞은 상황","text":"장바구니 편집 중 사용자가 바꾸는 수량"}]}
+          ],"observationQuestion":"정보의 종류가 아니라 어느 단계의 책임을 보는지가 판단을 어떻게 바꾸는가?"
+        }}},
+        {"id":"section-page05-definition","order":4,"content":{"tag":"definition","payload":{
+          "conceptID":"concept-constants-variables","title":"상수와 변수","definition":"let 상수는 한 번 정한 값을 유지하고 var 변수는 같은 이름에 새 값을 넣을 수 있다.",
+          "scope":"우선 let을 선택하고 현재 범위에서 변경 요구가 있을 때 var를 검토한다."
+        }}},
+        {"id":"section-page05-code","order":5,"content":{"tag":"codeExplanation","payload":{
+          "code":"let orderAmount = 20_000\nlet quantity = 2\nlet isMember = true","language":"swift","focus":["let은 왼쪽 이름의 재할당을 막는 약속이다."],
+          "lineMeanings":["이번 결제 계산에 쓸 금액을 유지한다.","이번 결제 계산에 쓸 수량을 유지한다.","이번 결제 계산에 쓸 회원 여부를 유지한다."],
+          "outOfScope":["참조 타입 내부 변경","SwiftUI 상태 관리"],"displayTiming":null
+        }}},
+        {"id":"section-page05-reassignment-comparison","order":6,"content":{"tag":"comparison","payload":{
+          "criterion":"선언 뒤 같은 이름에 새 값을 넣을 수 있는가?",
+          "items":[
+            {"id":"let-error","title":"let orderAmount = 20_000","body":"orderAmount = 25_000은 컴파일 오류다.","details":[]},
+            {"id":"var-success","title":"var editingQuantity = 2","body":"editingQuantity = 3은 허용된다.","details":[]}
+          ],"observationQuestion":"차이는 값의 타입 때문인가 선언의 변경 약속 때문인가?"
+        }}},
+        {"id":"section-page05-knowledge-link","order":7,"content":{"tag":"knowledgeLink","payload":{"links":[
+          {"conceptID":"concept-constants-variables","role":"primary","usage":"현재 범위에서 재할당이 필요한지 정한다.","displayTiming":"첫 let·var 선택 뒤"},
+          {"conceptID":"concept-problem-boundary","role":"prerequisite","usage":"어떤 시간과 책임 범위에서 판단하는지 정한다.","displayTiming":"첫 let·var 선택 뒤"}
+        ]}}},
+        {"id":"section-page05-state","order":8,"content":{"tag":"learningStateSelection","payload":{
+          "options":[{"id":"deeper","title":"지루함(쉬움) - 더 깊게 가기","guidance":"편집 상태와 계산 입력이 서로 다른 변경 경계를 갖는 사례를 연다."}],"defaultOptionID":null
+        }}},
+        {"id":"section-page05-code-assembly","order":9,"activityID":"activity-page05-code-assembly","content":{"tag":"codeAssembly","payload":{
+          "starterCode":"___ orderAmount = 20_000\n___ quantity = 2\n___ isMember = true","pieces":[{"id":"let","text":"let"},{"id":"var","text":"var"}],
+          "fixedParts":["orderAmount","quantity","isMember","=","20_000","2","true"],"completionCriteria":["결제 계산에 전달된 세 값을 선언한다.","각 선택 이유를 쓴다."]
+        }}},
+        {"id":"section-page05-card-sorting","order":10,"activityID":"activity-page05-card-sorting","content":{"tag":"cardSorting","payload":{
+          "cards":[{"id":"calculation-amount","text":"결제 계산에 전달된 상품 금액"},{"id":"editing-quantity","text":"편집 화면에서 바꾸는 수량"},{"id":"confirmed-amount","text":"결제 완료 뒤 확정된 결제 금액"},{"id":"search-query","text":"검색창에서 계속 바뀌는 검색어"}],
+          "groups":[{"id":"let","text":"현재 범위에서 let"},{"id":"var","text":"현재 범위에서 var"}],
+          "interaction":"각 카드에 판단 범위를 먼저 표시한 뒤 분류한다.","completionCriteria":["네 카드를 분류한다.","범위가 바뀌면 선택도 달라질 사례를 설명한다."],
+          "feedbackCriteria":["현실에서 언젠가 바뀌는지가 아니라 현재 책임 안에서 재할당이 필요한지 되묻는다."]
+        }}},
+        {"id":"section-page05-choice","order":11,"activityID":"activity-page05-choice","content":{"tag":"choiceWithReason","payload":{
+          "questions":[{"id":"reassign-let","prompt":"let orderAmount = 20_000 다음에 orderAmount = 25_000을 실행할 수 있는가?","options":[{"id":"yes","text":"실행할 수 있다"},{"id":"error","text":"컴파일 오류가 난다"}]}],
+          "reasonPrompt":"let이 남긴 약속을 자신의 말로 쓴다.","feedbackCriteria":["같은 이름에 다른 값을 넣으려 했는지 확인한다."]
+        }}},
+        {"id":"section-page05-expression-comparison","order":12,"content":{"tag":"personalExpressionComparison","payload":{
+          "conceptIDs":["concept-constants-variables"],"baseExpression":"현재 책임 범위에서 같은 이름에 값을 다시 할당해야 하는지를 기준으로 let과 var를 선택한다.",
+          "personalExpressionEmptyState":"아직 확인해 반영한 변경 책임 기준이 없다.","comparisonQuestion":"언제, 누가, 어느 범위에서 다시 할당하는지가 드러나는가?","inspectorLocation":"상수와 변수 inspector"
+        }}},
+        {"id":"section-page05-promotion","order":13,"activityID":"activity-page05-promotion","content":{"tag":"personalKnowledgePromotion","payload":{
+          "evidenceActivityIDs":["activity-page05-card-sorting","activity-page05-choice"],"conceptIDs":["concept-constants-variables","concept-problem-boundary"],"candidateKind":"conceptRevision",
+          "editableDraft":"let과 var는 값의 종류가 아니라 지금 책임 안에서 같은 이름에 새 값을 넣어야 하는지에 대한 약속이다.",
+          "confirmationQuestion":"이 문장과 범위가 다른 예를 나의 변경 책임 기준으로 남길까?","savedFields":["나의 설명","let 예시","var 예시","판단 경계","근거 활동 ID","수정 시각"],
+          "cancellationResult":"선언 선택과 이유는 남고 개인 지식은 바뀌지 않는다."
+        }}},
+        {"id":"section-page05-enrichment","order":14,"content":{"tag":"enrichmentTask","payload":{
+          "requiredStateID":"deeper","materials":[{"label":"편집 상태","text":"editingQuantity"},{"label":"결제 입력","text":"quantity"}],
+          "prompt":"장바구니·결제 확인·결제 완료 단계에서 각 이름의 변경 가능성과 복사 시점을 표시한다.","conceptIDs":["concept-swiftui-interface"]
+        }}},
+        {"id":"section-page05-completion","order":15,"activityID":"activity-page05-completion","content":{"tag":"completionCheck","payload":{
+          "question":"let과 var를 값의 종류가 아니라 변경 책임으로 선택할 수 있는가?","requiredEvidence":["같은 정보를 서로 다른 범위에서 판단한 let 예","var 예","각 이유"],
+          "retryCondition":"나중에 바뀔 수 있다는 근거만 있다면 언제, 누가, 어느 범위에서 바꾸는지 구체화한다."
+        }}}
+      ],
+      "activities":[
+        {"id":"activity-page05-code-assembly","sectionID":"section-page05-code-assembly","isRequired":true},
+        {"id":"activity-page05-card-sorting","sectionID":"section-page05-card-sorting","isRequired":true},
+        {"id":"activity-page05-choice","sectionID":"section-page05-choice","isRequired":true},
+        {"id":"activity-page05-promotion","sectionID":"section-page05-promotion","isRequired":false},
+        {"id":"activity-page05-completion","sectionID":"section-page05-completion","isRequired":true}
+      ],
+      "knowledgeLinks":[
+        {"conceptID":"concept-constants-variables","role":"primary","usage":"현재 범위에서 값의 변경 약속을 정한다.","displayTiming":"첫 let·var 선택 뒤"},
+        {"conceptID":"concept-problem-boundary","role":"prerequisite","usage":"변경 책임을 판단할 범위를 정한다.","displayTiming":"첫 let·var 선택 뒤"}
+      ],
+      "knowledgeContext":{
+        "currentlyUsedConceptIDs":["concept-constants-variables","concept-problem-boundary"],"currentlyUsedSummary":"현재 카드에 표시한 시간·책임 범위와 let·var 개념을 함께 보여 준다.",
+        "changedKnowledgeSummary":"확인해 저장한 let·var 선택 설명과 책임 범위 예시를 보여 준다.",
+        "nearbyKnowledge":[{"conceptID":"concept-identifier-naming","reason":"어떤 책임에서 바뀌는 값인지 이름으로 드러내는 판단과 이어진다."}],
+        "refreshTriggers":["범위별 분류 제출","개인 지식 저장 성공"],"emptyStateMessage":"아직 확인해 반영한 변경 책임 기준이 없다.","focusModeSummary":"선택한 let 또는 var, 판단 범위와 이유 한 문장만 요약한다."
+      },
+      "navigation":{"previous":{"pageID":"chapter-02-page-04","label":"의미가 드러나는 이름 붙이기"},"next":{"pageID":"chapter-02-page-06","label":"타입 명시와 타입 추론 비교하기"}}
+    },
+    {
+      "id":"chapter-02-page-06","kind":"lesson","order":6,"title":"타입 명시와 타입 추론 비교하기",
+      "goal":"Swift가 추론한 타입과 개발자가 직접 명시한 타입을 읽고 의도를 드러낼 표기 방식을 선택한다.",
+      "sections":[
+        {"id":"section-page06-situation","order":1,"content":{"tag":"situation","payload":{
+          "title":"같은 값을 선언하는 두 방식","description":"두 선언은 모두 주문 금액 20,000을 Int 값으로 가진다.",
+          "materials":[{"label":"타입 추론","text":"let orderAmount = 20_000"},{"label":"타입 명시","text":"let orderAmount: Int = 20_000"}],
+          "firstQuestion":"첫 줄에 Int가 보이지 않는다면 타입이 없는 것일까?"
+        }}},
+        {"id":"section-page06-comparison","order":2,"content":{"tag":"comparison","payload":{
+          "criterion":"타입을 누가 어떤 단서로 결정하고 선언에서 얼마나 직접 보여 주는가?",
+          "items":[
+            {"id":"inference","title":"타입 추론","body":"20_000 리터럴을 보고 Swift가 Int 타입을 알아낸다.","details":[]},
+            {"id":"annotation","title":"타입 명시","body":"개발자가 : Int를 적어 선언에서 타입을 직접 드러낸다.","details":[]}
+          ],"observationQuestion":"값과 허용되는 일이 같아도 표기를 선택할 이유는 무엇인가?"
+        }}},
+        {"id":"section-page06-definition","order":3,"content":{"tag":"definition","payload":{
+          "conceptID":"concept-type-inference-annotation","title":"타입 추론과 타입 명시","definition":"추론은 표현에서 타입을 알아내는 기능이고 명시는 타입을 코드에 직접 적는 표기다.",
+          "scope":"값만으로 의도가 분명하면 추론을 쓰고 특정 타입 약속이 중요하면 명시를 검토한다."
+        }}},
+        {"id":"section-page06-example-comparison","order":4,"content":{"tag":"comparison","payload":{
+          "criterion":"타입 표기가 이해에 더하는 정보",
+          "items":[
+            {"id":"inferred-examples","title":"값만으로 타입이 분명함","body":"let customerNickname = \"푸른고래\" · let isMember = true","details":[]},
+            {"id":"annotated-examples","title":"타입 약속을 강조함","body":"let discountRate: Double = 0.1 · let maximumQuantity: Int = 10","details":[]}
+          ],"observationQuestion":"값만 보아도 타입이 분명한 것과 타입 약속을 강조한 것은 무엇인가?"
+        }}},
+        {"id":"section-page06-criteria","order":5,"content":{"tag":"decisionCriteria","payload":{
+          "questions":["오른쪽 값만으로 의도한 타입이 분명한가?","특정 타입이어야 한다는 약속을 보여 줘야 하는가?","타입 표기가 이해를 돕는가 반복하는가?","추론 타입이 의도와 같은가?"],
+          "sequence":["추론 결과 확인","의도 전달 필요 확인","표기 선택"],"caution":"타입을 명시해도 이름이 모호하면 값의 역할은 분명해지지 않는다."
+        }}},
+        {"id":"section-page06-knowledge-link","order":6,"content":{"tag":"knowledgeLink","payload":{"links":[
+          {"conceptID":"concept-type-inference-annotation","role":"primary","usage":"타입 정보가 어디에서 오는지 설명한다.","displayTiming":"선언 쌍 차이 표시 뒤"},
+          {"conceptID":"concept-literal","role":"prerequisite","usage":"추론에 쓰이는 리터럴 단서를 찾는다.","displayTiming":"선언 쌍 차이 표시 뒤"},
+          {"conceptID":"concept-identifier-naming","role":"supporting","usage":"타입 표기와 값의 역할을 드러내는 이름을 구분한다.","displayTiming":"선언 쌍 차이 표시 뒤"}
+        ]}}},
+        {"id":"section-page06-state","order":7,"content":{"tag":"learningStateSelection","payload":{
+          "options":[{"id":"deeper","title":"지루함(쉬움) - 더 깊게 가기","guidance":"숫자 리터럴과 문맥이 추론 결과에 미치는 영향을 살핀다."}],"defaultOptionID":null
+        }}},
+        {"id":"section-page06-matching","order":8,"activityID":"activity-page06-matching","content":{"tag":"matching","payload":{
+          "leftItems":[
+            {"id":"quantity","text":"let quantity = 2"},{"id":"member","text":"let isMember: Bool = true"},{"id":"rate","text":"let discountRate = 0.1"},{"id":"nickname","text":"let customerNickname: String = \"푸른고래\""}
+          ],
+          "rightItems":[{"id":"inference","text":"타입 추론 사용"},{"id":"annotation","text":"타입 명시 사용"}],
+          "rule":"콜론 뒤 타입 표기가 있는지 보고 연결한 뒤 실제 타입도 적는다.","completionCriteria":["네 선언을 분류한다.","추론도 타입을 가진다는 점을 설명한다."]
+        }}},
+        {"id":"section-page06-fill-blank","order":9,"activityID":"activity-page06-fill-blank","content":{"tag":"fillInBlank","payload":{
+          "template":"let orderAmount: {{amountType}} = 20_000\nlet isMember: {{memberType}} = true\nlet customerNickname: {{nicknameType}} = \"푸른고래\"",
+          "blanks":[
+            {"id":"amountType","placeholder":"상품 금액 타입","options":["String","Int","Double","Bool"]},
+            {"id":"memberType","placeholder":"회원 여부 타입","options":["String","Int","Double","Bool"]},
+            {"id":"nicknameType","placeholder":"닉네임 타입","options":["String","Int","Double","Bool"]}
+          ],"completionCriteria":["세 타입을 채운다.","한 선언의 타입 표기를 생략해도 추론 가능한 이유를 쓴다."]
+        }}},
+        {"id":"section-page06-choice","order":10,"activityID":"activity-page06-choice","content":{"tag":"choiceWithReason","payload":{
+          "questions":[{"id":"string-annotation","prompt":"let customerNickname = \"푸른고래\"에 : String을 반드시 적어야 하는가?","options":[{"id":"required","text":"반드시 적어야 한다"},{"id":"inferred","text":"생략해도 Swift가 추론한다"},{"id":"none","text":"타입이 생기지 않는다"}]}],
+          "reasonPrompt":"리터럴이 제공하는 단서를 포함한다.","feedbackCriteria":["표기의 유무와 실제 타입의 유무를 분리한다."]
+        }}},
+        {"id":"section-page06-expression-comparison","order":11,"content":{"tag":"personalExpressionComparison","payload":{
+          "conceptIDs":["concept-type-inference-annotation"],"baseExpression":"타입 표기가 없어도 타입은 존재하고 필요할 때 타입을 직접 적어 의도를 드러낸다.",
+          "personalExpressionEmptyState":"아직 확인해 반영한 추론·명시 선택 기준이 없다.","comparisonQuestion":"코드 길이보다 실제 타입과 독자에게 전달할 의도를 기준으로 선택하는가?","inspectorLocation":"타입 추론과 타입 명시 inspector"
+        }}},
+        {"id":"section-page06-promotion","order":12,"activityID":"activity-page06-promotion","content":{"tag":"personalKnowledgePromotion","payload":{
+          "evidenceActivityIDs":["activity-page06-matching","activity-page06-choice"],"conceptIDs":["concept-type-inference-annotation"],"candidateKind":"conceptRevision",
+          "editableDraft":"먼저 Swift가 추론할 타입을 확인하고 그 타입을 독자에게 약속처럼 보여 줘야 할 때 명시한다.",
+          "confirmationQuestion":"이 기준을 타입 추론과 명시를 고르는 나의 설명으로 남길까?","savedFields":["나의 설명","추론 예시","명시 예시","근거 활동 ID","수정 시각"],
+          "cancellationResult":"빈칸과 선택 응답은 유지하고 개인 지식은 수정하지 않는다."
+        }}},
+        {"id":"section-page06-enrichment","order":13,"content":{"tag":"enrichmentTask","payload":{
+          "requiredStateID":"deeper","materials":[{"label":"리터럴","text":"1"},{"label":"소수 리터럴","text":"1.0"},{"label":"명시 문맥","text":"let ratio: Double = 1"}],
+          "prompt":"각 선언에서 리터럴 표기와 문맥이 어떤 타입 단서를 주는지 예상하고 이유를 적는다.","conceptIDs":["concept-expressions-operations"]
+        }}},
+        {"id":"section-page06-completion","order":14,"activityID":"activity-page06-completion","content":{"tag":"completionCheck","payload":{
+          "question":"타입 표기가 없어도 타입이 존재한다는 점과 명시가 유용한 상황을 설명할 수 있는가?",
+          "requiredEvidence":["추론 선언 하나","명시 선언 하나","각 선택 이유"],"retryCondition":"짧아서 또는 길어서만 근거라면 타입 의도가 독자에게 분명한지 다시 판단한다."
+        }}}
+      ],
+      "activities":[
+        {"id":"activity-page06-matching","sectionID":"section-page06-matching","isRequired":true},
+        {"id":"activity-page06-fill-blank","sectionID":"section-page06-fill-blank","isRequired":true},
+        {"id":"activity-page06-choice","sectionID":"section-page06-choice","isRequired":true},
+        {"id":"activity-page06-promotion","sectionID":"section-page06-promotion","isRequired":false},
+        {"id":"activity-page06-completion","sectionID":"section-page06-completion","isRequired":true}
+      ],
+      "knowledgeLinks":[
+        {"conceptID":"concept-type-inference-annotation","role":"primary","usage":"추론과 명시의 정보 출처를 구분한다.","displayTiming":"선언 쌍 비교 뒤"},
+        {"conceptID":"concept-literal","role":"prerequisite","usage":"추론 단서를 제공한다.","displayTiming":"선언 쌍 비교 뒤"},
+        {"conceptID":"concept-identifier-naming","role":"supporting","usage":"타입 표기와 역할 이름의 책임을 구분한다.","displayTiming":"선언 쌍 비교 뒤"}
+      ],
+      "knowledgeContext":{
+        "currentlyUsedConceptIDs":["concept-type-inference-annotation","concept-literal"],"currentlyUsedSummary":"추론과 명시를 중심에 두고 현재 선언의 리터럴 단서를 함께 보여 준다.",
+        "changedKnowledgeSummary":"확인해 저장한 추론·명시 선택 기준과 대표 선언을 보여 준다.",
+        "nearbyKnowledge":[{"conceptID":"concept-type-selection","reason":"타입을 정하는 일과 표기 방식을 구분한다."},{"conceptID":"concept-identifier-naming","reason":"타입 표기와 이름이 전달하는 의도를 함께 판단한다."}],
+        "refreshTriggers":["추론·명시 이유 제출","개인 지식 저장 성공"],"emptyStateMessage":"아직 확인해 반영한 추론·명시 선택 기준이 없다.","focusModeSummary":"현재 선언, 실제 타입과 표기 방식만 요약한다."
+      },
+      "navigation":{"previous":{"pageID":"chapter-02-page-05","label":"변하지 않는 값을 선언하기"},"next":{"pageID":"chapter-02-page-07","label":"여러 정보를 값으로 구조화하기"}}
+    },
+    {
+      "id":"chapter-02-page-07","kind":"lesson","order":7,"title":"여러 정보를 값으로 구조화하기",
+      "goal":"한 사례를 설명하는 여러 선언을 역할에 따라 묶고 포함하거나 제외한 이유를 설명한다.",
+      "sections":[
+        {"id":"section-page07-recall","order":1,"content":{"tag":"knowledgeRecall","payload":{
+          "questions":["지금까지 한 값에 대해 어떤 결정을 내렸는가?"],"memorySentence":"구체적인 값, 타입, 의미 있는 이름, 변경 가능성과 타입 표기를 결정했다.",
+          "connection":"실제 문제는 여러 값으로 이루어지므로 같은 사례에서 맡는 역할과 경계를 함께 보아야 한다."
+        }}},
+        {"id":"section-page07-situation","order":2,"content":{"tag":"situation","payload":{
+          "title":"주문 하나를 설명하는 값 묶음","description":"주문 확인 화면과 결제 계산에는 표시할 정보, 계산할 정보, 판단할 정보가 함께 있다.",
+          "materials":[{"label":"선언","text":"customerNickname · bookTitle · orderAmount · quantity · isMember · memberDiscountAmount"}],
+          "firstQuestion":"모두 같은 주문을 설명하지만 모두 같은 역할을 맡는가?"
+        }}},
+        {"id":"section-page07-comparison","order":3,"content":{"tag":"comparison","payload":{
+          "criterion":"값이 한 주문에서 맡는 역할",
+          "items":[
+            {"id":"display","title":"화면 표시 정보","body":"customerNickname과 bookTitle은 주문자와 상품을 보여 준다.","details":[]},
+            {"id":"calculation","title":"계산 입력","body":"orderAmount와 quantity는 새 결과를 만드는 재료다.","details":[]},
+            {"id":"decision","title":"판단 입력","body":"isMember는 어떤 결제 규칙을 적용할지 판단한다.","details":[]},
+            {"id":"rule","title":"규칙 기준","body":"memberDiscountAmount는 회원 할인에 반복해서 쓰는 기준이다.","details":[]}
+          ],"observationQuestion":"같은 Int 타입인 값들이 서로 다른 역할을 맡을 수 있는가?"
+        }}},
+        {"id":"section-page07-definition","order":4,"content":{"tag":"definition","payload":{
+          "conceptID":"concept-related-value-grouping","title":"관련된 값 묶기","definition":"같은 사례에서 무엇을 함께 설명하고 각각 어떤 역할을 맡는지 가까이 배치해 경계를 드러내는 일이다.",
+          "scope":"역할별로 정리하며 아직 struct를 직접 설계하지 않는다."
+        }}},
+        {"id":"section-page07-process","order":5,"content":{"tag":"processGuide","payload":{
+          "steps":[
+            {"order":1,"title":"대상 정하기","question":"이 값들이 함께 설명하는 대상이나 사례는 무엇인가?"},
+            {"order":2,"title":"역할 표시","question":"표시·계산·판단·규칙·결과 중 어떤 역할인가?"},
+            {"order":3,"title":"책임 나누기","question":"문제 영역과 화면 꾸밈 정보를 구분했는가?"},
+            {"order":4,"title":"경계 설명","question":"포함하거나 제외한 이유를 설명할 수 있는가?"}
+          ],"completionDescription":"값 목록이 아니라 어떤 사례의 어떤 역할들인지 설명된 구조가 된다."
+        }}},
+        {"id":"section-page07-knowledge-link","order":6,"content":{"tag":"knowledgeLink","payload":{"links":[
+          {"conceptID":"concept-related-value-grouping","role":"primary","usage":"이름 붙은 값을 한 주문의 역할 구조로 읽는다.","displayTiming":"첫 역할 분류 뒤"},
+          {"conceptID":"concept-input-rule-output","role":"prerequisite","usage":"값을 입력·규칙·출력 역할로 살핀다.","displayTiming":"첫 역할 분류 뒤"},
+          {"conceptID":"concept-identifier-naming","role":"supporting","usage":"묶음 안에서 각 값의 역할을 읽는다.","displayTiming":"첫 역할 분류 뒤"}
+        ]}}},
+        {"id":"section-page07-state","order":7,"content":{"tag":"learningStateSelection","payload":{
+          "options":[{"id":"deeper","title":"지루함(쉬움) - 더 깊게 가기","guidance":"역할별 값 묶음을 하나의 도메인 타입 경계로 확장한다."}],"defaultOptionID":null
+        }}},
+        {"id":"section-page07-role-sorting","order":8,"activityID":"activity-page07-role-sorting","content":{"tag":"cardSorting","payload":{
+          "cards":[
+            {"id":"customerNickname","text":"customerNickname: String = \"푸른고래\""},{"id":"bookTitle","text":"bookTitle: String = \"Swift 시작하기\""},
+            {"id":"orderAmount","text":"orderAmount: Int = 20_000"},{"id":"quantity","text":"quantity: Int = 2"},{"id":"isMember","text":"isMember: Bool = true"},
+            {"id":"memberDiscountAmount","text":"memberDiscountAmount: Int = 2_000"},{"id":"finalAmount","text":"finalAmount: Int = 아직 계산 전"}
+          ],
+          "groups":[{"id":"display","text":"화면 표시 정보"},{"id":"calculation","text":"계산 입력"},{"id":"decision","text":"판단 입력"},{"id":"rule","text":"규칙 기준"},{"id":"result","text":"결과 자리"}],
+          "interaction":"카드를 역할 영역에 놓고 결과에 영향을 주는지 추가 표시한다.","completionCriteria":["일곱 카드를 분류한다.","같은 타입이 여러 역할에 나타나는 사례를 찾는다."],
+          "feedbackCriteria":["타입보다 문제 안에서 수행하는 일을 기준으로 되돌려 준다."]
+        }}},
+        {"id":"section-page07-free-response","order":9,"activityID":"activity-page07-free-response","content":{"tag":"freeResponse","payload":{
+          "prompt":"이 값 묶음은 ___의 ___ 사례를 설명한다를 완성하고 포함 값 세 개를 고른다.","inputFormat":"대상 · 사례 · 포함 값 · 각 값의 역할",
+          "requiredEvidence":["같은 화면이 아니라 같은 문제 대상을 설명한다는 관계"],"exampleAfterSubmission":"주문 확인의 회원 주문 사례를 설명하며 orderAmount는 계산 입력이고 isMember는 판단 입력이다."
+        }}},
+        {"id":"section-page07-boundary-sorting","order":10,"activityID":"activity-page07-boundary-sorting","content":{"tag":"cardSorting","payload":{
+          "cards":[{"id":"nickname","text":"주문자 닉네임"},{"id":"quantity","text":"주문 수량"},{"id":"member","text":"회원 여부"},{"id":"button-color","text":"결제 버튼 색상"},{"id":"title-size","text":"제목 글자 크기"}],
+          "groups":[{"id":"order","text":"주문 정보"},{"id":"presentation","text":"화면 표현 설정"}],"interaction":"각 카드를 책임 영역에 놓는다.",
+          "completionCriteria":["주문 정보 세 개와 화면 설정 두 개를 나눈다.","경계를 한 문장으로 설명한다."],"feedbackCriteria":["어떤 대상을 설명하는 정보인지 묻는다."]
+        }}},
+        {"id":"section-page07-expression-comparison","order":11,"content":{"tag":"personalExpressionComparison","payload":{
+          "conceptIDs":["concept-related-value-grouping"],"baseExpression":"같은 화면이 아니라 같은 문제 대상과 사례를 설명하는 역할을 근거로 값을 묶는다.",
+          "personalExpressionEmptyState":"자유 작성 문장은 확인 전 후보로만 표시한다.","comparisonQuestion":"대상이 사라질 때 함께 의미를 잃는 값과 화면 표현 설정을 구분할 수 있는가?","inspectorLocation":"관련된 값 묶기 inspector"
+        }}},
+        {"id":"section-page07-promotion","order":12,"activityID":"activity-page07-promotion","content":{"tag":"personalKnowledgePromotion","payload":{
+          "evidenceActivityIDs":["activity-page07-free-response","activity-page07-boundary-sorting"],"conceptIDs":["concept-related-value-grouping"],"candidateKind":"conceptRevision",
+          "editableDraft":"값은 타입이 같아서가 아니라 같은 문제 사례를 설명하고 함께 책임지는 역할이 있을 때 묶는다.",
+          "confirmationQuestion":"이 문장과 주문·화면 설정 경계를 나의 값 묶기 기준으로 남길까?","savedFields":["나의 설명","대상과 사례","포함 값","제외 값","근거 활동 ID","수정 시각"],
+          "cancellationResult":"분류와 자유 작성 응답은 유지하고 개인 지식은 수정하지 않는다."
+        }}},
+        {"id":"section-page07-relation","order":13,"activityID":"activity-page07-relation","content":{"tag":"personalKnowledgeRelation","payload":{
+          "sourceConceptIDs":["concept-related-value-grouping"],"targetConceptIDs":["concept-type-modeling","concept-identifier-naming"],
+          "draftStatement":"같은 사례의 값들을 역할로 묶은 경계는 이후 하나의 사용자 정의 타입이 맡을 책임의 후보가 된다.",
+          "reasonPrompt":"함께 변하고 사용되는 값의 관계를 타입 이름과 구조로 보존할 수 있기 때문인지 나의 이유를 쓴다.",
+          "evidenceActivityIDs":["activity-page07-role-sorting","activity-page07-free-response","activity-page07-boundary-sorting"],
+          "confirmationQuestion":"이 관계와 이유를 나의 지식 연결로 남길까?"
+        }}},
+        {"id":"section-page07-enrichment","order":14,"content":{"tag":"enrichmentTask","payload":{
+          "requiredStateID":"deeper","materials":[{"label":"예시 구조","text":"struct Order { let customerNickname: String; let orderAmount: Int; let quantity: Int; let isMember: Bool }"}],
+          "prompt":"Order 안에 둘 값과 화면 설정으로 남길 값을 분류하고 묶음의 책임을 한 문장으로 정한다. 문법 암기 대상은 아니다.","conceptIDs":["concept-type-modeling"]
+        }}},
+        {"id":"section-page07-completion","order":15,"activityID":"activity-page07-completion","content":{"tag":"completionCheck","payload":{
+          "question":"여러 값을 타입별이 아니라 한 사례에서의 역할로 묶을 수 있는가?","requiredEvidence":["묶음의 대상","포함 값 세 개와 역할","제외 값 하나와 이유"],
+          "retryCondition":"같은 화면에 있다는 이유로 모두 묶었다면 문제 영역과 화면 표현의 경계를 다시 나눈다."
+        }}}
+      ],
+      "activities":[
+        {"id":"activity-page07-role-sorting","sectionID":"section-page07-role-sorting","isRequired":true},
+        {"id":"activity-page07-free-response","sectionID":"section-page07-free-response","isRequired":true},
+        {"id":"activity-page07-boundary-sorting","sectionID":"section-page07-boundary-sorting","isRequired":true},
+        {"id":"activity-page07-promotion","sectionID":"section-page07-promotion","isRequired":false},
+        {"id":"activity-page07-relation","sectionID":"section-page07-relation","isRequired":false},
+        {"id":"activity-page07-completion","sectionID":"section-page07-completion","isRequired":true}
+      ],
+      "knowledgeLinks":[
+        {"conceptID":"concept-related-value-grouping","role":"primary","usage":"여러 선언을 한 사례의 역할 구조로 읽는다.","displayTiming":"첫 역할 분류 뒤"},
+        {"conceptID":"concept-input-rule-output","role":"prerequisite","usage":"값의 역할을 입력·규칙·출력 관점으로 본다.","displayTiming":"첫 역할 분류 뒤"},
+        {"conceptID":"concept-identifier-naming","role":"supporting","usage":"묶음 안의 역할을 이름으로 읽는다.","displayTiming":"첫 역할 분류 뒤"}
+      ],
+      "knowledgeContext":{
+        "currentlyUsedConceptIDs":["concept-related-value-grouping","concept-input-rule-output"],"currentlyUsedSummary":"현재 분류한 역할과 값 묶기 경계를 함께 보여 준다.",
+        "changedKnowledgeSummary":"확인해 저장한 값 묶음 경계 설명과 개인 관계를 보여 준다.",
+        "nearbyKnowledge":[{"conceptID":"concept-type-modeling","reason":"반복해서 함께 다루는 값의 관계는 사용자 정의 타입으로 이어진다."},{"conceptID":"concept-identifier-naming","reason":"묶음의 경계와 각 값의 역할을 이름으로 보존한다."}],
+        "refreshTriggers":["묶음 경계 제출","개인 표현 저장","개인 관계 저장"],"emptyStateMessage":"아직 확인해 반영한 값 묶음의 경계나 연결이 없다.","focusModeSummary":"현재 값 묶음의 대상, 역할 수와 저장된 연결 유무만 요약한다."
+      },
+      "navigation":{"previous":{"pageID":"chapter-02-page-06","label":"타입 명시와 타입 추론 비교하기"},"next":{"pageID":"chapter-02-page-08","label":"새로운 문제에 적용하고 돌아보기"}}
+    },
+    {
+      "id":"chapter-02-page-08","kind":"lesson","order":8,"title":"새로운 문제에 적용하고 돌아보기",
+      "goal":"새로운 맥락의 정보를 Swift 선언으로 옮기고 값·타입·이름·변경 가능성에 대한 선택 근거를 설명한다.",
+      "sections":[
+        {"id":"section-page08-situation","order":1,"content":{"tag":"situation","payload":{
+          "title":"독서 모임 신청 확인","description":"모임 이름은 Swift 기초 읽기이고 현재 신청 인원은 4명이다. 참가비는 12,500원이며 신청자는 결제했고 닉네임은 초록책이다.",
+          "materials":[{"label":"새 문제","text":"독서 모임 앱의 신청 확인 화면"}],"firstQuestion":"이 화면과 이후 판단에 필요한 정보를 값·타입·이름·변경 가능성으로 표현하라."
+        }}},
+        {"id":"section-page08-process","order":2,"content":{"tag":"processGuide","payload":{
+          "steps":[
+            {"order":1,"title":"값 찾기","question":"자연어에서 하나로 정해진 값은 무엇인가?"},
+            {"order":2,"title":"할 일 말하기","question":"앱은 각 값으로 무엇을 해야 하는가?"},
+            {"order":3,"title":"타입 고르기","question":"의미와 할 일에 맞는 타입은 무엇인가?"},
+            {"order":4,"title":"이름 만들기","question":"역할이 드러나는 식별자인가?"},
+            {"order":5,"title":"변경 범위 판단","question":"신청 확인 시점에 다시 할당해야 하는가?"},
+            {"order":6,"title":"역할 묶기","question":"관련 선언을 역할별로 설명할 수 있는가?"}
+          ],"completionDescription":"다섯 정보를 Swift 선언으로 만들고 각각의 선택 근거를 말한다."
+        }}},
+        {"id":"section-page08-recall","order":3,"content":{"tag":"knowledgeRecall","payload":{
+          "questions":["구체적인 값을 읽었는가?","의미와 할 일로 타입을 골랐는가?","이름이 대상을 드러내는가?","변경 범위로 let과 var를 골랐는가?","추론과 명시를 설명할 수 있는가?"],
+          "memorySentence":"선언 한 줄은 이름, 타입, 값, 변경 가능성에 대한 결정을 함께 담는다.","connection":"Chapter 2의 지식을 새 서비스 문제에 독립적으로 적용한다."
+        }}},
+        {"id":"section-page08-code","order":4,"content":{"tag":"codeExplanation","payload":{
+          "code":"let meetupTitle = \"Swift 기초 읽기\"\nlet attendeeCount: Int = 4\nlet participationFee = 12_500\nlet isPaid: Bool = true\nlet applicantNickname = \"초록책\"","language":"swift",
+          "focus":["어떤 선언은 타입을 추론하고 어떤 선언은 타입을 직접 보여 준다."],
+          "lineMeanings":["모임 이름","신청 인원","참가비","결제 여부","신청자 닉네임"],
+          "outOfScope":["정원과 결제 여부로 신청 완료 상태를 계산하는 규칙"],"displayTiming":"학습자가 자신의 선언을 모두 제출한 뒤"
+        }}},
+        {"id":"section-page08-knowledge-link","order":5,"content":{"tag":"knowledgeLink","payload":{"links":[
+          {"conceptID":"concept-value","role":"primary","usage":"자연어에서 선언할 구체적인 값을 찾는다.","displayTiming":"값 찾기 단계"},
+          {"conceptID":"concept-type-selection","role":"primary","usage":"각 값의 의미와 할 일에 맞는 타입을 고른다.","displayTiming":"타입 선택 단계"},
+          {"conceptID":"concept-identifier-naming","role":"primary","usage":"값의 역할을 식별자에 담는다.","displayTiming":"이름 짓기 단계"},
+          {"conceptID":"concept-constants-variables","role":"primary","usage":"현재 범위의 변경 가능성을 정한다.","displayTiming":"변경 약속 단계"},
+          {"conceptID":"concept-type-inference-annotation","role":"supporting","usage":"타입 표기를 선택한다.","displayTiming":"타입 표기 단계"},
+          {"conceptID":"concept-related-value-grouping","role":"supporting","usage":"선언을 역할별로 묶는다.","displayTiming":"값 묶기 단계"}
+        ]}}},
+        {"id":"section-page08-state","order":6,"content":{"tag":"learningStateSelection","payload":{
+          "options":[{"id":"deeper","title":"지루함(쉬움) - 더 깊게 가기","guidance":"요구사항을 확장해 기본 타입의 한계와 모델 경계를 다시 정한다."}],"defaultOptionID":null
+        }}},
+        {"id":"section-page08-value-sorting","order":7,"activityID":"activity-page08-value-sorting","content":{"tag":"cardSorting","payload":{
+          "cards":[{"id":"title","text":"모임 이름"},{"id":"count","text":"신청 인원"},{"id":"fee","text":"참가비"},{"id":"paid","text":"결제 여부"},{"id":"nickname","text":"신청자 닉네임"},{"id":"rule","text":"정원 안이고 결제되면 신청 완료"},{"id":"result","text":"신청 완료 상태"}],
+          "groups":[{"id":"value","text":"현재 주어진 값"},{"id":"rule","text":"이후 적용할 규칙"},{"id":"result","text":"이후 만들어질 결과"}],
+          "interaction":"입력·규칙·출력 관점으로 먼저 나눈다.","completionCriteria":["다섯 값, 한 규칙, 한 결과를 분류한다."],
+          "feedbackCriteria":["Chapter 2가 선언할 대상과 이후 챕터가 구현할 대상을 분리한다."]
+        }}},
+        {"id":"section-page08-code-assembly","order":8,"activityID":"activity-page08-code-assembly","content":{"tag":"codeAssembly","payload":{
+          "starterCode":"___ ___: ___ = ___\n___ ___: ___ = ___\n___ ___: ___ = ___\n___ ___: ___ = ___\n___ ___: ___ = ___",
+          "pieces":[{"id":"let","text":"let"},{"id":"var","text":"var"},{"id":"string","text":"String"},{"id":"int","text":"Int"},{"id":"double","text":"Double"},{"id":"bool","text":"Bool"},{"id":"identifier","text":"식별자 입력"},{"id":"literal","text":"리터럴 입력"}],
+          "fixedParts":["등호","선언 줄 순서"],"completionCriteria":["다섯 정보를 선언한다.","각 줄에 타입 선택과 변경 가능성의 근거를 남긴다."]
+        }}},
+        {"id":"section-page08-role-sorting","order":9,"activityID":"activity-page08-role-sorting","content":{"tag":"cardSorting","payload":{
+          "cards":[{"id":"meetupTitle","text":"meetupTitle"},{"id":"attendeeCount","text":"attendeeCount"},{"id":"participationFee","text":"participationFee"},{"id":"isPaid","text":"isPaid"},{"id":"applicantNickname","text":"applicantNickname"}],
+          "groups":[{"id":"display","text":"화면 표시 정보"},{"id":"calculation","text":"계산 입력"},{"id":"decision","text":"판단 입력"}],
+          "interaction":"한 값이 여러 역할을 맡는다면 복수 표시한다.","completionCriteria":["participationFee와 isPaid의 복수 역할 가능성을 설명한다."],
+          "feedbackCriteria":["여러 소비자에게 쓰이더라도 값의 의미 자체가 바뀌지 않는지 확인한다."]
+        }}},
+        {"id":"section-page08-free-response","order":10,"activityID":"activity-page08-free-response","content":{"tag":"freeResponse","payload":{
+          "prompt":"자신이 만든 선언 하나를 다른 사람에게 설명한다.",
+          "inputFormat":"나는 ___을/를 ___ 타입의 값으로 ___이라는 이름에 선언했다. 이 값은 ___에 쓰이며 지금은 ___이므로 let/var를 골랐다.",
+          "requiredEvidence":["값","타입","이름","사용 목적","변경 범위"],
+          "exampleAfterSubmission":"신청 인원을 Int 값 4로 attendeeCount에 선언했다. 수량 비교에 쓰고 확인 시점에는 바꾸지 않으므로 let을 골랐다."
+        }}},
+        {"id":"section-page08-enrichment","order":11,"content":{"tag":"enrichmentTask","payload":{
+          "requiredStateID":"deeper","materials":[{"label":"모임 방식","text":"오프라인에는 장소가, 온라인에는 접속 링크가 필요하다."},{"label":"신청 상태","text":"대기·확정·취소 상태가 있다."}],
+          "prompt":"모임 정보, 신청 정보, 화면 표현을 나누고 Bool과 문자열만으로 표현할 때 생기는 모호함을 찾는다.","conceptIDs":["concept-type-modeling"]
+        }}},
+        {"id":"section-page08-recall-check","order":12,"activityID":"activity-page08-recall-check","content":{"tag":"recallCheck","payload":{
+          "questions":["값을 찾을 때 무엇을 물었는가?","타입을 고를 때 무엇을 근거로 삼았는가?","이름과 let은 어떤 의도를 남겼는가?","타입 추론과 명시 중 무엇을 언제 선택했는가?"],
+          "comparisonTarget":"01 페이지에서 값만 골랐던 선언과 지금 완성한 다섯 선언","recordFields":["유지할 판단 질문","바뀐 생각","다음 챕터에서 계산하고 싶은 값"]
+        }}},
+        {"id":"section-page08-expression-comparison","order":13,"content":{"tag":"personalExpressionComparison","payload":{
+          "conceptIDs":["concept-value","concept-type-selection","concept-identifier-naming","concept-constants-variables","concept-type-inference-annotation","concept-related-value-grouping"],
+          "baseExpression":"회상 질문에서 선택한 기본 개념의 이름과 한 문장 정의","personalExpressionEmptyState":"이번 자유 작성 문장을 개인 지식 후보로만 보여 준다.",
+          "comparisonQuestion":"나의 표현이 기본 의미를 잃지 않으면서 새 모임 문제에도 다시 사용할 수 있는가?","inspectorLocation":"선택한 개념의 inspector"
+        }}},
+        {"id":"section-page08-promotion","order":14,"activityID":"activity-page08-promotion","content":{"tag":"personalKnowledgePromotion","payload":{
+          "evidenceActivityIDs":["activity-page08-free-response","activity-page08-recall-check"],
+          "conceptIDs":["concept-value","concept-type-selection","concept-identifier-naming","concept-constants-variables","concept-type-inference-annotation","concept-related-value-grouping"],
+          "candidateKind":"conceptRevision","editableDraft":"선택한 기본 개념과 연결되는 응답 문장을 추출해 사용자가 고칠 수 있게 제시한다.",
+          "confirmationQuestion":"이 문장을 선택한 개념에 대한 현재의 나의 언어로 반영할까?",
+          "savedFields":["대상 concept ID","나의 이름","나의 설명","나의 예시","원본 revision ID","근거 활동 ID","수정 시각"],
+          "cancellationResult":"적용 활동과 회상 답은 유지하며 기존 개인 지식 revision은 바꾸지 않는다."
+        }}},
+        {"id":"section-page08-relation","order":15,"activityID":"activity-page08-relation","content":{"tag":"personalKnowledgeRelation","payload":{
+          "sourceConceptIDs":["concept-value","concept-type-selection","concept-identifier-naming","concept-constants-variables","concept-type-inference-annotation","concept-related-value-grouping"],
+          "targetConceptIDs":["concept-value","concept-type-selection","concept-identifier-naming","concept-constants-variables","concept-type-inference-annotation","concept-related-value-grouping","concept-expressions-operations","concept-type-modeling"],
+          "draftStatement":"___을 판단한 뒤 ___을 정하면 ___할 수 있다.","reasonPrompt":"두 개념을 함께 사용한 판단 순서나 서로 보완한 역할을 자신의 말로 쓴다.",
+          "evidenceActivityIDs":["activity-page08-value-sorting","activity-page08-code-assembly","activity-page08-role-sorting"],"confirmationQuestion":"이 관계 문장과 이유를 나의 지식 연결로 남길까?"
+        }}},
+        {"id":"section-page08-change-summary","order":16,"content":{"tag":"knowledgeChangeSummary","payload":{
+          "confirmedExpressions":"Chapter 2에서 저장된 최신 개인 개념 revision을 개념별 한 건씩 보여 준다.",
+          "confirmedRelations":"저장된 나의 관계 문장, 연결 이유와 근거 활동을 보여 준다.",
+          "pendingCandidates":"확인하지 않은 표현·연결 후보를 확인된 변화와 분리해 보여 준다.",
+          "nextUseSuggestion":"타입 선택 기준은 새로운 입력 모델링에, 값 묶기 연결은 이후 타입 모델링에 다시 사용한다.",
+          "emptyState":"학습 응답은 저장되었고 아직 개인 지식으로 반영한 내용은 없다."
+        }}},
+        {"id":"section-page08-completion","order":17,"activityID":"activity-page08-completion","content":{"tag":"completionCheck","payload":{
+          "question":"후보 없이 새로운 정보를 Swift 선언으로 옮기고 모든 선택을 설명할 수 있는가?",
+          "requiredEvidence":["올바른 선언 다섯 개","서로 다른 두 선언의 타입·이름·변경 가능성 근거"],
+          "retryCondition":"선언은 맞지만 이유가 없다면 과정 안내의 여섯 질문 중 빠진 판단을 다시 수행한다."
+        }}}
+      ],
+      "activities":[
+        {"id":"activity-page08-value-sorting","sectionID":"section-page08-value-sorting","isRequired":true},
+        {"id":"activity-page08-code-assembly","sectionID":"section-page08-code-assembly","isRequired":true},
+        {"id":"activity-page08-role-sorting","sectionID":"section-page08-role-sorting","isRequired":true},
+        {"id":"activity-page08-free-response","sectionID":"section-page08-free-response","isRequired":true},
+        {"id":"activity-page08-recall-check","sectionID":"section-page08-recall-check","isRequired":true},
+        {"id":"activity-page08-promotion","sectionID":"section-page08-promotion","isRequired":false},
+        {"id":"activity-page08-relation","sectionID":"section-page08-relation","isRequired":false},
+        {"id":"activity-page08-completion","sectionID":"section-page08-completion","isRequired":true}
+      ],
+      "knowledgeLinks":[
+        {"conceptID":"concept-value","role":"primary","usage":"새 맥락에서 값을 찾는다.","displayTiming":"값 찾기 단계"},
+        {"conceptID":"concept-type-selection","role":"primary","usage":"의미와 할 일로 타입을 선택한다.","displayTiming":"타입 선택 단계"},
+        {"conceptID":"concept-identifier-naming","role":"primary","usage":"역할을 이름에 담는다.","displayTiming":"이름 짓기 단계"},
+        {"conceptID":"concept-constants-variables","role":"primary","usage":"변경 범위를 선언한다.","displayTiming":"변경 약속 단계"},
+        {"conceptID":"concept-type-inference-annotation","role":"supporting","usage":"타입 표기를 선택한다.","displayTiming":"타입 표기 단계"},
+        {"conceptID":"concept-related-value-grouping","role":"supporting","usage":"선언을 역할별로 정리한다.","displayTiming":"값 묶기 단계"}
+      ],
+      "knowledgeContext":{
+        "currentlyUsedConceptIDs":["concept-value","concept-type-selection","concept-identifier-naming","concept-constants-variables","concept-type-inference-annotation","concept-related-value-grouping"],
+        "currentlyUsedSummary":"현재 적용 단계에 필요한 Chapter 2 개념만 순서에 따라 강조한다.",
+        "changedKnowledgeSummary":"Chapter 2에서 확인해 저장한 개인 표현과 관계를 최근 수정 순으로 보여 준다.",
+        "nearbyKnowledge":[{"conceptID":"concept-expressions-operations","reason":"이름 붙은 값의 다음 쓰임을 예고한다."},{"conceptID":"concept-type-modeling","reason":"관련된 값을 타입 구조로 만드는 다음 학습을 예고한다."}],
+        "refreshTriggers":["적용 활동 제출","개인 표현 저장","개인 관계 저장"],
+        "emptyStateMessage":"아직 확인해 반영한 나의 표현이나 연결이 없다. 학습 답안은 그대로 저장되어 있다.",
+        "focusModeSummary":"현재 적용 단계의 직접 개념 하나와 이번 Chapter의 확인된 변화 개수만 보여 준다."
+      },
+      "navigation":{"previous":{"pageID":"chapter-02-page-07","label":"여러 정보를 값으로 구조화하기"},"next":{"pageID":"chapter-03-page-01","label":"값으로 새로운 값을 계산하기"}}
+    }
+  ]
+}
