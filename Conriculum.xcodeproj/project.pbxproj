@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		A10000000000000000000001 /* ComposableArchitecture in Frameworks */ = {isa = PBXBuildFile; productRef = A1000000000000000000000F /* ComposableArchitecture */; };
-		A10000000000000000000002 /* ComposableArchitecture in Frameworks */ = {isa = PBXBuildFile; productRef = A10000000000000000000010 /* ComposableArchitecture */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -44,7 +43,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A10000000000000000000002 /* ComposableArchitecture in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -98,7 +96,6 @@
 			);
 			name = ConriculumTests;
 			packageProductDependencies = (
-				A10000000000000000000010 /* ComposableArchitecture */,
 			);
 			productName = ConriculumTests;
 			productReference = A10000000000000000000003 /* ConriculumTests.xctest */;
@@ -481,11 +478,6 @@
 
 /* Begin XCSwiftPackageProductDependency section */
 		A1000000000000000000000F /* ComposableArchitecture */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = A1000000000000000000000E /* XCRemoteSwiftPackageReference "swift-composable-architecture" */;
-			productName = ComposableArchitecture;
-		};
-		A10000000000000000000010 /* ComposableArchitecture */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = A1000000000000000000000E /* XCRemoteSwiftPackageReference "swift-composable-architecture" */;
 			productName = ComposableArchitecture;
