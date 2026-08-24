@@ -78,6 +78,7 @@ struct LearningActivity: Codable, Equatable, Sendable {
 
 struct LearningKnowledgeLink: Codable, Equatable, Sendable {
     let conceptID: KnowledgeConceptID
+    let role: KnowledgeLinkRole
     let usage: String
     let displayTiming: String?
 }

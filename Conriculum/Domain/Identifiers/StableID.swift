@@ -35,6 +35,13 @@ enum LearningPageIDTag: StableIDTag {}
 enum LearningSectionIDTag: StableIDTag {}
 enum LearningActivityIDTag: StableIDTag {}
 enum KnowledgeConceptIDTag: StableIDTag {}
+enum KnowledgeRelationIDTag: StableIDTag {}
+enum PersonalConceptRevisionIDTag: StableIDTag {}
+enum PersonalKnowledgeRelationIDTag: StableIDTag {}
+enum PersonalExampleIDTag: StableIDTag {}
+enum KnowledgePersonalizationCandidateIDTag: StableIDTag {}
+enum ActivityResponseIDTag: StableIDTag {}
+enum LearningEvidenceIDTag: StableIDTag {}
 
 typealias LearningPathID = StableID<LearningPathIDTag>
 typealias StageID = StableID<StageIDTag>
@@ -43,3 +50,10 @@ typealias LearningPageID = StableID<LearningPageIDTag>
 typealias LearningSectionID = StableID<LearningSectionIDTag>
 typealias LearningActivityID = StableID<LearningActivityIDTag>
 typealias KnowledgeConceptID = StableID<KnowledgeConceptIDTag>
+typealias KnowledgeRelationID = StableID<KnowledgeRelationIDTag>
+typealias PersonalConceptRevisionID = StableID<PersonalConceptRevisionIDTag>
+typealias PersonalKnowledgeRelationID = StableID<PersonalKnowledgeRelationIDTag>
+typealias PersonalExampleID = StableID<PersonalExampleIDTag>
+typealias KnowledgePersonalizationCandidateID = StableID<KnowledgePersonalizationCandidateIDTag>
+typealias ActivityResponseID = StableID<ActivityResponseIDTag>
+typealias LearningEvidenceID = StableID<LearningEvidenceIDTag>
