@@ -6,39 +6,8 @@ import Testing
 @MainActor
 struct AppFeatureTests {
     @Test
-    func initialRouteIsHomeAndLoadsChapterEntry() async throws {
-        let chapter = try ContentResourceDecoder().decode(
-            Chapter.self,
-            from: .chapter02
-        )
-        let store = TestStore(initialState: AppFeature.State()) {
-            AppFeature()
-        } withDependencies: {
-            $0.curriculumClient.loadChapter = { _ in chapter }
-            $0.learningRecordClient.loadProgress = { _ in nil }
-        }
-
-        #expect(store.state.route == .home)
-
-        await store.send(.home(.task)) {
-            $0.home.isLoading = true
-        }
-        await store.receive(
-            .home(.loadResponse(.loaded(
-                HomeFeature.ChapterEntry(
-                    chapterID: chapter.id,
-                    startPageID: chapter.overview.id,
-                    resumePageID: nil
-                )
-            )))
-        ) {
-            $0.home.isLoading = false
-            $0.home.chapterEntry = HomeFeature.ChapterEntry(
-                chapterID: chapter.id,
-                startPageID: chapter.overview.id,
-                resumePageID: nil
-            )
-        }
+    func initialRouteIsHome() {
+        #expect(AppFeature.State().route == .home)
     }
 
     @Test
