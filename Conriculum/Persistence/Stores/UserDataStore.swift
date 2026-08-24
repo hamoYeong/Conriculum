@@ -4,10 +4,15 @@ import SwiftData
 @MainActor
 final class UserDataStore {
     private let modelContext: ModelContext
+    private let saveContext: (ModelContext) throws -> Void
     private var cachedProfileID: LocalProfileID?
 
-    init(modelContainer: ModelContainer) {
+    init(
+        modelContainer: ModelContainer,
+        saveContext: @escaping (ModelContext) throws -> Void = { try $0.save() }
+    ) {
         modelContext = ModelContext(modelContainer)
+        self.saveContext = saveContext
     }
 
     func localProfileID() throws -> LocalProfileID {
@@ -295,7 +300,7 @@ final class UserDataStore {
 
     private func saveChanges(operation: String) throws {
         do {
-            try modelContext.save()
+            try saveContext(modelContext)
         } catch {
             modelContext.rollback()
             throw PersistenceClientError.saveFailed(
