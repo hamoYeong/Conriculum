@@ -61,6 +61,7 @@ struct LearningPage: Codable, Equatable, Sendable {
     let activities: [LearningActivity]
     let knowledgeLinks: [LearningKnowledgeLink]
     let knowledgeContext: PageKnowledgeContext
+    let navigation: LearningPageNavigation
 }
 
 struct LearningSection: Codable, Equatable, Sendable {
@@ -68,6 +69,7 @@ struct LearningSection: Codable, Equatable, Sendable {
     let order: Int
     let title: String?
     let activityID: LearningActivityID?
+    let content: LearningSectionContent
 }
 
 struct LearningActivity: Codable, Equatable, Sendable {
@@ -96,4 +98,14 @@ struct PageKnowledgeContext: Codable, Equatable, Sendable {
 struct NearbyKnowledgeContext: Codable, Equatable, Sendable {
     let conceptID: KnowledgeConceptID
     let reason: String
+}
+
+struct LearningPageNavigation: Codable, Equatable, Sendable {
+    let previous: LearningPageDestination?
+    let next: LearningPageDestination?
+}
+
+struct LearningPageDestination: Codable, Equatable, Sendable {
+    let pageID: LearningPageID
+    let label: String
 }

@@ -85,7 +85,8 @@ struct CurriculumModelsTests {
                 refreshTriggers: [],
                 emptyStateMessage: "아직 확인해 반영한 지식이 없다.",
                 focusModeSummary: "현재 개념만 표시한다."
-            )
+            ),
+            navigation: LearningPageNavigation(previous: nil, next: nil)
         )
     }
 }
