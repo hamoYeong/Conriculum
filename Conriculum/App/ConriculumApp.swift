@@ -1,18 +1,15 @@
-//
-//  ConriculumApp.swift
-//  Conriculum
-//
-//  Created by Seoyeong_Kim on 8/21/26.
-//
-
 import ComposableArchitecture
 import SwiftUI
 
 @main
 struct ConriculumApp: App {
+    private let store = Store(initialState: AppFeature.State()) {
+        AppFeature()
+    }
+
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            AppView(store: store)
         }
     }
 }

@@ -155,11 +155,11 @@
 			);
 			mainGroup = F1A9027130381ED500FC7493;
 			minimizedProjectReferenceProxies = 1;
-			preferredProjectObjectVersion = 77;
-			productRefGroup = F1A9027B30381ED500FC7493 /* Products */;
 			packageReferences = (
 				A1000000000000000000000E /* XCRemoteSwiftPackageReference "swift-composable-architecture" */,
 			);
+			preferredProjectObjectVersion = 77;
+			productRefGroup = F1A9027B30381ED500FC7493 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
