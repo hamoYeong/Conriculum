@@ -29,6 +29,7 @@ extension StableID: CustomStringConvertible {
 }
 
 enum LearningPathIDTag: StableIDTag {}
+enum LocalProfileIDTag: StableIDTag {}
 enum StageIDTag: StableIDTag {}
 enum ChapterIDTag: StableIDTag {}
 enum LearningPageIDTag: StableIDTag {}
@@ -44,6 +45,7 @@ enum ActivityResponseIDTag: StableIDTag {}
 enum LearningEvidenceIDTag: StableIDTag {}
 
 typealias LearningPathID = StableID<LearningPathIDTag>
+typealias LocalProfileID = StableID<LocalProfileIDTag>
 typealias StageID = StableID<StageIDTag>
 typealias ChapterID = StableID<ChapterIDTag>
 typealias LearningPageID = StableID<LearningPageIDTag>
