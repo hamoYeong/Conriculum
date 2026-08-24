@@ -12,20 +12,39 @@ struct AppView: View {
                     .font(.largeTitle)
                 Text("학습 홈")
                     .foregroundStyle(.secondary)
-                Button("Chapter 2 열기") {
-                    store.send(.chapterRequested(id: AppFeature.chapter02ID))
+                Button(
+                    store.home.chapterEntry?.resumePageID == nil
+                        ? "Chapter 2 시작하기"
+                        : "Chapter 2 이어하기"
+                ) {
+                    if store.home.chapterEntry?.resumePageID == nil {
+                        store.send(.home(.startButtonTapped))
+                    } else {
+                        store.send(.home(.resumeButtonTapped))
+                    }
+                }
+                .disabled(store.home.chapterEntry == nil)
+
+                if let loadErrorMessage = store.home.loadErrorMessage {
+                    Text(loadErrorMessage)
+                        .foregroundStyle(.red)
                 }
             }
             .frame(minWidth: 720, minHeight: 480)
+            .task {
+                await store.send(.home(.task)).finish()
+            }
 
-        case let .learningWorkspace(chapterID):
+        case let .learningWorkspace(chapterID, pageID):
             VStack(spacing: 16) {
                 Text("학습 워크스페이스")
                     .font(.largeTitle)
-                Text(chapterID)
+                Text(chapterID.rawValue)
+                    .foregroundStyle(.secondary)
+                Text(pageID.rawValue)
                     .foregroundStyle(.secondary)
                 Button("Home으로 돌아가기") {
-                    store.send(.homeRequested)
+                    store.send(.workspaceHomeButtonTapped)
                 }
             }
             .frame(minWidth: 720, minHeight: 480)
