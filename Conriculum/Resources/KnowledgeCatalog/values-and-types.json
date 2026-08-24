@@ -1,0 +1,249 @@
+{
+  "schemaVersion": 1,
+  "id": "values-and-types",
+  "title": "값과 타입 및 Chapter 2 인접 지식",
+  "concepts": [
+    {
+      "id": "concept-value",
+      "title": "값",
+      "definition": "값은 프로그램이 저장하거나 비교하거나 계산하거나 표시할 수 있도록 하나로 정해진 정보다.",
+      "essentialQuestion": "현실의 정보 중 지금 프로그램이 직접 다룰 대상은 무엇인가?",
+      "judgmentQuestions": [
+        "하나의 구체적인 정보로 정해져 있는가?",
+        "이번 사례의 값과 여러 사례에 반복되는 규칙을 구분했는가?",
+        "값 자체와 값을 설명하는 화면 문구를 구분했는가?"
+      ],
+      "examples": ["닉네임 \"푸른고래\"", "수량 2", "결제 완료 여부 true"],
+      "misconceptions": ["숫자만 값이라고 생각한다.", "아직 계산하지 않은 결과를 이미 주어진 값처럼 다룬다."]
+    },
+    {
+      "id": "concept-literal",
+      "title": "리터럴",
+      "definition": "리터럴은 소스 코드에 값을 직접 적는 표기다.",
+      "essentialQuestion": "구체적인 값을 Swift 코드에 어떤 모습으로 적는가?",
+      "judgmentQuestions": [
+        "따옴표, 소수점, true·false 같은 표기가 값의 종류를 드러내는가?",
+        "숫자 구분용 밑줄을 제거해도 같은 값인가?",
+        "이름이 아니라 값 자체를 적은 부분인가?"
+      ],
+      "examples": ["\"푸른고래\"", "20_000", "4.5", "true"],
+      "misconceptions": ["\"20_000\"과 20_000을 같은 종류의 값이라고 생각한다.", "리터럴과 식별자를 같은 것으로 본다."]
+    },
+    {
+      "id": "concept-type",
+      "title": "타입",
+      "definition": "타입은 값이 어떤 종류의 정보이며 어떤 연산과 사용이 허용되는지를 정하는 약속이다.",
+      "essentialQuestion": "이 값은 무엇을 나타내며 프로그램에서 어떤 일을 할 수 있는가?",
+      "judgmentQuestions": [
+        "글자, 정수, 소수, 참·거짓 중 어떤 성격인가?",
+        "계산·비교·표시·판단 중 어떤 일을 해야 하는가?",
+        "현재 타입이 표현하지 못하는 상태가 있는가?"
+      ],
+      "examples": ["20_000은 계산할 Int이고 \"20,000원\"은 표시할 String이다."],
+      "misconceptions": ["타입을 값을 보관할 상자의 이름으로만 본다.", "화면에 보이는 모양만 보고 타입을 고른다."]
+    },
+    {
+      "id": "concept-string",
+      "title": "String",
+      "definition": "String은 글자들의 순서를 하나의 텍스트 값으로 표현하는 Swift 타입이다.",
+      "essentialQuestion": "이 정보는 문자 내용과 순서를 그대로 보존하고 다루어야 하는가?",
+      "judgmentQuestions": ["계산보다 글자 자체가 중요한가?", "이름, 제목, 설명인가?", "따옴표 안의 문자열 리터럴인가?"],
+      "examples": ["\"푸른고래\"", "\"Swift 시작하기\"", "\"01234\""],
+      "misconceptions": ["화면에 표시되는 모든 정보는 처음부터 String이어야 한다.", "숫자로만 된 글자는 언제나 Int다."]
+    },
+    {
+      "id": "concept-int",
+      "title": "Int",
+      "definition": "Int는 소수 부분이 없는 정수를 표현하는 Swift 타입이다.",
+      "essentialQuestion": "이 정보는 소수점 없이 세거나 더하고 빼는 정수인가?",
+      "judgmentQuestions": ["온전한 단위로 세는가?", "소수 부분이 생길 수 없는가?", "글자 모양이 아니라 수로 계산해야 하는가?"],
+      "examples": ["상품 수량 2", "원 단위 금액 20_000", "남은 좌석 4"],
+      "misconceptions": ["금액은 언제나 Int여야 한다.", "정수 리터럴의 밑줄이 값을 바꾼다고 생각한다."]
+    },
+    {
+      "id": "concept-double",
+      "title": "Double",
+      "definition": "Double은 소수 부분을 포함하는 부동소수점 수를 표현하는 Swift 타입이다.",
+      "essentialQuestion": "이 정보는 소수 부분이 필요하며 근삿값의 특성을 허용하는 수인가?",
+      "judgmentQuestions": ["평균, 비율, 측정값처럼 소수 부분이 필요한가?", "정확한 십진 금액처럼 오차를 별도로 다뤄야 하는가?"],
+      "examples": ["별점 평균 4.5", "할인 비율 0.1", "측정 온도 36.5"],
+      "misconceptions": ["소수가 보이면 어떤 맥락에서도 Double이면 충분하다.", "0.1 + 0.2가 언제나 정확한 십진 결과라고 생각한다."]
+    },
+    {
+      "id": "concept-bool",
+      "title": "Bool",
+      "definition": "Bool은 true와 false 두 값으로 참·거짓 상태를 표현하는 Swift 타입이다.",
+      "essentialQuestion": "이 정보는 지금 참인가 거짓인가라는 두 경우로 충분히 표현되는가?",
+      "judgmentQuestions": ["예·아니오 질문 하나로 설명할 수 있는가?", "참일 때 식별자와 자연스럽게 읽히는가?", "세 가지 이상의 상태가 필요한 것은 아닌가?"],
+      "examples": ["회원 여부 true", "결제 완료 여부 false"],
+      "misconceptions": ["두 단어로 보이는 모든 상태를 Bool로 만든다.", "아직 정해지지 않음을 false에 섞는다."]
+    },
+    {
+      "id": "concept-type-selection",
+      "title": "타입 선택",
+      "definition": "타입 선택은 정보의 의미, 허용할 상태, 이후 수행할 일을 근거로 표현 방식을 정하는 판단이다.",
+      "essentialQuestion": "이 정보를 안전하고 분명하게 다루려면 어떤 타입이 가장 적절한가?",
+      "judgmentQuestions": ["이 값으로 무슨 일을 해야 하는가?", "허용되지 않아야 할 상태를 막는가?", "화면 표시와 내부 값을 분리했는가?"],
+      "examples": ["재고 수량을 보여 주고 차감한다면 Bool보다 Int가 알맞다."],
+      "misconceptions": ["화면 모양만 따라 타입을 고른다.", "가장 간단한 타입이 언제나 가장 좋다고 생각한다."]
+    },
+    {
+      "id": "concept-identifier-naming",
+      "title": "식별자와 이름 짓기",
+      "definition": "식별자는 코드에서 값을 가리키는 이름이며 좋은 이름은 값의 대상·역할·단위를 드러낸다.",
+      "essentialQuestion": "이 이름만 보고도 값이 무엇이며 어디에 쓰이는지 구분할 수 있는가?",
+      "judgmentQuestions": ["value보다 구체적인 대상과 역할이 드러나는가?", "비슷한 값과 구별되는가?", "Bool 이름이 참일 때 자연스럽게 읽히는가?"],
+      "examples": ["orderAmount", "quantity", "isPaid"],
+      "misconceptions": ["짧은 이름이 언제나 읽기 좋다.", "코드가 실행되면 이름은 중요하지 않다."]
+    },
+    {
+      "id": "concept-constants-variables",
+      "title": "상수와 변수",
+      "definition": "상수는 같은 이름에 다른 값을 넣지 않는 let 선언이고 변수는 필요할 때 다시 넣을 수 있는 var 선언이다.",
+      "essentialQuestion": "현재 책임과 시간 범위 안에서 이 이름이 가리키는 값은 바뀌어야 하는가?",
+      "judgmentQuestions": ["이 단계에서 변경이 실제 요구인가?", "변경이 없다면 let으로 제한할 수 있는가?", "더 긴 시간 범위의 변화와 현재 범위를 구분했는가?"],
+      "examples": ["편집 중 수량은 var일 수 있지만 결제 계산에 전달된 수량은 let일 수 있다."],
+      "misconceptions": ["현실에서 바뀔 수 있는 정보는 언제나 var다.", "모든 값을 편하게 var로 선언한다."]
+    },
+    {
+      "id": "concept-type-inference-annotation",
+      "title": "타입 추론과 타입 명시",
+      "definition": "타입 추론은 Swift가 표현에서 타입을 알아내는 기능이고 타입 명시는 개발자가 타입을 직접 적어 의도를 드러내는 표기다.",
+      "essentialQuestion": "타입을 Swift가 알아내게 둘 것인가, 선언에서 직접 보여 줄 것인가?",
+      "judgmentQuestions": ["값만 보아도 타입이 분명한가?", "특정 타입 약속을 드러내야 하는가?", "추론 결과가 의도와 같은가?"],
+      "examples": ["let quantity = 2", "let discountRate: Double = 0.1"],
+      "misconceptions": ["타입 추론은 타입이 없다는 뜻이다.", "모든 선언에 타입을 적는 것이 언제나 더 안전하다."]
+    },
+    {
+      "id": "concept-related-value-grouping",
+      "title": "관련된 값 묶기",
+      "definition": "관련된 값 묶기는 여러 값이 같은 사례에서 어떤 대상과 역할을 설명하는지 가까이 배치하고 경계를 드러내는 정리다.",
+      "essentialQuestion": "이 값들은 무엇을 함께 설명하며 각각 어떤 역할을 맡는가?",
+      "judgmentQuestions": ["한 대상을 설명하는가?", "표시·계산·판단·규칙·결과 중 어떤 역할인가?", "화면 꾸밈과 문제 영역을 구분했는가?"],
+      "examples": ["orderAmount, quantity, isMember는 한 주문의 계산과 판단 입력이다."],
+      "misconceptions": ["한 파일에 있는 값을 모두 한 묶음으로 본다.", "타입이 같은 값끼리만 묶는다."]
+    },
+    {
+      "id": "concept-concrete-values-rules",
+      "title": "구체적인 값과 일반적인 규칙",
+      "definition": "구체적인 값은 한 사례에서 실제로 주어진 정보이고 일반적인 규칙은 값이 달라도 반복해서 적용하는 관계다.",
+      "essentialQuestion": "이번 사례에만 해당하는 것은 무엇이고 다른 사례에도 남는 것은 무엇인가?",
+      "judgmentQuestions": ["사례를 바꾸면 함께 바뀌는가?", "서로 다른 값에도 같은 관계를 적용할 수 있는가?"],
+      "examples": ["오늘 사과 27개는 값이고 한 상자 최대 10개는 규칙 기준이다."],
+      "misconceptions": ["모든 숫자를 구체적인 값으로만 본다."]
+    },
+    {
+      "id": "concept-problem-boundary",
+      "title": "문제의 경계",
+      "definition": "문제의 경계는 해결이 책임질 대상과 밖에서 주어질 대상, 다루지 않을 대상을 나누는 선이다.",
+      "essentialQuestion": "이번 해결은 어디까지 알고 결정해야 하는가?",
+      "judgmentQuestions": ["고정 정책인가 밖에서 주어지는 정보인가?", "어떤 상황까지 규칙이 책임져야 하는가?"],
+      "examples": ["세율은 문제 경계에 따라 규칙 기준 또는 입력이 될 수 있다."],
+      "misconceptions": ["입력과 규칙의 구분에는 언제나 하나의 답만 있다고 생각한다."]
+    },
+    {
+      "id": "concept-input-rule-output",
+      "title": "입력·규칙·출력 구조",
+      "definition": "입력·규칙·출력 구조는 주어진 정보가 반복 가능한 관계를 거쳐 원하는 결과가 되는 흐름이다.",
+      "essentialQuestion": "문제의 정보와 해결 방법, 결과는 어떻게 연결되는가?",
+      "judgmentQuestions": ["결과를 바꿀 입력만 있는가?", "규칙이 입력에서 출력을 결정하는가?", "출력이 요구와 일치하는가?"],
+      "examples": ["거리 + 교통수단 → 이동 시간 규칙 → 예상 소요 시간"],
+      "misconceptions": ["입력·규칙·출력을 단어 세 개로 나열하기만 한다."]
+    },
+    {
+      "id": "concept-input",
+      "title": "입력",
+      "definition": "입력은 문제를 풀기 전에 주어지며 규칙이 출력을 결정할 때 사용하는 정보다.",
+      "essentialQuestion": "출력을 결정하려면 어떤 정보가 들어와야 하는가?",
+      "judgmentQuestions": ["문제를 풀기 전에 주어지는가?", "바뀌면 출력도 달라질 수 있는가?", "규칙이 실제로 사용하는가?"],
+      "examples": ["택배비 규칙이 거리와 배송 속도를 사용한다면 둘은 입력이다."],
+      "misconceptions": ["문제에 나온 모든 정보를 입력이라고 부른다."]
+    },
+    {
+      "id": "concept-output",
+      "title": "출력",
+      "definition": "출력은 주어진 입력에 규칙을 적용해 문제를 해결한 뒤 얻는 결과다.",
+      "essentialQuestion": "문제를 다 풀었을 때 무엇을 새로 알거나 결정해야 하는가?",
+      "judgmentQuestions": ["풀기 전에는 아직 정해지지 않았는가?", "입력과 규칙을 사용한 뒤 얻는가?"],
+      "examples": ["좌석 수와 신청자 수로 판단한 접수 가능 여부"],
+      "misconceptions": ["가장 눈에 띄는 숫자를 출력으로 고른다."]
+    },
+    {
+      "id": "concept-expressions-operations",
+      "title": "표현식과 연산",
+      "definition": "값 사이의 관계를 산술·비교·논리 연산으로 표현해 새로운 값을 만드는 지식 영역이다.",
+      "essentialQuestion": "주어진 값 사이의 관계를 계산 가능한 표현으로 어떻게 나타낼 것인가?",
+      "judgmentQuestions": ["어떤 값과 연산이 필요한가?", "타입이 계산 방식과 결과에 어떤 영향을 주는가?"],
+      "examples": ["수량과 단가로 금액을 계산하는 표현"],
+      "misconceptions": []
+    },
+    {
+      "id": "concept-execution-flow",
+      "title": "실행 흐름",
+      "definition": "코드가 어떤 순서와 조건으로 실행될지 구성하고 추적하는 지식 영역이다.",
+      "essentialQuestion": "어떤 코드가 언제 어떤 조건으로 실행되어야 하는가?",
+      "judgmentQuestions": ["판단 기준은 무엇인가?", "가능한 흐름이 빠짐없이 표현되는가?"],
+      "examples": ["Bool 조건에 따라 회원 할인을 적용하는 흐름"],
+      "misconceptions": []
+    },
+    {
+      "id": "concept-functions-abstraction",
+      "title": "함수와 추상화",
+      "definition": "반복되는 규칙을 책임과 입출력이 드러나는 재사용 가능한 단위로 묶는 지식 영역이다.",
+      "essentialQuestion": "반복되는 규칙을 이름 붙인 단위로 어떻게 묶을 것인가?",
+      "judgmentQuestions": ["함수의 책임과 입출력이 분명한가?", "이름이 규칙을 설명하는가?"],
+      "examples": ["할인 계산 규칙을 함수로 묶는다."],
+      "misconceptions": []
+    },
+    {
+      "id": "concept-type-modeling",
+      "title": "타입 모델링",
+      "definition": "문제 영역의 정보와 가능한 상태의 관계를 구조체와 열거형 같은 타입으로 표현하는 지식 영역이다.",
+      "essentialQuestion": "문제 영역의 정보와 가능한 상태를 타입으로 어떻게 정확히 표현할 것인가?",
+      "judgmentQuestions": ["기본 타입이 의미와 상태를 충분히 보존하는가?", "함께 쓰이는 값의 경계가 무엇인가?"],
+      "examples": ["주문 값을 Order 구조체의 책임으로 묶는다."],
+      "misconceptions": []
+    },
+    {
+      "id": "concept-swiftui-interface",
+      "title": "SwiftUI와 사용자 인터페이스",
+      "definition": "상태를 사용자가 보고 조작할 수 있는 화면으로 표현하는 지식 영역이다.",
+      "essentialQuestion": "상태를 사용자가 보고 조작할 화면으로 어떻게 표현할 것인가?",
+      "judgmentQuestions": ["화면 상태와 확정된 도메인 입력이 구분되는가?", "상태 변화와 화면이 일치하는가?"],
+      "examples": ["편집 중 수량 상태와 결제 계산 입력을 분리한다."],
+      "misconceptions": []
+    }
+  ],
+  "relations": [
+    {"id":"relation-literal-value","sourceConceptID":"concept-literal","targetConceptID":"concept-value","kind":"appliesTo","summary":"리터럴은 값을 코드에 직접 나타낸다."},
+    {"id":"relation-literal-type","sourceConceptID":"concept-literal","targetConceptID":"concept-type","kind":"leadsTo","summary":"리터럴 표기는 타입 추론의 단서를 제공한다."},
+    {"id":"relation-type-value","sourceConceptID":"concept-type","targetConceptID":"concept-value","kind":"appliesTo","summary":"타입은 값에 허용되는 일을 정한다."},
+    {"id":"relation-string-type","sourceConceptID":"concept-string","targetConceptID":"concept-type","kind":"refines","summary":"String은 텍스트 값을 표현하는 기본 타입이다."},
+    {"id":"relation-int-type","sourceConceptID":"concept-int","targetConceptID":"concept-type","kind":"refines","summary":"Int는 소수 부분 없는 수를 표현하는 기본 타입이다."},
+    {"id":"relation-double-type","sourceConceptID":"concept-double","targetConceptID":"concept-type","kind":"refines","summary":"Double은 소수 부분이 필요한 수를 표현하는 기본 타입이다."},
+    {"id":"relation-bool-type","sourceConceptID":"concept-bool","targetConceptID":"concept-type","kind":"refines","summary":"Bool은 참·거짓 상태를 표현하는 기본 타입이다."},
+    {"id":"relation-string-int","sourceConceptID":"concept-string","targetConceptID":"concept-int","kind":"contrastsWith","summary":"글자 모양 보존과 정수 계산이라는 목적이 다르다."},
+    {"id":"relation-int-double","sourceConceptID":"concept-int","targetConceptID":"concept-double","kind":"contrastsWith","summary":"소수 부분의 필요 여부가 두 수 타입을 가른다."},
+    {"id":"relation-selection-type","sourceConceptID":"concept-type-selection","targetConceptID":"concept-type","kind":"appliesTo","summary":"의미와 사용 목적을 근거로 타입을 선택한다."},
+    {"id":"relation-selection-string","sourceConceptID":"concept-type-selection","targetConceptID":"concept-string","kind":"appliesTo","summary":"문자 내용 보존이 목적일 때 String을 검토한다."},
+    {"id":"relation-selection-int","sourceConceptID":"concept-type-selection","targetConceptID":"concept-int","kind":"appliesTo","summary":"정수 계산이 목적일 때 Int를 검토한다."},
+    {"id":"relation-selection-double","sourceConceptID":"concept-type-selection","targetConceptID":"concept-double","kind":"appliesTo","summary":"소수 수치가 필요할 때 Double을 검토한다."},
+    {"id":"relation-selection-bool","sourceConceptID":"concept-type-selection","targetConceptID":"concept-bool","kind":"appliesTo","summary":"두 상태로 충분할 때 Bool을 검토한다."},
+    {"id":"relation-naming-value","sourceConceptID":"concept-identifier-naming","targetConceptID":"concept-value","kind":"appliesTo","summary":"식별자는 값의 대상과 역할을 코드에 남긴다."},
+    {"id":"relation-constant-naming","sourceConceptID":"concept-constants-variables","targetConceptID":"concept-identifier-naming","kind":"related","summary":"let과 var는 식별자가 다시 다른 값을 가리킬 수 있는지를 정한다."},
+    {"id":"relation-constant-boundary","sourceConceptID":"concept-constants-variables","targetConceptID":"concept-problem-boundary","kind":"prerequisite","summary":"변경 가능성은 현재 책임과 시간 범위를 기준으로 판단한다."},
+    {"id":"relation-inference-literal","sourceConceptID":"concept-type-inference-annotation","targetConceptID":"concept-literal","kind":"prerequisite","summary":"리터럴은 타입 추론의 단서를 제공한다."},
+    {"id":"relation-inference-type","sourceConceptID":"concept-type-inference-annotation","targetConceptID":"concept-type","kind":"related","summary":"추론과 명시 모두 실제 타입을 가진다."},
+    {"id":"relation-grouping-naming","sourceConceptID":"concept-related-value-grouping","targetConceptID":"concept-identifier-naming","kind":"prerequisite","summary":"이름은 묶음 안에서 각 값의 역할을 드러낸다."},
+    {"id":"relation-grouping-iro","sourceConceptID":"concept-related-value-grouping","targetConceptID":"concept-input-rule-output","kind":"related","summary":"값의 역할을 입력·규칙·출력 구조로 읽을 수 있다."},
+    {"id":"relation-grouping-modeling","sourceConceptID":"concept-related-value-grouping","targetConceptID":"concept-type-modeling","kind":"leadsTo","summary":"함께 책임지는 값의 경계는 사용자 정의 타입 후보가 된다."},
+    {"id":"relation-instance-value","sourceConceptID":"concept-concrete-values-rules","targetConceptID":"concept-value","kind":"related","summary":"한 사례의 구체적인 정보가 프로그램의 값이 된다."},
+    {"id":"relation-instance-boundary","sourceConceptID":"concept-concrete-values-rules","targetConceptID":"concept-problem-boundary","kind":"prerequisite","summary":"문제 경계가 바뀌면 값과 규칙의 역할도 달라질 수 있다."},
+    {"id":"relation-iro-input","sourceConceptID":"concept-input-rule-output","targetConceptID":"concept-input","kind":"refines","summary":"입력은 규칙이 출력을 정할 때 사용하는 정보다."},
+    {"id":"relation-iro-output","sourceConceptID":"concept-input-rule-output","targetConceptID":"concept-output","kind":"refines","summary":"출력은 입력에 규칙을 적용한 결과다."},
+    {"id":"relation-type-expression","sourceConceptID":"concept-type","targetConceptID":"concept-expressions-operations","kind":"leadsTo","summary":"값의 타입은 이후 계산 방식과 결과 타입에 영향을 준다."},
+    {"id":"relation-bool-flow","sourceConceptID":"concept-bool","targetConceptID":"concept-execution-flow","kind":"leadsTo","summary":"Bool은 조건에 따른 실행 흐름의 판단에 쓰인다."},
+    {"id":"relation-naming-functions","sourceConceptID":"concept-identifier-naming","targetConceptID":"concept-functions-abstraction","kind":"leadsTo","summary":"이름 짓기 기준은 함수의 책임과 매개변수로 확장된다."},
+    {"id":"relation-constant-swiftui","sourceConceptID":"concept-constants-variables","targetConceptID":"concept-swiftui-interface","kind":"leadsTo","summary":"변경 가능한 화면 상태와 확정된 계산 입력을 분리하는 설계로 이어진다."}
+  ]
+}
