@@ -101,6 +101,89 @@ struct KnowledgeContextFeatureTests {
         }
     }
 
+    @Test
+    func conceptSelectionOpensTheInspectorWithoutReplacingTheSnapshot()
+        async throws
+    {
+        let chapter = try loadChapter()
+        let snapshot = try KnowledgeContextSnapshotComposer().compose(
+            chapter: chapter,
+            catalog: try loadCatalog(),
+            pageID: "chapter-02-page-05",
+            revisions: []
+        )
+        let item = try #require(snapshot.directConcepts.first {
+            $0.id == "concept-constants-variables"
+        })
+        let expectedInspector = ConceptInspectorFeature.State(
+            sourcePageTitle: snapshot.pageTitle,
+            item: item
+        )
+        let store = TestStore(
+            initialState: KnowledgeContextFeature.State(
+                chapterID: chapter.id,
+                currentPageID: snapshot.pageID,
+                snapshot: snapshot
+            )
+        ) {
+            KnowledgeContextFeature()
+        }
+
+        await store.send(.conceptSelected(item.id)) {
+            $0.inspector = expectedInspector
+        }
+        #expect(store.state.snapshot == snapshot)
+
+        await store.send(.inspector(.cancelButtonTapped))
+        await store.receive(.inspector(.delegate(.cancelled))) {
+            $0.inspector = nil
+        }
+    }
+
+    @Test
+    func savedInspectorClosesAndDelegatesARepositoryRefresh() async throws {
+        let chapter = try loadChapter()
+        let snapshot = try KnowledgeContextSnapshotComposer().compose(
+            chapter: chapter,
+            catalog: try loadCatalog(),
+            pageID: "chapter-02-page-05",
+            revisions: []
+        )
+        let item = try #require(snapshot.directConcepts.first {
+            $0.id == "concept-constants-variables"
+        })
+        let revision = PersonalConceptRevision(
+            id: "revision-saved",
+            conceptID: item.id,
+            personalTitle: "변경 책임",
+            explanation: "값 변경은 현재 범위의 책임으로 판단한다.",
+            examples: [],
+            previousRevisionID: nil,
+            evidenceActivityID: try #require(
+                item.revisionEvidenceActivityID
+            ),
+            createdAt: .distantPast
+        )
+        var initialState = KnowledgeContextFeature.State(
+            chapterID: chapter.id,
+            currentPageID: snapshot.pageID,
+            snapshot: snapshot
+        )
+        initialState.inspector = ConceptInspectorFeature.State(
+            sourcePageTitle: snapshot.pageTitle,
+            item: item
+        )
+        let store = TestStore(initialState: initialState) {
+            KnowledgeContextFeature()
+        }
+
+        await store.send(.inspector(.delegate(.saved(revision)))) {
+            $0.inspector = nil
+        }
+        await store.receive(.personalizationSaved)
+        await store.receive(.delegate(.personalizationSaved))
+    }
+
     private func loadChapter() throws -> Chapter {
         try ContentResourceDecoder().decode(Chapter.self, from: .chapter02)
     }

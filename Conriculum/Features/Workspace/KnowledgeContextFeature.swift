@@ -18,6 +18,7 @@ struct KnowledgeContextFeature {
         var loadErrorMessage: String?
         var lastReloadReason: ReloadReason?
         var reloadRequestCount = 0
+        var inspector: ConceptInspectorFeature.State?
 
         init(
             chapterID: ChapterID,
@@ -33,6 +34,9 @@ struct KnowledgeContextFeature {
     enum Action: Equatable {
         case task
         case pageChanged(LearningPageID)
+        case conceptSelected(KnowledgeConceptID)
+        case inspectorDismissed
+        case inspector(ConceptInspectorFeature.Action)
         case personalizationSaved
         case reloadRequested(ReloadReason)
         case loadResponse(LoadResponse)
@@ -65,7 +69,30 @@ struct KnowledgeContextFeature {
                 state.currentPageID = pageID
                 state.snapshot = nil
                 state.loadErrorMessage = nil
+                state.inspector = nil
                 return .send(.reloadRequested(.pageChanged))
+
+            case let .conceptSelected(conceptID):
+                guard let snapshot = state.snapshot,
+                      let item = conceptItem(
+                          id: conceptID,
+                          in: snapshot
+                      )
+                else { return .none }
+                state.inspector = ConceptInspectorFeature.State(
+                    sourcePageTitle: snapshot.pageTitle,
+                    item: item
+                )
+                return .none
+
+            case .inspectorDismissed,
+                 .inspector(.delegate(.cancelled)):
+                state.inspector = nil
+                return .none
+
+            case .inspector(.delegate(.saved)):
+                state.inspector = nil
+                return .send(.personalizationSaved)
 
             case .personalizationSaved:
                 return .send(.delegate(.personalizationSaved))
@@ -132,9 +159,22 @@ struct KnowledgeContextFeature {
                 state.loadErrorMessage = message
                 return .none
 
-            case .delegate:
+            case .inspector, .delegate:
                 return .none
             }
         }
+        .ifLet(\.inspector, action: \.inspector) {
+            ConceptInspectorFeature()
+        }
+    }
+
+    private func conceptItem(
+        id: KnowledgeConceptID,
+        in snapshot: KnowledgeContextSnapshot
+    ) -> KnowledgeContextSnapshot.ConceptItem? {
+        (snapshot.directConcepts
+            + snapshot.changedConcepts
+            + snapshot.nearbyConcepts)
+            .first { $0.id == id }
     }
 }

@@ -6,6 +6,7 @@ struct KnowledgeContextSnapshot: Equatable, Sendable {
 
         let concept: KnowledgeConcept
         let personalRevision: PersonalConceptRevision?
+        let revisionEvidenceActivityID: LearningActivityID?
         let role: KnowledgeLinkRole?
         let usage: String?
         let nearbyReason: String?
@@ -66,6 +67,7 @@ struct KnowledgeContextSnapshotComposer {
             page.knowledgeLinks.map { ($0.conceptID, $0) },
             uniquingKeysWith: { first, _ in first }
         )
+        let revisionEvidenceByConcept = revisionEvidenceByConcept(in: page)
 
         let directConceptIDs = orderedUnique(
             page.knowledgeContext.currentlyUsedConceptIDs
@@ -77,6 +79,9 @@ struct KnowledgeContextSnapshotComposer {
                 conceptID: conceptID,
                 conceptsByID: conceptsByID,
                 latestRevisions: latestRevisions,
+                revisionEvidenceActivityID: revisionEvidenceByConcept[
+                    conceptID
+                ],
                 role: link?.role,
                 usage: link?.usage,
                 nearbyReason: nil
@@ -91,6 +96,9 @@ struct KnowledgeContextSnapshotComposer {
                     conceptID: revision.conceptID,
                     conceptsByID: conceptsByID,
                     latestRevisions: latestRevisions,
+                    revisionEvidenceActivityID: revisionEvidenceByConcept[
+                        revision.conceptID
+                    ],
                     role: link?.role,
                     usage: link?.usage,
                     nearbyReason: nil
@@ -103,6 +111,9 @@ struct KnowledgeContextSnapshotComposer {
                 conceptID: nearby.conceptID,
                 conceptsByID: conceptsByID,
                 latestRevisions: latestRevisions,
+                revisionEvidenceActivityID: revisionEvidenceByConcept[
+                    nearby.conceptID
+                ],
                 role: linksByID[nearby.conceptID]?.role,
                 usage: linksByID[nearby.conceptID]?.usage,
                 nearbyReason: nearby.reason
@@ -136,6 +147,7 @@ struct KnowledgeContextSnapshotComposer {
         conceptID: KnowledgeConceptID,
         conceptsByID: [KnowledgeConceptID: KnowledgeConcept],
         latestRevisions: [KnowledgeConceptID: PersonalConceptRevision],
+        revisionEvidenceActivityID: LearningActivityID?,
         role: KnowledgeLinkRole?,
         usage: String?,
         nearbyReason: String?
@@ -148,10 +160,32 @@ struct KnowledgeContextSnapshotComposer {
         return KnowledgeContextSnapshot.ConceptItem(
             concept: concept,
             personalRevision: latestRevisions[conceptID],
+            revisionEvidenceActivityID: revisionEvidenceActivityID
+                ?? latestRevisions[conceptID]?.evidenceActivityID,
             role: role,
             usage: usage,
             nearbyReason: nearbyReason
         )
+    }
+
+    private func revisionEvidenceByConcept(
+        in page: LearningPage
+    ) -> [KnowledgeConceptID: LearningActivityID] {
+        var evidenceByConcept: [KnowledgeConceptID: LearningActivityID] = [:]
+
+        for section in page.sections {
+            guard case let .personalKnowledgePromotion(content) =
+                section.content,
+                let evidenceActivityID = content.evidenceActivityIDs.first
+            else { continue }
+
+            for conceptID in content.conceptIDs
+            where evidenceByConcept[conceptID] == nil {
+                evidenceByConcept[conceptID] = evidenceActivityID
+            }
+        }
+
+        return evidenceByConcept
     }
 
     private func latestRevisionsByConcept(

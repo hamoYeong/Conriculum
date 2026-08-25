@@ -186,75 +186,87 @@ struct KnowledgeContextView: View {
         _ item: KnowledgeContextSnapshot.ConceptItem,
         accent: Color
     ) -> some View {
-        VStack(alignment: .leading, spacing: 9) {
-            HStack(alignment: .firstTextBaseline, spacing: 8) {
-                Text(item.concept.title)
-                    .font(.callout.weight(.semibold))
-                    .frame(maxWidth: .infinity, alignment: .leading)
+        Button {
+            store.send(.conceptSelected(item.id))
+        } label: {
+            VStack(alignment: .leading, spacing: 9) {
+                HStack(alignment: .firstTextBaseline, spacing: 8) {
+                    Text(item.concept.title)
+                        .font(.callout.weight(.semibold))
+                        .frame(maxWidth: .infinity, alignment: .leading)
 
-                if let role = item.role {
-                    Text(roleTitle(role))
+                    if let role = item.role {
+                        Text(roleTitle(role))
+                            .font(.caption2.weight(.semibold))
+                            .foregroundStyle(accent)
+                            .padding(.horizontal, 7)
+                            .padding(.vertical, 3)
+                            .background(accent.opacity(0.10), in: Capsule())
+                    }
+
+                    Image(systemName: "chevron.right")
                         .font(.caption2.weight(.semibold))
-                        .foregroundStyle(accent)
-                        .padding(.horizontal, 7)
-                        .padding(.vertical, 3)
-                        .background(accent.opacity(0.10), in: Capsule())
+                        .foregroundStyle(.tertiary)
+                        .accessibilityHidden(true)
                 }
-            }
 
-            Text(item.concept.definition)
-                .font(.caption)
-                .foregroundStyle(.secondary)
-                .fixedSize(horizontal: false, vertical: true)
-
-            if let usage = item.usage {
-                Label(usage, systemImage: "arrow.turn.down.right")
+                Text(item.concept.definition)
                     .font(.caption)
                     .foregroundStyle(.secondary)
                     .fixedSize(horizontal: false, vertical: true)
-            }
 
-            if let reason = item.nearbyReason {
-                Label(reason, systemImage: "link")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-                    .fixedSize(horizontal: false, vertical: true)
-            }
-
-            Divider()
-
-            if let revision = item.personalRevision {
-                VStack(alignment: .leading, spacing: 4) {
-                    Label(
-                        revision.personalTitle?.isEmpty == false
-                            ? revision.personalTitle ?? "나의 표현"
-                            : "나의 표현",
-                        systemImage: "person.crop.circle.fill"
-                    )
-                    .font(.caption.weight(.semibold))
-                    .foregroundStyle(.purple)
-
-                    Text(revision.explanation)
+                if let usage = item.usage {
+                    Label(usage, systemImage: "arrow.turn.down.right")
                         .font(.caption)
+                        .foregroundStyle(.secondary)
                         .fixedSize(horizontal: false, vertical: true)
                 }
-            } else {
-                Label("나의 표현 없음", systemImage: "person.crop.circle")
-                    .font(.caption)
-                    .foregroundStyle(.tertiary)
+
+                if let reason = item.nearbyReason {
+                    Label(reason, systemImage: "link")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+
+                Divider()
+
+                if let revision = item.personalRevision {
+                    VStack(alignment: .leading, spacing: 4) {
+                        Label(
+                            revision.personalTitle?.isEmpty == false
+                                ? revision.personalTitle ?? "나의 표현"
+                                : "나의 표현",
+                            systemImage: "person.crop.circle.fill"
+                        )
+                        .font(.caption.weight(.semibold))
+                        .foregroundStyle(.purple)
+
+                        Text(revision.explanation)
+                            .font(.caption)
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
+                } else {
+                    Label("나의 표현 없음", systemImage: "person.crop.circle")
+                        .font(.caption)
+                        .foregroundStyle(.tertiary)
+                }
+            }
+            .padding(12)
+            .contentShape(Rectangle())
+            .background(
+                Color(nsColor: .controlBackgroundColor),
+                in: RoundedRectangle(cornerRadius: 11, style: .continuous)
+            )
+            .overlay {
+                RoundedRectangle(cornerRadius: 11, style: .continuous)
+                    .stroke(accent.opacity(0.18), lineWidth: 1)
             }
         }
-        .padding(12)
-        .background(
-            Color(nsColor: .controlBackgroundColor),
-            in: RoundedRectangle(cornerRadius: 11, style: .continuous)
-        )
-        .overlay {
-            RoundedRectangle(cornerRadius: 11, style: .continuous)
-                .stroke(accent.opacity(0.18), lineWidth: 1)
-        }
+        .buttonStyle(.plain)
         .accessibilityElement(children: .combine)
         .accessibilityLabel(conceptAccessibilityLabel(item))
+        .accessibilityHint("기본 지식과 나의 표현을 Inspector에서 비교합니다.")
     }
 
     private func conceptAccessibilityLabel(
@@ -382,6 +394,7 @@ private enum KnowledgeContextPreviewData {
         let direct = KnowledgeContextSnapshot.ConceptItem(
             concept: value,
             personalRevision: revision,
+            revisionEvidenceActivityID: "activity-page01-choice",
             role: .primary,
             usage: "현실 정보에서 구체적인 값을 찾는다.",
             nearbyReason: nil
@@ -389,6 +402,7 @@ private enum KnowledgeContextPreviewData {
         let nearby = KnowledgeContextSnapshot.ConceptItem(
             concept: type,
             personalRevision: nil,
+            revisionEvidenceActivityID: nil,
             role: nil,
             usage: nil,
             nearbyReason: "찾은 값을 어떤 종류로 다룰지는 다음 페이지에서 판단한다."

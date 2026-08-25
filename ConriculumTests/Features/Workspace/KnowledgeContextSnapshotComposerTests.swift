@@ -168,6 +168,53 @@ struct KnowledgeContextSnapshotComposerTests {
     }
 
     @Test
+    func revisionEvidenceUsesThePageContractThenFallsBackToStoredEvidence()
+        throws
+    {
+        let chapter = try loadChapter()
+        let catalog = try loadCatalog()
+        let namingRevision = revision(
+            id: "revision-naming-evidence",
+            conceptID: "concept-identifier-naming",
+            personalTitle: "역할 이름",
+            explanation: "이름은 값이 맡는 역할을 드러낸다.",
+            evidenceActivityID: "activity-page04-choice",
+            timestamp: 100
+        )
+
+        let pageFive = try KnowledgeContextSnapshotComposer().compose(
+            chapter: chapter,
+            catalog: catalog,
+            pageID: "chapter-02-page-05",
+            revisions: [namingRevision]
+        )
+        let constants = try #require(pageFive.directConcepts.first {
+            $0.id == "concept-constants-variables"
+        })
+        #expect(
+            constants.revisionEvidenceActivityID
+                == "activity-page05-card-sorting"
+        )
+        let nearbyNaming = try #require(pageFive.nearbyConcepts.first {
+            $0.id == "concept-identifier-naming"
+        })
+        #expect(
+            nearbyNaming.revisionEvidenceActivityID
+                == namingRevision.evidenceActivityID
+        )
+
+        let overview = try KnowledgeContextSnapshotComposer().compose(
+            chapter: chapter,
+            catalog: catalog,
+            pageID: chapter.overview.id,
+            revisions: []
+        )
+        #expect(overview.directConcepts.allSatisfy {
+            $0.revisionEvidenceActivityID == nil
+        })
+    }
+
+    @Test
     func missingPageAndConceptReportStableIdentifiers() throws {
         let chapter = try loadChapter()
         let catalog = try loadCatalog()
