@@ -8,19 +8,17 @@ struct AppFeature {
     struct State: Equatable {
         var route: Route = .home
         var home = HomeFeature.State()
+        var workspace: LearningWorkspaceFeature.State?
     }
 
     enum Route: Equatable {
         case home
-        case learningWorkspace(
-            chapterID: ChapterID,
-            pageID: LearningPageID
-        )
+        case learningWorkspace(chapterID: ChapterID)
     }
 
     enum Action: Equatable {
         case home(HomeFeature.Action)
-        case workspaceHomeButtonTapped
+        case workspace(LearningWorkspaceFeature.Action)
     }
 
     var body: some Reducer<State, Action> {
@@ -32,19 +30,23 @@ struct AppFeature {
             switch action {
             case let .home(.delegate(.chapterRequested(chapterID, pageID))):
                 guard chapterID == Self.chapter02ID else { return .none }
-                state.route = .learningWorkspace(
+                state.workspace = LearningWorkspaceFeature.State(
                     chapterID: chapterID,
                     pageID: pageID
                 )
+                state.route = .learningWorkspace(chapterID: chapterID)
                 return .none
 
-            case .workspaceHomeButtonTapped:
+            case .workspace(.delegate(.homeRequested)):
                 state.route = .home
                 return .send(.home(.reloadRequested))
 
-            case .home:
+            case .home, .workspace:
                 return .none
             }
+        }
+        .ifLet(\.workspace, action: \.workspace) {
+            LearningWorkspaceFeature()
         }
     }
 }

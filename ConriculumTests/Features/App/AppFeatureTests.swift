@@ -29,10 +29,11 @@ struct AppFeatureTests {
             chapterID: entry.chapterID,
             pageID: entry.startPageID
         )))) {
-            $0.route = .learningWorkspace(
+            $0.workspace = LearningWorkspaceFeature.State(
                 chapterID: entry.chapterID,
                 pageID: entry.startPageID
             )
+            $0.route = .learningWorkspace(chapterID: entry.chapterID)
         }
     }
 
@@ -54,10 +55,11 @@ struct AppFeatureTests {
             chapterID: entry.chapterID,
             pageID: "chapter-02-page-04"
         )))) {
-            $0.route = .learningWorkspace(
+            $0.workspace = LearningWorkspaceFeature.State(
                 chapterID: entry.chapterID,
                 pageID: "chapter-02-page-04"
             )
+            $0.route = .learningWorkspace(chapterID: entry.chapterID)
         }
     }
 
@@ -88,7 +90,8 @@ struct AppFeatureTests {
         )
 
         var initialState = AppFeature.State()
-        initialState.route = .learningWorkspace(
+        initialState.route = .learningWorkspace(chapterID: chapter.id)
+        initialState.workspace = LearningWorkspaceFeature.State(
             chapterID: chapter.id,
             pageID: chapter.overview.id
         )
@@ -107,7 +110,8 @@ struct AppFeatureTests {
             $0.personalKnowledgeClient.loadRevisions = { _ in [] }
         }
 
-        await store.send(.workspaceHomeButtonTapped) {
+        await store.send(.workspace(.homeButtonTapped))
+        await store.receive(.workspace(.delegate(.homeRequested))) {
             $0.route = .home
         }
         await store.receive(.home(.reloadRequested)) {
