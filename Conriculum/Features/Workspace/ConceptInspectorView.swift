@@ -17,6 +17,9 @@ struct ConceptInspectorView: View {
                     baseKnowledge
                     knowledgeRelations
                 } else {
+                    if let review = store.personalizationReview {
+                        personalizationReviewBanner(review)
+                    }
                     baseKnowledge
                     personalKnowledgeEditor
                     evidenceStatus
@@ -70,6 +73,66 @@ struct ConceptInspectorView: View {
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }
+        }
+    }
+
+    private func personalizationReviewBanner(
+        _ review: KnowledgePersonalizationReview
+    ) -> some View {
+        GroupBox {
+            VStack(alignment: .leading, spacing: 12) {
+                labeledText(
+                    title: "반영할 개념",
+                    text: conceptTitle(review.targetConceptID),
+                    systemImage: "scope"
+                )
+
+                labeledText(
+                    title: "연결 지식",
+                    text: review.candidate.conceptIDs
+                        .map { conceptTitle($0) }
+                        .joined(separator: " · "),
+                    systemImage: "link"
+                )
+
+                labeledText(
+                    title: "활동 응답에서 만든 후보",
+                    text: review.candidate.draft,
+                    systemImage: "quote.bubble"
+                )
+
+                Text(review.confirmationQuestion)
+                    .font(.callout.weight(.semibold))
+                    .fixedSize(horizontal: false, vertical: true)
+
+                VStack(alignment: .leading, spacing: 6) {
+                    Label("저장 예정 항목", systemImage: "internaldrive")
+                        .font(.caption.weight(.semibold))
+                        .foregroundStyle(.secondary)
+                    ForEach(
+                        Array(review.savedFields.enumerated()),
+                        id: \.offset
+                    ) { _, field in
+                        Label(field, systemImage: "checkmark")
+                            .font(.caption)
+                    }
+                }
+
+                Label(
+                    "아직 개인 지식에는 저장되지 않았습니다.",
+                    systemImage: "clock"
+                )
+                .font(.caption)
+                .foregroundStyle(.secondary)
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+        } label: {
+            Label(
+                "활동 응답 후보 · 저장 전",
+                systemImage: "person.crop.circle.badge.questionmark"
+            )
+            .font(.headline)
+            .accessibilityHeading(.h2)
         }
     }
 
@@ -184,9 +247,11 @@ struct ConceptInspectorView: View {
             .frame(maxWidth: .infinity, alignment: .leading)
         } label: {
             Label(
-                store.latestRevision == nil
-                    ? "나의 표현 · 새 Revision"
-                    : "나의 표현 · 최신 Revision에서 시작",
+                store.personalizationReview != nil
+                    ? "나의 표현 · 활동 후보에서 시작"
+                    : store.latestRevision == nil
+                        ? "나의 표현 · 새 Revision"
+                        : "나의 표현 · 최신 Revision에서 시작",
                 systemImage: "person.crop.circle"
             )
             .font(.headline)
@@ -428,7 +493,11 @@ struct ConceptInspectorView: View {
 
     private var footer: some View {
         HStack(spacing: 10) {
-            Button("취소") {
+            Button(
+                store.personalizationReview == nil
+                    ? "취소"
+                    : "후보 검토 닫기"
+            ) {
                 store.send(.cancelButtonTapped)
             }
             .keyboardShortcut(.cancelAction)
@@ -444,7 +513,11 @@ struct ConceptInspectorView: View {
                         .controlSize(.small)
                         .accessibilityLabel("개인 표현 저장 중")
                 } else {
-                    Text("Revision 저장")
+                    Text(
+                        store.personalizationReview == nil
+                            ? "Revision 저장"
+                            : "확인하고 Revision 저장"
+                    )
                 }
             }
             .keyboardShortcut(.defaultAction)
@@ -541,6 +614,17 @@ struct ConceptInspectorView: View {
     .frame(width: 380, height: 760)
 }
 
+#Preview("Concept Inspector · Activity Candidate") {
+    ConceptInspectorView(
+        store: Store(
+            initialState: ConceptInspectorPreviewData.activityCandidate
+        ) {
+            ConceptInspectorFeature()
+        }
+    )
+    .frame(width: 380, height: 760)
+}
+
 private enum ConceptInspectorPreviewData {
     private static let concept = KnowledgeConcept(
         id: "concept-constants-variables",
@@ -612,6 +696,45 @@ private enum ConceptInspectorPreviewData {
             availableConcepts: [concept, target]
         )
         return state
+    }()
+    static let activityCandidate: ConceptInspectorFeature.State = {
+        let boundary = KnowledgeConcept(
+            id: "concept-problem-boundary",
+            title: "문제의 경계",
+            definition: "해결이 책임질 대상과 밖에서 주어질 대상을 나눈다.",
+            essentialQuestion: "이번 해결은 어디까지 책임지는가?",
+            judgmentQuestions: [],
+            examples: [],
+            misconceptions: []
+        )
+        let review = KnowledgePersonalizationReview(
+            candidate: KnowledgePersonalizationCandidate(
+                id: "candidate-preview-constants",
+                kind: .conceptRevision,
+                conceptIDs: [concept.id, boundary.id],
+                draft: "변경 가능성은 현재 책임과 시간 범위 안에서 판단한다.",
+                evidenceActivityID: "activity-page05-card-sorting",
+                createdAt: Date(timeIntervalSince1970: 1_725_782_400)
+            ),
+            targetConceptID: concept.id,
+            activityID: "activity-page05-promotion",
+            confirmationQuestion:
+                "이 문장을 나의 변경 책임 기준으로 남길까?",
+            savedFields: ["나의 설명", "판단 경계", "근거 활동 ID", "수정 시각"]
+        )
+        return ConceptInspectorFeature.State(
+            sourcePageTitle: "변하지 않는 값을 선언하기",
+            item: KnowledgeContextSnapshot.ConceptItem(
+                concept: concept,
+                personalRevision: revision,
+                revisionEvidenceActivityID: "activity-page05-card-sorting",
+                role: .primary,
+                usage: "현재 책임의 값 변경 여부를 판단한다.",
+                nearbyReason: nil
+            ),
+            availableConcepts: [concept, boundary],
+            personalizationReview: review
+        )
     }()
 
     private static func state(

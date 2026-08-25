@@ -226,6 +226,8 @@ enum LearningActivityFieldKey {
     static let response = "response"
     static let completionAssessment = "completionAssessment"
     static let personalExpression = "personalExpression"
+    static let personalizationTargetConceptID =
+        "personalizationTargetConceptID"
     static let relationStatement = "relationStatement"
     static let relationSourceConceptID = "relationSourceConceptID"
     static let relationTargetConceptID = "relationTargetConceptID"

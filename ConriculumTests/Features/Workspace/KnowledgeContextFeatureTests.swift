@@ -201,8 +201,10 @@ struct KnowledgeContextFeatureTests {
         await store.send(.inspector(.delegate(.saved(revision)))) {
             $0.inspector = nil
         }
-        await store.receive(.personalizationSaved)
-        await store.receive(.delegate(.personalizationSaved))
+        await store.receive(.personalizationSaved(candidateID: nil))
+        await store.receive(.delegate(.personalizationSaved(
+            candidateID: nil
+        )))
     }
 
     @Test

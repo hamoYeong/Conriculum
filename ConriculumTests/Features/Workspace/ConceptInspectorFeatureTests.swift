@@ -72,6 +72,58 @@ struct ConceptInspectorFeatureTests {
     }
 
     @Test
+    func activityCandidateCallsTheClientOnlyAfterFinalConfirmation() async {
+        let review = personalizationReview()
+        let repository = PersonalRevisionRepositorySpy()
+        let store = TestStore(
+            initialState: state(personalizationReview: review)
+        ) {
+            ConceptInspectorFeature()
+        } withDependencies: {
+            $0.date.now = timestamp
+            $0.uuid = .constant(revisionUUID)
+            $0.personalKnowledgeClient.saveRevision = { revision in
+                await repository.save(revision)
+            }
+            $0.personalKnowledgeClient.loadRevisions = { conceptID in
+                await repository.load(conceptID: conceptID)
+            }
+        }
+        let expectedRevision = PersonalConceptRevision(
+            id: PersonalConceptRevisionID(
+                rawValue: revisionUUID.uuidString.lowercased()
+            ),
+            conceptID: review.targetConceptID,
+            personalTitle: nil,
+            explanation: review.candidate.draft,
+            examples: [],
+            previousRevisionID: nil,
+            evidenceActivityID: review.candidate.evidenceActivityID,
+            createdAt: timestamp
+        )
+
+        let savesBeforeConfirmation = await repository.savedRevisions()
+        #expect(savesBeforeConfirmation.isEmpty)
+        #expect(store.state.personalizationReview == review)
+        #expect(store.state.explanation == review.candidate.draft)
+        #expect(
+            store.state.evidenceActivityID
+                == review.candidate.evidenceActivityID
+        )
+
+        await store.send(.saveButtonTapped) {
+            $0.isSaving = true
+        }
+        await store.receive(.saveResponse(.saved(expectedRevision))) {
+            $0.isSaving = false
+        }
+        await store.receive(.delegate(.saved(expectedRevision)))
+
+        let savesAfterConfirmation = await repository.savedRevisions()
+        #expect(savesAfterConfirmation == [expectedRevision])
+    }
+
+    @Test
     func cancelKeepsTheDraftLocalAndDoesNotSave() async {
         let repository = PersonalRevisionRepositorySpy()
         let store = TestStore(initialState: state()) {
@@ -162,7 +214,8 @@ struct ConceptInspectorFeatureTests {
     private func state(
         revision: PersonalConceptRevision? = nil,
         evidenceActivityID: LearningActivityID? =
-            "activity-page05-card-sorting"
+            "activity-page05-card-sorting",
+        personalizationReview: KnowledgePersonalizationReview? = nil
     ) -> ConceptInspectorFeature.State {
         ConceptInspectorFeature.State(
             sourcePageTitle: "변경 가능성으로 let과 var 판단하기",
@@ -181,7 +234,28 @@ struct ConceptInspectorFeatureTests {
                 role: .primary,
                 usage: "현재 책임의 값 변경 여부를 판단한다.",
                 nearbyReason: nil
-            )
+            ),
+            personalizationReview: personalizationReview
+        )
+    }
+
+    private func personalizationReview() -> KnowledgePersonalizationReview {
+        KnowledgePersonalizationReview(
+            candidate: KnowledgePersonalizationCandidate(
+                id: "candidate-page05-constants",
+                kind: .conceptRevision,
+                conceptIDs: [
+                    "concept-constants-variables",
+                    "concept-problem-boundary",
+                ],
+                draft: "변경 가능성은 현재 책임의 범위로 판단한다.",
+                evidenceActivityID: "activity-page05-card-sorting",
+                createdAt: .distantPast
+            ),
+            targetConceptID: "concept-constants-variables",
+            activityID: "activity-page05-promotion",
+            confirmationQuestion: "이 설명을 나의 변경 책임 기준으로 남길까?",
+            savedFields: ["나의 설명", "근거 활동 ID", "수정 시각"]
         )
     }
 

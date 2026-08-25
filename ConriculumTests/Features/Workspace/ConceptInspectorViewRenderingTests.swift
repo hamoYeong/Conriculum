@@ -9,11 +9,12 @@ import Testing
 @MainActor
 struct ConceptInspectorViewRenderingTests {
     @Test
-    func revisionAndRelationStatesRenderAtInspectorWidth() throws {
+    func revisionRelationAndCandidateStatesRenderAtInspectorWidth() throws {
         let states = [
             state(revision: nil),
             state(revision: revision),
             relationEditorState(),
+            activityCandidateState(),
         ]
 
         for state in states {
@@ -138,6 +139,46 @@ struct ConceptInspectorViewRenderingTests {
             availableConcepts: [concept, target]
         )
         return state
+    }
+
+    private func activityCandidateState() -> ConceptInspectorFeature.State {
+        let boundary = KnowledgeConcept(
+            id: "concept-problem-boundary",
+            title: "문제의 경계",
+            definition: "해결이 책임질 범위를 나눈다.",
+            essentialQuestion: "이번 해결은 어디까지 책임지는가?",
+            judgmentQuestions: [],
+            examples: [],
+            misconceptions: []
+        )
+        let review = KnowledgePersonalizationReview(
+            candidate: KnowledgePersonalizationCandidate(
+                id: "candidate-rendering-constants",
+                kind: .conceptRevision,
+                conceptIDs: [concept.id, boundary.id],
+                draft: "변경 가능성은 현재 책임과 시간 범위 안에서 판단한다.",
+                evidenceActivityID: "activity-page05-card-sorting",
+                createdAt: Date(timeIntervalSince1970: 1_725_782_400)
+            ),
+            targetConceptID: concept.id,
+            activityID: "activity-page05-promotion",
+            confirmationQuestion:
+                "이 문장을 나의 변경 책임 기준으로 남길까?",
+            savedFields: ["나의 설명", "판단 경계", "근거 활동 ID", "수정 시각"]
+        )
+        return ConceptInspectorFeature.State(
+            sourcePageTitle: "변하지 않는 값을 선언하기",
+            item: KnowledgeContextSnapshot.ConceptItem(
+                concept: concept,
+                personalRevision: revision,
+                revisionEvidenceActivityID: "activity-page05-card-sorting",
+                role: .primary,
+                usage: "현재 책임의 값 변경 여부를 판단한다.",
+                nearbyReason: nil
+            ),
+            availableConcepts: [concept, boundary],
+            personalizationReview: review
+        )
     }
 
     private func sampledColorCount(in image: NSBitmapImageRep) -> Int {

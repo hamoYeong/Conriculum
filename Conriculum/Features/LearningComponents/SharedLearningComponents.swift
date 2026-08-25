@@ -398,13 +398,29 @@ struct PersonalKnowledgePromotionComponent: View {
             systemImage: "person.crop.circle.badge.checkmark",
             accent: .purple
         ) {
-            Text(
-                content.conceptIDs
-                    .map { conceptNames.title(for: $0) }
-                    .joined(separator: " · ")
+            VStack(alignment: .leading, spacing: 8) {
+                Label("연결 지식", systemImage: "link")
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(.secondary)
+                Text(
+                    content.conceptIDs
+                        .map { conceptNames.title(for: $0) }
+                        .joined(separator: " · ")
+                )
+                .font(.callout)
+                .fixedSize(horizontal: false, vertical: true)
+            }
+
+            Picker("반영할 개념", selection: targetConceptSelection) {
+                ForEach(content.conceptIDs, id: \.self) { conceptID in
+                    Text(conceptNames.title(for: conceptID))
+                        .tag(Optional(conceptID))
+                }
+            }
+            .pickerStyle(.menu)
+            .accessibilityHint(
+                "후보를 확인한 뒤 새 Revision을 저장할 개념을 선택합니다."
             )
-            .font(.caption.weight(.semibold))
-            .foregroundStyle(.secondary)
 
             TextEditor(
                 text: activity.textBinding(
@@ -445,10 +461,11 @@ struct PersonalKnowledgePromotionComponent: View {
 
                 Spacer()
 
-                Button("나의 지식에 반영") {
+                Button("Inspector에서 검토") {
                     isConfirming = true
                 }
                 .buttonStyle(.borderedProminent)
+                .disabled(selectedTargetConceptID == nil)
                 .accessibilityHint("저장 내용을 확인하는 대화상자를 엽니다.")
             }
             .focusSection()
@@ -464,22 +481,64 @@ struct PersonalKnowledgePromotionComponent: View {
             content.confirmationQuestion,
             isPresented: $isConfirming
         ) {
-            Button("확인하고 반영") {
-                onAction(.promotionConfirmed(
+            Button("Inspector에서 최종 확인") {
+                guard let targetConceptID = selectedTargetConceptID else {
+                    return
+                }
+                let expression = candidateExpression
+                activity.updating(valuesByKey: [
+                    LearningActivityFieldKey.personalExpression: [expression],
+                    LearningActivityFieldKey.personalizationTargetConceptID: [
+                        targetConceptID.rawValue
+                    ],
+                ])
+                onAction(.promotionReviewRequested(
                     activityID: activity.activityID,
-                    expression: activity.value(
-                        for: LearningActivityFieldKey.personalExpression
-                    ).isEmpty
-                        ? content.editableDraft
-                        : activity.value(
-                            for: LearningActivityFieldKey.personalExpression
-                        )
+                    targetConceptID: targetConceptID,
+                    expression: expression
                 ))
             }
             Button("취소", role: .cancel) {}
         } message: {
-            Text("학습 응답과 별개로 나의 지식에 저장됩니다.")
+            Text("아직 개인 지식에 저장하지 않습니다. Inspector에서 대상, 내용과 근거를 확인한 뒤 저장합니다.")
         }
+    }
+
+    private var selectedTargetConceptID: KnowledgeConceptID? {
+        let storedValue = activity.value(
+            for: LearningActivityFieldKey.personalizationTargetConceptID
+        )
+        let storedID = storedValue.isEmpty
+            ? nil
+            : KnowledgeConceptID(rawValue: storedValue)
+        return storedID.flatMap {
+            content.conceptIDs.contains($0) ? $0 : nil
+        } ?? content.conceptIDs.first
+    }
+
+    private var targetConceptSelection: Binding<KnowledgeConceptID?> {
+        Binding(
+            get: { selectedTargetConceptID },
+            set: { conceptID in
+                guard let conceptID,
+                      content.conceptIDs.contains(conceptID)
+                else { return }
+                activity.updating(
+                    key: LearningActivityFieldKey
+                        .personalizationTargetConceptID,
+                    values: [conceptID.rawValue]
+                )
+            }
+        )
+    }
+
+    private var candidateExpression: String {
+        let storedExpression = activity.value(
+            for: LearningActivityFieldKey.personalExpression
+        )
+        return storedExpression.isEmpty
+            ? content.editableDraft
+            : storedExpression
     }
 }
 

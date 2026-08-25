@@ -38,6 +38,7 @@ struct ConceptInspectorFeature {
         let personalRelations: [PersonalKnowledgeRelation]
         let relationCreationContract: KnowledgeContextSnapshot
             .RelationCreationContract?
+        let personalizationReview: KnowledgePersonalizationReview?
         var personalTitle: String
         var explanation: String
         var examples: [ExampleDraft]
@@ -53,20 +54,25 @@ struct ConceptInspectorFeature {
             baseRelations: [KnowledgeRelation] = [],
             personalRelations: [PersonalKnowledgeRelation] = [],
             relationCreationContract: KnowledgeContextSnapshot
-                .RelationCreationContract? = nil
+                .RelationCreationContract? = nil,
+            personalizationReview: KnowledgePersonalizationReview? = nil
         ) {
             self.sourcePageTitle = sourcePageTitle
             concept = item.concept
             role = item.role
             usage = item.usage
             latestRevision = item.personalRevision
-            evidenceActivityID = item.revisionEvidenceActivityID
+            evidenceActivityID = personalizationReview?.candidate
+                .evidenceActivityID ?? item.revisionEvidenceActivityID
             self.availableConcepts = availableConcepts
             self.baseRelations = baseRelations
             self.personalRelations = personalRelations
             self.relationCreationContract = relationCreationContract
+            self.personalizationReview = personalizationReview
             personalTitle = item.personalRevision?.personalTitle ?? ""
-            explanation = item.personalRevision?.explanation ?? ""
+            explanation = personalizationReview?.candidate.draft
+                ?? item.personalRevision?.explanation
+                ?? ""
             examples = item.personalRevision?.examples.map(ExampleDraft.init)
                 ?? []
         }
@@ -94,10 +100,6 @@ struct ConceptInspectorFeature {
                         $0 != targetID
                     }
                 }
-        }
-
-        func conceptTitle(for id: KnowledgeConceptID) -> String {
-            availableConcepts.first { $0.id == id }?.title ?? id.rawValue
         }
 
         fileprivate func newRelationEditorState()
@@ -132,7 +134,8 @@ struct ConceptInspectorFeature {
         }
 
         var hasUnsavedChanges: Bool {
-            normalizedPersonalTitle != normalized(
+            if personalizationReview != nil { return true }
+            return normalizedPersonalTitle != normalized(
                 latestRevision?.personalTitle ?? ""
             )
                 || normalizedExplanation != normalized(

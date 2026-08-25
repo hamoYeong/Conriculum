@@ -164,6 +164,21 @@ struct LearningWorkspaceFeatureTests {
             pageID: lastPageID
         )
         initialState.chapter.chapter = chapter
+        let pendingReview = KnowledgePersonalizationReview(
+            candidate: KnowledgePersonalizationCandidate(
+                id: "candidate-page08-pending",
+                kind: .conceptRevision,
+                conceptIDs: ["concept-value", "concept-type-selection"],
+                draft: "값의 의미와 할 일을 보고 타입을 선택한다.",
+                evidenceActivityID: "activity-page08-free-response",
+                createdAt: timestamp
+            ),
+            targetConceptID: "concept-type-selection",
+            activityID: "activity-page08-promotion",
+            confirmationQuestion: "이 문장을 나의 현재 언어로 반영할까?",
+            savedFields: ["나의 설명", "근거 활동 ID"]
+        )
+        initialState.pendingPersonalizationReviews = [pendingReview]
         let store = TestStore(initialState: initialState) {
             LearningWorkspaceFeature()
         } withDependencies: {
@@ -185,6 +200,7 @@ struct LearningWorkspaceFeatureTests {
 
         #expect(store.state.chapter.currentPageID == lastPageID)
         #expect(store.state.chapter.completedPageIDs.isEmpty)
+        #expect(store.state.pendingPersonalizationReviews == [pendingReview])
         #expect(store.state.knowledgeContext.reloadRequestCount == 0)
     }
 
@@ -213,9 +229,13 @@ struct LearningWorkspaceFeatureTests {
             $0.personalKnowledgeClient.loadRelations = { _ in [] }
         }
 
-        await store.send(.knowledgeContext(.personalizationSaved))
+        await store.send(.knowledgeContext(.personalizationSaved(
+            candidateID: nil
+        )))
         await store.receive(
-            .knowledgeContext(.delegate(.personalizationSaved))
+            .knowledgeContext(.delegate(.personalizationSaved(
+                candidateID: nil
+            )))
         )
         await store.receive(
             .knowledgeContext(.reloadRequested(.personalizationSaved))
@@ -297,6 +317,148 @@ struct LearningWorkspaceFeatureTests {
         ))) {
             $0.knowledgeContext.inspector = expectedInspector
         }
+    }
+
+    @Test
+    func activityPromotionCreatesAReviewWithoutSavingAndDismissKeepsTheDraft()
+        async throws
+    {
+        let chapter = try loadChapter()
+        let catalog = try loadCatalog()
+        let pageID: LearningPageID = "chapter-02-page-05"
+        let activityID: LearningActivityID = "activity-page05-promotion"
+        let targetConceptID: KnowledgeConceptID =
+            "concept-constants-variables"
+        let expression = "변경 가능성은 현재 책임의 범위로 판단한다."
+        let timestamp = Date(timeIntervalSince1970: 1_725_782_400)
+        let candidateUUID = UUID(
+            uuidString: "00000000-0000-0000-0000-000000000084"
+        )!
+        let snapshot = try KnowledgeContextSnapshotComposer().compose(
+            chapter: chapter,
+            catalog: catalog,
+            pageID: pageID,
+            revisions: []
+        )
+        let responseDraft = ChapterLearningFeature.ActivityDraft(
+            responseID: "response-page05-promotion",
+            activityID: activityID,
+            fields: [
+                ActivityResponseField(
+                    key: LearningActivityFieldKey.personalExpression,
+                    values: [expression]
+                ),
+                ActivityResponseField(
+                    key: LearningActivityFieldKey
+                        .personalizationTargetConceptID,
+                    values: [targetConceptID.rawValue]
+                ),
+            ]
+        )
+        let candidate = KnowledgePersonalizationCandidate(
+            id: KnowledgePersonalizationCandidateID(
+                rawValue: candidateUUID.uuidString.lowercased()
+            ),
+            kind: .conceptRevision,
+            conceptIDs: [
+                "concept-constants-variables",
+                "concept-problem-boundary",
+            ],
+            draft: expression,
+            evidenceActivityID: "activity-page05-card-sorting",
+            createdAt: timestamp
+        )
+        let review = KnowledgePersonalizationReview(
+            candidate: candidate,
+            targetConceptID: targetConceptID,
+            activityID: activityID,
+            confirmationQuestion:
+                "이 문장과 범위가 다른 예를 나의 변경 책임 기준으로 남길까?",
+            savedFields: [
+                "나의 설명",
+                "let 예시",
+                "var 예시",
+                "판단 경계",
+                "근거 활동 ID",
+                "수정 시각",
+            ]
+        )
+        let item = try #require(snapshot.directConcepts.first {
+            $0.id == targetConceptID
+        })
+        let expectedInspector = ConceptInspectorFeature.State(
+            sourcePageTitle: snapshot.pageTitle,
+            item: item,
+            availableConcepts: snapshot.availableConcepts,
+            baseRelations: snapshot.baseRelations,
+            personalRelations: snapshot.personalRelations,
+            relationCreationContract: snapshot.relationCreationContract,
+            personalizationReview: review
+        )
+        let saveSpy = PersonalizationSaveSpy()
+        var initialState = LearningWorkspaceFeature.State(
+            chapterID: chapter.id,
+            pageID: pageID
+        )
+        initialState.chapter.chapter = chapter
+        initialState.chapter.knowledgeCatalog = catalog
+        initialState.chapter.activityDrafts[activityID] = responseDraft
+        initialState.chapter.activitySaveStates[activityID] = .saved(timestamp)
+        initialState.knowledgeContext.snapshot = snapshot
+        let store = TestStore(initialState: initialState) {
+            LearningWorkspaceFeature()
+        } withDependencies: {
+            $0.date.now = timestamp
+            $0.uuid = .constant(candidateUUID)
+            $0.personalKnowledgeClient.saveRevision = { revision in
+                await saveSpy.save(revision)
+            }
+        }
+        let componentAction = PersonalKnowledgeComponentAction
+            .promotionReviewRequested(
+                activityID: activityID,
+                targetConceptID: targetConceptID,
+                expression: "  \(expression)  "
+            )
+
+        await store.send(.chapter(.delegate(.personalKnowledge(
+            componentAction
+        )))) {
+            $0.pendingPersonalizationReviews = [review]
+        }
+        await store.receive(.knowledgeContext(
+            .personalizationReviewRequested(review)
+        )) {
+            $0.knowledgeContext.inspector = expectedInspector
+        }
+
+        let savesBeforeConfirmation = await saveSpy.savedRevisions()
+        #expect(savesBeforeConfirmation.isEmpty)
+
+        await store.send(.knowledgeContext(.inspector(
+            .cancelButtonTapped
+        )))
+        await store.receive(.knowledgeContext(.inspector(
+            .delegate(.cancelled)
+        ))) {
+            $0.knowledgeContext.inspector = nil
+        }
+        #expect(store.state.pendingPersonalizationReviews == [review])
+
+        await store.send(.chapter(.delegate(.personalKnowledge(
+            .promotionCancelled(activityID)
+        )))) {
+            $0.pendingPersonalizationReviews = []
+        }
+        await store.receive(.knowledgeContext(
+            .personalizationReviewCancelled(candidate.id)
+        ))
+
+        #expect(
+            store.state.chapter.activityDrafts[activityID] == responseDraft
+        )
+        let savesAfterDismiss = await saveSpy.savedRevisions()
+        #expect(savesAfterDismiss.isEmpty)
     }
 
     @Test
@@ -382,5 +544,17 @@ struct LearningWorkspaceFeatureTests {
             KnowledgeCatalog.self,
             from: .valuesAndTypes
         )
+    }
+}
+
+private actor PersonalizationSaveSpy {
+    private var revisions: [PersonalConceptRevision] = []
+
+    func save(_ revision: PersonalConceptRevision) {
+        revisions.append(revision)
+    }
+
+    func savedRevisions() -> [PersonalConceptRevision] {
+        revisions
     }
 }

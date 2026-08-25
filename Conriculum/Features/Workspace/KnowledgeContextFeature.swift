@@ -35,10 +35,16 @@ struct KnowledgeContextFeature {
         case task
         case pageChanged(LearningPageID)
         case conceptSelected(KnowledgeConceptID)
+        case personalizationReviewRequested(KnowledgePersonalizationReview)
+        case personalizationReviewCancelled(
+            KnowledgePersonalizationCandidateID
+        )
         case relationDraftRequested(PersonalRelationDraftRequest)
         case inspectorDismissed
         case inspector(ConceptInspectorFeature.Action)
-        case personalizationSaved
+        case personalizationSaved(
+            candidateID: KnowledgePersonalizationCandidateID?
+        )
         case reloadRequested(ReloadReason)
         case loadResponse(LoadResponse)
         case delegate(Delegate)
@@ -50,7 +56,9 @@ struct KnowledgeContextFeature {
     }
 
     enum Delegate: Equatable {
-        case personalizationSaved
+        case personalizationSaved(
+            candidateID: KnowledgePersonalizationCandidateID?
+        )
     }
 
     @Dependency(\.curriculumClient) var curriculumClient
@@ -91,6 +99,36 @@ struct KnowledgeContextFeature {
                 )
                 return .none
 
+            case let .personalizationReviewRequested(review):
+                guard review.candidate.kind == .conceptRevision,
+                      review.candidate.conceptIDs.contains(
+                          review.targetConceptID
+                      ),
+                      let snapshot = state.snapshot,
+                      let item = conceptItem(
+                          id: review.targetConceptID,
+                          in: snapshot
+                      )
+                else { return .none }
+                state.inspector = ConceptInspectorFeature.State(
+                    sourcePageTitle: snapshot.pageTitle,
+                    item: item,
+                    availableConcepts: snapshot.availableConcepts,
+                    baseRelations: snapshot.baseRelations,
+                    personalRelations: snapshot.personalRelations,
+                    relationCreationContract: snapshot
+                        .relationCreationContract,
+                    personalizationReview: review
+                )
+                return .none
+
+            case let .personalizationReviewCancelled(candidateID):
+                guard state.inspector?.personalizationReview?.id
+                    == candidateID
+                else { return .none }
+                state.inspector = nil
+                return .none
+
             case let .relationDraftRequested(request):
                 guard let snapshot = state.snapshot,
                       let contract = snapshot.relationCreationContract,
@@ -127,13 +165,21 @@ struct KnowledgeContextFeature {
                 state.inspector = nil
                 return .none
 
-            case .inspector(.delegate(.saved)),
-                 .inspector(.delegate(.relationSaved)):
+            case .inspector(.delegate(.saved)):
+                let candidateID = state.inspector?.personalizationReview?.id
                 state.inspector = nil
-                return .send(.personalizationSaved)
+                return .send(.personalizationSaved(
+                    candidateID: candidateID
+                ))
 
-            case .personalizationSaved:
-                return .send(.delegate(.personalizationSaved))
+            case .inspector(.delegate(.relationSaved)):
+                state.inspector = nil
+                return .send(.personalizationSaved(candidateID: nil))
+
+            case let .personalizationSaved(candidateID):
+                return .send(.delegate(.personalizationSaved(
+                    candidateID: candidateID
+                )))
 
             case let .reloadRequested(reason):
                 state.lastReloadReason = reason
