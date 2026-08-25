@@ -21,8 +21,10 @@ struct SharedLearningComponentTests {
     @Test
     func completionAndPersonalKnowledgeActionsRemainIndependent() async {
         let activityID: LearningActivityID = "activity-page01-completion"
-        let personalAction = PersonalKnowledgeComponentAction.promotionConfirmed(
+        let personalAction = PersonalKnowledgeComponentAction
+            .promotionReviewRequested(
             activityID: "activity-page01-promotion",
+            targetConceptID: "concept-value",
             expression: "값과 규칙을 나누는 나의 기준"
         )
         let store = TestStore(

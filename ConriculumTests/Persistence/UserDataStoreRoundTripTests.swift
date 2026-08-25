@@ -217,6 +217,69 @@ struct UserDataStoreRoundTripTests {
 
         #expect(recoveredRelations == [successfulRelation])
     }
+
+    @Test
+    func failedRevisionSaveRollsBackAndPreservesTheLastSuccess() async throws {
+        let modelContainer = try PersistenceContainerFactory.inMemory()
+        let failure = SaveFailureController()
+        let store = UserDataStore(
+            modelContainer: modelContainer,
+            saveContext: { context in
+                if failure.shouldFail {
+                    throw StubSaveError()
+                }
+                try context.save()
+            }
+        )
+        let client = PersonalKnowledgeClient.live(store: store)
+        let successfulRevision = PersonalConceptRevision(
+            id: "personal-revision-01",
+            conceptID: "concept-value",
+            personalTitle: "내가 이해한 값",
+            explanation: "프로그램이 직접 다룰 수 있게 정한 정보다.",
+            examples: [],
+            previousRevisionID: nil,
+            evidenceActivityID: "activity-page01-choice",
+            createdAt: firstDate
+        )
+
+        try await client.saveRevision(successfulRevision)
+
+        let rejectedUpdate = PersonalConceptRevision(
+            id: successfulRevision.id,
+            conceptID: successfulRevision.conceptID,
+            personalTitle: "저장되면 안 되는 이름",
+            explanation: "강제 실패 뒤 복구되어야 하는 설명이다.",
+            examples: [],
+            previousRevisionID: successfulRevision.previousRevisionID,
+            evidenceActivityID: successfulRevision.evidenceActivityID,
+            createdAt: secondDate
+        )
+        failure.shouldFail = true
+
+        do {
+            try await client.saveRevision(rejectedUpdate)
+            Issue.record("강제로 실패시킨 revision 저장이 성공했다.")
+        } catch let error as PersistenceClientError {
+            guard case let .saveFailed(operation, _) = error else {
+                Issue.record("예상하지 못한 persistence 오류: \(error)")
+                return
+            }
+            #expect(operation == "saveRevision")
+        } catch {
+            Issue.record("식별할 수 없는 저장 오류: \(error)")
+        }
+
+        let relaunchedStore = UserDataStore(modelContainer: modelContainer)
+        let relaunchedClient = PersonalKnowledgeClient.live(
+            store: relaunchedStore
+        )
+        let recoveredRevisions = try await relaunchedClient.loadRevisions(
+            successfulRevision.conceptID
+        )
+
+        #expect(recoveredRevisions == [successfulRevision])
+    }
 }
 
 @MainActor

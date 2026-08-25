@@ -1,4 +1,5 @@
 import ComposableArchitecture
+import Foundation
 
 @Reducer
 struct LearningWorkspaceFeature {
@@ -8,19 +9,28 @@ struct LearningWorkspaceFeature {
         var knowledgeContext: KnowledgeContextFeature.State
         var sidebarMode: WorkspaceSidebarMode
         var modeBeforeFocus: WorkspaceSidebarMode
+        var pendingPersonalizationReviews: [
+            KnowledgePersonalizationReview
+        ] = []
 
         init(
             chapterID: ChapterID,
             pageID: LearningPageID,
-            sidebarMode: WorkspaceSidebarMode = .automatic
+            sidebarMode: WorkspaceSidebarMode = .automatic,
+            pendingPersonalizationReviews: [
+                KnowledgePersonalizationReview
+            ] = []
         ) {
             chapter = ChapterLearningFeature.State(
                 chapterID: chapterID,
                 currentPageID: pageID
             )
             knowledgeContext = KnowledgeContextFeature.State(
-                currentPageID: pageID
+                chapterID: chapterID,
+                currentPageID: pageID,
+                pendingPersonalizationReviews: pendingPersonalizationReviews
             )
+            self.pendingPersonalizationReviews = pendingPersonalizationReviews
             self.sidebarMode = sidebarMode
             modeBeforeFocus = sidebarMode == .focus
                 ? .automatic
@@ -41,6 +51,9 @@ struct LearningWorkspaceFeature {
         case homeRequested
     }
 
+    @Dependency(\.date.now) var now
+    @Dependency(\.uuid) var uuid
+
     var body: some Reducer<State, Action> {
         Scope(state: \.chapter, action: \.chapter) {
             ChapterLearningFeature()
@@ -55,7 +68,98 @@ struct LearningWorkspaceFeature {
             case let .chapter(.delegate(.currentPageChanged(pageID))):
                 return .send(.knowledgeContext(.pageChanged(pageID)))
 
-            case .knowledgeContext(.delegate(.personalizationSaved)):
+            case let .chapter(.delegate(.personalKnowledge(
+                .promotionReviewRequested(
+                    activityID,
+                    targetConceptID,
+                    expression
+                )
+            ))):
+                guard let content = promotionContent(
+                    activityID: activityID,
+                    page: state.chapter.currentPage
+                ),
+                content.candidateKind == .conceptRevision,
+                content.conceptIDs.contains(targetConceptID),
+                let evidenceActivityID = content.evidenceActivityIDs.first
+                else { return .none }
+
+                let candidate = KnowledgePersonalizationCandidate(
+                    id: KnowledgePersonalizationCandidateID(
+                        rawValue: uuid().uuidString.lowercased()
+                    ),
+                    kind: content.candidateKind,
+                    conceptIDs: content.conceptIDs,
+                    draft: expression.trimmingCharacters(
+                        in: .whitespacesAndNewlines
+                    ),
+                    evidenceActivityID: evidenceActivityID,
+                    createdAt: now
+                )
+                let review = KnowledgePersonalizationReview(
+                    candidate: candidate,
+                    targetConceptID: targetConceptID,
+                    activityID: activityID,
+                    confirmationQuestion: content.confirmationQuestion,
+                    savedFields: content.savedFields
+                )
+                state.pendingPersonalizationReviews.removeAll {
+                    $0.activityID == activityID
+                }
+                state.pendingPersonalizationReviews.append(review)
+                state.knowledgeContext.pendingPersonalizationReviews = state
+                    .pendingPersonalizationReviews
+                return .send(.knowledgeContext(
+                    .personalizationReviewRequested(review)
+                ))
+
+            case let .chapter(.delegate(.personalKnowledge(
+                .promotionCancelled(activityID)
+            ))):
+                let cancelledCandidateID = state
+                    .pendingPersonalizationReviews
+                    .first { $0.activityID == activityID }?
+                    .id
+                state.pendingPersonalizationReviews.removeAll {
+                    $0.activityID == activityID
+                }
+                state.knowledgeContext.pendingPersonalizationReviews = state
+                    .pendingPersonalizationReviews
+                guard let cancelledCandidateID else { return .none }
+                return .send(.knowledgeContext(
+                    .personalizationReviewCancelled(cancelledCandidateID)
+                ))
+
+            case let .chapter(.delegate(.personalKnowledge(
+                .relationConfirmed(
+                    _,
+                    sourceConceptID,
+                    targetConceptID,
+                    statement,
+                    reason,
+                    evidenceActivityID
+                )
+            ))):
+                return .send(.knowledgeContext(.relationDraftRequested(
+                    PersonalRelationDraftRequest(
+                        sourceConceptID: sourceConceptID,
+                        targetConceptID: targetConceptID,
+                        statement: statement,
+                        reason: reason,
+                        evidenceActivityID: evidenceActivityID
+                    )
+                )))
+
+            case let .knowledgeContext(.delegate(.personalizationSaved(
+                candidateID
+            ))):
+                if let candidateID {
+                    state.pendingPersonalizationReviews.removeAll {
+                        $0.id == candidateID
+                    }
+                    state.knowledgeContext.pendingPersonalizationReviews = state
+                        .pendingPersonalizationReviews
+                }
                 return .send(.knowledgeContext(
                     .reloadRequested(.personalizationSaved)
                 ))
@@ -83,5 +187,17 @@ struct LearningWorkspaceFeature {
                 return .none
             }
         }
+    }
+
+    private func promotionContent(
+        activityID: LearningActivityID,
+        page: LearningPage?
+    ) -> PersonalKnowledgePromotionContent? {
+        guard let section = page?.sections.first(where: {
+            $0.activityID == activityID
+        }),
+        case let .personalKnowledgePromotion(content) = section.content
+        else { return nil }
+        return content
     }
 }

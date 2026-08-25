@@ -17,9 +17,12 @@ enum HomePreviewFixtures {
         evidence: LearningEvidenceKind.allCases.map {
             HomeSnapshot.EvidenceSummary(kind: $0, count: 0, latestAt: nil)
         },
-        knowledgeChange: .empty(
-            message: "아직 확인해 반영한 나의 표현이나 연결이 없습니다."
-        )
+        knowledgeChanges: KnowledgeChangeCollection(
+            confirmed: [],
+            pending: []
+        ),
+        knowledgeChangesEmptyStateMessage:
+            "아직 확인해 반영한 나의 표현이나 연결이 없습니다."
     )
 
     static let mock: HomeSnapshot = {
@@ -65,17 +68,44 @@ enum HomePreviewFixtures {
                     latestAt: counts[kind, default: 0] == 0 ? nil : timestamp
                 )
             },
-            knowledgeChange: .recentRevision(
-                HomeSnapshot.RevisionSummary(
-                    id: "preview-revision-type-selection",
-                    conceptID: "concept-type-selection",
-                    conceptTitle: "타입 선택",
-                    personalTitle: "정보가 할 일을 먼저 보기",
-                    explanation: "겉모양보다 의미와 이후 할 일을 기준으로 타입을 고릅니다.",
-                    exampleCount: 1,
-                    revisedAt: timestamp
-                )
-            )
+            knowledgeChanges: KnowledgeChangeCollection(
+                confirmed: [
+                    .revision(KnowledgeChangeCollection.Revision(
+                        id: "preview-revision-type-selection",
+                        conceptID: "concept-type-selection",
+                        conceptTitle: "타입 선택",
+                        personalTitle: "정보가 할 일을 먼저 보기",
+                        explanation: "겉모양보다 의미와 이후 할 일을 기준으로 타입을 고릅니다.",
+                        exampleCount: 1,
+                        evidenceActivityID: "activity-page03-choice",
+                        modifiedAt: timestamp
+                    )),
+                    .relation(KnowledgeChangeCollection.Relation(
+                        id: "preview-relation-value-type-selection",
+                        sourceConceptID: "concept-value",
+                        sourceConceptTitle: "값",
+                        targetConceptID: "concept-type-selection",
+                        targetConceptTitle: "타입 선택",
+                        statement: "값의 의미는 타입 선택의 기준으로 이어진다.",
+                        reason: "이후 가능한 사용을 함께 판단하기 때문이다.",
+                        evidenceActivityID: "activity-page03-choice",
+                        modifiedAt: timestamp.addingTimeInterval(-60)
+                    )),
+                ],
+                pending: [
+                    KnowledgeChangeCollection.Pending(
+                        id: "preview-candidate-value",
+                        targetConceptID: "concept-value",
+                        targetConceptTitle: "값",
+                        connectedConceptTitles: ["값", "타입 선택"],
+                        draft: "값의 의미와 이후 할 일을 함께 보고 타입을 고른다.",
+                        evidenceActivityID: "activity-page03-choice",
+                        createdAt: timestamp.addingTimeInterval(60)
+                    ),
+                ]
+            ),
+            knowledgeChangesEmptyStateMessage:
+                "아직 확인해 반영한 나의 표현이나 연결이 없습니다."
         )
     }()
 }

@@ -66,14 +66,26 @@ struct LearningActivityInput {
         key: String,
         values: [String]
     ) {
+        updating(valuesByKey: [key: values])
+    }
+
+    func updating(
+        valuesByKey: [String: [String]]
+    ) {
         var updatedFields = fields
-        if let index = updatedFields.firstIndex(where: { $0.key == key }) {
-            updatedFields[index] = ActivityResponseField(
-                key: key,
-                values: values
-            )
-        } else {
-            updatedFields.append(ActivityResponseField(key: key, values: values))
+        for key in valuesByKey.keys.sorted() {
+            guard let values = valuesByKey[key] else { continue }
+            if let index = updatedFields.firstIndex(where: { $0.key == key }) {
+                updatedFields[index] = ActivityResponseField(
+                    key: key,
+                    values: values
+                )
+            } else {
+                updatedFields.append(ActivityResponseField(
+                    key: key,
+                    values: values
+                ))
+            }
         }
         onFieldsChanged(activityID, updatedFields)
     }
@@ -214,7 +226,11 @@ enum LearningActivityFieldKey {
     static let response = "response"
     static let completionAssessment = "completionAssessment"
     static let personalExpression = "personalExpression"
+    static let personalizationTargetConceptID =
+        "personalizationTargetConceptID"
     static let relationStatement = "relationStatement"
+    static let relationSourceConceptID = "relationSourceConceptID"
+    static let relationTargetConceptID = "relationTargetConceptID"
     static func card(_ cardID: String) -> String {
         "card.\(cardID)"
     }

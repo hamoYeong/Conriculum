@@ -14,10 +14,8 @@ struct HomeSnapshotComposerTests {
         #expect(snapshot.lastActivity == nil)
         #expect(snapshot.evidence.count == LearningEvidenceKind.allCases.count)
         #expect(snapshot.evidence.allSatisfy { $0.count == 0 && $0.latestAt == nil })
-        guard case .empty = snapshot.knowledgeChange else {
-            Issue.record("empty fixture가 개인 지식 변경을 만들어 냈다.")
-            return
-        }
+        #expect(snapshot.knowledgeChanges.confirmed.isEmpty)
+        #expect(snapshot.knowledgeChanges.pending.isEmpty)
     }
 
     @Test
@@ -33,10 +31,13 @@ struct HomeSnapshotComposerTests {
         #expect(snapshot.evidence.contains {
             $0.kind == .reasoningExplanation && $0.count == 2
         })
-        guard case .recentRevision = snapshot.knowledgeChange else {
+        guard let firstChange = snapshot.knowledgeChanges.confirmed.first,
+              case .revision = firstChange
+        else {
             Issue.record("populated mock fixture에 최근 개인 지식이 없다.")
             return
         }
+        #expect(snapshot.knowledgeChanges.pending.count == 1)
     }
 
     @Test
@@ -100,7 +101,9 @@ struct HomeSnapshotComposerTests {
         #expect(snapshot.evidence.first {
             $0.kind == .reasoningExplanation
         }?.count == 0)
-        guard case let .recentRevision(summary) = snapshot.knowledgeChange else {
+        guard let firstChange = snapshot.knowledgeChanges.confirmed.first,
+              case let .revision(summary) = firstChange
+        else {
             Issue.record("저장된 revision이 Home snapshot에 반영되지 않았다.")
             return
         }
@@ -146,11 +149,69 @@ struct HomeSnapshotComposerTests {
         #expect(snapshot.source == .empty)
         #expect(snapshot.chapter.resumePageID == nil)
         #expect(snapshot.chapter.accessNote?.contains("미리보기 상태") == true)
+        #expect(snapshot.knowledgeChanges.confirmed.isEmpty)
+        #expect(snapshot.knowledgeChanges.pending.isEmpty)
         #expect(
-            snapshot.knowledgeChange == .empty(
-                message: chapter.overview.knowledgeContext.emptyStateMessage
-            )
+            snapshot.knowledgeChangesEmptyStateMessage
+                == chapter.overview.knowledgeContext.emptyStateMessage
         )
+    }
+
+    @Test
+    func confirmedRelationsAndPendingCandidatesStayInSeparateSections() throws {
+        let decoder = ContentResourceDecoder()
+        let chapter = try decoder.decode(Chapter.self, from: .chapter02)
+        let catalog = try decoder.decode(
+            KnowledgeCatalog.self,
+            from: .valuesAndTypes
+        )
+        let timestamp = Date(timeIntervalSince1970: 1_725_782_400)
+        let relation = PersonalKnowledgeRelation(
+            id: "relation-home",
+            sourceConceptID: "concept-value",
+            targetConceptID: "concept-type",
+            statement: "값은 타입이 허용하는 사용과 연결된다.",
+            reason: "타입이 가능한 연산을 정하기 때문이다.",
+            evidenceActivityID: "activity-page02-matching",
+            createdAt: timestamp
+        )
+        let review = KnowledgePersonalizationReview(
+            candidate: KnowledgePersonalizationCandidate(
+                id: "candidate-home",
+                kind: .conceptRevision,
+                conceptIDs: ["concept-value", "concept-type"],
+                draft: "값과 가능한 사용을 함께 설명한다.",
+                evidenceActivityID: "activity-page02-matching",
+                createdAt: timestamp.addingTimeInterval(60)
+            ),
+            targetConceptID: "concept-value",
+            activityID: "activity-page02-promotion",
+            confirmationQuestion: "이 설명을 나의 지식으로 반영할까?",
+            savedFields: ["나의 설명", "근거 활동 ID"]
+        )
+
+        let snapshot = HomeSnapshotComposer().compose(
+            chapter: chapter,
+            catalog: catalog,
+            progress: nil,
+            responses: [],
+            evidence: [],
+            revisions: [],
+            relations: [relation],
+            pendingPersonalizationReviews: [review]
+        )
+
+        #expect(snapshot.source == .recorded)
+        #expect(snapshot.knowledgeChanges.confirmed.count == 1)
+        #expect(snapshot.knowledgeChanges.pending.count == 1)
+        guard let firstChange = snapshot.knowledgeChanges.confirmed.first,
+              case let .relation(summary) = firstChange
+        else {
+            Issue.record("확인된 연결이 저장 변화 영역에 없다.")
+            return
+        }
+        #expect(summary.id == relation.id)
+        #expect(snapshot.knowledgeChanges.pending.first?.id == review.id)
     }
 }
 

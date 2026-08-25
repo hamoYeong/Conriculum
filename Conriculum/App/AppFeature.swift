@@ -32,14 +32,18 @@ struct AppFeature {
                 guard chapterID == Self.chapter02ID else { return .none }
                 state.workspace = LearningWorkspaceFeature.State(
                     chapterID: chapterID,
-                    pageID: pageID
+                    pageID: pageID,
+                    pendingPersonalizationReviews: state.home
+                        .pendingPersonalizationReviews
                 )
                 state.route = .learningWorkspace(chapterID: chapterID)
                 return .none
 
             case .workspace(.delegate(.homeRequested)):
+                let pendingReviews = state.workspace?
+                    .pendingPersonalizationReviews ?? []
                 state.route = .home
-                return .send(.home(.reloadRequested))
+                return .send(.home(.workspaceReturned(pendingReviews)))
 
             case .home, .workspace:
                 return .none

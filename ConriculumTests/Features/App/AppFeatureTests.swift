@@ -74,11 +74,26 @@ struct AppFeatureTests {
         let resumedPage = try #require(
             chapter.page(id: "chapter-02-page-02")
         )
+        let timestamp = Date(timeIntervalSince1970: 1_725_782_400)
         let progress = LearningProgress(
             chapterID: chapter.id,
             currentPageID: resumedPage.id,
             completedPageIDs: ["chapter-02-page-01"],
-            updatedAt: Date(timeIntervalSince1970: 1_725_782_400)
+            updatedAt: timestamp
+        )
+        let pendingReview = KnowledgePersonalizationReview(
+            candidate: KnowledgePersonalizationCandidate(
+                id: "candidate-home-return",
+                kind: .conceptRevision,
+                conceptIDs: ["concept-value", "concept-type"],
+                draft: "값과 가능한 사용을 함께 설명한다.",
+                evidenceActivityID: "activity-page02-matching",
+                createdAt: timestamp
+            ),
+            targetConceptID: "concept-value",
+            activityID: "activity-page02-promotion",
+            confirmationQuestion: "이 설명을 나의 지식으로 반영할까?",
+            savedFields: ["나의 설명", "근거 활동 ID"]
         )
         let expectedSnapshot = HomeSnapshotComposer().compose(
             chapter: chapter,
@@ -86,14 +101,16 @@ struct AppFeatureTests {
             progress: progress,
             responses: [],
             evidence: [],
-            revisions: []
+            revisions: [],
+            pendingPersonalizationReviews: [pendingReview]
         )
 
         var initialState = AppFeature.State()
         initialState.route = .learningWorkspace(chapterID: chapter.id)
         initialState.workspace = LearningWorkspaceFeature.State(
             chapterID: chapter.id,
-            pageID: chapter.overview.id
+            pageID: chapter.overview.id,
+            pendingPersonalizationReviews: [pendingReview]
         )
         initialState.home = HomeFeature.State(
             snapshot: HomePreviewFixtures.mock
@@ -108,11 +125,15 @@ struct AppFeatureTests {
             $0.learningRecordClient.loadResponses = { _ in [] }
             $0.learningRecordClient.loadEvidence = { _ in [] }
             $0.personalKnowledgeClient.loadRevisions = { _ in [] }
+            $0.personalKnowledgeClient.loadRelations = { _ in [] }
         }
 
         await store.send(.workspace(.homeButtonTapped))
         await store.receive(.workspace(.delegate(.homeRequested))) {
             $0.route = .home
+        }
+        await store.receive(.home(.workspaceReturned([pendingReview]))) {
+            $0.home.pendingPersonalizationReviews = [pendingReview]
         }
         await store.receive(.home(.reloadRequested)) {
             $0.home.isLoading = true

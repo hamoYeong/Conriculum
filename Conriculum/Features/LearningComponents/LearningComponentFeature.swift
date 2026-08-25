@@ -14,15 +14,19 @@ enum CompletionSelfAssessment: String, Equatable, Sendable {
 
 enum PersonalKnowledgeComponentAction: Equatable, Sendable {
     case expressionInspectorRequested([KnowledgeConceptID])
-    case promotionConfirmed(
+    case promotionReviewRequested(
         activityID: LearningActivityID,
+        targetConceptID: KnowledgeConceptID,
         expression: String
     )
     case promotionCancelled(LearningActivityID)
     case relationConfirmed(
         activityID: LearningActivityID,
+        sourceConceptID: KnowledgeConceptID,
+        targetConceptID: KnowledgeConceptID,
         statement: String,
-        reason: String
+        reason: String,
+        evidenceActivityID: LearningActivityID
     )
     case relationCancelled(LearningActivityID)
 }

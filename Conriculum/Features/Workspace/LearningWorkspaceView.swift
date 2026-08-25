@@ -21,6 +21,14 @@ struct LearningWorkspaceView: View {
             )
         }
         .navigationSplitViewStyle(.balanced)
+        .inspector(isPresented: inspectorIsPresented) {
+            if let inspectorStore = store.scope(
+                state: \.knowledgeContext.inspector,
+                action: \.knowledgeContext.inspector
+            ) {
+                ConceptInspectorView(store: inspectorStore)
+            }
+        }
         .toolbar {
             ToolbarItem(placement: .navigation) {
                 Button {
@@ -67,6 +75,16 @@ struct LearningWorkspaceView: View {
                 store.send(.sidebarModeChanged(
                     WorkspaceSidebarMode(visibility: visibility)
                 ))
+            }
+        )
+    }
+
+    private var inspectorIsPresented: Binding<Bool> {
+        Binding(
+            get: { store.knowledgeContext.inspector != nil },
+            set: { isPresented in
+                guard !isPresented else { return }
+                store.send(.knowledgeContext(.inspectorDismissed))
             }
         )
     }

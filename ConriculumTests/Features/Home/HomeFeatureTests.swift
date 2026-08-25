@@ -73,6 +73,7 @@ struct HomeFeatureTests {
             $0.personalKnowledgeClient.loadRevisions = { conceptID in
                 conceptID == revision.conceptID ? [revision] : []
             }
+            $0.personalKnowledgeClient.loadRelations = { _ in [] }
         }
 
         await store.send(.task) {
@@ -88,6 +89,53 @@ struct HomeFeatureTests {
                 resumePageID: page.id
             )
         }
+    }
+
+    @Test
+    func personalKnowledgeLoadFailureKeepsTheLastSuccessfulSummary()
+        async throws
+    {
+        let decoder = ContentResourceDecoder()
+        let chapter = try decoder.decode(Chapter.self, from: .chapter02)
+        let catalog = try decoder.decode(
+            KnowledgeCatalog.self,
+            from: .valuesAndTypes
+        )
+        let previousSnapshot = HomePreviewFixtures.mock
+        let store = TestStore(
+            initialState: HomeFeature.State(snapshot: previousSnapshot)
+        ) {
+            HomeFeature()
+        } withDependencies: {
+            $0.curriculumClient.loadChapter = { _ in chapter }
+            $0.knowledgeCatalogClient.loadCatalog = { catalog }
+            $0.learningRecordClient.loadProgress = { _ in nil }
+            $0.learningRecordClient.loadResponses = { _ in [] }
+            $0.learningRecordClient.loadEvidence = { _ in [] }
+            $0.personalKnowledgeClient.loadRevisions = { _ in
+                throw NSError(
+                    domain: "HomeFeatureTests",
+                    code: 1,
+                    userInfo: [
+                        NSLocalizedDescriptionKey:
+                            "테스트 Home 개인 지식 조회 실패"
+                    ]
+                )
+            }
+            $0.personalKnowledgeClient.loadRelations = { _ in [] }
+        }
+
+        await store.send(.reloadRequested) {
+            $0.isLoading = true
+        }
+        await store.receive(.loadResponse(.failed(
+            message: "테스트 Home 개인 지식 조회 실패"
+        ))) {
+            $0.isLoading = false
+            $0.loadErrorMessage = "테스트 Home 개인 지식 조회 실패"
+        }
+
+        #expect(store.state.snapshot == previousSnapshot)
     }
 }
 
