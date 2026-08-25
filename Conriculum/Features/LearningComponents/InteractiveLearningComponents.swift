@@ -32,6 +32,7 @@ struct CardSortingComponent: View {
                     }
                 }
             }
+            .focusSection()
 
             VStack(alignment: .leading, spacing: 10) {
                 Text("선택한 카드를 놓을 영역")
@@ -49,6 +50,7 @@ struct CardSortingComponent: View {
                     }
                 }
             }
+            .focusSection()
 
             TextField(
                 "분류한 이유를 한 문장으로 적기",
@@ -119,6 +121,13 @@ struct CardSortingComponent: View {
             .joined(separator: ", ")
         )
         .accessibilityHint("선택한 뒤 분류 영역 버튼을 누르거나 영역으로 드래그합니다.")
+        .accessibilityActions {
+            ForEach(content.groups, id: \.id) { group in
+                Button("\(group.text)에 배치") {
+                    assign(cardID: card.id, to: group.id)
+                }
+            }
+        }
     }
 
     private func groupButton(_ group: LearningContentItem) -> some View {
@@ -146,7 +155,11 @@ struct CardSortingComponent: View {
         }
         .accessibilityLabel("분류 영역. \(group.text)")
         .accessibilityValue("배치된 카드 \(assignedCardCount(to: group.id))개")
-        .accessibilityHint("선택한 카드를 이 영역에 배치합니다.")
+        .accessibilityHint(
+            selectedCardID == nil
+                ? "먼저 카드 버튼을 선택합니다."
+                : "선택한 카드를 이 영역에 배치합니다."
+        )
     }
 
     private func assignedGroup(
@@ -166,11 +179,15 @@ struct CardSortingComponent: View {
     }
 
     private func assign(cardID: String, to groupID: String) {
+        updateAssignment(cardID: cardID, to: groupID)
+        selectedCardID = nil
+    }
+
+    func updateAssignment(cardID: String, to groupID: String) {
         activity.updating(
             key: LearningActivityFieldKey.card(cardID),
             values: [groupID]
         )
-        selectedCardID = nil
     }
 }
 
@@ -210,6 +227,9 @@ struct MatchingComponent: View {
                         }
                         .labelsHidden()
                         .accessibilityLabel("\(item.text)에 연결할 항목")
+                        .accessibilityHint(
+                            "연결할 오른쪽 항목을 선택합니다."
+                        )
                     }
                 }
             }
@@ -263,6 +283,7 @@ struct ChoiceWithReasonComponent: View {
                         .pickerStyle(.radioGroup)
                         .labelsHidden()
                         .accessibilityLabel(question.prompt)
+                        .accessibilityHint("답을 하나 선택합니다.")
                     }
                 }
             }
@@ -308,8 +329,12 @@ struct FillInBlankComponent: View {
                 Color(nsColor: .textBackgroundColor),
                 in: RoundedRectangle(cornerRadius: 10, style: .continuous)
             )
+            .accessibilityElement(children: .ignore)
             .accessibilityLabel("빈칸이 포함된 Swift 코드")
             .accessibilityValue(content.template)
+            .accessibilityHint(
+                "가로로 스크롤하여 긴 코드를 확인할 수 있습니다."
+            )
 
             VStack(alignment: .leading, spacing: 12) {
                 ForEach(content.blanks, id: \.id) { blank in
@@ -322,6 +347,7 @@ struct FillInBlankComponent: View {
                         )
                         .textFieldStyle(.roundedBorder)
                         .accessibilityLabel(blank.placeholder)
+                        .accessibilityHint("빈칸에 들어갈 내용을 입력합니다.")
                     } else {
                         Picker(
                             blank.placeholder,
@@ -335,6 +361,7 @@ struct FillInBlankComponent: View {
                             }
                         }
                         .accessibilityLabel(blank.placeholder)
+                        .accessibilityHint("빈칸에 들어갈 항목을 선택합니다.")
                     }
                 }
             }
@@ -384,6 +411,14 @@ struct CodeAssemblyComponent: View {
                 }
             }
             .scrollIndicators(.hidden)
+            .accessibilityElement(children: .ignore)
+            .accessibilityLabel("사용할 수 있는 이름 조각")
+            .accessibilityValue(
+                content.pieces.map(\.text).joined(separator: ", ")
+            )
+            .accessibilityHint(
+                "아래 각 코드 줄의 선택 메뉴에서 이름을 고를 수 있습니다."
+            )
 
             VStack(alignment: .leading, spacing: 12) {
                 ForEach(Array(starterLines.enumerated()), id: \.offset) {
@@ -421,7 +456,7 @@ struct CodeAssemblyComponent: View {
 
             Picker(
                 "\(index + 1)번째 줄의 이름",
-                selection: activity.textBinding(for: key)
+                selection: selectionBinding(at: index)
             ) {
                 Text("이름 선택 안 함").tag("")
                 ForEach(content.pieces, id: \.id) { piece in
@@ -429,6 +464,9 @@ struct CodeAssemblyComponent: View {
                 }
             }
             .accessibilityLabel("\(index + 1)번째 줄에 사용할 이름")
+            .accessibilityHint(
+                "이름을 선택합니다. 드래그하지 않고도 완료할 수 있습니다."
+            )
         }
         .padding(12)
         .frame(maxWidth: .infinity, alignment: .leading)
@@ -443,7 +481,12 @@ struct CodeAssemblyComponent: View {
             activity.updating(key: key, values: [pieceID])
             return true
         }
-        .accessibilityHint("Picker로 선택하거나 이름 조각을 이 줄로 드래그합니다.")
+    }
+
+    func selectionBinding(at index: Int) -> Binding<String> {
+        activity.textBinding(
+            for: LearningActivityFieldKey.codeLine(index)
+        )
     }
 }
 
@@ -503,6 +546,7 @@ struct FreeResponseComponent: View {
                 isShowingExample.toggle()
             }
             .disabled(response.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+            .accessibilityValue(isShowingExample ? "표시됨" : "숨겨짐")
             .accessibilityHint("내 응답을 작성한 뒤 참고 예시를 비교합니다.")
 
             if isShowingExample {
@@ -564,6 +608,7 @@ struct RecallCheckComponent: View {
                     )
                     .textFieldStyle(.roundedBorder)
                     .accessibilityLabel(field)
+                    .accessibilityHint("되짚어 본 내용을 기록합니다.")
                 }
             }
 

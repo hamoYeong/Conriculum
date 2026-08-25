@@ -8,6 +8,23 @@ enum ActivityDraftSaveState: Equatable, Sendable {
     case saved(Date)
     case validationError(String)
     case persistenceError(String)
+
+    var accessibilityDescription: String? {
+        switch self {
+        case .idle:
+            nil
+        case .pending:
+            "활동 응답 변경 사항 저장 대기 중"
+        case .saving:
+            "활동 응답 저장 중"
+        case .saved:
+            "활동 응답 저장됨"
+        case let .validationError(message):
+            "입력을 확인해 주세요. \(message)"
+        case let .persistenceError(message):
+            "저장하지 못했습니다. \(message)"
+        }
+    }
 }
 
 struct LearningActivityInput {
@@ -107,7 +124,10 @@ struct ActivityDraftStatusView: View {
             .font(.caption)
             .foregroundStyle(.secondary)
             .accessibilityElement(children: .combine)
-            .accessibilityLabel("활동 응답 저장 중")
+            .accessibilityLabel(
+                activity.saveState.accessibilityDescription
+                    ?? "활동 응답 저장 중"
+            )
 
         case let .saved(date):
             statusLabel(
@@ -143,7 +163,10 @@ struct ActivityDraftStatusView: View {
         Label(title, systemImage: systemImage)
             .font(.caption.weight(.medium))
             .foregroundStyle(color)
-            .accessibilityLabel("활동 응답 \(title)")
+            .accessibilityLabel(
+                activity.saveState.accessibilityDescription
+                    ?? "활동 응답 \(title)"
+            )
     }
 
     private func errorStatus(
@@ -179,6 +202,10 @@ struct ActivityDraftStatusView: View {
             in: RoundedRectangle(cornerRadius: 9, style: .continuous)
         )
         .accessibilityElement(children: .contain)
+        .accessibilityLabel(
+            activity.saveState.accessibilityDescription
+                ?? "\(title). \(message)"
+        )
     }
 }
 
@@ -237,6 +264,7 @@ struct ActivityCriteriaView: View {
                 Label(title, systemImage: systemImage)
                     .font(.subheadline.weight(.semibold))
                     .foregroundStyle(accent)
+                    .accessibilityHeading(.h3)
 
                 ForEach(Array(criteria.enumerated()), id: \.offset) {
                     _,

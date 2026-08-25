@@ -272,6 +272,12 @@ struct CodeExplanationComponent: View {
                         }
                     }
                     .scrollIndicators(.hidden)
+                    .accessibilityElement(children: .ignore)
+                    .accessibilityLabel("코드에서 눈여겨볼 부분")
+                    .accessibilityValue(content.focus.joined(separator: ", "))
+                    .accessibilityHint(
+                        "가로로 스크롤하여 모든 코드 조각을 확인할 수 있습니다."
+                    )
                 }
             }
 

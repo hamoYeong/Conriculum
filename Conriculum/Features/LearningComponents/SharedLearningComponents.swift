@@ -193,6 +193,7 @@ struct PersonalExpressionComparisonComponent: View {
             in: RoundedRectangle(cornerRadius: 10, style: .continuous)
         )
         .accessibilityElement(children: .combine)
+        .accessibilityLabel("\(title). \(text)")
     }
 }
 
@@ -219,11 +220,15 @@ struct LearningStateSelectionComponent: View {
                     optionButton(option)
                 }
             }
+            .focusSection()
 
             if effectiveSelectionID != nil {
                 Button("기본 학습으로 돌아가기") {
                     onSelectionChanged(nil)
                 }
+                .accessibilityHint(
+                    "선택한 확장·심화 경로를 해제하고 기본 학습을 표시합니다."
+                )
             }
         }
     }
@@ -339,6 +344,7 @@ struct CompletionCheckComponent: View {
                     assessmentButton(.retry)
                 }
             }
+            .focusSection()
 
             ActivityCriteriaView(
                 title: "설명에 포함할 근거",
@@ -373,7 +379,9 @@ struct CompletionCheckComponent: View {
             .frame(maxWidth: .infinity)
         }
         .buttonStyle(.bordered)
+        .accessibilityLabel(option.title)
         .accessibilityValue(isSelected ? "선택됨" : "선택 안 됨")
+        .accessibilityHint("현재 페이지의 완료 상태로 선택합니다.")
     }
 }
 
@@ -415,6 +423,9 @@ struct PersonalKnowledgePromotionComponent: View {
                     .stroke(Color(nsColor: .separatorColor), lineWidth: 1)
             }
             .accessibilityLabel("개인 지식으로 반영할 나의 표현")
+            .accessibilityHint(
+                "기본 지식은 바꾸지 않고 나의 표현으로 저장할 문장을 편집합니다."
+            )
 
             Text(content.confirmationQuestion)
                 .font(.callout.weight(.semibold))
@@ -430,6 +441,7 @@ struct PersonalKnowledgePromotionComponent: View {
                 Button("이번에는 반영하지 않기") {
                     onAction(.promotionCancelled(activity.activityID))
                 }
+                .accessibilityHint("나의 지식에 저장하지 않고 학습을 계속합니다.")
 
                 Spacer()
 
@@ -437,7 +449,9 @@ struct PersonalKnowledgePromotionComponent: View {
                     isConfirming = true
                 }
                 .buttonStyle(.borderedProminent)
+                .accessibilityHint("저장 내용을 확인하는 대화상자를 엽니다.")
             }
+            .focusSection()
 
             Text(content.cancellationResult)
                 .font(.caption)
@@ -528,6 +542,9 @@ struct PersonalKnowledgeRelationComponent: View {
                     .stroke(Color(nsColor: .separatorColor), lineWidth: 1)
             }
             .accessibilityLabel("나의 지식 연결 문장")
+            .accessibilityHint(
+                "출발 개념과 연결할 개념의 관계를 문장으로 편집합니다."
+            )
 
             TextField(
                 content.reasonPrompt,
@@ -536,6 +553,7 @@ struct PersonalKnowledgeRelationComponent: View {
             )
             .textFieldStyle(.roundedBorder)
             .accessibilityLabel("지식 연결 이유")
+            .accessibilityHint("이 연결을 만든 이유를 입력합니다.")
 
             Label(
                 "근거 활동 \(content.evidenceActivityIDs.count)개가 함께 기록됩니다.",
@@ -551,6 +569,7 @@ struct PersonalKnowledgeRelationComponent: View {
                 Button("이번에는 연결하지 않기") {
                     onAction(.relationCancelled(activity.activityID))
                 }
+                .accessibilityHint("나의 지식 관계에 저장하지 않고 계속합니다.")
 
                 Spacer()
 
@@ -558,7 +577,9 @@ struct PersonalKnowledgeRelationComponent: View {
                     isConfirming = true
                 }
                 .buttonStyle(.borderedProminent)
+                .accessibilityHint("저장 내용을 확인하는 대화상자를 엽니다.")
             }
+            .focusSection()
 
             ActivityDraftStatusView(activity: activity)
         }
@@ -608,6 +629,12 @@ struct PersonalKnowledgeRelationComponent: View {
             in: RoundedRectangle(cornerRadius: 9, style: .continuous)
         )
         .accessibilityElement(children: .combine)
+        .accessibilityLabel(
+            "\(title). "
+                + conceptIDs
+                    .map { conceptNames.title(for: $0) }
+                    .joined(separator: ", ")
+        )
     }
 }
 
@@ -686,5 +713,6 @@ struct KnowledgeChangeSummaryComponent: View {
             in: RoundedRectangle(cornerRadius: 9, style: .continuous)
         )
         .accessibilityElement(children: .combine)
+        .accessibilityLabel("\(title). \(text)")
     }
 }

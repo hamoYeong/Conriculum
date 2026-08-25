@@ -27,8 +27,9 @@ struct LearningBlock<Content: View>: View {
                 Image(systemName: systemImage)
                     .foregroundStyle(accent)
                     .frame(width: 22)
+                    .accessibilityHidden(true)
             }
-            .accessibilityAddTraits(.isHeader)
+            .accessibilityHeading(.h2)
 
             content
         }
@@ -43,6 +44,7 @@ struct LearningBlock<Content: View>: View {
                 .stroke(accent.opacity(0.18), lineWidth: 1)
         }
         .accessibilityElement(children: .contain)
+        .focusSection()
     }
 }
 
@@ -162,6 +164,7 @@ struct LearningLabeledTextGrid: View {
                         Text(label)
                             .font(.caption.weight(.semibold))
                             .foregroundStyle(accent)
+                            .accessibilityAddTraits(.isHeader)
                     }
 
                     Text(item.text)
