@@ -7,33 +7,9 @@ struct AppView: View {
     var body: some View {
         switch store.route {
         case .home:
-            VStack(spacing: 16) {
-                Text("Conriculum")
-                    .font(.largeTitle)
-                Text("학습 홈")
-                    .foregroundStyle(.secondary)
-                Button(
-                    store.home.chapterEntry?.resumePageID == nil
-                        ? "Chapter 2 시작하기"
-                        : "Chapter 2 이어하기"
-                ) {
-                    if store.home.chapterEntry?.resumePageID == nil {
-                        store.send(.home(.startButtonTapped))
-                    } else {
-                        store.send(.home(.resumeButtonTapped))
-                    }
-                }
-                .disabled(store.home.chapterEntry == nil)
-
-                if let loadErrorMessage = store.home.loadErrorMessage {
-                    Text(loadErrorMessage)
-                        .foregroundStyle(.red)
-                }
-            }
-            .frame(minWidth: 720, minHeight: 480)
-            .task {
-                await store.send(.home(.task)).finish()
-            }
+            HomeView(
+                store: store.scope(state: \.home, action: \.home)
+            )
 
         case let .learningWorkspace(chapterID, pageID):
             VStack(spacing: 16) {
