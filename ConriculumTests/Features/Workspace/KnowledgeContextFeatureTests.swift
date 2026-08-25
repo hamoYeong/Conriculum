@@ -119,6 +119,59 @@ struct KnowledgeContextFeatureTests {
     }
 
     @Test
+    func failedPersonalizationReloadKeepsTheLastSuccessfulSnapshot()
+        async throws
+    {
+        let chapter = try loadChapter()
+        let catalog = try loadCatalog()
+        let pageID: LearningPageID = "chapter-02-page-05"
+        let snapshot = try KnowledgeContextSnapshotComposer().compose(
+            chapter: chapter,
+            catalog: catalog,
+            pageID: pageID,
+            revisions: []
+        )
+        let store = TestStore(
+            initialState: KnowledgeContextFeature.State(
+                chapterID: chapter.id,
+                currentPageID: pageID,
+                snapshot: snapshot
+            )
+        ) {
+            KnowledgeContextFeature()
+        } withDependencies: {
+            $0.curriculumClient.loadChapter = { _ in chapter }
+            $0.knowledgeCatalogClient.loadCatalog = { catalog }
+            $0.personalKnowledgeClient.loadRevisions = { _ in
+                throw NSError(
+                    domain: "KnowledgeContextFeatureTests",
+                    code: 1,
+                    userInfo: [
+                        NSLocalizedDescriptionKey:
+                            "테스트 개인 지식 조회 실패"
+                    ]
+                )
+            }
+            $0.personalKnowledgeClient.loadRelations = { _ in [] }
+        }
+
+        await store.send(.reloadRequested(.personalizationSaved)) {
+            $0.isLoading = true
+            $0.lastReloadReason = .personalizationSaved
+            $0.reloadRequestCount = 1
+        }
+        await store.receive(.loadResponse(.failed(
+            pageID: pageID,
+            message: "테스트 개인 지식 조회 실패"
+        ))) {
+            $0.isLoading = false
+            $0.loadErrorMessage = "테스트 개인 지식 조회 실패"
+        }
+
+        #expect(store.state.snapshot == snapshot)
+    }
+
+    @Test
     func conceptSelectionOpensTheInspectorWithoutReplacingTheSnapshot()
         async throws
     {

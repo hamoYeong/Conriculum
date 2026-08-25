@@ -299,6 +299,101 @@ struct LearningWorkspaceFeatureTests {
     }
 
     @Test
+    func failedCandidateSaveKeepsTheReviewPendingWithoutRefreshing()
+        async throws
+    {
+        let chapter = try loadChapter()
+        let catalog = try loadCatalog()
+        let pageID: LearningPageID = "chapter-02-page-05"
+        let timestamp = Date(timeIntervalSince1970: 1_725_782_400)
+        let snapshot = try KnowledgeContextSnapshotComposer().compose(
+            chapter: chapter,
+            catalog: catalog,
+            pageID: pageID,
+            revisions: []
+        )
+        let review = KnowledgePersonalizationReview(
+            candidate: KnowledgePersonalizationCandidate(
+                id: "candidate-save-failure",
+                kind: .conceptRevision,
+                conceptIDs: [
+                    "concept-constants-variables",
+                    "concept-problem-boundary",
+                ],
+                draft: "변경 가능성은 현재 책임의 범위로 판단한다.",
+                evidenceActivityID: "activity-page05-card-sorting",
+                createdAt: timestamp
+            ),
+            targetConceptID: "concept-constants-variables",
+            activityID: "activity-page05-promotion",
+            confirmationQuestion: "이 설명을 나의 지식으로 반영할까?",
+            savedFields: ["나의 설명", "근거 활동 ID"]
+        )
+        let item = try #require(snapshot.directConcepts.first {
+            $0.id == review.targetConceptID
+        })
+        var initialState = LearningWorkspaceFeature.State(
+            chapterID: chapter.id,
+            pageID: pageID,
+            pendingPersonalizationReviews: [review]
+        )
+        initialState.chapter.chapter = chapter
+        initialState.chapter.knowledgeCatalog = catalog
+        initialState.knowledgeContext.snapshot = snapshot
+        initialState.knowledgeContext.inspector = ConceptInspectorFeature.State(
+            sourcePageTitle: snapshot.pageTitle,
+            item: item,
+            availableConcepts: snapshot.availableConcepts,
+            baseRelations: snapshot.baseRelations,
+            personalRelations: snapshot.personalRelations,
+            relationCreationContract: snapshot.relationCreationContract,
+            personalizationReview: review
+        )
+        let store = TestStore(initialState: initialState) {
+            LearningWorkspaceFeature()
+        } withDependencies: {
+            $0.date.now = timestamp
+            $0.uuid = .constant(UUID(
+                uuidString: "00000000-0000-0000-0000-000000000085"
+            )!)
+            $0.personalKnowledgeClient.saveRevision = { _ in
+                throw NSError(
+                    domain: "LearningWorkspaceFeatureTests",
+                    code: 1,
+                    userInfo: [
+                        NSLocalizedDescriptionKey:
+                            "테스트 후보 저장 실패"
+                    ]
+                )
+            }
+        }
+
+        await store.send(.knowledgeContext(.inspector(
+            .saveButtonTapped
+        ))) {
+            $0.knowledgeContext.inspector?.isSaving = true
+        }
+        await store.receive(.knowledgeContext(.inspector(
+            .saveResponse(.failed("테스트 후보 저장 실패"))
+        ))) {
+            $0.knowledgeContext.inspector?.isSaving = false
+            $0.knowledgeContext.inspector?.persistenceErrorMessage =
+                "테스트 후보 저장 실패"
+        }
+
+        #expect(store.state.pendingPersonalizationReviews == [review])
+        #expect(
+            store.state.knowledgeContext.pendingPersonalizationReviews
+                == [review]
+        )
+        #expect(
+            store.state.knowledgeContext.inspector?.personalizationReview
+                == review
+        )
+        #expect(store.state.knowledgeContext.reloadRequestCount == 0)
+    }
+
+    @Test
     func pageRelationConfirmationRoutesItsDraftToTheKnowledgeInspector()
         async throws
     {
