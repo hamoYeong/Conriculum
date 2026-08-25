@@ -126,6 +126,20 @@ struct PersistenceContainerTests {
     }
 
     @Test
+    func previewAndTestRegistriesUseDistinctInMemoryContainers() throws {
+        let preview = try PersistenceEnvironmentRegistry.preview()
+        let test = try PersistenceEnvironmentRegistry.test()
+        let previewIsInMemory = preview.modelContainer.configurations
+            .allSatisfy { $0.isStoredInMemoryOnly }
+        let testIsInMemory = test.modelContainer.configurations
+            .allSatisfy { $0.isStoredInMemoryOnly }
+
+        #expect(preview.modelContainer !== test.modelContainer)
+        #expect(previewIsInMemory)
+        #expect(testIsInMemory)
+    }
+
+    @Test
     func appAssemblyRetainsOneRootContainer() throws {
         let assembly = try AppAssembly.inMemory()
         let sceneContainer = assembly.modelContainer
