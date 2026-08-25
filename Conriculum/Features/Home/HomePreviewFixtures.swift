@@ -11,7 +11,7 @@ enum HomePreviewFixtures {
             startPageID: "chapter-02-overview",
             resumePageID: nil,
             lastPage: nil,
-            accessNote: "Preview 상태 · Chapter 2 직접 진입이 열려 있습니다."
+            accessNote: "미리보기 상태 · Chapter 2 직접 진입이 열려 있습니다."
         ),
         lastActivity: nil,
         evidence: LearningEvidenceKind.allCases.map {
@@ -49,7 +49,7 @@ enum HomePreviewFixtures {
                     order: 3,
                     title: "정보에 맞는 타입 선택하기"
                 ),
-                accessNote: "Preview fixture · 이어하기 상태"
+                accessNote: "미리보기 기록 · 이어하기 상태"
             ),
             lastActivity: HomeSnapshot.ActivitySummary(
                 id: "activity-page03-choice",
