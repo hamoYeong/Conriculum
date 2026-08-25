@@ -1,4 +1,5 @@
 import ComposableArchitecture
+import Foundation
 import SwiftUI
 import Testing
 
@@ -7,21 +8,43 @@ import Testing
 @MainActor
 struct LearningWorkspaceFeatureTests {
     @Test
-    func chapterPageChangeRefreshesTheKnowledgeContext() async {
-        let pageOne: LearningPageID = "chapter-02-page-01"
-        let pageTwo: LearningPageID = "chapter-02-page-02"
+    func savedPageNavigationRefreshesTheKnowledgeContext() async throws {
+        let chapter = try loadChapter()
+        let pageOne = try #require(chapter.progressPageIDs.first)
+        let pageTwo = try #require(chapter.progressPageIDs.dropFirst().first)
+        let timestamp = Date(timeIntervalSince1970: 1_725_782_400)
+        let progress = LearningProgress(
+            chapterID: chapter.id,
+            currentPageID: pageTwo,
+            completedPageIDs: [],
+            updatedAt: timestamp
+        )
+        var initialState = LearningWorkspaceFeature.State(
+            chapterID: chapter.id,
+            pageID: pageOne
+        )
+        initialState.chapter.chapter = chapter
         let store = TestStore(
-            initialState: LearningWorkspaceFeature.State(
-                chapterID: Chapter02.id,
-                pageID: pageOne
-            )
+            initialState: initialState
         ) {
             LearningWorkspaceFeature()
+        } withDependencies: {
+            $0.date.now = timestamp
+            $0.learningRecordClient.saveProgress = { _ in }
         }
 
-        await store.send(
-            .chapter(.delegate(.currentPageChanged(pageTwo)))
-        )
+        await store.send(.chapter(.nextButtonTapped)) {
+            $0.chapter.isSavingNavigation = true
+        }
+        await store.receive(.chapter(.navigationResponse(.saved(
+            destination: .page(pageTwo),
+            progress: progress,
+            draft: nil
+        )))) {
+            $0.chapter.isSavingNavigation = false
+            $0.chapter.currentPageID = pageTwo
+        }
+        await store.receive(.chapter(.delegate(.currentPageChanged(pageTwo))))
         await store.receive(.knowledgeContext(.pageChanged(pageTwo))) {
             $0.knowledgeContext.currentPageID = pageTwo
         }
@@ -31,6 +54,111 @@ struct LearningWorkspaceFeatureTests {
             $0.knowledgeContext.lastReloadReason = .pageChanged
             $0.knowledgeContext.reloadRequestCount = 1
         }
+    }
+
+    @Test
+    func failedSaveKeepsTheCurrentPageAndDraft() async throws {
+        let chapter = try loadChapter()
+        let pageOne = try #require(chapter.progressPageIDs.first)
+        let page = try #require(chapter.page(id: pageOne))
+        let activityID = try #require(page.activities.first?.id)
+        let fields = [
+            ActivityResponseField(
+                key: "reason",
+                values: ["저장 실패 뒤에도 남아야 하는 초안"]
+            )
+        ]
+        let responseUUID = UUID(
+            uuidString: "00000000-0000-0000-0000-000000000002"
+        )!
+        let draft = ChapterLearningFeature.ActivityDraft(
+            responseID: ActivityResponseID(
+                rawValue: responseUUID.uuidString.lowercased()
+            ),
+            activityID: activityID,
+            fields: fields
+        )
+        var initialState = LearningWorkspaceFeature.State(
+            chapterID: chapter.id,
+            pageID: pageOne
+        )
+        initialState.chapter.chapter = chapter
+        let store = TestStore(initialState: initialState) {
+            LearningWorkspaceFeature()
+        } withDependencies: {
+            $0.date.now = Date(timeIntervalSince1970: 1_725_782_400)
+            $0.uuid = .constant(responseUUID)
+            $0.learningRecordClient.saveResponse = { _ in }
+            $0.learningRecordClient.saveProgress = { _ in
+                throw NSError(
+                    domain: "LearningWorkspaceFeatureTests",
+                    code: 1,
+                    userInfo: [
+                        NSLocalizedDescriptionKey: "테스트 저장 실패"
+                    ]
+                )
+            }
+        }
+
+        await store.send(.chapter(.activityDraftChanged(
+            activityID: activityID,
+            fields: fields
+        ))) {
+            $0.chapter.currentDraft = draft
+        }
+        await store.send(.chapter(.nextButtonTapped)) {
+            $0.chapter.isSavingNavigation = true
+        }
+        await store.receive(.chapter(.navigationResponse(.failed(
+            message: "테스트 저장 실패"
+        )))) {
+            $0.chapter.isSavingNavigation = false
+            $0.chapter.navigationErrorMessage = "테스트 저장 실패"
+        }
+
+        #expect(store.state.chapter.currentPageID == pageOne)
+        #expect(store.state.chapter.currentDraft == draft)
+        #expect(store.state.knowledgeContext.reloadRequestCount == 0)
+    }
+
+    @Test
+    func lastPageShowsCompletionSummaryWithoutChangingItsIdentity() async throws {
+        let chapter = try loadChapter()
+        let lastPageID = try #require(chapter.progressPageIDs.last)
+        let timestamp = Date(timeIntervalSince1970: 1_725_782_400)
+        let progress = LearningProgress(
+            chapterID: chapter.id,
+            currentPageID: lastPageID,
+            completedPageIDs: [],
+            updatedAt: timestamp
+        )
+        var initialState = LearningWorkspaceFeature.State(
+            chapterID: chapter.id,
+            pageID: lastPageID
+        )
+        initialState.chapter.chapter = chapter
+        let store = TestStore(initialState: initialState) {
+            LearningWorkspaceFeature()
+        } withDependencies: {
+            $0.date.now = timestamp
+            $0.learningRecordClient.saveProgress = { _ in }
+        }
+
+        await store.send(.chapter(.nextButtonTapped)) {
+            $0.chapter.isSavingNavigation = true
+        }
+        await store.receive(.chapter(.navigationResponse(.saved(
+            destination: .completionSummary,
+            progress: progress,
+            draft: nil
+        )))) {
+            $0.chapter.isSavingNavigation = false
+            $0.chapter.isShowingCompletionSummary = true
+        }
+
+        #expect(store.state.chapter.currentPageID == lastPageID)
+        #expect(store.state.chapter.completedPageIDs.isEmpty)
+        #expect(store.state.knowledgeContext.reloadRequestCount == 0)
     }
 
     @Test
@@ -129,5 +257,9 @@ struct LearningWorkspaceFeatureTests {
             WorkspaceSidebarMode.focus.navigationSplitViewVisibility
                 == .detailOnly
         )
+    }
+
+    private func loadChapter() throws -> Chapter {
+        try ContentResourceDecoder().decode(Chapter.self, from: .chapter02)
     }
 }
