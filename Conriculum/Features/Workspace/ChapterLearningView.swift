@@ -95,6 +95,7 @@ struct ChapterLearningView: View {
                 .padding(.vertical, 32)
                 .frame(maxWidth: .infinity)
             }
+            .disabled(store.isSavingNavigation)
 
             navigationBar(for: page)
         }

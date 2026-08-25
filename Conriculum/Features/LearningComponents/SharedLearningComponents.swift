@@ -443,6 +443,8 @@ struct PersonalKnowledgePromotionComponent: View {
                 .font(.caption)
                 .foregroundStyle(.secondary)
                 .fixedSize(horizontal: false, vertical: true)
+
+            ActivityDraftStatusView(activity: activity)
         }
         .confirmationDialog(
             content.confirmationQuestion,
@@ -557,6 +559,8 @@ struct PersonalKnowledgeRelationComponent: View {
                 }
                 .buttonStyle(.borderedProminent)
             }
+
+            ActivityDraftStatusView(activity: activity)
         }
         .confirmationDialog(
             content.confirmationQuestion,

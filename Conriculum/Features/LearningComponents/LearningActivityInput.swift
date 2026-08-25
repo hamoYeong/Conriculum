@@ -1,4 +1,14 @@
+import Foundation
 import SwiftUI
+
+enum ActivityDraftSaveState: Equatable, Sendable {
+    case idle
+    case pending
+    case saving
+    case saved(Date)
+    case validationError(String)
+    case persistenceError(String)
+}
 
 struct LearningActivityInput {
     let activityID: LearningActivityID
@@ -7,6 +17,8 @@ struct LearningActivityInput {
         _ activityID: LearningActivityID,
         _ fields: [ActivityResponseField]
     ) -> Void
+    let saveState: ActivityDraftSaveState
+    let onRetry: (_ activityID: LearningActivityID) -> Void
 
     init(
         activityID: LearningActivityID,
@@ -14,11 +26,15 @@ struct LearningActivityInput {
         onFieldsChanged: @escaping (
             _ activityID: LearningActivityID,
             _ fields: [ActivityResponseField]
-        ) -> Void
+        ) -> Void,
+        saveState: ActivityDraftSaveState = .idle,
+        onRetry: @escaping (_ activityID: LearningActivityID) -> Void = { _ in }
     ) {
         self.activityID = activityID
         self.fields = fields
         self.onFieldsChanged = onFieldsChanged
+        self.saveState = saveState
+        self.onRetry = onRetry
     }
 
     func values(for key: String) -> [String] {
@@ -63,6 +79,106 @@ struct LearningActivityInput {
             },
             set: { updating(key: key, values: [$0]) }
         )
+    }
+}
+
+struct ActivityDraftStatusView: View {
+    let activity: LearningActivityInput
+
+    @ViewBuilder
+    var body: some View {
+        switch activity.saveState {
+        case .idle:
+            EmptyView()
+
+        case .pending:
+            statusLabel(
+                title: "변경 사항 저장 대기 중",
+                systemImage: "clock",
+                color: .secondary
+            )
+
+        case .saving:
+            HStack(spacing: 8) {
+                ProgressView()
+                    .controlSize(.small)
+                Text("저장 중")
+            }
+            .font(.caption)
+            .foregroundStyle(.secondary)
+            .accessibilityElement(children: .combine)
+            .accessibilityLabel("활동 응답 저장 중")
+
+        case let .saved(date):
+            statusLabel(
+                title: "저장됨",
+                systemImage: "checkmark.circle.fill",
+                color: .green
+            )
+            .accessibilityValue(
+                date.formatted(date: .omitted, time: .shortened)
+            )
+
+        case let .validationError(message):
+            errorStatus(
+                title: "입력을 확인해 주세요",
+                message: message,
+                allowsRetry: false
+            )
+
+        case let .persistenceError(message):
+            errorStatus(
+                title: "저장하지 못했습니다",
+                message: message,
+                allowsRetry: true
+            )
+        }
+    }
+
+    private func statusLabel(
+        title: String,
+        systemImage: String,
+        color: Color
+    ) -> some View {
+        Label(title, systemImage: systemImage)
+            .font(.caption.weight(.medium))
+            .foregroundStyle(color)
+            .accessibilityLabel("활동 응답 \(title)")
+    }
+
+    private func errorStatus(
+        title: String,
+        message: String,
+        allowsRetry: Bool
+    ) -> some View {
+        HStack(alignment: .center, spacing: 10) {
+            Label {
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(title)
+                        .font(.caption.weight(.semibold))
+                    Text(message)
+                        .font(.caption)
+                }
+            } icon: {
+                Image(systemName: "exclamationmark.triangle")
+            }
+            .foregroundStyle(.red)
+            .frame(maxWidth: .infinity, alignment: .leading)
+
+            if allowsRetry {
+                Button("다시 저장") {
+                    activity.onRetry(activity.activityID)
+                }
+                .controlSize(.small)
+                .accessibilityHint("입력은 유지한 채 저장을 다시 시도합니다.")
+            }
+        }
+        .padding(10)
+        .background(
+            Color.red.opacity(0.07),
+            in: RoundedRectangle(cornerRadius: 9, style: .continuous)
+        )
+        .accessibilityElement(children: .contain)
     }
 }
 

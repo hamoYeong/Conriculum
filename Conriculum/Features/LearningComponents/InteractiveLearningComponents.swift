@@ -69,6 +69,8 @@ struct CardSortingComponent: View {
                 systemImage: "arrow.triangle.2.circlepath",
                 accent: .orange
             )
+
+            ActivityDraftStatusView(activity: activity)
         }
     }
 
@@ -224,6 +226,8 @@ struct MatchingComponent: View {
                 title: "완료 기준",
                 criteria: content.completionCriteria
             )
+
+            ActivityDraftStatusView(activity: activity)
         }
     }
 }
@@ -277,6 +281,8 @@ struct ChoiceWithReasonComponent: View {
                 systemImage: "arrow.triangle.2.circlepath",
                 accent: .orange
             )
+
+            ActivityDraftStatusView(activity: activity)
         }
     }
 }
@@ -337,6 +343,8 @@ struct FillInBlankComponent: View {
                 title: "완료 기준",
                 criteria: content.completionCriteria
             )
+
+            ActivityDraftStatusView(activity: activity)
         }
     }
 }
@@ -398,6 +406,8 @@ struct CodeAssemblyComponent: View {
                 title: "완료 기준",
                 criteria: content.completionCriteria
             )
+
+            ActivityDraftStatusView(activity: activity)
         }
     }
 
@@ -503,6 +513,8 @@ struct FreeResponseComponent: View {
                     accent: .yellow
                 )
             }
+
+            ActivityDraftStatusView(activity: activity)
         }
     }
 }
@@ -554,6 +566,8 @@ struct RecallCheckComponent: View {
                     .accessibilityLabel(field)
                 }
             }
+
+            ActivityDraftStatusView(activity: activity)
         }
     }
 }
