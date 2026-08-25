@@ -11,19 +11,16 @@ struct AppView: View {
                 store: store.scope(state: \.home, action: \.home)
             )
 
-        case let .learningWorkspace(chapterID, pageID):
-            VStack(spacing: 16) {
-                Text("학습 워크스페이스")
-                    .font(.largeTitle)
-                Text(chapterID.rawValue)
-                    .foregroundStyle(.secondary)
-                Text(pageID.rawValue)
-                    .foregroundStyle(.secondary)
-                Button("Home으로 돌아가기") {
-                    store.send(.workspaceHomeButtonTapped)
-                }
+        case .learningWorkspace:
+            if let workspaceStore = store.scope(
+                state: \.workspace,
+                action: \.workspace
+            ) {
+                LearningWorkspaceView(store: workspaceStore)
+            } else {
+                ProgressView("학습 워크스페이스를 준비하는 중입니다.")
+                    .frame(minWidth: 720, minHeight: 560)
             }
-            .frame(minWidth: 720, minHeight: 480)
         }
     }
 }
