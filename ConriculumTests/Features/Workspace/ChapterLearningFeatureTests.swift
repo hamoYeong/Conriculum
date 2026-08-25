@@ -134,7 +134,7 @@ struct ChapterLearningFeatureTests {
         await store.receive(.navigationResponse(.saved(
             destination: .completionSummary,
             progress: expectedProgress,
-            draft: nil
+            drafts: []
         ))) {
             $0.isSavingNavigation = false
             $0.isShowingCompletionSummary = true
@@ -165,6 +165,7 @@ struct ChapterLearningFeatureTests {
             )
         ]
         let recorder = LearningRecordSaveRecorder()
+        let clock = TestClock()
         var state = ChapterLearningFeature.State(
             chapterID: chapter.id,
             currentPageID: sourcePageID
@@ -195,6 +196,7 @@ struct ChapterLearningFeatureTests {
         } withDependencies: {
             $0.date.now = timestamp
             $0.uuid = .constant(responseUUID)
+            $0.continuousClock = clock
             $0.learningRecordClient.saveResponse = { response in
                 await recorder.record(.response(response))
             }
@@ -207,21 +209,24 @@ struct ChapterLearningFeatureTests {
             activityID: activityID,
             fields: fields
         )) {
-            $0.currentDraft = draft
+            $0.activityDrafts[activityID] = draft
+            $0.activitySaveStates[activityID] = .pending
         }
         await store.send(.nextButtonTapped) {
             $0.isSavingNavigation = true
+            $0.activitySaveStates[activityID] = .saving
         }
         #expect(store.state.currentPageID == sourcePageID)
 
         await store.receive(.navigationResponse(.saved(
             destination: .page(targetPageID),
             progress: expectedProgress,
-            draft: draft
+            drafts: [draft]
         ))) {
             $0.isSavingNavigation = false
             $0.currentPageID = targetPageID
-            $0.currentDraft = nil
+            $0.activityDrafts = [:]
+            $0.activitySaveStates = [:]
         }
         await store.receive(.delegate(.currentPageChanged(targetPageID)))
 
@@ -237,6 +242,199 @@ struct ChapterLearningFeatureTests {
         }
         #expect(savedResponse == expectedResponse)
         #expect(savedProgress == expectedProgress)
+    }
+
+    @Test
+    func activityDraftAutosavesAfterTheDebounce() async throws {
+        let chapter = try loadChapter()
+        let pageID = try #require(chapter.progressPageIDs.first)
+        let activityID = try #require(
+            chapter.page(id: pageID)?.activities.first?.id
+        )
+        let fields = [
+            ActivityResponseField(
+                key: "reason",
+                values: ["자동 저장할 설명"]
+            )
+        ]
+        let draft = ChapterLearningFeature.ActivityDraft(
+            responseID: ActivityResponseID(
+                rawValue: responseUUID.uuidString.lowercased()
+            ),
+            activityID: activityID,
+            fields: fields
+        )
+        let expectedResponse = ActivityResponse(
+            id: draft.responseID,
+            activityID: activityID,
+            pageID: pageID,
+            fields: fields,
+            recordedAt: timestamp
+        )
+        let clock = TestClock()
+        let recorder = LearningRecordSaveRecorder()
+        var state = ChapterLearningFeature.State(
+            chapterID: chapter.id,
+            currentPageID: pageID
+        )
+        state.chapter = chapter
+        let store = TestStore(initialState: state) {
+            ChapterLearningFeature()
+        } withDependencies: {
+            $0.continuousClock = clock
+            $0.date.now = timestamp
+            $0.uuid = .constant(responseUUID)
+            $0.learningRecordClient.saveResponse = { response in
+                await recorder.record(.response(response))
+            }
+        }
+
+        await store.send(.activityDraftChanged(
+            activityID: activityID,
+            fields: fields
+        )) {
+            $0.activityDrafts[activityID] = draft
+            $0.activitySaveStates[activityID] = .pending
+        }
+        await clock.advance(by: .milliseconds(749))
+        #expect(store.state.activitySaveStates[activityID] == .pending)
+        await clock.advance(by: .milliseconds(1))
+        await store.receive(.activityAutosaveDelayElapsed(activityID)) {
+            $0.activitySaveStates[activityID] = .saving
+        }
+        await store.receive(.activitySaveResponse(
+            activityID: activityID,
+            response: .saved(draft: draft, savedAt: timestamp)
+        )) {
+            $0.activitySaveStates[activityID] = .saved(timestamp)
+        }
+
+        let events = await recorder.events()
+        #expect(events.count == 1)
+        guard case let .response(response) = events.first else {
+            Issue.record("debounce 뒤 활동 응답이 저장되지 않았다.")
+            return
+        }
+        #expect(response == expectedResponse)
+    }
+
+    @Test
+    func persistenceFailureKeepsTheDraftAndRetriesTheSameResponse() async throws {
+        let chapter = try loadChapter()
+        let pageID = try #require(chapter.progressPageIDs.first)
+        let activityID = try #require(
+            chapter.page(id: pageID)?.activities.first?.id
+        )
+        let fields = [
+            ActivityResponseField(
+                key: "reason",
+                values: ["실패해도 유지할 설명"]
+            )
+        ]
+        let draft = ChapterLearningFeature.ActivityDraft(
+            responseID: ActivityResponseID(
+                rawValue: responseUUID.uuidString.lowercased()
+            ),
+            activityID: activityID,
+            fields: fields
+        )
+        let clock = TestClock()
+        let saver = RetryingResponseSaver()
+        var state = ChapterLearningFeature.State(
+            chapterID: chapter.id,
+            currentPageID: pageID
+        )
+        state.chapter = chapter
+        let store = TestStore(initialState: state) {
+            ChapterLearningFeature()
+        } withDependencies: {
+            $0.continuousClock = clock
+            $0.date.now = timestamp
+            $0.uuid = .constant(responseUUID)
+            $0.learningRecordClient.saveResponse = { response in
+                try await saver.save(response)
+            }
+        }
+
+        await store.send(.activityDraftChanged(
+            activityID: activityID,
+            fields: fields
+        )) {
+            $0.activityDrafts[activityID] = draft
+            $0.activitySaveStates[activityID] = .pending
+        }
+        await clock.advance(by: .milliseconds(750))
+        await store.receive(.activityAutosaveDelayElapsed(activityID)) {
+            $0.activitySaveStates[activityID] = .saving
+        }
+        await store.receive(.activitySaveResponse(
+            activityID: activityID,
+            response: .failed(
+                draft: draft,
+                message: "테스트 자동 저장 실패"
+            )
+        )) {
+            $0.activitySaveStates[activityID] = .persistenceError(
+                "테스트 자동 저장 실패"
+            )
+        }
+
+        await store.send(.activityRetryButtonTapped(activityID)) {
+            $0.activitySaveStates[activityID] = .saving
+        }
+        await store.receive(.activitySaveResponse(
+            activityID: activityID,
+            response: .saved(draft: draft, savedAt: timestamp)
+        )) {
+            $0.activitySaveStates[activityID] = .saved(timestamp)
+        }
+
+        #expect(store.state.activityDrafts[activityID] == draft)
+        let responses = await saver.responses()
+        #expect(responses.count == 2)
+        #expect(responses.allSatisfy { $0.id == draft.responseID })
+    }
+
+    @Test
+    func structurallyInvalidDraftShowsValidationStateWithoutSaving() async throws {
+        let chapter = try loadChapter()
+        let pageID = try #require(chapter.progressPageIDs.first)
+        let activityID = try #require(
+            chapter.page(id: pageID)?.activities.first?.id
+        )
+        let draft = ChapterLearningFeature.ActivityDraft(
+            responseID: ActivityResponseID(
+                rawValue: responseUUID.uuidString.lowercased()
+            ),
+            activityID: activityID,
+            fields: []
+        )
+        let clock = TestClock()
+        var state = ChapterLearningFeature.State(
+            chapterID: chapter.id,
+            currentPageID: pageID
+        )
+        state.chapter = chapter
+        let store = TestStore(initialState: state) {
+            ChapterLearningFeature()
+        } withDependencies: {
+            $0.continuousClock = clock
+            $0.uuid = .constant(responseUUID)
+        }
+
+        await store.send(.activityDraftChanged(
+            activityID: activityID,
+            fields: []
+        )) {
+            $0.activityDrafts[activityID] = draft
+            $0.activitySaveStates[activityID] = .pending
+        }
+        await clock.advance(by: .milliseconds(750))
+        await store.receive(.activityAutosaveDelayElapsed(activityID)) {
+            $0.activitySaveStates[activityID] = .validationError(
+                "저장할 입력이 없습니다."
+            )
+        }
     }
 
     private func loadChapter() throws -> Chapter {
@@ -258,5 +456,26 @@ private actor LearningRecordSaveRecorder {
 
     func events() -> [Event] {
         recordedEvents
+    }
+}
+
+private actor RetryingResponseSaver {
+    private var recordedResponses: [ActivityResponse] = []
+
+    func save(_ response: ActivityResponse) throws {
+        recordedResponses.append(response)
+        if recordedResponses.count == 1 {
+            throw NSError(
+                domain: "ChapterLearningFeatureTests",
+                code: 1,
+                userInfo: [
+                    NSLocalizedDescriptionKey: "테스트 자동 저장 실패"
+                ]
+            )
+        }
+    }
+
+    func responses() -> [ActivityResponse] {
+        recordedResponses
     }
 }

@@ -20,7 +20,10 @@ struct ChapterLearningFeature {
         var currentPageID: LearningPageID
         var chapter: Chapter?
         var completedPageIDs: Set<LearningPageID> = []
-        var currentDraft: ActivityDraft?
+        var activityDrafts: [LearningActivityID: ActivityDraft] = [:]
+        var activitySaveStates: [
+            LearningActivityID: ActivityDraftSaveState
+        ] = [:]
         var isLoading = false
         var isSavingNavigation = false
         var isShowingCompletionSummary = false
@@ -68,6 +71,12 @@ struct ChapterLearningFeature {
             activityID: LearningActivityID,
             fields: [ActivityResponseField]
         )
+        case activityAutosaveDelayElapsed(LearningActivityID)
+        case activitySaveResponse(
+            activityID: LearningActivityID,
+            response: ActivitySaveResponse
+        )
+        case activityRetryButtonTapped(LearningActivityID)
         case startButtonTapped
         case previousButtonTapped
         case nextButtonTapped
@@ -84,9 +93,19 @@ struct ChapterLearningFeature {
         case saved(
             destination: NavigationDestination,
             progress: LearningProgress,
-            draft: ActivityDraft?
+            drafts: [ActivityDraft]
         )
-        case failed(message: String)
+        case failed(
+            drafts: [ActivityDraft],
+            savedActivityIDs: [LearningActivityID],
+            savedAt: Date,
+            message: String
+        )
+    }
+
+    enum ActivitySaveResponse: Equatable, Sendable {
+        case saved(draft: ActivityDraft, savedAt: Date)
+        case failed(draft: ActivityDraft, message: String)
     }
 
     enum Delegate: Equatable {
@@ -97,6 +116,7 @@ struct ChapterLearningFeature {
     @Dependency(\.learningRecordClient) var learningRecordClient
     @Dependency(\.date.now) var now
     @Dependency(\.uuid) var uuid
+    @Dependency(\.continuousClock) var clock
 
     var body: some Reducer<State, Action> {
         Reduce { state, action in
@@ -142,7 +162,8 @@ struct ChapterLearningFeature {
                         chapter.progressPageIDs.contains($0)
                     } ?? []
                 )
-                state.currentDraft = nil
+                state.activityDrafts = [:]
+                state.activitySaveStates = [:]
                 state.isShowingCompletionSummary = false
                 state.loadErrorMessage = nil
                 state.navigationErrorMessage = nil
@@ -160,19 +181,50 @@ struct ChapterLearningFeature {
                     $0.id == activityID
                 }) == true else { return .none }
 
-                let responseID = state.currentDraft?.activityID == activityID
-                    ? state.currentDraft?.responseID
-                    : ActivityResponseID(
+                let responseID = state.activityDrafts[activityID]?.responseID
+                    ?? ActivityResponseID(
                         rawValue: uuid().uuidString.lowercased()
                     )
-                guard let responseID else { return .none }
-                state.currentDraft = ActivityDraft(
+                state.activityDrafts[activityID] = ActivityDraft(
                     responseID: responseID,
                     activityID: activityID,
                     fields: fields
                 )
+                state.activitySaveStates[activityID] = .pending
                 state.navigationErrorMessage = nil
+                let cancelID = Self.autosaveCancelID(for: activityID)
+                return .run { send in
+                    try await clock.sleep(for: .milliseconds(750))
+                    await send(.activityAutosaveDelayElapsed(activityID))
+                }
+                .cancellable(id: cancelID, cancelInFlight: true)
+
+            case let .activityAutosaveDelayElapsed(activityID):
+                return saveActivityDraft(
+                    state: &state,
+                    activityID: activityID
+                )
+
+            case let .activitySaveResponse(activityID, .saved(draft, savedAt)):
+                guard state.activityDrafts[activityID] == draft else {
+                    return .none
+                }
+                state.activitySaveStates[activityID] = .saved(savedAt)
                 return .none
+
+            case let .activitySaveResponse(activityID, .failed(draft, message)):
+                guard state.activityDrafts[activityID] == draft else {
+                    return .none
+                }
+                state.activitySaveStates[activityID] = .persistenceError(message)
+                return .none
+
+            case let .activityRetryButtonTapped(activityID):
+                state.navigationErrorMessage = nil
+                return saveActivityDraft(
+                    state: &state,
+                    activityID: activityID
+                )
 
             case .startButtonTapped:
                 guard state.currentPage?.kind == .overview,
@@ -215,13 +267,19 @@ struct ChapterLearningFeature {
                     to: .page(chapter.progressPageIDs[nextIndex])
                 )
 
-            case let .navigationResponse(.saved(destination, progress, draft)):
+            case let .navigationResponse(.saved(destination, progress, drafts)):
                 state.isSavingNavigation = false
+                guard drafts.allSatisfy({
+                    state.activityDrafts[$0.activityID] == $0
+                }) else {
+                    state.navigationErrorMessage =
+                        "저장 중 입력이 변경되었습니다. 다시 이동해 주세요."
+                    return .none
+                }
                 state.navigationErrorMessage = nil
                 state.completedPageIDs = progress.completedPageIDs
-                if state.currentDraft == draft {
-                    state.currentDraft = nil
-                }
+                state.activityDrafts = [:]
+                state.activitySaveStates = [:]
 
                 switch destination {
                 case let .page(pageID):
@@ -235,9 +293,29 @@ struct ChapterLearningFeature {
                     return .none
                 }
 
-            case let .navigationResponse(.failed(message)):
+            case let .navigationResponse(.failed(
+                drafts,
+                savedActivityIDs,
+                savedAt,
+                message
+            )):
                 state.isSavingNavigation = false
                 state.navigationErrorMessage = message
+                let savedIDs = Set(savedActivityIDs)
+                for draft in drafts where
+                    state.activityDrafts[draft.activityID] == draft
+                {
+                    if savedIDs.contains(draft.activityID) {
+                        state.activitySaveStates[draft.activityID] = .saved(savedAt)
+                    } else if case .some(.saved) = state.activitySaveStates[
+                        draft.activityID
+                    ] {
+                        continue
+                    } else {
+                        state.activitySaveStates[draft.activityID] =
+                            .persistenceError(message)
+                    }
+                }
                 return .none
 
             case .delegate:
@@ -261,17 +339,35 @@ struct ChapterLearningFeature {
             targetPageID = state.currentPageID
         }
 
-        let timestamp = now
-        let draft = state.currentDraft
-        let response = draft.map {
-            ActivityResponse(
-                id: $0.responseID,
-                activityID: $0.activityID,
-                pageID: state.currentPageID,
-                fields: $0.fields,
-                recordedAt: timestamp
-            )
+        let drafts = state.activityDrafts.values.sorted {
+            $0.activityID.rawValue < $1.activityID.rawValue
         }
+        var hasValidationError = false
+        for draft in drafts {
+            if let message = Self.validationMessage(for: draft) {
+                state.activitySaveStates[draft.activityID] =
+                    .validationError(message)
+                hasValidationError = true
+            }
+        }
+        guard !hasValidationError else {
+            state.navigationErrorMessage =
+                "저장할 입력을 확인한 뒤 다시 이동해 주세요."
+            return .none
+        }
+
+        let draftsToSave = drafts.filter { draft in
+            if case .some(.saved) = state.activitySaveStates[draft.activityID] {
+                return false
+            }
+            return true
+        }
+        for draft in draftsToSave {
+            state.activitySaveStates[draft.activityID] = .saving
+        }
+
+        let timestamp = now
+        let currentPageID = state.currentPageID
         let progress = LearningProgress(
             chapterID: state.chapterID,
             currentPageID: targetPageID,
@@ -282,23 +378,104 @@ struct ChapterLearningFeature {
         state.isSavingNavigation = true
         state.navigationErrorMessage = nil
 
-        return .run { send in
+        let saveEffect = Effect<Action>.run { send in
+            var savedActivityIDs: [LearningActivityID] = []
             do {
-                if let response {
+                for draft in draftsToSave {
+                    let response = ActivityResponse(
+                        id: draft.responseID,
+                        activityID: draft.activityID,
+                        pageID: currentPageID,
+                        fields: draft.fields,
+                        recordedAt: timestamp
+                    )
                     try await learningRecordClient.saveResponse(response)
+                    savedActivityIDs.append(draft.activityID)
                 }
                 try await learningRecordClient.saveProgress(progress)
                 await send(.navigationResponse(.saved(
                     destination: destination,
                     progress: progress,
-                    draft: draft
+                    drafts: drafts
                 )))
             } catch {
                 await send(.navigationResponse(.failed(
+                    drafts: drafts,
+                    savedActivityIDs: savedActivityIDs,
+                    savedAt: timestamp,
                     message: error.localizedDescription
                 )))
             }
         }
+
+        let cancellationEffects: [Effect<Action>] = drafts.map {
+            .cancel(id: Self.autosaveCancelID(for: $0.activityID))
+        }
+        return .merge(cancellationEffects + [saveEffect])
+    }
+
+    private func saveActivityDraft(
+        state: inout State,
+        activityID: LearningActivityID
+    ) -> Effect<Action> {
+        guard let draft = state.activityDrafts[activityID] else {
+            return .none
+        }
+        if let message = Self.validationMessage(for: draft) {
+            state.activitySaveStates[activityID] = .validationError(message)
+            return .none
+        }
+
+        let savedAt = now
+        let pageID = state.currentPageID
+        let response = ActivityResponse(
+            id: draft.responseID,
+            activityID: draft.activityID,
+            pageID: pageID,
+            fields: draft.fields,
+            recordedAt: savedAt
+        )
+        state.activitySaveStates[activityID] = .saving
+
+        return .run { send in
+            do {
+                try await learningRecordClient.saveResponse(response)
+                await send(.activitySaveResponse(
+                    activityID: activityID,
+                    response: .saved(draft: draft, savedAt: savedAt)
+                ))
+            } catch {
+                await send(.activitySaveResponse(
+                    activityID: activityID,
+                    response: .failed(
+                        draft: draft,
+                        message: error.localizedDescription
+                    )
+                ))
+            }
+        }
+    }
+
+    private static func validationMessage(
+        for draft: ActivityDraft
+    ) -> String? {
+        guard !draft.fields.isEmpty else {
+            return "저장할 입력이 없습니다."
+        }
+        let keys = draft.fields.map { $0.key.trimmingCharacters(in: .whitespaces) }
+        guard keys.allSatisfy({ !$0.isEmpty }) else {
+            return "입력 항목을 식별할 수 없습니다."
+        }
+        guard Set(keys).count == keys.count else {
+            return "같은 입력 항목이 두 번 포함되어 있습니다."
+        }
+        return nil
+    }
+
+    private static func autosaveCancelID(
+        for activityID: LearningActivityID
+    ) -> String {
+        "ChapterLearningFeature.autosave.\(activityID.rawValue)"
     }
 
     private static func resolvedPageID(

@@ -39,7 +39,7 @@ struct LearningWorkspaceFeatureTests {
         await store.receive(.chapter(.navigationResponse(.saved(
             destination: .page(pageTwo),
             progress: progress,
-            draft: nil
+            drafts: []
         )))) {
             $0.chapter.isSavingNavigation = false
             $0.chapter.currentPageID = pageTwo
@@ -78,6 +78,8 @@ struct LearningWorkspaceFeatureTests {
             activityID: activityID,
             fields: fields
         )
+        let timestamp = Date(timeIntervalSince1970: 1_725_782_400)
+        let clock = TestClock()
         var initialState = LearningWorkspaceFeature.State(
             chapterID: chapter.id,
             pageID: pageOne
@@ -86,8 +88,9 @@ struct LearningWorkspaceFeatureTests {
         let store = TestStore(initialState: initialState) {
             LearningWorkspaceFeature()
         } withDependencies: {
-            $0.date.now = Date(timeIntervalSince1970: 1_725_782_400)
+            $0.date.now = timestamp
             $0.uuid = .constant(responseUUID)
+            $0.continuousClock = clock
             $0.learningRecordClient.saveResponse = { _ in }
             $0.learningRecordClient.saveProgress = { _ in
                 throw NSError(
@@ -104,20 +107,26 @@ struct LearningWorkspaceFeatureTests {
             activityID: activityID,
             fields: fields
         ))) {
-            $0.chapter.currentDraft = draft
+            $0.chapter.activityDrafts[activityID] = draft
+            $0.chapter.activitySaveStates[activityID] = .pending
         }
         await store.send(.chapter(.nextButtonTapped)) {
             $0.chapter.isSavingNavigation = true
+            $0.chapter.activitySaveStates[activityID] = .saving
         }
         await store.receive(.chapter(.navigationResponse(.failed(
+            drafts: [draft],
+            savedActivityIDs: [activityID],
+            savedAt: timestamp,
             message: "테스트 저장 실패"
         )))) {
             $0.chapter.isSavingNavigation = false
             $0.chapter.navigationErrorMessage = "테스트 저장 실패"
+            $0.chapter.activitySaveStates[activityID] = .saved(timestamp)
         }
 
         #expect(store.state.chapter.currentPageID == pageOne)
-        #expect(store.state.chapter.currentDraft == draft)
+        #expect(store.state.chapter.activityDrafts[activityID] == draft)
         #expect(store.state.knowledgeContext.reloadRequestCount == 0)
     }
 
@@ -150,7 +159,7 @@ struct LearningWorkspaceFeatureTests {
         await store.receive(.chapter(.navigationResponse(.saved(
             destination: .completionSummary,
             progress: progress,
-            draft: nil
+            drafts: []
         )))) {
             $0.chapter.isSavingNavigation = false
             $0.chapter.isShowingCompletionSummary = true
