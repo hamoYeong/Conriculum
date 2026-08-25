@@ -73,6 +73,7 @@ struct HomeFeatureTests {
             $0.personalKnowledgeClient.loadRevisions = { conceptID in
                 conceptID == revision.conceptID ? [revision] : []
             }
+            $0.personalKnowledgeClient.loadRelations = { _ in [] }
         }
 
         await store.send(.task) {

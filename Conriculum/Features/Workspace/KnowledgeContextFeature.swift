@@ -19,15 +19,22 @@ struct KnowledgeContextFeature {
         var lastReloadReason: ReloadReason?
         var reloadRequestCount = 0
         var inspector: ConceptInspectorFeature.State?
+        var pendingPersonalizationReviews: [
+            KnowledgePersonalizationReview
+        ]
 
         init(
             chapterID: ChapterID,
             currentPageID: LearningPageID,
-            snapshot: KnowledgeContextSnapshot? = nil
+            snapshot: KnowledgeContextSnapshot? = nil,
+            pendingPersonalizationReviews: [
+                KnowledgePersonalizationReview
+            ] = []
         ) {
             self.chapterID = chapterID
             self.currentPageID = currentPageID
             self.snapshot = snapshot
+            self.pendingPersonalizationReviews = pendingPersonalizationReviews
         }
     }
 
@@ -103,8 +110,13 @@ struct KnowledgeContextFeature {
                 guard review.candidate.kind == .conceptRevision,
                       review.candidate.conceptIDs.contains(
                           review.targetConceptID
-                      ),
-                      let snapshot = state.snapshot,
+                      )
+                else { return .none }
+                state.pendingPersonalizationReviews.removeAll {
+                    $0.activityID == review.activityID
+                }
+                state.pendingPersonalizationReviews.append(review)
+                guard let snapshot = state.snapshot,
                       let item = conceptItem(
                           id: review.targetConceptID,
                           in: snapshot
@@ -123,6 +135,9 @@ struct KnowledgeContextFeature {
                 return .none
 
             case let .personalizationReviewCancelled(candidateID):
+                state.pendingPersonalizationReviews.removeAll {
+                    $0.id == candidateID
+                }
                 guard state.inspector?.personalizationReview?.id
                     == candidateID
                 else { return .none }
@@ -167,6 +182,11 @@ struct KnowledgeContextFeature {
 
             case .inspector(.delegate(.saved)):
                 let candidateID = state.inspector?.personalizationReview?.id
+                if let candidateID {
+                    state.pendingPersonalizationReviews.removeAll {
+                        $0.id == candidateID
+                    }
+                }
                 state.inspector = nil
                 return .send(.personalizationSaved(
                     candidateID: candidateID

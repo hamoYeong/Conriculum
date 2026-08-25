@@ -26,6 +26,7 @@ struct KnowledgeContextView: View {
             }
             .padding(20)
         }
+        .background(Color(nsColor: .windowBackgroundColor))
         .navigationSplitViewColumnWidth(min: 230, ideal: 300, max: 380)
         .accessibilityLabel("현재 학습의 지식 문맥")
         .task {
@@ -99,29 +100,21 @@ struct KnowledgeContextView: View {
                     .foregroundStyle(.secondary)
                     .fixedSize(horizontal: false, vertical: true)
 
-                if snapshot.changedConcepts.isEmpty {
-                    Label {
-                        Text(snapshot.emptyStateMessage)
-                            .fixedSize(horizontal: false, vertical: true)
-                    } icon: {
-                        Image(systemName: "tray")
+                KnowledgeChangeCollectionView(
+                    collection: KnowledgeChangeCollectionComposer().compose(
+                        concepts: snapshot.availableConcepts,
+                        revisions: snapshot.changedConcepts.compactMap(
+                            \.personalRevision
+                        ),
+                        relations: snapshot.personalRelations,
+                        pendingReviews: store
+                            .pendingPersonalizationReviews
+                    ),
+                    confirmedEmptyMessage: snapshot.emptyStateMessage,
+                    onConceptSelected: { conceptID in
+                        store.send(.conceptSelected(conceptID))
                     }
-                    .font(.callout)
-                    .foregroundStyle(.secondary)
-                    .padding(12)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .background(
-                        Color(nsColor: .controlBackgroundColor),
-                        in: RoundedRectangle(
-                            cornerRadius: 10,
-                            style: .continuous
-                        )
-                    )
-                } else {
-                    ForEach(snapshot.changedConcepts) { item in
-                        conceptCard(item, accent: .purple)
-                    }
-                }
+                )
             }
 
             contextSection(

@@ -16,12 +16,19 @@ struct HomeFeature {
         var snapshot: HomeSnapshot?
         var placeholderSnapshot: HomeSnapshot?
         var loadErrorMessage: String?
+        var pendingPersonalizationReviews: [
+            KnowledgePersonalizationReview
+        ]
 
         init(
             snapshot: HomeSnapshot? = nil,
-            usesSnapshotAsPlaceholder: Bool = false
+            usesSnapshotAsPlaceholder: Bool = false,
+            pendingPersonalizationReviews: [
+                KnowledgePersonalizationReview
+            ] = []
         ) {
             self.snapshot = snapshot
+            self.pendingPersonalizationReviews = pendingPersonalizationReviews
             placeholderSnapshot = usesSnapshotAsPlaceholder ? snapshot : nil
             chapterEntry = snapshot.map {
                 ChapterEntry(
@@ -36,6 +43,7 @@ struct HomeFeature {
     enum Action: Equatable {
         case task
         case reloadRequested
+        case workspaceReturned([KnowledgePersonalizationReview])
         case loadResponse(LoadResponse)
         case startButtonTapped
         case resumeButtonTapped
@@ -62,11 +70,16 @@ struct HomeFeature {
     var body: some Reducer<State, Action> {
         Reduce { state, action in
             switch action {
+            case let .workspaceReturned(pendingReviews):
+                state.pendingPersonalizationReviews = pendingReviews
+                return .send(.reloadRequested)
+
             case .task, .reloadRequested:
                 state.isLoading = true
                 state.loadErrorMessage = nil
                 let chapterID = Chapter02.id
                 let placeholder = state.placeholderSnapshot
+                let pendingReviews = state.pendingPersonalizationReviews
 
                 return .run { send in
                     do {
@@ -98,13 +111,20 @@ struct HomeFeature {
                             }
                         }
                         var revisions: [PersonalConceptRevision] = []
+                        var relations: [PersonalKnowledgeRelation] = []
                         for conceptID in conceptIDs {
-                            revisions += try await personalKnowledgeClient.loadRevisions(conceptID)
+                            async let conceptRevisions = personalKnowledgeClient
+                                .loadRevisions(conceptID)
+                            async let conceptRelations = personalKnowledgeClient
+                                .loadRelations(conceptID)
+                            revisions += try await conceptRevisions
+                            relations += try await conceptRelations
                         }
 
                         let loadedResponses = responses
                         let loadedEvidence = evidence
                         let loadedRevisions = revisions
+                        let loadedRelations = relations
                         let snapshot = await MainActor.run {
                             HomeSnapshotComposer().compose(
                                 chapter: chapter,
@@ -113,6 +133,8 @@ struct HomeFeature {
                                 responses: loadedResponses,
                                 evidence: loadedEvidence,
                                 revisions: loadedRevisions,
+                                relations: loadedRelations,
+                                pendingPersonalizationReviews: pendingReviews,
                                 placeholder: placeholder
                             )
                         }

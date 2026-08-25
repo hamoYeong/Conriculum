@@ -148,13 +148,19 @@ struct HomeView: View {
         ViewThatFits(in: .horizontal) {
             HStack(alignment: .top, spacing: 18) {
                 lastActivityPanel(snapshot.lastActivity)
-                knowledgeChangePanel(snapshot.knowledgeChange)
+                knowledgeChangePanel(
+                    snapshot.knowledgeChanges,
+                    emptyMessage: snapshot.knowledgeChangesEmptyStateMessage
+                )
             }
             .frame(minWidth: 760)
 
             VStack(spacing: 18) {
                 lastActivityPanel(snapshot.lastActivity)
-                knowledgeChangePanel(snapshot.knowledgeChange)
+                knowledgeChangePanel(
+                    snapshot.knowledgeChanges,
+                    emptyMessage: snapshot.knowledgeChangesEmptyStateMessage
+                )
             }
         }
 
@@ -197,49 +203,14 @@ struct HomeView: View {
     }
 
     private func knowledgeChangePanel(
-        _ knowledgeChange: HomeSnapshot.KnowledgeChange
+        _ knowledgeChanges: KnowledgeChangeCollection,
+        emptyMessage: String
     ) -> some View {
         HomePanel(title: "이번 학습으로 달라진 내 지식", systemImage: "sparkles") {
-            switch knowledgeChange {
-            case let .empty(message):
-                EmptyDashboardState(
-                    systemImage: "lightbulb.min",
-                    message: message
-                )
-
-            case let .recentRevision(revision):
-                VStack(alignment: .leading, spacing: 8) {
-                    Text(revision.conceptTitle)
-                        .font(.caption.weight(.semibold))
-                        .foregroundStyle(.tint)
-
-                    if let personalTitle = revision.personalTitle {
-                        Text(personalTitle)
-                            .font(.headline)
-                    }
-
-                    Text(revision.explanation)
-                        .foregroundStyle(.secondary)
-                        .fixedSize(horizontal: false, vertical: true)
-
-                    HStack(spacing: 10) {
-                        Label(
-                            "예시 \(revision.exampleCount)개",
-                            systemImage: "square.stack.3d.up"
-                        )
-                        Label(
-                            revision.revisedAt.formatted(
-                                date: .abbreviated,
-                                time: .omitted
-                            ),
-                            systemImage: "calendar"
-                        )
-                    }
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-                }
-                .accessibilityElement(children: .combine)
-            }
+            KnowledgeChangeCollectionView(
+                collection: knowledgeChanges,
+                confirmedEmptyMessage: emptyMessage
+            )
         }
     }
 

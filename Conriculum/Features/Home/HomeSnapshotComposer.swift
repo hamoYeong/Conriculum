@@ -8,12 +8,18 @@ struct HomeSnapshotComposer {
         responses: [ActivityResponse],
         evidence: [LearningEvidence],
         revisions: [PersonalConceptRevision],
+        relations: [PersonalKnowledgeRelation] = [],
+        pendingPersonalizationReviews: [
+            KnowledgePersonalizationReview
+        ] = [],
         placeholder: HomeSnapshot? = nil
     ) -> HomeSnapshot {
         let hasStoredRecords = progress != nil
             || responses.isEmpty == false
             || evidence.isEmpty == false
             || revisions.isEmpty == false
+            || relations.isEmpty == false
+            || pendingPersonalizationReviews.isEmpty == false
 
         if hasStoredRecords == false, let placeholder {
             return placeholder
@@ -22,13 +28,6 @@ struct HomeSnapshotComposer {
         let resumedPage = progress.flatMap { progress in
             chapter.page(id: progress.currentPageID)
         }
-        let recentRevision = revisions.max {
-            if $0.createdAt != $1.createdAt {
-                return $0.createdAt < $1.createdAt
-            }
-            return $0.id.rawValue < $1.id.rawValue
-        }
-
         return HomeSnapshot(
             source: hasStoredRecords ? .recorded : .empty,
             stage: .stageOne,
@@ -62,21 +61,14 @@ struct HomeSnapshotComposer {
                     latestAt: matchingEvidence.map(\.recordedAt).max()
                 )
             },
-            knowledgeChange: recentRevision.map { revision in
-                .recentRevision(HomeSnapshot.RevisionSummary(
-                    id: revision.id,
-                    conceptID: revision.conceptID,
-                    conceptTitle: catalog.concepts.first {
-                        $0.id == revision.conceptID
-                    }?.title ?? revision.conceptID.rawValue,
-                    personalTitle: revision.personalTitle,
-                    explanation: revision.explanation,
-                    exampleCount: revision.examples.count,
-                    revisedAt: revision.createdAt
-                ))
-            } ?? .empty(
-                message: chapter.overview.knowledgeContext.emptyStateMessage
-            )
+            knowledgeChanges: KnowledgeChangeCollectionComposer().compose(
+                concepts: catalog.concepts,
+                revisions: revisions,
+                relations: relations,
+                pendingReviews: pendingPersonalizationReviews
+            ),
+            knowledgeChangesEmptyStateMessage: chapter.overview
+                .knowledgeContext.emptyStateMessage
         )
     }
 

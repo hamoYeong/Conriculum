@@ -42,27 +42,13 @@ struct HomeSnapshot: Equatable, Sendable {
         let latestAt: Date?
     }
 
-    enum KnowledgeChange: Equatable, Sendable {
-        case empty(message: String)
-        case recentRevision(RevisionSummary)
-    }
-
-    struct RevisionSummary: Equatable, Sendable {
-        let id: PersonalConceptRevisionID
-        let conceptID: KnowledgeConceptID
-        let conceptTitle: String
-        let personalTitle: String?
-        let explanation: String
-        let exampleCount: Int
-        let revisedAt: Date
-    }
-
     let source: Source
     let stage: StageSummary
     let chapter: ChapterCard
     let lastActivity: ActivitySummary?
     let evidence: [EvidenceSummary]
-    let knowledgeChange: KnowledgeChange
+    let knowledgeChanges: KnowledgeChangeCollection
+    let knowledgeChangesEmptyStateMessage: String
 }
 
 extension HomeSnapshot.StageSummary {

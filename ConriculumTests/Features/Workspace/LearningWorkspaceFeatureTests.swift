@@ -159,11 +159,6 @@ struct LearningWorkspaceFeatureTests {
             completedPageIDs: [],
             updatedAt: timestamp
         )
-        var initialState = LearningWorkspaceFeature.State(
-            chapterID: chapter.id,
-            pageID: lastPageID
-        )
-        initialState.chapter.chapter = chapter
         let pendingReview = KnowledgePersonalizationReview(
             candidate: KnowledgePersonalizationCandidate(
                 id: "candidate-page08-pending",
@@ -178,7 +173,12 @@ struct LearningWorkspaceFeatureTests {
             confirmationQuestion: "이 문장을 나의 현재 언어로 반영할까?",
             savedFields: ["나의 설명", "근거 활동 ID"]
         )
-        initialState.pendingPersonalizationReviews = [pendingReview]
+        var initialState = LearningWorkspaceFeature.State(
+            chapterID: chapter.id,
+            pageID: lastPageID,
+            pendingPersonalizationReviews: [pendingReview]
+        )
+        initialState.chapter.chapter = chapter
         let store = TestStore(initialState: initialState) {
             LearningWorkspaceFeature()
         } withDependencies: {
@@ -209,34 +209,80 @@ struct LearningWorkspaceFeatureTests {
         let chapter = try loadChapter()
         let catalog = try loadCatalog()
         let pageID: LearningPageID = "chapter-02-page-03"
+        let timestamp = Date(timeIntervalSince1970: 1_725_782_400)
+        let revision = PersonalConceptRevision(
+            id: "revision-sidebar-refresh",
+            conceptID: "concept-type-selection",
+            personalTitle: "할 일을 먼저 보는 타입 선택",
+            explanation: "값의 의미와 이후 할 일을 기준으로 타입을 고른다.",
+            examples: [],
+            previousRevisionID: nil,
+            evidenceActivityID: "activity-page03-choice",
+            createdAt: timestamp
+        )
+        let relation = PersonalKnowledgeRelation(
+            id: "relation-sidebar-refresh",
+            sourceConceptID: "concept-value",
+            targetConceptID: "concept-type-selection",
+            statement: "값의 의미는 타입 선택의 기준으로 이어진다.",
+            reason: "이후 가능한 사용을 함께 판단하기 때문이다.",
+            evidenceActivityID: "activity-page03-choice",
+            createdAt: timestamp.addingTimeInterval(60)
+        )
+        let pendingReview = KnowledgePersonalizationReview(
+            candidate: KnowledgePersonalizationCandidate(
+                id: "candidate-sidebar-refresh",
+                kind: .conceptRevision,
+                conceptIDs: ["concept-value", "concept-type-selection"],
+                draft: revision.explanation,
+                evidenceActivityID: revision.evidenceActivityID,
+                createdAt: timestamp
+            ),
+            targetConceptID: revision.conceptID,
+            activityID: "activity-page03-promotion",
+            confirmationQuestion: "이 설명을 나의 지식으로 반영할까?",
+            savedFields: ["나의 설명", "근거 활동 ID"]
+        )
         let expectedSnapshot = try KnowledgeContextSnapshotComposer().compose(
             chapter: chapter,
             catalog: catalog,
             pageID: pageID,
-            revisions: []
+            revisions: [revision],
+            relations: [relation]
         )
         let store = TestStore(
             initialState: LearningWorkspaceFeature.State(
                 chapterID: Chapter02.id,
-                pageID: pageID
+                pageID: pageID,
+                pendingPersonalizationReviews: [pendingReview]
             )
         ) {
             LearningWorkspaceFeature()
         } withDependencies: {
             $0.curriculumClient.loadChapter = { _ in chapter }
             $0.knowledgeCatalogClient.loadCatalog = { catalog }
-            $0.personalKnowledgeClient.loadRevisions = { _ in [] }
-            $0.personalKnowledgeClient.loadRelations = { _ in [] }
+            $0.personalKnowledgeClient.loadRevisions = { conceptID in
+                conceptID == revision.conceptID ? [revision] : []
+            }
+            $0.personalKnowledgeClient.loadRelations = { conceptID in
+                conceptID == relation.sourceConceptID
+                    || conceptID == relation.targetConceptID
+                    ? [relation]
+                    : []
+            }
         }
 
         await store.send(.knowledgeContext(.personalizationSaved(
-            candidateID: nil
+            candidateID: pendingReview.id
         )))
         await store.receive(
             .knowledgeContext(.delegate(.personalizationSaved(
-                candidateID: nil
+                candidateID: pendingReview.id
             )))
-        )
+        ) {
+            $0.pendingPersonalizationReviews = []
+            $0.knowledgeContext.pendingPersonalizationReviews = []
+        }
         await store.receive(
             .knowledgeContext(.reloadRequested(.personalizationSaved))
         ) {
@@ -425,6 +471,7 @@ struct LearningWorkspaceFeatureTests {
             componentAction
         )))) {
             $0.pendingPersonalizationReviews = [review]
+            $0.knowledgeContext.pendingPersonalizationReviews = [review]
         }
         await store.receive(.knowledgeContext(
             .personalizationReviewRequested(review)
@@ -449,6 +496,7 @@ struct LearningWorkspaceFeatureTests {
             .promotionCancelled(activityID)
         )))) {
             $0.pendingPersonalizationReviews = []
+            $0.knowledgeContext.pendingPersonalizationReviews = []
         }
         await store.receive(.knowledgeContext(
             .personalizationReviewCancelled(candidate.id)

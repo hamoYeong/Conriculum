@@ -16,7 +16,10 @@ struct LearningWorkspaceFeature {
         init(
             chapterID: ChapterID,
             pageID: LearningPageID,
-            sidebarMode: WorkspaceSidebarMode = .automatic
+            sidebarMode: WorkspaceSidebarMode = .automatic,
+            pendingPersonalizationReviews: [
+                KnowledgePersonalizationReview
+            ] = []
         ) {
             chapter = ChapterLearningFeature.State(
                 chapterID: chapterID,
@@ -24,8 +27,10 @@ struct LearningWorkspaceFeature {
             )
             knowledgeContext = KnowledgeContextFeature.State(
                 chapterID: chapterID,
-                currentPageID: pageID
+                currentPageID: pageID,
+                pendingPersonalizationReviews: pendingPersonalizationReviews
             )
+            self.pendingPersonalizationReviews = pendingPersonalizationReviews
             self.sidebarMode = sidebarMode
             modeBeforeFocus = sidebarMode == .focus
                 ? .automatic
@@ -102,6 +107,8 @@ struct LearningWorkspaceFeature {
                     $0.activityID == activityID
                 }
                 state.pendingPersonalizationReviews.append(review)
+                state.knowledgeContext.pendingPersonalizationReviews = state
+                    .pendingPersonalizationReviews
                 return .send(.knowledgeContext(
                     .personalizationReviewRequested(review)
                 ))
@@ -116,6 +123,8 @@ struct LearningWorkspaceFeature {
                 state.pendingPersonalizationReviews.removeAll {
                     $0.activityID == activityID
                 }
+                state.knowledgeContext.pendingPersonalizationReviews = state
+                    .pendingPersonalizationReviews
                 guard let cancelledCandidateID else { return .none }
                 return .send(.knowledgeContext(
                     .personalizationReviewCancelled(cancelledCandidateID)
@@ -148,6 +157,8 @@ struct LearningWorkspaceFeature {
                     state.pendingPersonalizationReviews.removeAll {
                         $0.id == candidateID
                     }
+                    state.knowledgeContext.pendingPersonalizationReviews = state
+                        .pendingPersonalizationReviews
                 }
                 return .send(.knowledgeContext(
                     .reloadRequested(.personalizationSaved)
