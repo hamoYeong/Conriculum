@@ -1,5 +1,5 @@
 enum Chapter02ContentAssembly {
-    static let assembledLessonCount = 0
+    static let assembledLessonCount = 3
 
     static func isAssembled(_ page: LearningPage) -> Bool {
         guard page.kind == .lesson else { return true }

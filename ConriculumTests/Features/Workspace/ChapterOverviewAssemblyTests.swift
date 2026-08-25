@@ -15,11 +15,6 @@ struct ChapterOverviewAssemblyTests {
         let chapter = try loadChapter()
 
         #expect(Chapter02ContentAssembly.isAssembled(chapter.overview))
-        #expect(
-            chapter.progressPages.allSatisfy {
-                !Chapter02ContentAssembly.isAssembled($0)
-            }
-        )
         #expect(chapter.progressDenominator == 8)
         #expect(chapter.progressPages.compactMap(\.order) == Array(1...8))
         #expect(chapter.overview.sections.map(\.content.tag) == [
