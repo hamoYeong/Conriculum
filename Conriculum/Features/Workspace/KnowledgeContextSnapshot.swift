@@ -1,6 +1,14 @@
 import Foundation
 
 struct KnowledgeContextSnapshot: Equatable, Sendable {
+    struct RelationCreationContract: Equatable, Sendable {
+        let sourceConceptIDs: [KnowledgeConceptID]
+        let targetConceptIDs: [KnowledgeConceptID]
+        let draftStatement: String
+        let reasonPrompt: String
+        let evidenceActivityID: LearningActivityID
+    }
+
     struct ConceptItem: Equatable, Identifiable, Sendable {
         var id: KnowledgeConceptID { concept.id }
 
@@ -25,6 +33,10 @@ struct KnowledgeContextSnapshot: Equatable, Sendable {
     let directConcepts: [ConceptItem]
     let changedConcepts: [ConceptItem]
     let nearbyConcepts: [ConceptItem]
+    let availableConcepts: [KnowledgeConcept]
+    let baseRelations: [KnowledgeRelation]
+    let personalRelations: [PersonalKnowledgeRelation]
+    let relationCreationContract: RelationCreationContract?
 }
 
 enum KnowledgeContextSnapshotComposerError: LocalizedError, Equatable {
@@ -46,7 +58,8 @@ struct KnowledgeContextSnapshotComposer {
         chapter: Chapter,
         catalog: KnowledgeCatalog,
         pageID: LearningPageID,
-        revisions: [PersonalConceptRevision]
+        revisions: [PersonalConceptRevision],
+        relations: [PersonalKnowledgeRelation] = []
     ) throws -> KnowledgeContextSnapshot {
         guard let page = chapter.page(id: pageID) else {
             throw KnowledgeContextSnapshotComposerError.missingPage(pageID)
@@ -119,6 +132,13 @@ struct KnowledgeContextSnapshotComposer {
                 nearbyReason: nearby.reason
             )
         }
+        let personalRelations = latestRelationsByID(relations)
+            .values
+            .filter {
+                conceptsByID[$0.sourceConceptID] != nil
+                    && conceptsByID[$0.targetConceptID] != nil
+            }
+            .sorted(by: Self.relationOrder)
 
         return KnowledgeContextSnapshot(
             pageID: page.id,
@@ -130,7 +150,13 @@ struct KnowledgeContextSnapshotComposer {
             focusModeSummary: page.knowledgeContext.focusModeSummary,
             directConcepts: directConcepts,
             changedConcepts: changedConcepts,
-            nearbyConcepts: nearbyConcepts
+            nearbyConcepts: nearbyConcepts,
+            availableConcepts: catalog.concepts.sorted {
+                ($0.title, $0.id.rawValue) < ($1.title, $1.id.rawValue)
+            },
+            baseRelations: catalog.relations,
+            personalRelations: personalRelations,
+            relationCreationContract: relationCreationContract(in: page)
         )
     }
 
@@ -188,6 +214,40 @@ struct KnowledgeContextSnapshotComposer {
         return evidenceByConcept
     }
 
+    private func relationCreationContract(
+        in page: LearningPage
+    ) -> KnowledgeContextSnapshot.RelationCreationContract? {
+        for section in page.sections {
+            guard case let .personalKnowledgeRelation(content) =
+                section.content,
+                let evidenceActivityID = content.evidenceActivityIDs.first
+            else { continue }
+
+            return KnowledgeContextSnapshot.RelationCreationContract(
+                sourceConceptIDs: content.sourceConceptIDs,
+                targetConceptIDs: content.targetConceptIDs,
+                draftStatement: content.draftStatement,
+                reasonPrompt: content.reasonPrompt,
+                evidenceActivityID: evidenceActivityID
+            )
+        }
+        return nil
+    }
+
+    private func latestRelationsByID(
+        _ relations: [PersonalKnowledgeRelation]
+    ) -> [PersonalKnowledgeRelationID: PersonalKnowledgeRelation] {
+        relations.reduce(into: [:]) { result, relation in
+            guard let current = result[relation.id] else {
+                result[relation.id] = relation
+                return
+            }
+            if Self.relationOrder(lhs: relation, rhs: current) {
+                result[relation.id] = relation
+            }
+        }
+    }
+
     private func latestRevisionsByConcept(
         _ revisions: [PersonalConceptRevision]
     ) -> [KnowledgeConceptID: PersonalConceptRevision] {
@@ -210,6 +270,16 @@ struct KnowledgeContextSnapshotComposer {
     nonisolated private static func revisionOrder(
         lhs: PersonalConceptRevision,
         rhs: PersonalConceptRevision
+    ) -> Bool {
+        if lhs.createdAt != rhs.createdAt {
+            return lhs.createdAt > rhs.createdAt
+        }
+        return lhs.id.rawValue > rhs.id.rawValue
+    }
+
+    nonisolated private static func relationOrder(
+        lhs: PersonalKnowledgeRelation,
+        rhs: PersonalKnowledgeRelation
     ) -> Bool {
         if lhs.createdAt != rhs.createdAt {
             return lhs.createdAt > rhs.createdAt

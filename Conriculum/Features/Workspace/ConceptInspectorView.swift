@@ -8,32 +8,45 @@ struct ConceptInspectorView: View {
         ScrollView {
             VStack(alignment: .leading, spacing: 18) {
                 header
-                baseKnowledge
-                personalKnowledgeEditor
-                evidenceStatus
 
-                if let message = store.validationMessage {
-                    messageBanner(
-                        title: "저장 내용을 확인해 주세요",
-                        message: message,
-                        systemImage: "exclamationmark.circle",
-                        color: .orange
-                    )
-                }
+                if let relationStore = store.scope(
+                    state: \.relationEditor,
+                    action: \.relationEditor
+                ) {
+                    PersonalRelationEditorView(store: relationStore)
+                    baseKnowledge
+                    knowledgeRelations
+                } else {
+                    baseKnowledge
+                    personalKnowledgeEditor
+                    evidenceStatus
+                    knowledgeRelations
 
-                if let message = store.persistenceErrorMessage {
-                    messageBanner(
-                        title: "개인 표현을 저장하지 못했습니다",
-                        message: message,
-                        systemImage: "externaldrive.badge.exclamationmark",
-                        color: .red
-                    )
+                    if let message = store.validationMessage {
+                        messageBanner(
+                            title: "저장 내용을 확인해 주세요",
+                            message: message,
+                            systemImage: "exclamationmark.circle",
+                            color: .orange
+                        )
+                    }
+
+                    if let message = store.persistenceErrorMessage {
+                        messageBanner(
+                            title: "개인 표현을 저장하지 못했습니다",
+                            message: message,
+                            systemImage: "externaldrive.badge.exclamationmark",
+                            color: .red
+                        )
+                    }
                 }
             }
             .padding(20)
         }
         .safeAreaInset(edge: .bottom) {
-            footer
+            if store.relationEditor == nil {
+                footer
+            }
         }
         .inspectorColumnWidth(min: 320, ideal: 380, max: 480)
         .accessibilityLabel("개념 Inspector")
@@ -256,6 +269,163 @@ struct ConceptInspectorView: View {
         }
     }
 
+    private var knowledgeRelations: some View {
+        GroupBox {
+            VStack(alignment: .leading, spacing: 14) {
+                relationGroupTitle("기본 지식 연결", systemImage: "books.vertical")
+
+                if store.relevantBaseRelations.isEmpty {
+                    Text("이 개념에 직접 연결된 기본 catalog 관계가 없습니다.")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                } else {
+                    ForEach(store.relevantBaseRelations, id: \.id) { relation in
+                        baseRelationCard(relation)
+                    }
+                }
+
+                Divider()
+
+                HStack {
+                    relationGroupTitle(
+                        "나의 지식 연결",
+                        systemImage: "person.2"
+                    )
+                    Spacer()
+                    Button {
+                        store.send(.addRelationButtonTapped)
+                    } label: {
+                        Label("관계 추가", systemImage: "plus")
+                    }
+                    .controlSize(.small)
+                    .disabled(!store.canCreateRelation)
+                    .accessibilityHint(
+                        "현재 페이지가 허용한 두 개념으로 개인 관계 draft를 만듭니다."
+                    )
+                }
+
+                if store.relevantPersonalRelations.isEmpty {
+                    Text("아직 확인해 저장한 개인 관계가 없습니다.")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                } else {
+                    ForEach(
+                        store.relevantPersonalRelations,
+                        id: \.id
+                    ) { relation in
+                        personalRelationCard(relation)
+                    }
+                }
+
+                if !store.canCreateRelation {
+                    Label(
+                        "새 관계는 관계 활동이 있는 Page 07·08에서 만들 수 있습니다.",
+                        systemImage: "info.circle"
+                    )
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
+                }
+
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+        } label: {
+            Label("개념 사이의 관계", systemImage: "link")
+                .font(.headline)
+                .accessibilityHeading(.h2)
+        }
+    }
+
+    private func relationGroupTitle(
+        _ title: String,
+        systemImage: String
+    ) -> some View {
+        Label(title, systemImage: systemImage)
+            .font(.callout.weight(.semibold))
+    }
+
+    private func baseRelationCard(_ relation: KnowledgeRelation) -> some View {
+        VStack(alignment: .leading, spacing: 6) {
+            Text(relationEndpoints(
+                source: relation.sourceConceptID,
+                target: relation.targetConceptID
+            ))
+            .font(.caption.weight(.semibold))
+            Text(relation.summary)
+                .font(.caption)
+                .fixedSize(horizontal: false, vertical: true)
+            Text(baseRelationKindTitle(relation.kind))
+                .font(.caption2.weight(.medium))
+                .foregroundStyle(.secondary)
+        }
+        .padding(10)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(
+            Color(nsColor: .controlBackgroundColor),
+            in: RoundedRectangle(cornerRadius: 9, style: .continuous)
+        )
+        .accessibilityElement(children: .combine)
+    }
+
+    private func personalRelationCard(
+        _ relation: PersonalKnowledgeRelation
+    ) -> some View {
+        VStack(alignment: .leading, spacing: 7) {
+            HStack(alignment: .firstTextBaseline) {
+                Text(relationEndpoints(
+                    source: relation.sourceConceptID,
+                    target: relation.targetConceptID
+                ))
+                .font(.caption.weight(.semibold))
+                .frame(maxWidth: .infinity, alignment: .leading)
+
+                Button("수정") {
+                    store.send(.editRelationButtonTapped(relation.id))
+                }
+                .controlSize(.small)
+            }
+
+            Text(relation.statement)
+                .font(.callout)
+                .fixedSize(horizontal: false, vertical: true)
+            Label(relation.reason, systemImage: "quote.bubble")
+                .font(.caption)
+                .foregroundStyle(.secondary)
+                .fixedSize(horizontal: false, vertical: true)
+        }
+        .padding(10)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(
+            Color.purple.opacity(0.07),
+            in: RoundedRectangle(cornerRadius: 9, style: .continuous)
+        )
+        .accessibilityElement(children: .contain)
+    }
+
+    private func relationEndpoints(
+        source: KnowledgeConceptID,
+        target: KnowledgeConceptID
+    ) -> String {
+        "\(conceptTitle(source)) → \(conceptTitle(target))"
+    }
+
+    private func conceptTitle(_ id: KnowledgeConceptID) -> String {
+        store.availableConcepts.first { $0.id == id }?.title ?? id.rawValue
+    }
+
+    private func baseRelationKindTitle(
+        _ kind: KnowledgeRelationKind
+    ) -> String {
+        switch kind {
+        case .prerequisite: "선행 관계"
+        case .related: "관련 관계"
+        case .contrastsWith: "대조 관계"
+        case .refines: "구체화 관계"
+        case .appliesTo: "적용 관계"
+        case .leadsTo: "다음으로 이어지는 관계"
+        }
+    }
+
     private var footer: some View {
         HStack(spacing: 10) {
             Button("취소") {
@@ -360,6 +530,17 @@ struct ConceptInspectorView: View {
     .frame(width: 380, height: 760)
 }
 
+#Preview("Concept Inspector · Relation") {
+    ConceptInspectorView(
+        store: Store(
+            initialState: ConceptInspectorPreviewData.relationEditor
+        ) {
+            ConceptInspectorFeature()
+        }
+    )
+    .frame(width: 380, height: 760)
+}
+
 private enum ConceptInspectorPreviewData {
     private static let concept = KnowledgeConcept(
         id: "concept-constants-variables",
@@ -389,6 +570,49 @@ private enum ConceptInspectorPreviewData {
 
     static let newRevision = state(revision: nil)
     static let existingRevision = state(revision: revision)
+    static let relationEditor: ConceptInspectorFeature.State = {
+        let target = KnowledgeConcept(
+            id: "concept-identifier-naming",
+            title: "식별자와 이름 짓기",
+            definition: "식별자는 값의 역할을 드러내는 이름이다.",
+            essentialQuestion: "이 이름이 값의 역할을 말하는가?",
+            judgmentQuestions: [],
+            examples: [],
+            misconceptions: []
+        )
+        let contract = KnowledgeContextSnapshot.RelationCreationContract(
+            sourceConceptIDs: [concept.id],
+            targetConceptIDs: [target.id],
+            draftStatement: "변경 책임을 정한 뒤 역할이 드러나는 이름을 붙인다.",
+            reasonPrompt: "두 개념을 연결한 이유",
+            evidenceActivityID: "activity-page08-value-sorting"
+        )
+        var state = ConceptInspectorFeature.State(
+            sourcePageTitle: "새로운 문제에 적용하고 돌아보기",
+            item: KnowledgeContextSnapshot.ConceptItem(
+                concept: concept,
+                personalRevision: revision,
+                revisionEvidenceActivityID: "activity-page08-free-response",
+                role: .primary,
+                usage: "변경 책임과 역할 이름을 함께 판단한다.",
+                nearbyReason: nil
+            ),
+            availableConcepts: [concept, target],
+            relationCreationContract: contract
+        )
+        state.relationEditor = PersonalRelationEditorFeature.State(
+            request: PersonalRelationDraftRequest(
+                sourceConceptID: concept.id,
+                targetConceptID: target.id,
+                statement: contract.draftStatement,
+                reason: "선언과 이름이 같은 책임을 설명하기 때문이다.",
+                evidenceActivityID: contract.evidenceActivityID
+            ),
+            contract: contract,
+            availableConcepts: [concept, target]
+        )
+        return state
+    }()
 
     private static func state(
         revision: PersonalConceptRevision?

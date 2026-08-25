@@ -35,6 +35,7 @@ struct KnowledgeContextFeature {
         case task
         case pageChanged(LearningPageID)
         case conceptSelected(KnowledgeConceptID)
+        case relationDraftRequested(PersonalRelationDraftRequest)
         case inspectorDismissed
         case inspector(ConceptInspectorFeature.Action)
         case personalizationSaved
@@ -81,8 +82,44 @@ struct KnowledgeContextFeature {
                 else { return .none }
                 state.inspector = ConceptInspectorFeature.State(
                     sourcePageTitle: snapshot.pageTitle,
-                    item: item
+                    item: item,
+                    availableConcepts: snapshot.availableConcepts,
+                    baseRelations: snapshot.baseRelations,
+                    personalRelations: snapshot.personalRelations,
+                    relationCreationContract: snapshot
+                        .relationCreationContract
                 )
+                return .none
+
+            case let .relationDraftRequested(request):
+                guard let snapshot = state.snapshot,
+                      let contract = snapshot.relationCreationContract,
+                      contract.sourceConceptIDs.contains(
+                          request.sourceConceptID
+                      ),
+                      contract.targetConceptIDs.contains(
+                          request.targetConceptID
+                      ),
+                      request.sourceConceptID != request.targetConceptID,
+                      let item = conceptItem(
+                          id: request.sourceConceptID,
+                          in: snapshot
+                      )
+                else { return .none }
+                var inspector = ConceptInspectorFeature.State(
+                    sourcePageTitle: snapshot.pageTitle,
+                    item: item,
+                    availableConcepts: snapshot.availableConcepts,
+                    baseRelations: snapshot.baseRelations,
+                    personalRelations: snapshot.personalRelations,
+                    relationCreationContract: contract
+                )
+                inspector.relationEditor = PersonalRelationEditorFeature.State(
+                    request: request,
+                    contract: contract,
+                    availableConcepts: snapshot.availableConcepts
+                )
+                state.inspector = inspector
                 return .none
 
             case .inspectorDismissed,
@@ -90,7 +127,8 @@ struct KnowledgeContextFeature {
                 state.inspector = nil
                 return .none
 
-            case .inspector(.delegate(.saved)):
+            case .inspector(.delegate(.saved)),
+                 .inspector(.delegate(.relationSaved)):
                 state.inspector = nil
                 return .send(.personalizationSaved)
 
@@ -118,17 +156,24 @@ struct KnowledgeContextFeature {
                                 .chapterConceptIDs(in: loadedChapter)
                         }
                         var revisions: [PersonalConceptRevision] = []
+                        var relations: [PersonalKnowledgeRelation] = []
                         for conceptID in conceptIDs {
-                            revisions += try await personalKnowledgeClient
-                                .loadRevisions(conceptID)
+                            async let conceptRevisions =
+                                personalKnowledgeClient.loadRevisions(conceptID)
+                            async let conceptRelations =
+                                personalKnowledgeClient.loadRelations(conceptID)
+                            revisions += try await conceptRevisions
+                            relations += try await conceptRelations
                         }
                         let loadedRevisions = revisions
+                        let loadedRelations = relations
                         let snapshot = try await MainActor.run {
                             try KnowledgeContextSnapshotComposer().compose(
                                 chapter: loadedChapter,
                                 catalog: loadedCatalog,
                                 pageID: pageID,
-                                revisions: loadedRevisions
+                                revisions: loadedRevisions,
+                                relations: loadedRelations
                             )
                         }
                         await send(.loadResponse(.loaded(snapshot)))

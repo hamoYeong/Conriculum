@@ -498,29 +498,33 @@ struct PersonalKnowledgeRelationComponent: View {
         ) {
             ViewThatFits(in: .horizontal) {
                 HStack(alignment: .top, spacing: 10) {
-                    conceptGroup(
+                    conceptPicker(
                         title: "출발 개념",
-                        conceptIDs: content.sourceConceptIDs
+                        conceptIDs: content.sourceConceptIDs,
+                        selection: sourceSelection
                     )
                     Image(systemName: "arrow.right")
                         .foregroundStyle(.secondary)
                         .accessibilityHidden(true)
-                    conceptGroup(
+                    conceptPicker(
                         title: "연결할 개념",
-                        conceptIDs: content.targetConceptIDs
+                        conceptIDs: selectableTargetConceptIDs,
+                        selection: targetSelection
                     )
                 }
                 VStack(spacing: 10) {
-                    conceptGroup(
+                    conceptPicker(
                         title: "출발 개념",
-                        conceptIDs: content.sourceConceptIDs
+                        conceptIDs: content.sourceConceptIDs,
+                        selection: sourceSelection
                     )
                     Image(systemName: "arrow.down")
                         .foregroundStyle(.secondary)
                         .accessibilityHidden(true)
-                    conceptGroup(
+                    conceptPicker(
                         title: "연결할 개념",
-                        conceptIDs: content.targetConceptIDs
+                        conceptIDs: selectableTargetConceptIDs,
+                        selection: targetSelection
                     )
                 }
             }
@@ -556,7 +560,7 @@ struct PersonalKnowledgeRelationComponent: View {
             .accessibilityHint("이 연결을 만든 이유를 입력합니다.")
 
             Label(
-                "근거 활동 \(content.evidenceActivityIDs.count)개가 함께 기록됩니다.",
+                "근거 활동 \(content.evidenceActivityIDs.count)개를 확인하고 첫 활동을 대표 근거로 저장합니다.",
                 systemImage: "checkmark.square"
             )
             .font(.caption)
@@ -573,11 +577,15 @@ struct PersonalKnowledgeRelationComponent: View {
 
                 Spacer()
 
-                Button("나의 지식 연결로 반영") {
+                Button("Inspector에서 검토") {
                     isConfirming = true
                 }
                 .buttonStyle(.borderedProminent)
-                .accessibilityHint("저장 내용을 확인하는 대화상자를 엽니다.")
+                .disabled(
+                    selectedSourceConceptID == nil
+                        || selectedTargetConceptID == nil
+                )
+                .accessibilityHint("선택과 문장을 확인한 뒤 trailing Inspector를 엽니다.")
             }
             .focusSection()
 
@@ -587,40 +595,117 @@ struct PersonalKnowledgeRelationComponent: View {
             content.confirmationQuestion,
             isPresented: $isConfirming
         ) {
-            Button("확인하고 연결") {
+            Button("Inspector에서 최종 확인") {
                 let storedStatement = activity.value(
                     for: LearningActivityFieldKey.relationStatement
                 )
+                guard let sourceConceptID = selectedSourceConceptID,
+                      let targetConceptID = selectedTargetConceptID,
+                      let evidenceActivityID = content.evidenceActivityIDs.first
+                else { return }
                 onAction(.relationConfirmed(
                     activityID: activity.activityID,
+                    sourceConceptID: sourceConceptID,
+                    targetConceptID: targetConceptID,
                     statement: storedStatement.isEmpty
                         ? content.draftStatement
                         : storedStatement,
                     reason: activity.value(
                         for: LearningActivityFieldKey.reason
-                    )
+                    ),
+                    evidenceActivityID: evidenceActivityID
                 ))
             }
             Button("취소", role: .cancel) {}
         } message: {
-            Text("학습 응답과 별개로 나의 지식 관계에 저장됩니다.")
+            Text("아직 저장하지 않습니다. Inspector에서 관계와 근거를 확인한 뒤 저장합니다.")
         }
     }
 
-    private func conceptGroup(
+    private var selectedSourceConceptID: KnowledgeConceptID? {
+        selectedConceptID(
+            fieldKey: LearningActivityFieldKey.relationSourceConceptID,
+            allowedIDs: content.sourceConceptIDs
+        )
+    }
+
+    private var selectableTargetConceptIDs: [KnowledgeConceptID] {
+        content.targetConceptIDs.filter { $0 != selectedSourceConceptID }
+    }
+
+    private var selectedTargetConceptID: KnowledgeConceptID? {
+        selectedConceptID(
+            fieldKey: LearningActivityFieldKey.relationTargetConceptID,
+            allowedIDs: selectableTargetConceptIDs
+        )
+    }
+
+    private var sourceSelection: Binding<KnowledgeConceptID?> {
+        Binding(
+            get: { selectedSourceConceptID },
+            set: { conceptID in
+                guard let conceptID else { return }
+                var updates = [
+                    LearningActivityFieldKey.relationSourceConceptID: [
+                        conceptID.rawValue
+                    ]
+                ]
+                if selectedTargetConceptID == conceptID,
+                   let replacement = content.targetConceptIDs.first(
+                       where: { $0 != conceptID }
+                   ) {
+                    updates[
+                        LearningActivityFieldKey.relationTargetConceptID
+                    ] = [replacement.rawValue]
+                }
+                activity.updating(valuesByKey: updates)
+            }
+        )
+    }
+
+    private var targetSelection: Binding<KnowledgeConceptID?> {
+        Binding(
+            get: { selectedTargetConceptID },
+            set: { conceptID in
+                guard let conceptID else { return }
+                activity.updating(
+                    key: LearningActivityFieldKey.relationTargetConceptID,
+                    values: [conceptID.rawValue]
+                )
+            }
+        )
+    }
+
+    private func selectedConceptID(
+        fieldKey: String,
+        allowedIDs: [KnowledgeConceptID]
+    ) -> KnowledgeConceptID? {
+        let storedValue = activity.value(for: fieldKey)
+        let storedID = storedValue.isEmpty
+            ? nil
+            : KnowledgeConceptID(rawValue: storedValue)
+        return storedID.flatMap { allowedIDs.contains($0) ? $0 : nil }
+            ?? allowedIDs.first
+    }
+
+    private func conceptPicker(
         title: String,
-        conceptIDs: [KnowledgeConceptID]
+        conceptIDs: [KnowledgeConceptID],
+        selection: Binding<KnowledgeConceptID?>
     ) -> some View {
         VStack(alignment: .leading, spacing: 5) {
             Text(title)
                 .font(.caption.weight(.semibold))
                 .foregroundStyle(.secondary)
-            Text(
-                conceptIDs
-                    .map { conceptNames.title(for: $0) }
-                    .joined(separator: ", ")
-            )
-            .fixedSize(horizontal: false, vertical: true)
+            Picker(title, selection: selection) {
+                ForEach(conceptIDs, id: \.self) { conceptID in
+                    Text(conceptNames.title(for: conceptID))
+                        .tag(Optional(conceptID))
+                }
+            }
+            .labelsHidden()
+            .pickerStyle(.menu)
+            .frame(maxWidth: .infinity, alignment: .leading)
         }
         .padding(12)
         .frame(maxWidth: .infinity, alignment: .leading)
@@ -628,13 +713,7 @@ struct PersonalKnowledgeRelationComponent: View {
             Color(nsColor: .textBackgroundColor).opacity(0.55),
             in: RoundedRectangle(cornerRadius: 9, style: .continuous)
         )
-        .accessibilityElement(children: .combine)
-        .accessibilityLabel(
-            "\(title). "
-                + conceptIDs
-                    .map { conceptNames.title(for: $0) }
-                    .joined(separator: ", ")
-        )
+        .accessibilityElement(children: .contain)
     }
 }
 

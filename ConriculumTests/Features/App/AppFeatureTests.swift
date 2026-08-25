@@ -108,6 +108,7 @@ struct AppFeatureTests {
             $0.learningRecordClient.loadResponses = { _ in [] }
             $0.learningRecordClient.loadEvidence = { _ in [] }
             $0.personalKnowledgeClient.loadRevisions = { _ in [] }
+            $0.personalKnowledgeClient.loadRelations = { _ in [] }
         }
 
         await store.send(.workspace(.homeButtonTapped))

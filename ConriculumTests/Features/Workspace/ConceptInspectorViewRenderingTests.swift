@@ -9,10 +9,11 @@ import Testing
 @MainActor
 struct ConceptInspectorViewRenderingTests {
     @Test
-    func newAndExistingRevisionStatesRenderAtInspectorWidth() throws {
+    func revisionAndRelationStatesRenderAtInspectorWidth() throws {
         let states = [
             state(revision: nil),
             state(revision: revision),
+            relationEditorState(),
         ]
 
         for state in states {
@@ -91,6 +92,52 @@ struct ConceptInspectorViewRenderingTests {
             evidenceActivityID: "activity-page05-choice",
             createdAt: Date(timeIntervalSince1970: 1_725_782_400)
         )
+    }
+
+    private func relationEditorState() -> ConceptInspectorFeature.State {
+        let target = KnowledgeConcept(
+            id: "concept-identifier-naming",
+            title: "식별자와 이름 짓기",
+            definition: "이름으로 값의 역할을 드러낸다.",
+            essentialQuestion: "이 이름이 값의 역할을 말하는가?",
+            judgmentQuestions: [],
+            examples: [],
+            misconceptions: []
+        )
+        let contract = KnowledgeContextSnapshot.RelationCreationContract(
+            sourceConceptIDs: [concept.id],
+            targetConceptIDs: [target.id],
+            draftStatement: "변경 책임을 정한 뒤 역할이 드러나는 이름을 붙인다.",
+            reasonPrompt: "두 개념을 연결한 이유",
+            evidenceActivityID: "activity-page08-value-sorting"
+        )
+        let request = PersonalRelationDraftRequest(
+            sourceConceptID: concept.id,
+            targetConceptID: target.id,
+            statement: contract.draftStatement,
+            reason: "선언과 이름이 같은 책임을 설명하기 때문이다.",
+            evidenceActivityID: contract.evidenceActivityID
+        )
+        var state = ConceptInspectorFeature.State(
+            sourcePageTitle: "Chapter 2 판단 흐름 다시 사용하기",
+            item: KnowledgeContextSnapshot.ConceptItem(
+                concept: concept,
+                personalRevision: revision,
+                revisionEvidenceActivityID: "activity-page08-free-response",
+                role: .primary,
+                usage: "변경 책임과 역할 이름을 함께 판단한다.",
+                nearbyReason: nil
+            ),
+            availableConcepts: [concept, target],
+            personalRelations: [],
+            relationCreationContract: contract
+        )
+        state.relationEditor = PersonalRelationEditorFeature.State(
+            request: request,
+            contract: contract,
+            availableConcepts: [concept, target]
+        )
+        return state
     }
 
     private func sampledColorCount(in image: NSBitmapImageRep) -> Int {

@@ -416,7 +416,11 @@ private enum KnowledgeContextPreviewData {
             focusModeSummary: "현재 개념명과 저장된 변화 유무만 유지한다.",
             directConcepts: [direct],
             changedConcepts: revision == nil ? [] : [direct],
-            nearbyConcepts: [nearby]
+            nearbyConcepts: [nearby],
+            availableConcepts: [value, type],
+            baseRelations: [],
+            personalRelations: [],
+            relationCreationContract: nil
         )
         return KnowledgeContextFeature.State(
             chapterID: Chapter02.id,

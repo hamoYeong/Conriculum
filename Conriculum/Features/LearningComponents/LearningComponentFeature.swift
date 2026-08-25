@@ -21,8 +21,11 @@ enum PersonalKnowledgeComponentAction: Equatable, Sendable {
     case promotionCancelled(LearningActivityID)
     case relationConfirmed(
         activityID: LearningActivityID,
+        sourceConceptID: KnowledgeConceptID,
+        targetConceptID: KnowledgeConceptID,
         statement: String,
-        reason: String
+        reason: String,
+        evidenceActivityID: LearningActivityID
     )
     case relationCancelled(LearningActivityID)
 }

@@ -56,6 +56,26 @@ struct LearningWorkspaceFeature {
             case let .chapter(.delegate(.currentPageChanged(pageID))):
                 return .send(.knowledgeContext(.pageChanged(pageID)))
 
+            case let .chapter(.delegate(.personalKnowledge(
+                .relationConfirmed(
+                    _,
+                    sourceConceptID,
+                    targetConceptID,
+                    statement,
+                    reason,
+                    evidenceActivityID
+                )
+            ))):
+                return .send(.knowledgeContext(.relationDraftRequested(
+                    PersonalRelationDraftRequest(
+                        sourceConceptID: sourceConceptID,
+                        targetConceptID: targetConceptID,
+                        statement: statement,
+                        reason: reason,
+                        evidenceActivityID: evidenceActivityID
+                    )
+                )))
+
             case .knowledgeContext(.delegate(.personalizationSaved)):
                 return .send(.knowledgeContext(
                     .reloadRequested(.personalizationSaved)

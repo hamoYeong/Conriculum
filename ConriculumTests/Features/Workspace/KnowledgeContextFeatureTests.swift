@@ -21,11 +21,21 @@ struct KnowledgeContextFeatureTests {
             evidenceActivityID: "activity-page01-choice",
             createdAt: .distantPast
         )
+        let relation = PersonalKnowledgeRelation(
+            id: "personal-relation-value-type",
+            sourceConceptID: "concept-value",
+            targetConceptID: "concept-type",
+            statement: "값은 타입이 허용하는 사용과 연결된다.",
+            reason: "타입이 가능한 연산을 정하기 때문이다.",
+            evidenceActivityID: "activity-page02-matching",
+            createdAt: .distantPast
+        )
         let expectedSnapshot = try KnowledgeContextSnapshotComposer().compose(
             chapter: chapter,
             catalog: catalog,
             pageID: pageID,
-            revisions: [revision]
+            revisions: [revision],
+            relations: [relation]
         )
         let store = TestStore(
             initialState: KnowledgeContextFeature.State(
@@ -39,6 +49,12 @@ struct KnowledgeContextFeatureTests {
             $0.knowledgeCatalogClient.loadCatalog = { catalog }
             $0.personalKnowledgeClient.loadRevisions = { conceptID in
                 conceptID == revision.conceptID ? [revision] : []
+            }
+            $0.personalKnowledgeClient.loadRelations = { conceptID in
+                conceptID == relation.sourceConceptID
+                    || conceptID == relation.targetConceptID
+                    ? [relation]
+                    : []
             }
         }
 
@@ -84,6 +100,7 @@ struct KnowledgeContextFeatureTests {
             $0.curriculumClient.loadChapter = { _ in chapter }
             $0.knowledgeCatalogClient.loadCatalog = { catalog }
             $0.personalKnowledgeClient.loadRevisions = { _ in [] }
+            $0.personalKnowledgeClient.loadRelations = { _ in [] }
         }
 
         await store.send(.pageChanged(pageFiveID)) {
@@ -117,7 +134,11 @@ struct KnowledgeContextFeatureTests {
         })
         let expectedInspector = ConceptInspectorFeature.State(
             sourcePageTitle: snapshot.pageTitle,
-            item: item
+            item: item,
+            availableConcepts: snapshot.availableConcepts,
+            baseRelations: snapshot.baseRelations,
+            personalRelations: snapshot.personalRelations,
+            relationCreationContract: snapshot.relationCreationContract
         )
         let store = TestStore(
             initialState: KnowledgeContextFeature.State(
@@ -182,6 +203,58 @@ struct KnowledgeContextFeatureTests {
         }
         await store.receive(.personalizationSaved)
         await store.receive(.delegate(.personalizationSaved))
+    }
+
+    @Test
+    func pageRelationDraftOpensTheInspectorWithItsSelectionAndEvidence()
+        async throws
+    {
+        let chapter = try loadChapter()
+        let snapshot = try KnowledgeContextSnapshotComposer().compose(
+            chapter: chapter,
+            catalog: try loadCatalog(),
+            pageID: "chapter-02-page-07",
+            revisions: []
+        )
+        let request = PersonalRelationDraftRequest(
+            sourceConceptID: "concept-related-value-grouping",
+            targetConceptID: "concept-type-modeling",
+            statement: "값 묶기의 경계는 타입 책임으로 이어진다.",
+            reason: "관련 값을 구조로 보존하기 때문이다.",
+            evidenceActivityID: "activity-page07-role-sorting"
+        )
+        let item = try #require(snapshot.directConcepts.first {
+            $0.id == request.sourceConceptID
+        })
+        let relationCreationContract = try #require(
+            snapshot.relationCreationContract
+        )
+        var expectedInspector = ConceptInspectorFeature.State(
+            sourcePageTitle: snapshot.pageTitle,
+            item: item,
+            availableConcepts: snapshot.availableConcepts,
+            baseRelations: snapshot.baseRelations,
+            personalRelations: snapshot.personalRelations,
+            relationCreationContract: relationCreationContract
+        )
+        expectedInspector.relationEditor = PersonalRelationEditorFeature.State(
+            request: request,
+            contract: relationCreationContract,
+            availableConcepts: snapshot.availableConcepts
+        )
+        let store = TestStore(
+            initialState: KnowledgeContextFeature.State(
+                chapterID: chapter.id,
+                currentPageID: snapshot.pageID,
+                snapshot: snapshot
+            )
+        ) {
+            KnowledgeContextFeature()
+        }
+
+        await store.send(.relationDraftRequested(request)) {
+            $0.inspector = expectedInspector
+        }
     }
 
     private func loadChapter() throws -> Chapter {

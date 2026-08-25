@@ -50,6 +50,40 @@ struct InteractiveLearningComponentTests {
     }
 
     @Test
+    func relationSelectionsUpdateTogetherWithoutDroppingTheExistingDraft() {
+        let statement = ActivityResponseField(
+            key: LearningActivityFieldKey.relationStatement,
+            values: ["값 묶기의 경계는 타입 책임으로 이어진다."]
+        )
+        var receivedFields: [ActivityResponseField] = []
+        let input = LearningActivityInput(
+            activityID: "activity-page07-relation",
+            fields: [statement]
+        ) { _, fields in
+            receivedFields = fields
+        }
+
+        input.updating(valuesByKey: [
+            LearningActivityFieldKey.relationSourceConceptID: [
+                "concept-related-value-grouping"
+            ],
+            LearningActivityFieldKey.relationTargetConceptID: [
+                "concept-type-modeling"
+            ],
+        ])
+
+        #expect(receivedFields.first == statement)
+        #expect(receivedFields.contains(ActivityResponseField(
+            key: LearningActivityFieldKey.relationSourceConceptID,
+            values: ["concept-related-value-grouping"]
+        )))
+        #expect(receivedFields.contains(ActivityResponseField(
+            key: LearningActivityFieldKey.relationTargetConceptID,
+            values: ["concept-type-modeling"]
+        )))
+    }
+
+    @Test
     func everyInteractiveTagRendersFromChapterTwoAtStandardAndLargeText() throws {
         let chapter = try ContentResourceDecoder().decode(
             Chapter.self,

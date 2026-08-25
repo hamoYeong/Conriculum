@@ -215,6 +215,82 @@ struct KnowledgeContextSnapshotComposerTests {
     }
 
     @Test
+    func relationContractAndLatestPersonalRelationsRemainSeparateFromCatalog()
+        throws
+    {
+        let chapter = try loadChapter()
+        let catalog = try loadCatalog()
+        let oldRelation = relation(
+            id: "personal-relation-grouping-modeling",
+            statement: "예전 관계 문장",
+            timestamp: 100
+        )
+        let latestRelation = relation(
+            id: oldRelation.id,
+            statement: "값 묶기의 경계는 타입 책임으로 이어진다.",
+            timestamp: 200
+        )
+
+        let pageSeven = try KnowledgeContextSnapshotComposer().compose(
+            chapter: chapter,
+            catalog: catalog,
+            pageID: "chapter-02-page-07",
+            revisions: [],
+            relations: [oldRelation, latestRelation, latestRelation]
+        )
+        let contract = try #require(pageSeven.relationCreationContract)
+        #expect(contract.sourceConceptIDs == [
+            "concept-related-value-grouping"
+        ])
+        #expect(contract.targetConceptIDs == [
+            "concept-type-modeling",
+            "concept-identifier-naming",
+        ])
+        #expect(
+            contract.evidenceActivityID == "activity-page07-role-sorting"
+        )
+        #expect(pageSeven.personalRelations == [latestRelation])
+        #expect(pageSeven.baseRelations == catalog.relations)
+        #expect(pageSeven.availableConcepts.count == catalog.concepts.count)
+
+        let pageEight = try KnowledgeContextSnapshotComposer().compose(
+            chapter: chapter,
+            catalog: catalog,
+            pageID: "chapter-02-page-08",
+            revisions: [],
+            relations: []
+        )
+        let pageEightContract = try #require(
+            pageEight.relationCreationContract
+        )
+        #expect(pageEightContract.sourceConceptIDs == [
+            "concept-value",
+            "concept-type-selection",
+            "concept-identifier-naming",
+            "concept-constants-variables",
+            "concept-type-inference-annotation",
+            "concept-related-value-grouping",
+        ])
+        #expect(pageEightContract.targetConceptIDs.suffix(2) == [
+            "concept-expressions-operations",
+            "concept-type-modeling",
+        ])
+        #expect(
+            pageEightContract.evidenceActivityID
+                == "activity-page08-value-sorting"
+        )
+
+        let pageSix = try KnowledgeContextSnapshotComposer().compose(
+            chapter: chapter,
+            catalog: catalog,
+            pageID: "chapter-02-page-06",
+            revisions: [],
+            relations: []
+        )
+        #expect(pageSix.relationCreationContract == nil)
+    }
+
+    @Test
     func missingPageAndConceptReportStableIdentifiers() throws {
         let chapter = try loadChapter()
         let catalog = try loadCatalog()
@@ -295,6 +371,22 @@ struct KnowledgeContextSnapshotComposerTests {
             examples: [],
             previousRevisionID: nil,
             evidenceActivityID: evidenceActivityID,
+            createdAt: Date(timeIntervalSince1970: timestamp)
+        )
+    }
+
+    private func relation(
+        id: PersonalKnowledgeRelationID,
+        statement: String,
+        timestamp: TimeInterval
+    ) -> PersonalKnowledgeRelation {
+        PersonalKnowledgeRelation(
+            id: id,
+            sourceConceptID: "concept-related-value-grouping",
+            targetConceptID: "concept-type-modeling",
+            statement: statement,
+            reason: "관련 값의 책임을 구조로 보존하기 때문이다.",
+            evidenceActivityID: "activity-page07-role-sorting",
             createdAt: Date(timeIntervalSince1970: timestamp)
         )
     }

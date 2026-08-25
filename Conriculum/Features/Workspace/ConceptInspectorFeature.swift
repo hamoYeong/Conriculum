@@ -33,16 +33,27 @@ struct ConceptInspectorFeature {
         let usage: String?
         let latestRevision: PersonalConceptRevision?
         let evidenceActivityID: LearningActivityID?
+        let availableConcepts: [KnowledgeConcept]
+        let baseRelations: [KnowledgeRelation]
+        let personalRelations: [PersonalKnowledgeRelation]
+        let relationCreationContract: KnowledgeContextSnapshot
+            .RelationCreationContract?
         var personalTitle: String
         var explanation: String
         var examples: [ExampleDraft]
         var isSaving = false
         var validationMessage: String?
         var persistenceErrorMessage: String?
+        var relationEditor: PersonalRelationEditorFeature.State?
 
         init(
             sourcePageTitle: String,
-            item: KnowledgeContextSnapshot.ConceptItem
+            item: KnowledgeContextSnapshot.ConceptItem,
+            availableConcepts: [KnowledgeConcept] = [],
+            baseRelations: [KnowledgeRelation] = [],
+            personalRelations: [PersonalKnowledgeRelation] = [],
+            relationCreationContract: KnowledgeContextSnapshot
+                .RelationCreationContract? = nil
         ) {
             self.sourcePageTitle = sourcePageTitle
             concept = item.concept
@@ -50,10 +61,74 @@ struct ConceptInspectorFeature {
             usage = item.usage
             latestRevision = item.personalRevision
             evidenceActivityID = item.revisionEvidenceActivityID
+            self.availableConcepts = availableConcepts
+            self.baseRelations = baseRelations
+            self.personalRelations = personalRelations
+            self.relationCreationContract = relationCreationContract
             personalTitle = item.personalRevision?.personalTitle ?? ""
             explanation = item.personalRevision?.explanation ?? ""
             examples = item.personalRevision?.examples.map(ExampleDraft.init)
                 ?? []
+        }
+
+        var relevantBaseRelations: [KnowledgeRelation] {
+            baseRelations.filter {
+                $0.sourceConceptID == concept.id
+                    || $0.targetConceptID == concept.id
+            }
+        }
+
+        var relevantPersonalRelations: [PersonalKnowledgeRelation] {
+            personalRelations.filter {
+                $0.sourceConceptID == concept.id
+                    || $0.targetConceptID == concept.id
+            }
+        }
+
+        var canCreateRelation: Bool {
+            guard let relationCreationContract else { return false }
+            return !relationCreationContract.sourceConceptIDs.isEmpty
+                && relationCreationContract.targetConceptIDs.contains {
+                    targetID in
+                    relationCreationContract.sourceConceptIDs.contains {
+                        $0 != targetID
+                    }
+                }
+        }
+
+        func conceptTitle(for id: KnowledgeConceptID) -> String {
+            availableConcepts.first { $0.id == id }?.title ?? id.rawValue
+        }
+
+        fileprivate func newRelationEditorState()
+            -> PersonalRelationEditorFeature.State?
+        {
+            guard let contract = relationCreationContract,
+                  let firstSource = contract.sourceConceptIDs.first
+            else { return nil }
+            let sourceConceptID = contract.sourceConceptIDs.contains(
+                concept.id
+            ) ? concept.id : firstSource
+            let targetConceptID = if contract.targetConceptIDs.contains(
+                concept.id
+            ), concept.id != sourceConceptID {
+                concept.id
+            } else {
+                contract.targetConceptIDs.first { $0 != sourceConceptID }
+            }
+            guard let targetConceptID else { return nil }
+
+            return PersonalRelationEditorFeature.State(
+                request: PersonalRelationDraftRequest(
+                    sourceConceptID: sourceConceptID,
+                    targetConceptID: targetConceptID,
+                    statement: contract.draftStatement,
+                    reason: "",
+                    evidenceActivityID: contract.evidenceActivityID
+                ),
+                contract: contract,
+                availableConcepts: availableConcepts
+            )
         }
 
         var hasUnsavedChanges: Bool {
@@ -133,6 +208,10 @@ struct ConceptInspectorFeature {
         case exampleTextChanged(id: PersonalExampleID, text: String)
         case exampleContextChanged(id: PersonalExampleID, context: String)
         case removeExampleButtonTapped(PersonalExampleID)
+        case addRelationButtonTapped
+        case editRelationButtonTapped(PersonalKnowledgeRelationID)
+        case relationDraftRequested(PersonalRelationDraftRequest)
+        case relationEditor(PersonalRelationEditorFeature.Action)
         case saveButtonTapped
         case cancelButtonTapped
         case saveResponse(SaveResponse)
@@ -147,6 +226,7 @@ struct ConceptInspectorFeature {
     enum Delegate: Equatable {
         case cancelled
         case saved(PersonalConceptRevision)
+        case relationSaved(PersonalKnowledgeRelation)
     }
 
     @Dependency(\.date.now) var now
@@ -195,6 +275,39 @@ struct ConceptInspectorFeature {
                 state.examples.removeAll { $0.id == id }
                 clearMessages(in: &state)
                 return .none
+
+            case .addRelationButtonTapped:
+                state.relationEditor = state.newRelationEditorState()
+                return .none
+
+            case let .editRelationButtonTapped(relationID):
+                guard let relation = state.personalRelations.first(
+                    where: { $0.id == relationID }
+                ) else { return .none }
+                state.relationEditor = PersonalRelationEditorFeature.State(
+                    editing: relation,
+                    availableConcepts: state.availableConcepts
+                )
+                return .none
+
+            case let .relationDraftRequested(request):
+                guard let contract = state.relationCreationContract else {
+                    return .none
+                }
+                state.relationEditor = PersonalRelationEditorFeature.State(
+                    request: request,
+                    contract: contract,
+                    availableConcepts: state.availableConcepts
+                )
+                return .none
+
+            case .relationEditor(.delegate(.cancelled)):
+                state.relationEditor = nil
+                return .none
+
+            case let .relationEditor(.delegate(.saved(relation))):
+                state.relationEditor = nil
+                return .send(.delegate(.relationSaved(relation)))
 
             case .saveButtonTapped:
                 if let validationError = state.saveValidationError {
@@ -255,9 +368,12 @@ struct ConceptInspectorFeature {
                 state.persistenceErrorMessage = message
                 return .none
 
-            case .delegate:
+            case .relationEditor, .delegate:
                 return .none
             }
+        }
+        .ifLet(\.relationEditor, action: \.relationEditor) {
+            PersonalRelationEditorFeature()
         }
     }
 

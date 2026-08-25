@@ -41,6 +41,7 @@ struct LearningWorkspaceFeatureTests {
             $0.curriculumClient.loadChapter = { _ in chapter }
             $0.knowledgeCatalogClient.loadCatalog = { catalog }
             $0.personalKnowledgeClient.loadRevisions = { _ in [] }
+            $0.personalKnowledgeClient.loadRelations = { _ in [] }
         }
 
         await store.send(.chapter(.nextButtonTapped)) {
@@ -209,6 +210,7 @@ struct LearningWorkspaceFeatureTests {
             $0.curriculumClient.loadChapter = { _ in chapter }
             $0.knowledgeCatalogClient.loadCatalog = { catalog }
             $0.personalKnowledgeClient.loadRevisions = { _ in [] }
+            $0.personalKnowledgeClient.loadRelations = { _ in [] }
         }
 
         await store.send(.knowledgeContext(.personalizationSaved))
@@ -227,6 +229,73 @@ struct LearningWorkspaceFeatureTests {
         ) {
             $0.knowledgeContext.snapshot = expectedSnapshot
             $0.knowledgeContext.isLoading = false
+        }
+    }
+
+    @Test
+    func pageRelationConfirmationRoutesItsDraftToTheKnowledgeInspector()
+        async throws
+    {
+        let chapter = try loadChapter()
+        let catalog = try loadCatalog()
+        let pageID: LearningPageID = "chapter-02-page-07"
+        let snapshot = try KnowledgeContextSnapshotComposer().compose(
+            chapter: chapter,
+            catalog: catalog,
+            pageID: pageID,
+            revisions: []
+        )
+        let request = PersonalRelationDraftRequest(
+            sourceConceptID: "concept-related-value-grouping",
+            targetConceptID: "concept-type-modeling",
+            statement: "값 묶기의 경계는 타입 책임으로 이어진다.",
+            reason: "관련 값을 구조로 보존하기 때문이다.",
+            evidenceActivityID: "activity-page07-role-sorting"
+        )
+        let componentAction = PersonalKnowledgeComponentAction
+            .relationConfirmed(
+                activityID: "activity-page07-relation",
+                sourceConceptID: request.sourceConceptID,
+                targetConceptID: request.targetConceptID,
+                statement: request.statement,
+                reason: request.reason,
+                evidenceActivityID: request.evidenceActivityID
+            )
+        let item = try #require(snapshot.directConcepts.first {
+            $0.id == request.sourceConceptID
+        })
+        let contract = try #require(snapshot.relationCreationContract)
+        var expectedInspector = ConceptInspectorFeature.State(
+            sourcePageTitle: snapshot.pageTitle,
+            item: item,
+            availableConcepts: snapshot.availableConcepts,
+            baseRelations: snapshot.baseRelations,
+            personalRelations: snapshot.personalRelations,
+            relationCreationContract: contract
+        )
+        expectedInspector.relationEditor = PersonalRelationEditorFeature.State(
+            request: request,
+            contract: contract,
+            availableConcepts: snapshot.availableConcepts
+        )
+        var initialState = LearningWorkspaceFeature.State(
+            chapterID: chapter.id,
+            pageID: pageID
+        )
+        initialState.chapter.chapter = chapter
+        initialState.chapter.knowledgeCatalog = catalog
+        initialState.knowledgeContext.snapshot = snapshot
+        let store = TestStore(initialState: initialState) {
+            LearningWorkspaceFeature()
+        }
+
+        await store.send(.chapter(.delegate(.personalKnowledge(
+            componentAction
+        ))))
+        await store.receive(.knowledgeContext(.relationDraftRequested(
+            request
+        ))) {
+            $0.knowledgeContext.inspector = expectedInspector
         }
     }
 
