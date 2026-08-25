@@ -14,6 +14,7 @@ struct ChapterLearningFeatureTests {
     @Test
     func validSavedPageIsResumedByIdentity() async throws {
         let chapter = try loadChapter()
+        let knowledgeCatalog = try loadKnowledgeCatalog()
         let savedPageID = try #require(chapter.progressPageIDs.dropFirst().first)
         let progress = LearningProgress(
             chapterID: chapter.id,
@@ -30,6 +31,7 @@ struct ChapterLearningFeatureTests {
             ChapterLearningFeature()
         } withDependencies: {
             $0.curriculumClient.loadChapter = { _ in chapter }
+            $0.knowledgeCatalogClient.loadCatalog = { knowledgeCatalog }
             $0.learningRecordClient.loadProgress = { _ in progress }
         }
 
@@ -38,10 +40,12 @@ struct ChapterLearningFeatureTests {
         }
         await store.receive(.loadResponse(.loaded(
             chapter: chapter,
+            knowledgeCatalog: knowledgeCatalog,
             progress: progress
         ))) {
             $0.isLoading = false
             $0.chapter = chapter
+            $0.knowledgeCatalog = knowledgeCatalog
             $0.currentPageID = savedPageID
             $0.completedPageIDs = [chapter.progressPageIDs[0]]
         }
@@ -51,6 +55,7 @@ struct ChapterLearningFeatureTests {
     @Test
     func invalidSavedPageFallsBackToTheOverview() async throws {
         let chapter = try loadChapter()
+        let knowledgeCatalog = try loadKnowledgeCatalog()
         let invalidPageID: LearningPageID = "chapter-02-removed-page"
         let progress = LearningProgress(
             chapterID: chapter.id,
@@ -67,6 +72,7 @@ struct ChapterLearningFeatureTests {
             ChapterLearningFeature()
         } withDependencies: {
             $0.curriculumClient.loadChapter = { _ in chapter }
+            $0.knowledgeCatalogClient.loadCatalog = { knowledgeCatalog }
             $0.learningRecordClient.loadProgress = { _ in progress }
         }
 
@@ -75,10 +81,12 @@ struct ChapterLearningFeatureTests {
         }
         await store.receive(.loadResponse(.loaded(
             chapter: chapter,
+            knowledgeCatalog: knowledgeCatalog,
             progress: progress
         ))) {
             $0.isLoading = false
             $0.chapter = chapter
+            $0.knowledgeCatalog = knowledgeCatalog
             $0.currentPageID = chapter.overview.id
         }
         await store.receive(
@@ -439,6 +447,13 @@ struct ChapterLearningFeatureTests {
 
     private func loadChapter() throws -> Chapter {
         try ContentResourceDecoder().decode(Chapter.self, from: .chapter02)
+    }
+
+    private func loadKnowledgeCatalog() throws -> KnowledgeCatalog {
+        try ContentResourceDecoder().decode(
+            KnowledgeCatalog.self,
+            from: .valuesAndTypes
+        )
     }
 }
 

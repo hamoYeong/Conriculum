@@ -72,23 +72,26 @@ struct ChapterLearningView: View {
 
                     Divider()
 
-                    ContentUnavailableView {
-                        Label(
-                            page.kind == .overview
-                                ? "학습 경로가 준비되었습니다"
-                                : "학습 블록이 준비되었습니다",
-                            systemImage: page.kind == .overview
-                                ? "map"
-                                : "square.stack.3d.up"
+                    if let chapter = store.chapter,
+                       Chapter02ContentAssembly.isAssembled(page) {
+                        LearningPageContentView(
+                            chapter: chapter,
+                            page: page,
+                            store: store
                         )
-                    } description: {
-                        Text(
-                            page.kind == .overview
-                                ? "전체 경로를 확인한 뒤 첫 페이지에서 학습을 시작합니다."
-                                : "이 페이지의 학습 블록 \(page.sections.count)개는 다음 구현 단계에서 표시합니다."
-                        )
+                    } else {
+                        ContentUnavailableView {
+                            Label(
+                                "학습 블록을 조립하는 중",
+                                systemImage: "square.stack.3d.up"
+                            )
+                        } description: {
+                            Text(
+                                "이 페이지의 타입화된 학습 블록을 공용 컴포넌트에 연결하고 있습니다."
+                            )
+                        }
+                        .frame(maxWidth: .infinity, minHeight: 260)
                     }
-                    .frame(maxWidth: .infinity, minHeight: 260)
                 }
                 .frame(maxWidth: 760, alignment: .leading)
                 .padding(.horizontal, 36)

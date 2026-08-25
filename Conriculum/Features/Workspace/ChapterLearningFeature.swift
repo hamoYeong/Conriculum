@@ -19,6 +19,8 @@ struct ChapterLearningFeature {
         let chapterID: ChapterID
         var currentPageID: LearningPageID
         var chapter: Chapter?
+        var knowledgeCatalog: KnowledgeCatalog?
+        var component = LearningComponentFeature.State()
         var completedPageIDs: Set<LearningPageID> = []
         var activityDrafts: [LearningActivityID: ActivityDraft] = [:]
         var activitySaveStates: [
@@ -77,6 +79,7 @@ struct ChapterLearningFeature {
             response: ActivitySaveResponse
         )
         case activityRetryButtonTapped(LearningActivityID)
+        case component(LearningComponentFeature.Action)
         case startButtonTapped
         case previousButtonTapped
         case nextButtonTapped
@@ -85,7 +88,11 @@ struct ChapterLearningFeature {
     }
 
     enum LoadResponse: Equatable, Sendable {
-        case loaded(chapter: Chapter, progress: LearningProgress?)
+        case loaded(
+            chapter: Chapter,
+            knowledgeCatalog: KnowledgeCatalog,
+            progress: LearningProgress?
+        )
         case failed(message: String)
     }
 
@@ -110,15 +117,21 @@ struct ChapterLearningFeature {
 
     enum Delegate: Equatable {
         case currentPageChanged(LearningPageID)
+        case personalKnowledge(PersonalKnowledgeComponentAction)
     }
 
     @Dependency(\.curriculumClient) var curriculumClient
+    @Dependency(\.knowledgeCatalogClient) var knowledgeCatalogClient
     @Dependency(\.learningRecordClient) var learningRecordClient
     @Dependency(\.date.now) var now
     @Dependency(\.uuid) var uuid
     @Dependency(\.continuousClock) var clock
 
     var body: some Reducer<State, Action> {
+        Scope(state: \.component, action: \.component) {
+            LearningComponentFeature()
+        }
+
         Reduce { state, action in
             switch action {
             case .task:
@@ -129,11 +142,18 @@ struct ChapterLearningFeature {
 
                 return .run { send in
                     do {
-                        let chapter = try await curriculumClient.loadChapter(chapterID)
-                        let progress = try await learningRecordClient.loadProgress(chapterID)
+                        async let chapter = curriculumClient.loadChapter(
+                            chapterID
+                        )
+                        async let knowledgeCatalog = knowledgeCatalogClient
+                            .loadCatalog()
+                        async let progress = learningRecordClient.loadProgress(
+                            chapterID
+                        )
                         await send(.loadResponse(.loaded(
-                            chapter: chapter,
-                            progress: progress
+                            chapter: try await chapter,
+                            knowledgeCatalog: try await knowledgeCatalog,
+                            progress: try await progress
                         )))
                     } catch {
                         await send(.loadResponse(.failed(
@@ -146,7 +166,11 @@ struct ChapterLearningFeature {
                     cancelInFlight: true
                 )
 
-            case let .loadResponse(.loaded(chapter, progress)):
+            case let .loadResponse(.loaded(
+                chapter,
+                knowledgeCatalog,
+                progress
+            )):
                 let requestedPageID = state.currentPageID
                 let resolvedPageID = Self.resolvedPageID(
                     requestedPageID: requestedPageID,
@@ -156,6 +180,8 @@ struct ChapterLearningFeature {
 
                 state.isLoading = false
                 state.chapter = chapter
+                state.knowledgeCatalog = knowledgeCatalog
+                state.component = LearningComponentFeature.State()
                 state.currentPageID = resolvedPageID
                 state.completedPageIDs = Set(
                     progress?.completedPageIDs.filter {
@@ -226,6 +252,21 @@ struct ChapterLearningFeature {
                     activityID: activityID
                 )
 
+            case let .component(.delegate(.activityFieldsChanged(
+                activityID,
+                fields
+            ))):
+                return .send(.activityDraftChanged(
+                    activityID: activityID,
+                    fields: fields
+                ))
+
+            case let .component(.delegate(.personalKnowledge(action))):
+                return .send(.delegate(.personalKnowledge(action)))
+
+            case .component:
+                return .none
+
             case .startButtonTapped:
                 guard state.currentPage?.kind == .overview,
                       let firstPageID = state.chapter?.progressPageIDs.first
@@ -280,6 +321,7 @@ struct ChapterLearningFeature {
                 state.completedPageIDs = progress.completedPageIDs
                 state.activityDrafts = [:]
                 state.activitySaveStates = [:]
+                state.component = LearningComponentFeature.State()
 
                 switch destination {
                 case let .page(pageID):
