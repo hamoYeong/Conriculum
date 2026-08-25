@@ -1,4 +1,5 @@
 import ComposableArchitecture
+import SwiftUI
 import Testing
 
 @testable import Conriculum
@@ -72,5 +73,64 @@ struct LearningWorkspaceFeatureTests {
 
         await store.send(.homeButtonTapped)
         await store.receive(.delegate(.homeRequested))
+    }
+
+    @Test
+    func focusModeReturnsToTheModeThatWasVisibleBeforeIt() async {
+        let store = TestStore(
+            initialState: LearningWorkspaceFeature.State(
+                chapterID: Chapter02.id,
+                pageID: "chapter-02-page-03"
+            )
+        ) {
+            LearningWorkspaceFeature()
+        }
+
+        await store.send(.sidebarModeChanged(.visible)) {
+            $0.sidebarMode = .visible
+            $0.modeBeforeFocus = .visible
+        }
+        await store.send(.focusModeButtonTapped) {
+            $0.sidebarMode = .focus
+        }
+        await store.send(.focusModeButtonTapped) {
+            $0.sidebarMode = .visible
+        }
+    }
+
+    @Test
+    func automaticIsTheDefaultAndFocusDoesNotPersistAcrossNewState() async {
+        let store = TestStore(
+            initialState: LearningWorkspaceFeature.State(
+                chapterID: Chapter02.id,
+                pageID: "chapter-02-overview"
+            )
+        ) {
+            LearningWorkspaceFeature()
+        }
+
+        #expect(store.state.sidebarMode == .automatic)
+        await store.send(.focusModeButtonTapped) {
+            $0.sidebarMode = .focus
+        }
+        await store.send(.focusModeButtonTapped) {
+            $0.sidebarMode = .automatic
+        }
+    }
+
+    @Test
+    func domainModesMapAtTheSwiftUIBoundary() {
+        #expect(
+            WorkspaceSidebarMode.automatic.navigationSplitViewVisibility
+                == .automatic
+        )
+        #expect(
+            WorkspaceSidebarMode.visible.navigationSplitViewVisibility
+                == .all
+        )
+        #expect(
+            WorkspaceSidebarMode.focus.navigationSplitViewVisibility
+                == .detailOnly
+        )
     }
 }

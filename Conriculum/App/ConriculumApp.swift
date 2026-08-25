@@ -31,5 +31,8 @@ struct ConriculumApp: App {
             AppView(store: store)
                 .modelContainer(assembly.modelContainer)
         }
+        .commands {
+            SidebarCommands()
+        }
     }
 }

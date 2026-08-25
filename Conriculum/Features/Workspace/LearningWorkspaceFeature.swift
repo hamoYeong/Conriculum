@@ -6,10 +6,13 @@ struct LearningWorkspaceFeature {
     struct State: Equatable {
         var chapter: ChapterLearningFeature.State
         var knowledgeContext: KnowledgeContextFeature.State
+        var sidebarMode: WorkspaceSidebarMode
+        var modeBeforeFocus: WorkspaceSidebarMode
 
         init(
             chapterID: ChapterID,
-            pageID: LearningPageID
+            pageID: LearningPageID,
+            sidebarMode: WorkspaceSidebarMode = .automatic
         ) {
             chapter = ChapterLearningFeature.State(
                 chapterID: chapterID,
@@ -18,6 +21,10 @@ struct LearningWorkspaceFeature {
             knowledgeContext = KnowledgeContextFeature.State(
                 currentPageID: pageID
             )
+            self.sidebarMode = sidebarMode
+            modeBeforeFocus = sidebarMode == .focus
+                ? .automatic
+                : sidebarMode
         }
     }
 
@@ -25,6 +32,8 @@ struct LearningWorkspaceFeature {
         case chapter(ChapterLearningFeature.Action)
         case knowledgeContext(KnowledgeContextFeature.Action)
         case homeButtonTapped
+        case sidebarModeChanged(WorkspaceSidebarMode)
+        case focusModeButtonTapped
         case delegate(Delegate)
     }
 
@@ -41,7 +50,7 @@ struct LearningWorkspaceFeature {
             KnowledgeContextFeature()
         }
 
-        Reduce { _, action in
+        Reduce { state, action in
             switch action {
             case let .chapter(.delegate(.currentPageChanged(pageID))):
                 return .send(.knowledgeContext(.pageChanged(pageID)))
@@ -53,6 +62,22 @@ struct LearningWorkspaceFeature {
 
             case .homeButtonTapped:
                 return .send(.delegate(.homeRequested))
+
+            case let .sidebarModeChanged(mode):
+                if mode != .focus {
+                    state.modeBeforeFocus = mode
+                }
+                state.sidebarMode = mode
+                return .none
+
+            case .focusModeButtonTapped:
+                if state.sidebarMode == .focus {
+                    state.sidebarMode = state.modeBeforeFocus
+                } else {
+                    state.modeBeforeFocus = state.sidebarMode
+                    state.sidebarMode = .focus
+                }
+                return .none
 
             case .chapter, .knowledgeContext, .delegate:
                 return .none
