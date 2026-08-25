@@ -10,8 +10,15 @@ struct LearningWorkspaceFeatureTests {
     @Test
     func savedPageNavigationRefreshesTheKnowledgeContext() async throws {
         let chapter = try loadChapter()
+        let catalog = try loadCatalog()
         let pageOne = try #require(chapter.progressPageIDs.first)
         let pageTwo = try #require(chapter.progressPageIDs.dropFirst().first)
+        let expectedSnapshot = try KnowledgeContextSnapshotComposer().compose(
+            chapter: chapter,
+            catalog: catalog,
+            pageID: pageTwo,
+            revisions: []
+        )
         let timestamp = Date(timeIntervalSince1970: 1_725_782_400)
         let progress = LearningProgress(
             chapterID: chapter.id,
@@ -31,6 +38,9 @@ struct LearningWorkspaceFeatureTests {
         } withDependencies: {
             $0.date.now = timestamp
             $0.learningRecordClient.saveProgress = { _ in }
+            $0.curriculumClient.loadChapter = { _ in chapter }
+            $0.knowledgeCatalogClient.loadCatalog = { catalog }
+            $0.personalKnowledgeClient.loadRevisions = { _ in [] }
         }
 
         await store.send(.chapter(.nextButtonTapped)) {
@@ -51,8 +61,15 @@ struct LearningWorkspaceFeatureTests {
         await store.receive(
             .knowledgeContext(.reloadRequested(.pageChanged))
         ) {
+            $0.knowledgeContext.isLoading = true
             $0.knowledgeContext.lastReloadReason = .pageChanged
             $0.knowledgeContext.reloadRequestCount = 1
+        }
+        await store.receive(
+            .knowledgeContext(.loadResponse(.loaded(expectedSnapshot)))
+        ) {
+            $0.knowledgeContext.snapshot = expectedSnapshot
+            $0.knowledgeContext.isLoading = false
         }
     }
 
@@ -171,8 +188,16 @@ struct LearningWorkspaceFeatureTests {
     }
 
     @Test
-    func personalizationResultRefreshesOnlyTheKnowledgeChild() async {
+    func personalizationResultRefreshesOnlyTheKnowledgeChild() async throws {
+        let chapter = try loadChapter()
+        let catalog = try loadCatalog()
         let pageID: LearningPageID = "chapter-02-page-03"
+        let expectedSnapshot = try KnowledgeContextSnapshotComposer().compose(
+            chapter: chapter,
+            catalog: catalog,
+            pageID: pageID,
+            revisions: []
+        )
         let store = TestStore(
             initialState: LearningWorkspaceFeature.State(
                 chapterID: Chapter02.id,
@@ -180,6 +205,10 @@ struct LearningWorkspaceFeatureTests {
             )
         ) {
             LearningWorkspaceFeature()
+        } withDependencies: {
+            $0.curriculumClient.loadChapter = { _ in chapter }
+            $0.knowledgeCatalogClient.loadCatalog = { catalog }
+            $0.personalKnowledgeClient.loadRevisions = { _ in [] }
         }
 
         await store.send(.knowledgeContext(.personalizationSaved))
@@ -189,8 +218,15 @@ struct LearningWorkspaceFeatureTests {
         await store.receive(
             .knowledgeContext(.reloadRequested(.personalizationSaved))
         ) {
+            $0.knowledgeContext.isLoading = true
             $0.knowledgeContext.lastReloadReason = .personalizationSaved
             $0.knowledgeContext.reloadRequestCount = 1
+        }
+        await store.receive(
+            .knowledgeContext(.loadResponse(.loaded(expectedSnapshot)))
+        ) {
+            $0.knowledgeContext.snapshot = expectedSnapshot
+            $0.knowledgeContext.isLoading = false
         }
     }
 
@@ -270,5 +306,12 @@ struct LearningWorkspaceFeatureTests {
 
     private func loadChapter() throws -> Chapter {
         try ContentResourceDecoder().decode(Chapter.self, from: .chapter02)
+    }
+
+    private func loadCatalog() throws -> KnowledgeCatalog {
+        try ContentResourceDecoder().decode(
+            KnowledgeCatalog.self,
+            from: .valuesAndTypes
+        )
     }
 }

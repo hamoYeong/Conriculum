@@ -19,6 +19,7 @@ struct LearningWorkspaceFeature {
                 currentPageID: pageID
             )
             knowledgeContext = KnowledgeContextFeature.State(
+                chapterID: chapterID,
                 currentPageID: pageID
             )
             self.sidebarMode = sidebarMode
