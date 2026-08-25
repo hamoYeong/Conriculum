@@ -46,7 +46,7 @@ struct HomeSnapshotComposer {
                     )
                 },
                 accessNote: resumedPage == nil
-                    ? "Preview 상태 · Chapter 2 직접 진입이 열려 있습니다."
+                    ? "미리보기 상태 · Chapter 2 직접 진입이 열려 있습니다."
                     : nil
             ),
             lastActivity: lastActivity(
