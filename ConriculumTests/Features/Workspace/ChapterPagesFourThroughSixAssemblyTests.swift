@@ -7,95 +7,107 @@ import Testing
 @testable import Conriculum
 
 @MainActor
-struct ChapterPagesOneThroughThreeAssemblyTests {
+struct ChapterPagesFourThroughSixAssemblyTests {
     private struct PageContract {
         let tags: [LearningSectionTag]
         let requiredActivityIDs: Set<LearningActivityID>
         let knowledgeConceptIDs: Set<KnowledgeConceptID>
+        let promotionEvidenceIDs: Set<LearningActivityID>
+        let promotionConceptIDs: Set<KnowledgeConceptID>
     }
 
     private let timestamp = Date(timeIntervalSince1970: 1_725_782_400)
     private let responseUUID = UUID(
-        uuidString: "00000000-0000-0000-0000-000000000103"
+        uuidString: "00000000-0000-0000-0000-000000000106"
     )!
 
     @Test
-    func pagesOneThroughThreeMatchTheirActivityAndKnowledgeContracts() throws {
+    func pagesFourThroughSixMatchTheirComponentAndEvidenceContracts() throws {
         let chapter = try loadChapter()
         let catalog = try loadKnowledgeCatalog()
         let catalogIDs = Set(catalog.concepts.map(\.id))
         let contracts: [Int: PageContract] = [
-            1: PageContract(
+            4: PageContract(
                 tags: [
-                    .knowledgeRecall, .situation, .comparison, .definition,
-                    .definition, .codeExplanation, .knowledgeLink,
-                    .learningStateSelection, .cardSorting, .matching,
+                    .situation, .comparison, .definition, .decisionCriteria,
+                    .codeExplanation, .knowledgeLink,
+                    .learningStateSelection, .matching, .codeAssembly,
                     .choiceWithReason, .personalExpressionComparison,
                     .personalKnowledgePromotion, .enrichmentTask,
                     .completionCheck,
                 ],
                 requiredActivityIDs: [
-                    "activity-page01-card-sorting",
-                    "activity-page01-matching",
-                    "activity-page01-choice",
-                    "activity-page01-completion",
+                    "activity-page04-matching",
+                    "activity-page04-code-assembly",
+                    "activity-page04-choice",
+                    "activity-page04-completion",
                 ],
-                knowledgeConceptIDs: [
-                    "concept-value",
-                    "concept-literal",
-                    "concept-concrete-values-rules",
-                ]
+                knowledgeConceptIDs: ["concept-identifier-naming"],
+                promotionEvidenceIDs: [
+                    "activity-page04-code-assembly",
+                    "activity-page04-choice",
+                ],
+                promotionConceptIDs: ["concept-identifier-naming"]
             ),
-            2: PageContract(
+            5: PageContract(
                 tags: [
                     .knowledgeRecall, .situation, .comparison, .definition,
+                    .codeExplanation, .comparison, .knowledgeLink,
+                    .learningStateSelection, .codeAssembly, .cardSorting,
+                    .choiceWithReason, .personalExpressionComparison,
+                    .personalKnowledgePromotion, .enrichmentTask,
+                    .completionCheck,
+                ],
+                requiredActivityIDs: [
+                    "activity-page05-code-assembly",
+                    "activity-page05-card-sorting",
+                    "activity-page05-choice",
+                    "activity-page05-completion",
+                ],
+                knowledgeConceptIDs: [
+                    "concept-constants-variables",
+                    "concept-problem-boundary",
+                ],
+                promotionEvidenceIDs: [
+                    "activity-page05-card-sorting",
+                    "activity-page05-choice",
+                ],
+                promotionConceptIDs: [
+                    "concept-constants-variables",
+                    "concept-problem-boundary",
+                ]
+            ),
+            6: PageContract(
+                tags: [
+                    .situation, .comparison, .definition, .comparison,
                     .decisionCriteria, .knowledgeLink,
-                    .learningStateSelection, .cardSorting, .matching,
+                    .learningStateSelection, .matching, .fillInBlank,
                     .choiceWithReason, .personalExpressionComparison,
                     .personalKnowledgePromotion, .enrichmentTask,
                     .completionCheck,
                 ],
                 requiredActivityIDs: [
-                    "activity-page02-card-sorting",
-                    "activity-page02-matching",
-                    "activity-page02-choice",
-                    "activity-page02-completion",
+                    "activity-page06-matching",
+                    "activity-page06-fill-blank",
+                    "activity-page06-choice",
+                    "activity-page06-completion",
                 ],
                 knowledgeConceptIDs: [
-                    "concept-type",
-                    "concept-string",
-                    "concept-int",
-                    "concept-double",
-                    "concept-bool",
-                ]
-            ),
-            3: PageContract(
-                tags: [
-                    .knowledgeRecall, .situation, .comparison,
-                    .decisionCriteria, .definition, .knowledgeLink,
-                    .learningStateSelection, .choiceWithReason,
-                    .cardSorting, .freeResponse,
-                    .personalExpressionComparison,
-                    .personalKnowledgePromotion, .enrichmentTask,
-                    .completionCheck,
+                    "concept-type-inference-annotation",
+                    "concept-literal",
+                    "concept-identifier-naming",
                 ],
-                requiredActivityIDs: [
-                    "activity-page03-choice",
-                    "activity-page03-card-sorting",
-                    "activity-page03-free-response",
-                    "activity-page03-completion",
+                promotionEvidenceIDs: [
+                    "activity-page06-matching",
+                    "activity-page06-choice",
                 ],
-                knowledgeConceptIDs: [
-                    "concept-type-selection",
-                    "concept-string",
-                    "concept-int",
-                    "concept-double",
-                    "concept-bool",
+                promotionConceptIDs: [
+                    "concept-type-inference-annotation"
                 ]
             ),
         ]
 
-        for order in 1...3 {
+        for order in 4...6 {
             let page = try #require(
                 chapter.progressPages.first { $0.order == order }
             )
@@ -129,6 +141,7 @@ struct ChapterPagesOneThroughThreeAssemblyTests {
 
             try validatePersonalization(
                 in: page,
+                contract: contract,
                 activityIDs: activityIDs,
                 catalogIDs: catalogIDs
             )
@@ -136,30 +149,35 @@ struct ChapterPagesOneThroughThreeAssemblyTests {
     }
 
     @Test
-    func firstThreeLessonsRemainAssembled() throws {
+    func firstSixLessonsAreAssembled() throws {
         let chapter = try loadChapter()
 
-        for page in chapter.progressPages.prefix(3) {
+        for page in chapter.progressPages.prefix(6) {
             #expect(Chapter02ContentAssembly.isAssembled(page))
         }
     }
 
     @Test
-    func completionSelectionFlowsIntoTheAutosaveDraft() async throws {
+    func pageSixFillInBlankDraftAutosaves() async throws {
         let chapter = try loadChapter()
         let catalog = try loadKnowledgeCatalog()
         let page = try #require(
-            chapter.progressPages.first { $0.order == 1 }
+            chapter.progressPages.first { $0.order == 6 }
         )
-        let completionSection = try #require(
-            page.sections.first { $0.content.tag == .completionCheck }
-        )
-        let activityID = try #require(completionSection.activityID)
+        let activityID: LearningActivityID = "activity-page06-fill-blank"
         let fields = [
             ActivityResponseField(
-                key: LearningActivityFieldKey.completionAssessment,
-                values: [CompletionSelfAssessment.ready.rawValue]
-            )
+                key: LearningActivityFieldKey.blank("amountType"),
+                values: ["Int"]
+            ),
+            ActivityResponseField(
+                key: LearningActivityFieldKey.blank("memberType"),
+                values: ["Bool"]
+            ),
+            ActivityResponseField(
+                key: LearningActivityFieldKey.blank("nicknameType"),
+                values: ["String"]
+            ),
         ]
         let draft = ChapterLearningFeature.ActivityDraft(
             responseID: ActivityResponseID(
@@ -181,20 +199,13 @@ struct ChapterPagesOneThroughThreeAssemblyTests {
             $0.continuousClock = clock
             $0.date.now = timestamp
             $0.uuid = .constant(responseUUID)
-            $0.learningRecordClient.saveResponse = { _ in }
+            $0.learningRecordClient.saveResponse = { response in
+                #expect(response.activityID == activityID)
+                #expect(response.fields == fields)
+            }
         }
 
-        await store.send(.component(.completionAssessmentChanged(
-            activityID: activityID,
-            assessment: .ready
-        ))) {
-            $0.component.completionAssessments[activityID] = .ready
-        }
-        await store.receive(.component(.delegate(.activityFieldsChanged(
-            activityID: activityID,
-            fields: fields
-        ))))
-        await store.receive(.activityDraftChanged(
+        await store.send(.activityDraftChanged(
             activityID: activityID,
             fields: fields
         )) {
@@ -214,11 +225,11 @@ struct ChapterPagesOneThroughThreeAssemblyTests {
     }
 
     @Test
-    func pagesOneThroughThreeRenderThroughTheSharedTree() throws {
+    func pagesFourThroughSixRenderThroughTheSharedTree() throws {
         let chapter = try loadChapter()
         let catalog = try loadKnowledgeCatalog()
 
-        for page in chapter.progressPages.prefix(3) {
+        for page in chapter.progressPages.dropFirst(3).prefix(3) {
             var state = ChapterLearningFeature.State(
                 chapterID: chapter.id,
                 currentPageID: page.id
@@ -253,21 +264,33 @@ struct ChapterPagesOneThroughThreeAssemblyTests {
 
     private func validatePersonalization(
         in page: LearningPage,
+        contract: PageContract,
         activityIDs: Set<LearningActivityID>,
         catalogIDs: Set<KnowledgeConceptID>
     ) throws {
-        let comparisonSection = try #require(
+        let stateSection = try #require(
             page.sections.first {
-                $0.content.tag == .personalExpressionComparison
+                $0.content.tag == .learningStateSelection
             }
         )
-        guard case let .personalExpressionComparison(comparison) =
-            comparisonSection.content
+        guard case let .learningStateSelection(stateSelection) =
+            stateSection.content
         else {
-            Issue.record("나의 표현 비교 section mapping이 올바르지 않다.")
+            Issue.record("학습 상태 section mapping이 올바르지 않다.")
             return
         }
-        #expect(comparison.conceptIDs.allSatisfy(catalogIDs.contains))
+        let stateIDs = Set(stateSelection.options.map(\.id))
+
+        let enrichmentSection = try #require(
+            page.sections.first { $0.content.tag == .enrichmentTask }
+        )
+        guard case let .enrichmentTask(enrichment) = enrichmentSection.content
+        else {
+            Issue.record("확장·심화 section mapping이 올바르지 않다.")
+            return
+        }
+        #expect(stateIDs.contains(enrichment.requiredStateID))
+        #expect(enrichment.conceptIDs.allSatisfy(catalogIDs.contains))
 
         let promotionSection = try #require(
             page.sections.first {
@@ -281,7 +304,11 @@ struct ChapterPagesOneThroughThreeAssemblyTests {
             return
         }
         #expect(promotion.candidateKind == .conceptRevision)
-        #expect(!promotion.evidenceActivityIDs.isEmpty)
+        #expect(
+            Set(promotion.evidenceActivityIDs)
+                == contract.promotionEvidenceIDs
+        )
+        #expect(Set(promotion.conceptIDs) == contract.promotionConceptIDs)
         #expect(promotion.evidenceActivityIDs.allSatisfy(activityIDs.contains))
         #expect(promotion.conceptIDs.allSatisfy(catalogIDs.contains))
 
