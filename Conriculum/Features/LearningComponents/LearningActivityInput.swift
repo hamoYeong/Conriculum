@@ -51,11 +51,27 @@ struct LearningActivityInput {
             set: { updating(key: key, values: [$0]) }
         )
     }
+
+    func textBinding(
+        for key: String,
+        default defaultValue: String
+    ) -> Binding<String> {
+        Binding(
+            get: {
+                let storedValue = value(for: key)
+                return storedValue.isEmpty ? defaultValue : storedValue
+            },
+            set: { updating(key: key, values: [$0]) }
+        )
+    }
 }
 
 enum LearningActivityFieldKey {
     static let reason = "reason"
     static let response = "response"
+    static let completionAssessment = "completionAssessment"
+    static let personalExpression = "personalExpression"
+    static let relationStatement = "relationStatement"
     static func card(_ cardID: String) -> String {
         "card.\(cardID)"
     }
