@@ -143,6 +143,45 @@ struct ContentValidatorTests {
         })
     }
 
+    @Test
+    func wrongPageCountAndKnowledgeContextReportExactFields() throws {
+        let content = try loadValidContent()
+        var pages = content.chapter.pages
+        let firstPage = pages[0]
+        let brokenContext = PageKnowledgeContext(
+            currentlyUsedConceptIDs: ["concept-missing-context"],
+            currentlyUsedSummary: firstPage.knowledgeContext
+                .currentlyUsedSummary,
+            changedKnowledgeSummary: firstPage.knowledgeContext
+                .changedKnowledgeSummary,
+            nearbyKnowledge: firstPage.knowledgeContext.nearbyKnowledge,
+            refreshTriggers: firstPage.knowledgeContext.refreshTriggers,
+            emptyStateMessage: firstPage.knowledgeContext.emptyStateMessage,
+            focusModeSummary: firstPage.knowledgeContext.focusModeSummary
+        )
+        pages[0] = copyPage(firstPage, knowledgeContext: brokenContext)
+        pages.removeLast()
+
+        let error = validationError(
+            chapter: copyChapter(content.chapter, pages: pages),
+            catalog: content.catalog,
+            identityManifest: content.identityManifest
+        )
+
+        #expect(error.issues.contains {
+            $0.fieldPath == "pages"
+                && $0.message.contains("exactly 8 lesson pages")
+        })
+        #expect(error.issues.contains {
+            $0.fieldPath == "pages[0].knowledgeContext"
+                && $0.message.contains("concept-missing-context")
+        })
+        #expect(error.issues.contains {
+            $0.fieldPath == "pages.order"
+                && $0.message.contains("1 through 8")
+        })
+    }
+
     private func loadValidContent() throws -> ValidContent {
         let decoder = ContentResourceDecoder()
         return try ValidContent(
@@ -219,6 +258,24 @@ struct ContentValidatorTests {
             activities: page.activities,
             knowledgeLinks: knowledgeLinks ?? page.knowledgeLinks,
             knowledgeContext: page.knowledgeContext,
+            navigation: page.navigation
+        )
+    }
+
+    private func copyPage(
+        _ page: LearningPage,
+        knowledgeContext: PageKnowledgeContext
+    ) -> LearningPage {
+        LearningPage(
+            id: page.id,
+            kind: page.kind,
+            order: page.order,
+            title: page.title,
+            goal: page.goal,
+            sections: page.sections,
+            activities: page.activities,
+            knowledgeLinks: page.knowledgeLinks,
+            knowledgeContext: knowledgeContext,
             navigation: page.navigation
         )
     }

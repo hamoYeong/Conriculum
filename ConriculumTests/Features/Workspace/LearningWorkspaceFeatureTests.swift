@@ -640,6 +640,16 @@ struct LearningWorkspaceFeatureTests {
         await store.send(.focusModeButtonTapped) {
             $0.sidebarMode = .visible
         }
+        await store.send(.sidebarModeChanged(.automatic)) {
+            $0.sidebarMode = .automatic
+            $0.modeBeforeFocus = .automatic
+        }
+        await store.send(.focusModeButtonTapped) {
+            $0.sidebarMode = .focus
+        }
+        await store.send(.focusModeButtonTapped) {
+            $0.sidebarMode = .automatic
+        }
     }
 
     @Test
