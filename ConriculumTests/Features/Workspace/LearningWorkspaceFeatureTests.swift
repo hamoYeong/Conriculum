@@ -19,10 +19,7 @@ struct LearningWorkspaceFeatureTests {
             LearningWorkspaceFeature()
         }
 
-        await store.send(.chapter(.currentPageChanged(pageTwo))) {
-            $0.chapter.currentPageID = pageTwo
-        }
-        await store.receive(
+        await store.send(
             .chapter(.delegate(.currentPageChanged(pageTwo)))
         )
         await store.receive(.knowledgeContext(.pageChanged(pageTwo))) {
