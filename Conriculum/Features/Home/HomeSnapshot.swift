@@ -53,7 +53,7 @@ struct HomeSnapshot: Equatable, Sendable {
 
 extension HomeSnapshot.StageSummary {
     static let stageOne = Self(
-        title: "1단계 · Swift로 문제를 표현할 준비",
+        title: "Stage 1 · Swift로 문제를 표현할 준비",
         goal: "컴퓨팅 사고력을 얻기 위해 Swift를 도구로 사용할 준비를 마친다."
     )
 }

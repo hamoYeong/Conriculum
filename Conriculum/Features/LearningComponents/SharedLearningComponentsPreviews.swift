@@ -130,7 +130,7 @@ private struct SharedLearningComponentsPreview: View {
     }
 }
 
-#Preview("공통·분기 · 챕터 2") {
+#Preview("공통·분기 · Chapter 2") {
     SharedLearningComponentsPreview()
         .frame(width: 820, height: 1_000)
 }

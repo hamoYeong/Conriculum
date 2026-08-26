@@ -11,7 +11,7 @@ struct ChapterLearningView: View {
 
             content
         }
-        .navigationTitle(store.chapter?.title ?? "챕터 2")
+        .navigationTitle(store.chapter?.title ?? "Chapter 2")
         .frame(minWidth: 240, minHeight: 520)
         .task {
             guard store.chapter == nil else { return }
@@ -45,7 +45,7 @@ struct ChapterLearningView: View {
             ContentUnavailableView(
                 "표시할 학습 페이지가 없습니다",
                 systemImage: "doc.questionmark",
-                description: Text("챕터 2 지도에서 다시 시작해 주세요.")
+                description: Text("Chapter 2 지도에서 다시 시작해 주세요.")
             )
         }
     }
@@ -185,7 +185,7 @@ struct ChapterLearningView: View {
     private var completionSummary: some View {
         ContentUnavailableView {
             Label(
-                "챕터 2 학습 경로를 모두 확인했습니다",
+                "Chapter 2 학습 경로를 모두 확인했습니다",
                 systemImage: "checkmark.circle"
             )
         } description: {
@@ -195,7 +195,7 @@ struct ChapterLearningView: View {
         }
         .frame(maxWidth: 680)
         .accessibilityLabel(
-            "챕터 2 완료 요약. 페이지 이동 기록을 저장했습니다."
+            "Chapter 2 완료 요약. 페이지 이동 기록을 저장했습니다."
         )
     }
 
@@ -203,8 +203,8 @@ struct ChapterLearningView: View {
         guard page.kind == .lesson,
               let position = store.progressPosition,
               let count = store.chapter?.progressDenominator
-        else { return "챕터 2 · 학습 지도" }
-        return "챕터 2 · \(position) / \(count)"
+        else { return "Chapter 2 · 학습 지도" }
+        return "Chapter 2 · \(position) / \(count)"
     }
 
     private enum ScrollAnchor: Hashable {

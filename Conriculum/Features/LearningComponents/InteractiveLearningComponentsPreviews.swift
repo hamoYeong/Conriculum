@@ -80,7 +80,7 @@ private struct InteractiveLearningComponentsPreview: View {
     }
 }
 
-#Preview("사용자 작업 · 챕터 2") {
+#Preview("사용자 작업 · Chapter 2") {
     InteractiveLearningComponentsPreview()
         .frame(width: 820, height: 1_000)
 }

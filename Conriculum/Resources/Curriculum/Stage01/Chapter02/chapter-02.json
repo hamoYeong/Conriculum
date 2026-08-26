@@ -8,7 +8,7 @@
     "id": "chapter-02-overview",
     "kind": "overview",
     "order": null,
-    "title": "챕터 2 지도",
+    "title": "Chapter 2 지도",
     "goal": "현실의 정보를 값·타입·이름·변경 가능성·타입 표기로 판단하는 전체 경로를 이해한다.",
     "sections": [
       {
@@ -19,7 +19,7 @@
           "tag": "situation",
           "payload": {
             "title": "현실의 정보를 이름 붙은 Swift 값으로 옮기기",
-            "description": "챕터 1에서 입력으로 찾은 현실의 정보를 Swift가 저장하고 읽을 수 있는 선언으로 옮긴다. 결과물은 계산식이나 완성된 앱이 아니라 다음 챕터가 안전하게 사용할 이름 붙은 값이다.",
+            "description": "Chapter 1에서 입력으로 찾은 현실의 정보를 Swift가 저장하고 읽을 수 있는 선언으로 옮긴다. 결과물은 계산식이나 완성된 앱이 아니라 다음 챕터가 안전하게 사용할 이름 붙은 값이다.",
             "materials": [
               {"label":"학습 흐름","text":"현실의 정보 → 구체적인 값 → 타입 선택 → 의미 있는 이름 → let과 타입 표기 → 역할에 따른 값 묶기"}
             ],
@@ -70,7 +70,7 @@
     ],
     "knowledgeContext": {
       "currentlyUsedConceptIDs": ["concept-value","concept-type-selection","concept-identifier-naming"],
-      "currentlyUsedSummary": "챕터 2의 전체 판단 흐름에 직접 쓰는 지식을 우선한다.",
+      "currentlyUsedSummary": "Chapter 2의 전체 판단 흐름에 직접 쓰는 지식을 우선한다.",
       "changedKnowledgeSummary": "이번 챕터에서 확인해 저장한 개인 표현과 연결을 최근 수정 순으로 보여 준다.",
       "nearbyKnowledge": [
         {"conceptID":"concept-expressions-operations","reason":"이름 붙은 값은 다음 챕터에서 계산의 재료가 된다."},
@@ -95,7 +95,7 @@
       "sections": [
         {
           "id":"section-page01-recall","order":1,"content":{"tag":"knowledgeRecall","payload":{
-            "questions":["챕터 1의 주문 문제에서 결과를 바꾸는 입력은 무엇이었는가?"],
+            "questions":["Chapter 1의 주문 문제에서 결과를 바꾸는 입력은 무엇이었는가?"],
             "memorySentence":"상품 금액과 회원 여부는 입력이고 할인 정책은 여러 입력에 반복되는 규칙이었다.",
             "connection":"입력으로 찾은 정보를 Swift 안에 놓으려면 먼저 구체적인 값을 골라야 한다."
           }}
@@ -231,7 +231,7 @@
         "focusModeSummary":"현재 활동의 개념명과 저장된 변화 유무만 유지한다."
       },
       "navigation": {
-        "previous":{"pageID":"chapter-02-overview","label":"챕터 2 지도"},
+        "previous":{"pageID":"chapter-02-overview","label":"Chapter 2 지도"},
         "next":{"pageID":"chapter-02-page-02","label":"값의 종류 비교하기"}
       }
     },
@@ -839,7 +839,7 @@
         }}},
         {"id":"section-page08-recall","order":3,"content":{"tag":"knowledgeRecall","payload":{
           "questions":["구체적인 값을 읽었는가?","의미와 할 일로 타입을 골랐는가?","이름이 대상을 드러내는가?","변경 범위로 let과 var를 골랐는가?","추론과 명시를 설명할 수 있는가?"],
-          "memorySentence":"선언 한 줄은 이름, 타입, 값, 변경 가능성에 대한 결정을 함께 담는다.","connection":"챕터 2의 지식을 새 서비스 문제에 독립적으로 적용한다."
+          "memorySentence":"선언 한 줄은 이름, 타입, 값, 변경 가능성에 대한 결정을 함께 담는다.","connection":"Chapter 2의 지식을 새 서비스 문제에 독립적으로 적용한다."
         }}},
         {"id":"section-page08-code","order":4,"content":{"tag":"codeExplanation","payload":{
           "code":"let meetupTitle = \"Swift 기초 읽기\"\nlet attendeeCount: Int = 4\nlet participationFee = 12_500\nlet isPaid: Bool = true\nlet applicantNickname = \"초록책\"","language":"swift",
@@ -862,7 +862,7 @@
           "cards":[{"id":"title","text":"모임 이름"},{"id":"count","text":"신청 인원"},{"id":"fee","text":"참가비"},{"id":"paid","text":"결제 여부"},{"id":"nickname","text":"신청자 닉네임"},{"id":"rule","text":"정원 안이고 결제되면 신청 완료"},{"id":"result","text":"신청 완료 상태"}],
           "groups":[{"id":"value","text":"현재 주어진 값"},{"id":"rule","text":"이후 적용할 규칙"},{"id":"result","text":"이후 만들어질 결과"}],
           "interaction":"입력·규칙·출력 관점으로 먼저 나눈다.","completionCriteria":["다섯 값, 한 규칙, 한 결과를 분류한다."],
-          "feedbackCriteria":["챕터 2가 선언할 대상과 이후 챕터가 구현할 대상을 분리한다."]
+          "feedbackCriteria":["Chapter 2가 선언할 대상과 이후 챕터가 구현할 대상을 분리한다."]
         }}},
         {"id":"section-page08-code-assembly","order":8,"activityID":"activity-page08-code-assembly","content":{"tag":"codeAssembly","payload":{
           "starterCode":"___ ___: ___ = ___\n___ ___: ___ = ___\n___ ___: ___ = ___\n___ ___: ___ = ___\n___ ___: ___ = ___",
@@ -909,7 +909,7 @@
           "evidenceActivityIDs":["activity-page08-value-sorting","activity-page08-code-assembly","activity-page08-role-sorting"],"confirmationQuestion":"이 관계 문장과 이유를 나의 지식 연결로 남길까?"
         }}},
         {"id":"section-page08-change-summary","order":16,"content":{"tag":"knowledgeChangeSummary","payload":{
-          "confirmedExpressions":"챕터 2에서 저장된 최신 개인 개념 표현을 개념별 한 건씩 보여 준다.",
+          "confirmedExpressions":"Chapter 2에서 저장된 최신 개인 개념 표현을 개념별 한 건씩 보여 준다.",
           "confirmedRelations":"저장된 나의 관계 문장, 연결 이유와 근거 활동을 보여 준다.",
           "pendingCandidates":"확인하지 않은 표현·연결 후보를 확인된 변화와 분리해 보여 준다.",
           "nextUseSuggestion":"타입 선택 기준은 새로운 입력 모델링에, 값 묶기 연결은 이후 타입 모델링에 다시 사용한다.",
@@ -941,8 +941,8 @@
       ],
       "knowledgeContext":{
         "currentlyUsedConceptIDs":["concept-value","concept-type-selection","concept-identifier-naming","concept-constants-variables","concept-type-inference-annotation","concept-related-value-grouping"],
-        "currentlyUsedSummary":"현재 적용 단계에 필요한 챕터 2 개념만 순서에 따라 강조한다.",
-        "changedKnowledgeSummary":"챕터 2에서 확인해 저장한 개인 표현과 관계를 최근 수정 순으로 보여 준다.",
+        "currentlyUsedSummary":"현재 적용 단계에 필요한 Chapter 2 개념만 순서에 따라 강조한다.",
+        "changedKnowledgeSummary":"Chapter 2에서 확인해 저장한 개인 표현과 관계를 최근 수정 순으로 보여 준다.",
         "nearbyKnowledge":[{"conceptID":"concept-expressions-operations","reason":"이름 붙은 값의 다음 쓰임을 예고한다."},{"conceptID":"concept-type-modeling","reason":"관련된 값을 타입 구조로 만드는 다음 학습을 예고한다."}],
         "refreshTriggers":["적용 활동 제출","개인 표현 저장","개인 관계 저장"],
         "emptyStateMessage":"아직 확인해 반영한 나의 표현이나 연결이 없다. 학습 답안은 그대로 저장되어 있다.",
