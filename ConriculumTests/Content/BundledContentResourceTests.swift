@@ -45,9 +45,37 @@ struct BundledContentResourceTests {
     @Test
     func knowledgeCatalogResourceDecodesFromTheApplicationBundle() throws {
         let catalog = try decode(KnowledgeCatalog.self, from: .valuesAndTypes)
+        let expectedCollectionIDs: [KnowledgeCollectionID] = [
+            "collection-01-problem-solving",
+            "collection-02-values-and-types",
+            "collection-03-expressions-and-operations",
+            "collection-04-execution-flow",
+            "collection-05-functions-and-abstraction",
+            "collection-07-type-modeling",
+            "collection-12-swiftui-interface",
+        ]
+        let membershipIDs = catalog.collections.flatMap(\.conceptIDs)
+        let hasCompletePresentationMetadata = catalog.collections.allSatisfy {
+            $0.summary.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty == false
+                && $0.systemImage.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty == false
+        }
 
-        #expect(catalog.schemaVersion == 1)
+        #expect(catalog.schemaVersion == 2)
+        #expect(catalog.collections.map(\.id) == expectedCollectionIDs)
+        #expect(catalog.collections.map(\.order) == [1, 2, 3, 4, 5, 7, 12])
+        #expect(catalog.collections.map(\.title) == [
+            "문제 해결과 컴퓨팅 사고",
+            "값과 타입",
+            "표현식과 연산",
+            "실행 흐름",
+            "함수와 추상화",
+            "타입 모델링",
+            "SwiftUI와 사용자 인터페이스",
+        ])
+        #expect(hasCompletePresentationMetadata)
         #expect(catalog.concepts.count == 22)
+        #expect(membershipIDs.count == catalog.concepts.count)
+        #expect(Set(membershipIDs) == Set(catalog.concepts.map(\.id)))
         #expect(catalog.relations.isEmpty == false)
     }
 

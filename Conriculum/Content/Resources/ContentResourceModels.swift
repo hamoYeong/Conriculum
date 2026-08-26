@@ -1,11 +1,12 @@
 // MARK: - 10. JSON root를 Domain 값으로 감싸는 resource model
 
 /// `values-and-types.json`의 root.
-/// 공용 Concept와 Concept 간 Relation을 하나의 versioned catalog로 묶는다.
+/// 공용 Collection·Concept·Relation을 하나의 versioned catalog로 묶는다.
 struct KnowledgeCatalog: Codable, Equatable, Sendable {
     let schemaVersion: Int
     let id: String
     let title: String
+    let collections: [KnowledgeCollection]
     let concepts: [KnowledgeConcept]
     let relations: [KnowledgeRelation]
 }

@@ -26,20 +26,20 @@ struct ConceptInspectorView: View {
                     knowledgeRelations
 
                     if let message = store.validationMessage {
-                        messageBanner(
+                        KnowledgeMessageBanner(
                             title: "저장 내용을 확인해 주세요",
                             message: message,
                             systemImage: "exclamationmark.circle",
-                            color: .orange
+                            accent: .orange
                         )
                     }
 
                     if let message = store.persistenceErrorMessage {
-                        messageBanner(
+                        KnowledgeMessageBanner(
                             title: "개인 표현을 저장하지 못했습니다",
                             message: message,
                             systemImage: "externaldrive.badge.exclamationmark",
-                            color: .red
+                            accent: .red
                         )
                     }
                 }
@@ -54,24 +54,11 @@ struct ConceptInspectorView: View {
     }
 
     private var header: some View {
-        VStack(alignment: .leading, spacing: 7) {
-            Label("개념 상세", systemImage: "sidebar.trailing")
-                .font(.title2.weight(.semibold))
-                .accessibilityHeading(.h1)
-
-            Text(store.concept.title)
-                .font(.title3.weight(.semibold))
-
-            Text("현재 문맥 · \(store.sourcePageTitle)")
-                .font(.caption)
-                .foregroundStyle(.secondary)
-
-            if let role = store.role {
-                Label("현재 페이지 역할 · \(roleTitle(role))", systemImage: "scope")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-            }
-        }
+        KnowledgeConceptHeader(
+            concept: store.concept,
+            contextTitle: store.sourcePageTitle,
+            role: store.role
+        )
     }
 
     private func personalizationReviewBanner(
@@ -79,13 +66,13 @@ struct ConceptInspectorView: View {
     ) -> some View {
         GroupBox {
             VStack(alignment: .leading, spacing: 12) {
-                labeledText(
+                KnowledgeLabeledText(
                     title: "반영할 개념",
                     text: conceptTitle(review.targetConceptID),
                     systemImage: "scope"
                 )
 
-                labeledText(
+                KnowledgeLabeledText(
                     title: "연결 지식",
                     text: review.candidate.conceptIDs
                         .map { conceptTitle($0) }
@@ -93,7 +80,7 @@ struct ConceptInspectorView: View {
                     systemImage: "link"
                 )
 
-                labeledText(
+                KnowledgeLabeledText(
                     title: "활동 응답에서 만든 후보",
                     text: review.candidate.draft,
                     systemImage: "quote.bubble"
@@ -135,48 +122,23 @@ struct ConceptInspectorView: View {
     }
 
     private var baseKnowledge: some View {
-        GroupBox {
-            VStack(alignment: .leading, spacing: 12) {
-                Text(store.concept.definition)
-                    .fixedSize(horizontal: false, vertical: true)
-
-                if let usage = store.usage {
-                    labeledText(
-                        title: "이 페이지에서",
-                        text: usage,
-                        systemImage: "arrow.turn.down.right"
-                    )
-                }
-
-                labeledText(
-                    title: "핵심 질문",
-                    text: store.concept.essentialQuestion,
-                    systemImage: "questionmark.bubble"
-                )
-
-                if !store.concept.examples.isEmpty {
-                    VStack(alignment: .leading, spacing: 5) {
-                        Label("기본 예시", systemImage: "list.bullet")
-                            .font(.caption.weight(.semibold))
-                            .foregroundStyle(.secondary)
-                        ForEach(store.concept.examples, id: \.self) { example in
-                            Text("• \(example)")
-                                .font(.caption)
-                                .fixedSize(horizontal: false, vertical: true)
-                        }
-                    }
-                }
-            }
-            .frame(maxWidth: .infinity, alignment: .leading)
-        } label: {
-            Label("기본 지식 · 변경되지 않음", systemImage: "book.closed")
-                .font(.headline)
-                .accessibilityHeading(.h2)
-        }
+        BaseKnowledgeSection(
+            concept: store.concept,
+            usage: store.usage,
+            detailLevel: .contextual
+        )
     }
 
     private var personalKnowledgeEditor: some View {
-        GroupBox {
+        KnowledgeSectionChrome(
+            title: store.personalizationReview != nil
+                ? "나의 표현 · 활동 후보에서 시작"
+                : store.latestRevision == nil
+                    ? "나의 표현 · 새 표현 기록"
+                    : "나의 표현 · 최신 기록에서 시작",
+            systemImage: "person.crop.circle",
+            accent: .purple
+        ) {
             VStack(alignment: .leading, spacing: 14) {
                 TextField(
                     "나만의 이름 (선택)",
@@ -243,17 +205,6 @@ struct ConceptInspectorView: View {
                 }
             }
             .frame(maxWidth: .infinity, alignment: .leading)
-        } label: {
-            Label(
-                store.personalizationReview != nil
-                    ? "나의 표현 · 활동 후보에서 시작"
-                    : store.latestRevision == nil
-                        ? "나의 표현 · 새 표현 기록"
-                        : "나의 표현 · 최신 기록에서 시작",
-                systemImage: "person.crop.circle"
-            )
-            .font(.headline)
-            .accessibilityHeading(.h2)
         }
     }
 
@@ -322,172 +273,40 @@ struct ConceptInspectorView: View {
                 }
                 .foregroundStyle(.secondary)
             } else {
-                messageBanner(
+                KnowledgeMessageBanner(
                     title: "이 문맥에서는 새 표현을 저장할 수 없습니다",
                     message: "관련 학습 페이지에서 근거 활동을 남긴 뒤 편집해 주세요. 기존 기본 지식은 계속 확인할 수 있습니다.",
                     systemImage: "lock",
-                    color: .orange
+                    accent: .orange
                 )
             }
         }
     }
 
     private var knowledgeRelations: some View {
-        GroupBox {
-            VStack(alignment: .leading, spacing: 14) {
-                relationGroupTitle("기본 지식 연결", systemImage: "books.vertical")
-
-                if store.relevantBaseRelations.isEmpty {
-                    Text("이 개념에 직접 연결된 기본 지식 관계가 없습니다.")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                } else {
-                    ForEach(store.relevantBaseRelations, id: \.id) { relation in
-                        baseRelationCard(relation)
-                    }
-                }
-
-                Divider()
-
-                HStack {
-                    relationGroupTitle(
-                        "나의 지식 연결",
-                        systemImage: "person.2"
-                    )
-                    Spacer()
-                    Button {
-                        store.send(.addRelationButtonTapped)
-                    } label: {
-                        Label("관계 추가", systemImage: "plus")
-                    }
-                    .controlSize(.small)
-                    .disabled(!store.canCreateRelation)
-                    .accessibilityHint(
-                        "현재 페이지가 허용한 두 개념으로 개인 관계 초안을 만듭니다."
-                    )
-                }
-
-                if store.relevantPersonalRelations.isEmpty {
-                    Text("아직 확인해 저장한 개인 관계가 없습니다.")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                } else {
-                    ForEach(
-                        store.relevantPersonalRelations,
-                        id: \.id
-                    ) { relation in
-                        personalRelationCard(relation)
-                    }
-                }
-
-                if !store.canCreateRelation {
-                    Label(
-                        "새 관계는 관계 활동이 있는 7·8페이지에서 만들 수 있습니다.",
-                        systemImage: "info.circle"
-                    )
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-                    .fixedSize(horizontal: false, vertical: true)
-                }
-
+        KnowledgeRelationsSection(
+            baseRelations: store.relevantBaseRelations,
+            personalRelations: store.relevantPersonalRelations,
+            conceptIndex: conceptIndex,
+            canCreateRelation: store.canCreateRelation,
+            relationCreationUnavailableMessage: store.canCreateRelation
+                ? nil
+                : "새 관계는 관계 활동이 있는 7·8페이지에서 만들 수 있습니다.",
+            onAddRelation: {
+                store.send(.addRelationButtonTapped)
+            },
+            onEditPersonalRelation: { relationID in
+                store.send(.editRelationButtonTapped(relationID))
             }
-            .frame(maxWidth: .infinity, alignment: .leading)
-        } label: {
-            Label("개념 사이의 관계", systemImage: "link")
-                .font(.headline)
-                .accessibilityHeading(.h2)
-        }
-    }
-
-    private func relationGroupTitle(
-        _ title: String,
-        systemImage: String
-    ) -> some View {
-        Label(title, systemImage: systemImage)
-            .font(.callout.weight(.semibold))
-    }
-
-    private func baseRelationCard(_ relation: KnowledgeRelation) -> some View {
-        VStack(alignment: .leading, spacing: 6) {
-            Text(relationEndpoints(
-                source: relation.sourceConceptID,
-                target: relation.targetConceptID
-            ))
-            .font(.caption.weight(.semibold))
-            Text(relation.summary)
-                .font(.caption)
-                .fixedSize(horizontal: false, vertical: true)
-            Text(baseRelationKindTitle(relation.kind))
-                .font(.caption2.weight(.medium))
-                .foregroundStyle(.secondary)
-        }
-        .padding(10)
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .background(
-            Color(nsColor: .controlBackgroundColor),
-            in: RoundedRectangle(cornerRadius: 9, style: .continuous)
         )
-        .accessibilityElement(children: .combine)
-    }
-
-    private func personalRelationCard(
-        _ relation: PersonalKnowledgeRelation
-    ) -> some View {
-        VStack(alignment: .leading, spacing: 7) {
-            HStack(alignment: .firstTextBaseline) {
-                Text(relationEndpoints(
-                    source: relation.sourceConceptID,
-                    target: relation.targetConceptID
-                ))
-                .font(.caption.weight(.semibold))
-                .frame(maxWidth: .infinity, alignment: .leading)
-
-                Button("수정") {
-                    store.send(.editRelationButtonTapped(relation.id))
-                }
-                .controlSize(.small)
-            }
-
-            Text(relation.statement)
-                .font(.callout)
-                .fixedSize(horizontal: false, vertical: true)
-            Label(relation.reason, systemImage: "quote.bubble")
-                .font(.caption)
-                .foregroundStyle(.secondary)
-                .fixedSize(horizontal: false, vertical: true)
-        }
-        .padding(10)
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .background(
-            Color.purple.opacity(0.07),
-            in: RoundedRectangle(cornerRadius: 9, style: .continuous)
-        )
-        .accessibilityElement(children: .contain)
-    }
-
-    private func relationEndpoints(
-        source: KnowledgeConceptID,
-        target: KnowledgeConceptID
-    ) -> String {
-        "\(conceptTitle(source)) → \(conceptTitle(target))"
     }
 
     private func conceptTitle(_ id: KnowledgeConceptID) -> String {
-        store.availableConcepts.first { $0.id == id }?.title
-            ?? "알 수 없는 개념"
+        conceptIndex.title(for: id)
     }
 
-    private func baseRelationKindTitle(
-        _ kind: KnowledgeRelationKind
-    ) -> String {
-        switch kind {
-        case .prerequisite: "선행 관계"
-        case .related: "관련 관계"
-        case .contrastsWith: "대조 관계"
-        case .refines: "구체화 관계"
-        case .appliesTo: "적용 관계"
-        case .leadsTo: "다음으로 이어지는 관계"
-        }
+    private var conceptIndex: KnowledgeConceptIndex {
+        KnowledgeConceptIndex(concepts: store.availableConcepts)
     }
 
     private var footer: some View {
@@ -529,55 +348,6 @@ struct ConceptInspectorView: View {
         .background(.regularMaterial)
     }
 
-    private func labeledText(
-        title: String,
-        text: String,
-        systemImage: String
-    ) -> some View {
-        VStack(alignment: .leading, spacing: 4) {
-            Label(title, systemImage: systemImage)
-                .font(.caption.weight(.semibold))
-                .foregroundStyle(.secondary)
-            Text(text)
-                .font(.callout)
-                .fixedSize(horizontal: false, vertical: true)
-        }
-    }
-
-    private func messageBanner(
-        title: String,
-        message: String,
-        systemImage: String,
-        color: Color
-    ) -> some View {
-        Label {
-            VStack(alignment: .leading, spacing: 4) {
-                Text(title)
-                    .font(.callout.weight(.semibold))
-                Text(message)
-                    .font(.caption)
-                    .fixedSize(horizontal: false, vertical: true)
-            }
-        } icon: {
-            Image(systemName: systemImage)
-        }
-        .foregroundStyle(color)
-        .padding(12)
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .background(
-            color.opacity(0.08),
-            in: RoundedRectangle(cornerRadius: 10, style: .continuous)
-        )
-    }
-
-    private func roleTitle(_ role: KnowledgeLinkRole) -> String {
-        switch role {
-        case .primary: "핵심"
-        case .supporting: "보조"
-        case .prerequisite: "선행"
-        case .enrichment: "확장·심화"
-        }
-    }
 }
 
 #Preview("개념 상세 · 새 표현") {

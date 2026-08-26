@@ -177,14 +177,17 @@ struct ContentValidator: Sendable {
 
     // MARK: Catalog 내부 구조
 
-    /// 공용 Concept와 Relation의 stable ID가 catalog 안에서 유일한지 검사한다.
+    /// Collection·Concept·Relation ID와 Collection의 Concept 소속 계약을 검사한다.
     private func validateCatalog(
         _ catalog: KnowledgeCatalog,
         resource: String,
         issues: inout [ContentValidationIssue]
     ) {
+        var collectionPaths: [KnowledgeCollectionID: String] = [:]
+        var collectionOrderPaths: [Int: String] = [:]
         var conceptPaths: [KnowledgeConceptID: String] = [:]
         var relationPaths: [KnowledgeRelationID: String] = [:]
+        var collectionMembershipPaths: [KnowledgeConceptID: String] = [:]
 
         for (index, concept) in catalog.concepts.enumerated() {
             registerUnique(
@@ -196,6 +199,77 @@ struct ContentValidator: Sendable {
                 issues: &issues
             )
         }
+
+        let conceptIDs = Set(catalog.concepts.map(\.id))
+        for (collectionIndex, collection) in catalog.collections.enumerated() {
+            let collectionPath = "collections[\(collectionIndex)]"
+            registerUnique(
+                id: collection.id,
+                fieldPath: "\(collectionPath).id",
+                seen: &collectionPaths,
+                resource: resource,
+                kind: "collection",
+                issues: &issues
+            )
+            registerUnique(
+                id: collection.order,
+                fieldPath: "\(collectionPath).order",
+                seen: &collectionOrderPaths,
+                resource: resource,
+                kind: "collection order",
+                issues: &issues
+            )
+            if collection.title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                issues.append(.init(
+                    resource: resource,
+                    fieldPath: "\(collectionPath).title",
+                    message: "must not be empty"
+                ))
+            }
+            if collection.summary.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                issues.append(.init(
+                    resource: resource,
+                    fieldPath: "\(collectionPath).summary",
+                    message: "must not be empty"
+                ))
+            }
+            if collection.systemImage.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                issues.append(.init(
+                    resource: resource,
+                    fieldPath: "\(collectionPath).systemImage",
+                    message: "must not be empty"
+                ))
+            }
+
+            for (conceptIndex, conceptID) in collection.conceptIDs.enumerated() {
+                let conceptPath = "\(collectionPath).conceptIDs[\(conceptIndex)]"
+                if conceptIDs.contains(conceptID) == false {
+                    issues.append(.init(
+                        resource: resource,
+                        fieldPath: conceptPath,
+                        message: "does not resolve to a catalog concept"
+                    ))
+                }
+                registerUnique(
+                    id: conceptID,
+                    fieldPath: conceptPath,
+                    seen: &collectionMembershipPaths,
+                    resource: resource,
+                    kind: "collection membership for concept",
+                    issues: &issues
+                )
+            }
+        }
+
+        for (index, concept) in catalog.concepts.enumerated()
+        where collectionMembershipPaths[concept.id] == nil {
+            issues.append(.init(
+                resource: resource,
+                fieldPath: "concepts[\(index)].id",
+                message: "must appear in exactly one collection"
+            ))
+        }
+
         for (index, relation) in catalog.relations.enumerated() {
             registerUnique(
                 id: relation.id,

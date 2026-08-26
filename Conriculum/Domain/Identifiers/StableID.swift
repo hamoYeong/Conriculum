@@ -48,6 +48,7 @@ enum ChapterIDTag: StableIDTag {}
 enum LearningPageIDTag: StableIDTag {}
 enum LearningSectionIDTag: StableIDTag {}
 enum LearningActivityIDTag: StableIDTag {}
+enum KnowledgeCollectionIDTag: StableIDTag {}
 enum KnowledgeConceptIDTag: StableIDTag {}
 enum KnowledgeRelationIDTag: StableIDTag {}
 enum PersonalConceptRevisionIDTag: StableIDTag {}
@@ -65,6 +66,7 @@ typealias ChapterID = StableID<ChapterIDTag>
 typealias LearningPageID = StableID<LearningPageIDTag>
 typealias LearningSectionID = StableID<LearningSectionIDTag>
 typealias LearningActivityID = StableID<LearningActivityIDTag>
+typealias KnowledgeCollectionID = StableID<KnowledgeCollectionIDTag>
 typealias KnowledgeConceptID = StableID<KnowledgeConceptIDTag>
 typealias KnowledgeRelationID = StableID<KnowledgeRelationIDTag>
 typealias PersonalConceptRevisionID = StableID<PersonalConceptRevisionIDTag>

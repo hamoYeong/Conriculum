@@ -6,6 +6,27 @@ import Testing
 // MARK: - 7. 공용 지식·개인 지식·학습 기록의 경계 확인
 
 struct KnowledgeAndLearningRecordTests {
+    /// Collection이 type-safe ID와 Concept ID 순서를 단일 JSON 값으로 왕복하는지 확인한다.
+    @Test
+    func knowledgeCollectionRoundTripsAsDomainValue() throws {
+        let collection = KnowledgeCollection(
+            id: "collection-02-values-and-types",
+            order: 2,
+            title: "값과 타입",
+            summary: "현실의 정보를 Swift 값과 타입으로 표현한다.",
+            systemImage: "shippingbox",
+            conceptIDs: ["concept-value", "concept-type"]
+        )
+
+        let encoded = try JSONEncoder().encode(collection)
+        let decoded = try JSONDecoder().decode(KnowledgeCollection.self, from: encoded)
+
+        #expect(decoded == collection)
+        #expect(decoded.id.rawValue == "collection-02-values-and-types")
+        #expect(decoded.conceptIDs == ["concept-value", "concept-type"])
+        assertKnowledgeSendable(decoded)
+    }
+
     /// 개인 revision이 base Concept를 교체하지 않고 ID로 참조하는 overlay인지 확인한다.
     @Test
     func personalRevisionDoesNotReplaceBaseConcept() {

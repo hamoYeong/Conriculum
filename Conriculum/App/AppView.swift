@@ -21,6 +21,17 @@ struct AppView: View {
                 ProgressView("학습 워크스페이스를 준비하는 중입니다.")
                     .frame(minWidth: 720, minHeight: 560)
             }
+
+        case .knowledgeSystem:
+            if let knowledgeSystemStore = store.scope(
+                state: \.knowledgeSystem,
+                action: \.knowledgeSystem
+            ) {
+                KnowledgeSystemView(store: knowledgeSystemStore)
+            } else {
+                ProgressView("지식 체계를 준비하는 중입니다.")
+                    .frame(minWidth: 720, minHeight: 560)
+            }
         }
     }
 }

@@ -9,16 +9,19 @@ struct AppFeature {
         var route: Route = .home
         var home = HomeFeature.State()
         var workspace: LearningWorkspaceFeature.State?
+        var knowledgeSystem: KnowledgeSystemFeature.State?
     }
 
     enum Route: Equatable {
         case home
         case learningWorkspace(chapterID: ChapterID)
+        case knowledgeSystem
     }
 
     enum Action: Equatable {
         case home(HomeFeature.Action)
         case workspace(LearningWorkspaceFeature.Action)
+        case knowledgeSystem(KnowledgeSystemFeature.Action)
     }
 
     var body: some Reducer<State, Action> {
@@ -39,18 +42,31 @@ struct AppFeature {
                 state.route = .learningWorkspace(chapterID: chapterID)
                 return .none
 
+            case .home(.delegate(.knowledgeSystemRequested)):
+                state.knowledgeSystem = KnowledgeSystemFeature.State()
+                state.route = .knowledgeSystem
+                return .none
+
             case .workspace(.delegate(.homeRequested)):
                 let pendingReviews = state.workspace?
                     .pendingPersonalizationReviews ?? []
                 state.route = .home
                 return .send(.home(.workspaceReturned(pendingReviews)))
 
-            case .home, .workspace:
+            case .knowledgeSystem(.delegate(.homeRequested)):
+                state.route = .home
+                state.knowledgeSystem = nil
+                return .none
+
+            case .home, .workspace, .knowledgeSystem:
                 return .none
             }
         }
         .ifLet(\.workspace, action: \.workspace) {
             LearningWorkspaceFeature()
+        }
+        .ifLet(\.knowledgeSystem, action: \.knowledgeSystem) {
+            KnowledgeSystemFeature()
         }
     }
 }

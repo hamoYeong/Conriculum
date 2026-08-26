@@ -1,5 +1,15 @@
 // MARK: - 4. 모든 학습자에게 공통인 지식 그래프
 
+/// 지식 체계의 한 분류와 그 안에 포함되는 공용 Concept의 순서를 보존한다.
+struct KnowledgeCollection: Codable, Equatable, Sendable {
+    let id: KnowledgeCollectionID
+    let order: Int
+    let title: String
+    let summary: String
+    let systemImage: String
+    let conceptIDs: [KnowledgeConceptID]
+}
+
 /// 공용 기본 지식. 정의뿐 아니라 질문·예시·오개념까지 판단 재료로 보존한다.
 struct KnowledgeConcept: Codable, Equatable, Sendable {
     let id: KnowledgeConceptID

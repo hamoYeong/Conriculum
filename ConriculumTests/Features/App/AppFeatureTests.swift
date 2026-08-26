@@ -64,6 +64,35 @@ struct AppFeatureTests {
     }
 
     @Test
+    func homeKnowledgeRequestOpensTheKnowledgeSystem() async {
+        let store = TestStore(initialState: AppFeature.State()) {
+            AppFeature()
+        }
+
+        await store.send(.home(.knowledgeSystemButtonTapped))
+        await store.receive(.home(.delegate(.knowledgeSystemRequested))) {
+            $0.knowledgeSystem = KnowledgeSystemFeature.State()
+            $0.route = .knowledgeSystem
+        }
+    }
+
+    @Test
+    func knowledgeSystemBackReturnsHomeAndReleasesItsState() async {
+        var initialState = AppFeature.State()
+        initialState.route = .knowledgeSystem
+        initialState.knowledgeSystem = KnowledgeSystemFeature.State()
+        let store = TestStore(initialState: initialState) {
+            AppFeature()
+        }
+
+        await store.send(.knowledgeSystem(.homeButtonTapped))
+        await store.receive(.knowledgeSystem(.delegate(.homeRequested))) {
+            $0.route = .home
+            $0.knowledgeSystem = nil
+        }
+    }
+
+    @Test
     func pendingCandidateReturnsToTheWorkspaceWithoutBeingPersisted() async {
         let review = KnowledgePersonalizationReview(
             candidate: KnowledgePersonalizationCandidate(

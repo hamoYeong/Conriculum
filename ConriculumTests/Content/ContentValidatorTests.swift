@@ -124,6 +124,7 @@ struct ContentValidatorTests {
             schemaVersion: content.catalog.schemaVersion,
             id: content.catalog.id,
             title: content.catalog.title,
+            collections: content.catalog.collections,
             concepts: content.catalog.concepts,
             relations: relations
         )
@@ -147,6 +148,81 @@ struct ContentValidatorTests {
         #expect(error.issues.contains {
             $0.resource.hasSuffix("content-identity.json")
                 && $0.message.contains("chapter-02-page-08")
+        })
+    }
+
+    /// Collection ID·Concept 참조·중복 소속·누락 소속을 각 원래 field에서 거부하는지 확인한다.
+    @Test
+    func brokenKnowledgeCollectionsReportExactMembershipFields() throws {
+        let content = try loadValidContent()
+        var collections = content.catalog.collections
+        let firstCollection = try #require(collections.first)
+        let secondCollection = try #require(collections.dropFirst().first)
+
+        collections[0] = KnowledgeCollection(
+            id: firstCollection.id,
+            order: firstCollection.order,
+            title: " \n",
+            summary: "",
+            systemImage: firstCollection.systemImage,
+            conceptIDs: firstCollection.conceptIDs.filter { $0 != "concept-output" }
+                + ["concept-missing-collection"]
+        )
+        collections[1] = KnowledgeCollection(
+            id: firstCollection.id,
+            order: firstCollection.order,
+            title: secondCollection.title,
+            summary: secondCollection.summary,
+            systemImage: " ",
+            conceptIDs: secondCollection.conceptIDs + ["concept-concrete-values-rules"]
+        )
+
+        let brokenCatalog = KnowledgeCatalog(
+            schemaVersion: content.catalog.schemaVersion,
+            id: content.catalog.id,
+            title: content.catalog.title,
+            collections: collections,
+            concepts: content.catalog.concepts,
+            relations: content.catalog.relations
+        )
+        let error = validationError(
+            chapter: content.chapter,
+            catalog: brokenCatalog,
+            identityManifest: content.identityManifest
+        )
+
+        #expect(error.issues.contains {
+            $0.fieldPath == "collections[1].id"
+                && $0.message.contains("duplicate collection ID")
+        })
+        #expect(error.issues.contains {
+            $0.fieldPath == "collections[1].order"
+                && $0.message.contains("duplicate collection order ID")
+        })
+        #expect(error.issues.contains {
+            $0.fieldPath == "collections[0].title"
+                && $0.message.contains("must not be empty")
+        })
+        #expect(error.issues.contains {
+            $0.fieldPath == "collections[0].summary"
+                && $0.message.contains("must not be empty")
+        })
+        #expect(error.issues.contains {
+            $0.fieldPath == "collections[1].systemImage"
+                && $0.message.contains("must not be empty")
+        })
+        #expect(error.issues.contains {
+            $0.fieldPath == "collections[0].conceptIDs[4]"
+                && $0.message.contains("does not resolve")
+        })
+        #expect(error.issues.contains {
+            $0.fieldPath == "collections[1].conceptIDs[12]"
+                && $0.message.contains("duplicate collection membership for concept ID")
+                && $0.message.contains("collections[0].conceptIDs[0]")
+        })
+        #expect(error.issues.contains {
+            $0.fieldPath == "concepts[16].id"
+                && $0.message.contains("exactly one collection")
         })
     }
 
