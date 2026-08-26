@@ -1,5 +1,3 @@
-import Foundation
-
 struct KnowledgePersonalizationReview: Equatable, Identifiable, Sendable {
     var id: KnowledgePersonalizationCandidateID { candidate.id }
 

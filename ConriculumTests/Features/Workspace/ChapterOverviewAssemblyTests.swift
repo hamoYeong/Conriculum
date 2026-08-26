@@ -67,7 +67,8 @@ struct ChapterOverviewAssemblyTests {
         await store.receive(.navigationResponse(.saved(
             destination: .page(firstPageID),
             progress: expectedProgress,
-            drafts: []
+            drafts: [],
+            responses: []
         ))) {
             $0.isSavingNavigation = false
             $0.currentPageID = firstPageID

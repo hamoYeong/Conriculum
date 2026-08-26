@@ -64,6 +64,56 @@ struct AppFeatureTests {
     }
 
     @Test
+    func pendingCandidateReturnsToTheWorkspaceWithoutBeingPersisted() async {
+        let review = KnowledgePersonalizationReview(
+            candidate: KnowledgePersonalizationCandidate(
+                id: "candidate-app-round-trip",
+                kind: .conceptRevision,
+                conceptIDs: ["concept-value", "concept-type"],
+                draft: "값과 가능한 사용을 함께 설명한다.",
+                evidenceActivityID: "activity-page02-matching",
+                createdAt: Date(timeIntervalSince1970: 1_725_782_400)
+            ),
+            targetConceptID: "concept-value",
+            activityID: "activity-page02-promotion",
+            confirmationQuestion: "이 설명을 나의 지식으로 반영할까?",
+            savedFields: ["나의 설명", "근거 활동 ID"]
+        )
+        let entry = HomeFeature.ChapterEntry(
+            chapterID: AppFeature.chapter02ID,
+            startPageID: "chapter-02-overview",
+            resumePageID: "chapter-02-page-02"
+        )
+        var initialState = AppFeature.State()
+        initialState.home.chapterEntry = entry
+        initialState.home.pendingPersonalizationReviews = [review]
+        let store = TestStore(initialState: initialState) {
+            AppFeature()
+        }
+
+        await store.send(.home(.resumeButtonTapped))
+        await store.receive(.home(.delegate(.chapterRequested(
+            chapterID: entry.chapterID,
+            pageID: "chapter-02-page-02"
+        )))) {
+            $0.workspace = LearningWorkspaceFeature.State(
+                chapterID: entry.chapterID,
+                pageID: "chapter-02-page-02",
+                pendingPersonalizationReviews: [review]
+            )
+            $0.route = .learningWorkspace(chapterID: entry.chapterID)
+        }
+
+        #expect(
+            store.state.workspace?.pendingPersonalizationReviews == [review]
+        )
+        #expect(
+            store.state.workspace?.knowledgeContext
+                .pendingPersonalizationReviews == [review]
+        )
+    }
+
+    @Test
     func workspaceBackReturnsHomeAndReloadsTheLatestSnapshot() async throws {
         let decoder = ContentResourceDecoder()
         let chapter = try decoder.decode(Chapter.self, from: .chapter02)

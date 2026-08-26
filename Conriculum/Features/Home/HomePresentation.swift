@@ -1,5 +1,3 @@
-import Foundation
-
 struct HomeEvidencePresentation: Equatable, Sendable {
     let title: String
     let systemImage: String

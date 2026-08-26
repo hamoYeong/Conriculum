@@ -1,3 +1,4 @@
+import AppKit
 import ComposableArchitecture
 import SwiftUI
 
@@ -11,6 +12,9 @@ struct LearningWorkspaceView: View {
                     state: \.knowledgeContext,
                     action: \.knowledgeContext
                 )
+            )
+            .accessibilityHidden(
+                store.sidebarMode.hidesKnowledgeContextFromAccessibility
             )
         } detail: {
             ChapterLearningView(
@@ -42,7 +46,7 @@ struct LearningWorkspaceView: View {
 
             ToolbarItem(placement: .primaryAction) {
                 Button {
-                    store.send(.focusModeButtonTapped)
+                    toggleFocusModePreservingFirstResponder()
                 } label: {
                     Label(
                         store.sidebarMode == .focus
@@ -61,6 +65,7 @@ struct LearningWorkspaceView: View {
                 .accessibilityValue(
                     store.sidebarMode == .focus ? "켜짐" : "꺼짐"
                 )
+                .focusable(false)
             }
         }
         .frame(minWidth: 720, minHeight: 560)
@@ -88,9 +93,25 @@ struct LearningWorkspaceView: View {
             }
         )
     }
+
+    private func toggleFocusModePreservingFirstResponder() {
+        let window = NSApp.keyWindow
+        let firstResponder = window?.firstResponder
+        store.send(.focusModeButtonTapped)
+
+        guard let window, let firstResponder else { return }
+        Task { @MainActor in
+            await Task.yield()
+            window.makeFirstResponder(firstResponder)
+        }
+    }
 }
 
 extension WorkspaceSidebarMode {
+    var hidesKnowledgeContextFromAccessibility: Bool {
+        self == .focus
+    }
+
     var navigationSplitViewVisibility: NavigationSplitViewVisibility {
         switch self {
         case .automatic: .automatic

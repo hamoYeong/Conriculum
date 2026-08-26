@@ -9,6 +9,35 @@ struct UserDataStoreRoundTripTests {
     private let secondDate = Date(timeIntervalSince1970: 1_725_868_800)
 
     @Test
+    func fileBackedRecordsRecoverAfterContainerRelaunch() async throws {
+        let directory = FileManager.default.temporaryDirectory
+            .appending(
+                path: "ConriculumRelaunch-\(UUID().uuidString)",
+                directoryHint: .isDirectory
+            )
+        try FileManager.default.createDirectory(
+            at: directory,
+            withIntermediateDirectories: true
+        )
+        defer { try? FileManager.default.removeItem(at: directory) }
+        let storeURL = directory.appending(path: "Conriculum.store")
+        let original = relaunchFixture(at: firstDate, suffix: "original")
+        let updated = relaunchFixture(at: secondDate, suffix: "updated")
+
+        let originalProfileID = try await writeRelaunchFixture(
+            original,
+            then: updated,
+            storeURL: storeURL
+        )
+        let recoveredProfileID = try await verifyRelaunchFixture(
+            updated,
+            storeURL: storeURL
+        )
+
+        #expect(recoveredProfileID == originalProfileID)
+    }
+
+    @Test
     func learningRecordsRoundTripAndRecoverInANewClient() async throws {
         let environment = try PersistenceEnvironmentRegistry.makeInMemoryEnvironment()
         let firstClient = LearningRecordClient.live(store: environment.userDataStore)
@@ -280,6 +309,153 @@ struct UserDataStoreRoundTripTests {
 
         #expect(recoveredRevisions == [successfulRevision])
     }
+
+    private func writeRelaunchFixture(
+        _ original: RelaunchFixture,
+        then updated: RelaunchFixture,
+        storeURL: URL
+    ) async throws -> LocalProfileID {
+        let container = try fileBackedContainer(at: storeURL)
+        let store = UserDataStore(modelContainer: container)
+        let learningClient = LearningRecordClient.live(store: store)
+        let knowledgeClient = PersonalKnowledgeClient.live(store: store)
+        let profileID = try store.localProfileID()
+
+        try await learningClient.saveProgress(original.progress)
+        try await learningClient.saveResponse(original.response)
+        try await learningClient.saveEvidence(original.evidence)
+        try await knowledgeClient.saveRevision(original.revision)
+        try await knowledgeClient.saveRelation(original.relation)
+
+        try await learningClient.saveProgress(updated.progress)
+        try await learningClient.saveResponse(updated.response)
+        try await learningClient.saveEvidence(updated.evidence)
+        try await knowledgeClient.saveRevision(updated.revision)
+        try await knowledgeClient.saveRelation(updated.relation)
+
+        return profileID
+    }
+
+    private func verifyRelaunchFixture(
+        _ expected: RelaunchFixture,
+        storeURL: URL
+    ) async throws -> LocalProfileID {
+        let container = try fileBackedContainer(at: storeURL)
+        let store = UserDataStore(modelContainer: container)
+        let learningClient = LearningRecordClient.live(store: store)
+        let knowledgeClient = PersonalKnowledgeClient.live(store: store)
+        let profileID = try store.localProfileID()
+
+        #expect(
+            try await learningClient.loadProgress(
+                expected.progress.chapterID
+            ) == expected.progress
+        )
+        #expect(
+            try await learningClient.loadResponses(
+                expected.response.pageID
+            ) == [expected.response]
+        )
+        #expect(
+            try await learningClient.loadEvidence(
+                expected.evidence.pageID
+            ) == [expected.evidence]
+        )
+        #expect(
+            try await knowledgeClient.loadRevisions(
+                expected.revision.conceptID
+            ) == [expected.revision]
+        )
+        #expect(
+            try await knowledgeClient.loadRelations(
+                expected.relation.targetConceptID
+            ) == [expected.relation]
+        )
+
+        return profileID
+    }
+
+    private func fileBackedContainer(at storeURL: URL) throws -> ModelContainer {
+        let configuration = ModelConfiguration(
+            "ConriculumRelaunchTest",
+            schema: ConriculumPersistenceSchema.schema,
+            url: storeURL,
+            cloudKitDatabase: .none
+        )
+        return try ModelContainer(
+            for: ConriculumPersistenceSchema.schema,
+            configurations: [configuration]
+        )
+    }
+
+    private func relaunchFixture(
+        at timestamp: Date,
+        suffix: String
+    ) -> RelaunchFixture {
+        let isUpdated = suffix == "updated"
+        return RelaunchFixture(
+            progress: LearningProgress(
+                chapterID: "chapter-02",
+                currentPageID: isUpdated
+                    ? "chapter-02-page-02"
+                    : "chapter-02-page-01",
+                completedPageIDs: isUpdated
+                    ? ["chapter-02-page-01"]
+                    : [],
+                updatedAt: timestamp
+            ),
+            response: ActivityResponse(
+                id: "response-relaunch",
+                activityID: "activity-page01-choice",
+                pageID: "chapter-02-page-01",
+                fields: [
+                    ActivityResponseField(
+                        key: "reason",
+                        values: ["\(suffix) response"]
+                    )
+                ],
+                recordedAt: timestamp
+            ),
+            evidence: LearningEvidence(
+                id: "evidence-relaunch",
+                kind: .reasoningExplanation,
+                pageID: "chapter-02-page-01",
+                activityID: "activity-page01-choice",
+                responseID: "response-relaunch",
+                note: "\(suffix) evidence",
+                recordedAt: timestamp
+            ),
+            revision: PersonalConceptRevision(
+                id: "revision-relaunch",
+                conceptID: "concept-value",
+                personalTitle: "\(suffix) value",
+                explanation: "\(suffix) revision",
+                examples: [],
+                previousRevisionID: isUpdated
+                    ? "revision-before-relaunch"
+                    : nil,
+                evidenceActivityID: "activity-page01-choice",
+                createdAt: timestamp
+            ),
+            relation: PersonalKnowledgeRelation(
+                id: "relation-relaunch",
+                sourceConceptID: "concept-value",
+                targetConceptID: "concept-type",
+                statement: "\(suffix) relation",
+                reason: "\(suffix) reason",
+                evidenceActivityID: "activity-page01-choice",
+                createdAt: timestamp
+            )
+        )
+    }
+}
+
+private struct RelaunchFixture {
+    let progress: LearningProgress
+    let response: ActivityResponse
+    let evidence: LearningEvidence
+    let revision: PersonalConceptRevision
+    let relation: PersonalKnowledgeRelation
 }
 
 @MainActor

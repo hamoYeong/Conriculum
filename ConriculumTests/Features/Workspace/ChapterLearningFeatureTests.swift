@@ -12,10 +12,44 @@ struct ChapterLearningFeatureTests {
     )!
 
     @Test
-    func validSavedPageIsResumedByIdentity() async throws {
+    func validSavedPageAndActivityResponseAreResumedByIdentity() async throws {
         let chapter = try loadChapter()
         let knowledgeCatalog = try loadKnowledgeCatalog()
         let savedPageID = try #require(chapter.progressPageIDs.dropFirst().first)
+        let savedActivityID = try #require(
+            chapter.page(id: savedPageID)?.activities.first?.id
+        )
+        let response = ActivityResponse(
+            id: ActivityResponseID(
+                rawValue: responseUUID.uuidString.lowercased()
+            ),
+            activityID: savedActivityID,
+            pageID: savedPageID,
+            fields: [
+                ActivityResponseField(
+                    key: "reason",
+                    values: ["재실행 뒤 복원할 활동 응답"]
+                )
+            ],
+            recordedAt: timestamp
+        )
+        let restoredDraft = ChapterLearningFeature.ActivityDraft(
+            responseID: response.id,
+            activityID: savedActivityID,
+            fields: response.fields
+        )
+        let olderResponse = ActivityResponse(
+            id: "activity-response-older",
+            activityID: savedActivityID,
+            pageID: savedPageID,
+            fields: [
+                ActivityResponseField(
+                    key: "reason",
+                    values: ["복원하면 안 되는 이전 응답"]
+                )
+            ],
+            recordedAt: timestamp.addingTimeInterval(-60)
+        )
         let progress = LearningProgress(
             chapterID: chapter.id,
             currentPageID: savedPageID,
@@ -33,6 +67,10 @@ struct ChapterLearningFeatureTests {
             $0.curriculumClient.loadChapter = { _ in chapter }
             $0.knowledgeCatalogClient.loadCatalog = { knowledgeCatalog }
             $0.learningRecordClient.loadProgress = { _ in progress }
+            $0.learningRecordClient.loadResponses = { pageID in
+                #expect(pageID == savedPageID)
+                return [response, olderResponse]
+            }
         }
 
         await store.send(.task) {
@@ -41,13 +79,16 @@ struct ChapterLearningFeatureTests {
         await store.receive(.loadResponse(.loaded(
             chapter: chapter,
             knowledgeCatalog: knowledgeCatalog,
-            progress: progress
+            progress: progress,
+            responses: [response, olderResponse]
         ))) {
             $0.isLoading = false
             $0.chapter = chapter
             $0.knowledgeCatalog = knowledgeCatalog
             $0.currentPageID = savedPageID
             $0.completedPageIDs = [chapter.progressPageIDs[0]]
+            $0.activityDrafts[savedActivityID] = restoredDraft
+            $0.activitySaveStates[savedActivityID] = .saved(timestamp)
         }
         await store.receive(.delegate(.currentPageChanged(savedPageID)))
     }
@@ -74,6 +115,10 @@ struct ChapterLearningFeatureTests {
             $0.curriculumClient.loadChapter = { _ in chapter }
             $0.knowledgeCatalogClient.loadCatalog = { knowledgeCatalog }
             $0.learningRecordClient.loadProgress = { _ in progress }
+            $0.learningRecordClient.loadResponses = { pageID in
+                #expect(pageID == chapter.overview.id)
+                return []
+            }
         }
 
         await store.send(.task) {
@@ -82,7 +127,8 @@ struct ChapterLearningFeatureTests {
         await store.receive(.loadResponse(.loaded(
             chapter: chapter,
             knowledgeCatalog: knowledgeCatalog,
-            progress: progress
+            progress: progress,
+            responses: []
         ))) {
             $0.isLoading = false
             $0.chapter = chapter
@@ -142,7 +188,8 @@ struct ChapterLearningFeatureTests {
         await store.receive(.navigationResponse(.saved(
             destination: .completionSummary,
             progress: expectedProgress,
-            drafts: []
+            drafts: [],
+            responses: []
         ))) {
             $0.isSavingNavigation = false
             $0.isShowingCompletionSummary = true
@@ -165,6 +212,9 @@ struct ChapterLearningFeatureTests {
         let targetPageID = try #require(pageIDs.dropFirst().first)
         let activityID = try #require(
             chapter.page(id: sourcePageID)?.activities.first?.id
+        )
+        let targetActivityID = try #require(
+            chapter.page(id: targetPageID)?.activities.first?.id
         )
         let fields = [
             ActivityResponseField(
@@ -193,6 +243,23 @@ struct ChapterLearningFeatureTests {
             fields: fields,
             recordedAt: timestamp
         )
+        let targetResponse = ActivityResponse(
+            id: "activity-response-target-page",
+            activityID: targetActivityID,
+            pageID: targetPageID,
+            fields: [
+                ActivityResponseField(
+                    key: "reason",
+                    values: ["페이지에 돌아왔을 때 복원할 응답"]
+                )
+            ],
+            recordedAt: timestamp.addingTimeInterval(-60)
+        )
+        let targetDraft = ChapterLearningFeature.ActivityDraft(
+            responseID: targetResponse.id,
+            activityID: targetActivityID,
+            fields: targetResponse.fields
+        )
         let expectedProgress = LearningProgress(
             chapterID: chapter.id,
             currentPageID: targetPageID,
@@ -210,6 +277,10 @@ struct ChapterLearningFeatureTests {
             }
             $0.learningRecordClient.saveProgress = { progress in
                 await recorder.record(.progress(progress))
+            }
+            $0.learningRecordClient.loadResponses = { pageID in
+                #expect(pageID == targetPageID)
+                return [targetResponse]
             }
         }
 
@@ -229,12 +300,15 @@ struct ChapterLearningFeatureTests {
         await store.receive(.navigationResponse(.saved(
             destination: .page(targetPageID),
             progress: expectedProgress,
-            drafts: [draft]
+            drafts: [draft],
+            responses: [targetResponse]
         ))) {
             $0.isSavingNavigation = false
             $0.currentPageID = targetPageID
-            $0.activityDrafts = [:]
-            $0.activitySaveStates = [:]
+            $0.activityDrafts = [targetActivityID: targetDraft]
+            $0.activitySaveStates = [
+                targetActivityID: .saved(targetResponse.recordedAt)
+            ]
         }
         await store.receive(.delegate(.currentPageChanged(targetPageID)))
 
