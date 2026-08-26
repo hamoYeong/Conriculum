@@ -3,7 +3,10 @@ import Testing
 
 @testable import Conriculum
 
+// MARK: - 17. Decoder가 저수준 오류를 콘텐츠 작성자 문맥으로 번역하는지 확인
+
 struct ContentResourceDecoderTests {
+    /// 필수 field 누락 오류에 resource 이름과 정확한 field path가 포함되는지 확인한다.
     @Test
     func missingFieldErrorIncludesResourceAndFieldPath() throws {
         let data = Data(#"{}"#.utf8)
@@ -25,6 +28,7 @@ struct ContentResourceDecoderTests {
         }
     }
 
+    /// 지원하지 않는 tag가 schema 오류에서 resource-aware decode 오류로 변환되는지 확인한다.
     @Test
     func unsupportedTagErrorIncludesResourceAndTagPath() throws {
         let data = Data(#"{"tag":"webView","payload":{}}"#.utf8)
@@ -46,6 +50,9 @@ struct ContentResourceDecoderTests {
     }
 }
 
+/// `keyNotFound` 경로를 가장 작게 재현하기 위한 fixture.
 private struct RequiredNameFixture: Decodable {
     let name: String
 }
+
+// MARK: - 다음 읽기: Conriculum/Content/Validation/ContentValidator.swift

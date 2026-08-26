@@ -1,6 +1,11 @@
 import Foundation
 
+// MARK: - 16. Bundle JSON을 Domain으로 바꾸고 오류 문맥을 보강하는 경계
+
+/// 콘텐츠 리소스 로딩과 `Decodable` 변환을 한곳에 모으는 stateless decoder.
 struct ContentResourceDecoder: Sendable {
+    /// typed resource를 Bundle에서 찾아 읽고 요청한 Domain 타입으로 decode한다.
+    /// 앱의 실제 호출부가 사용하는 `Bundle → Data → Value` 진입점이다.
     func decode<Value: Decodable>(
         _ type: Value.Type,
         from resource: BundledContentResource,
@@ -11,6 +16,8 @@ struct ContentResourceDecoder: Sendable {
         return try decode(type, from: data, resourceName: url.lastPathComponent)
     }
 
+    /// 이미 준비된 Data를 decode한다.
+    /// 원래 `DecodingError`를 resource 이름과 정확한 field path가 있는 작성자용 오류로 번역한다.
     func decode<Value: Decodable>(
         _ type: Value.Type,
         from data: Data,
@@ -51,6 +58,7 @@ struct ContentResourceDecoder: Sendable {
         }
     }
 
+    /// `CodingKey` 배열을 `pages[0].sections[2].content` 형태로 표시한다.
     private func formattedPath(_ codingPath: [any CodingKey]) -> String {
         var result = ""
 
@@ -68,11 +76,13 @@ struct ContentResourceDecoder: Sendable {
         return result.isEmpty ? "<root>" : result
     }
 
+    /// custom schema 오류가 가진 문자열 path에도 같은 출력 규칙을 적용한다.
     private func formattedPath(_ components: [String]) -> String {
         components.isEmpty ? "<root>" : components.joined(separator: ".")
     }
 }
 
+/// decode 실패가 발생한 리소스·field·원인을 한 줄로 보고하는 오류.
 struct ContentResourceDecodingError: Error, Equatable, Sendable, CustomStringConvertible {
     let resource: String
     let fieldPath: String
@@ -82,3 +92,6 @@ struct ContentResourceDecodingError: Error, Equatable, Sendable, CustomStringCon
         "\(resource):\(fieldPath): \(message)"
     }
 }
+
+// MARK: - 다음 읽기: ConriculumTests/Content/ContentResourceDecoderTests.swift
+// MARK: - 그다음: Content/Validation/ContentValidator.swift

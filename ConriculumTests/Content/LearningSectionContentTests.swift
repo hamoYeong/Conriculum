@@ -3,7 +3,10 @@ import Testing
 
 @testable import Conriculum
 
+// MARK: - 9. 22개 tag와 payload의 실제 최소 호출 예제
+
 struct LearningSectionContentTests {
+    /// 모든 지원 case가 `tag + payload` JSON으로 encode/decode되며 tag 목록과 정확히 일치하는지 확인한다.
     @Test
     func everySupportedTagRoundTrips() throws {
         let fixtures = makeFixtures()
@@ -21,6 +24,7 @@ struct LearningSectionContentTests {
         }
     }
 
+    /// vocabulary 밖의 tag가 원래 값과 `tag` field path를 포함해 보고되는지 확인한다.
     @Test
     func unsupportedTagReportsTagAndFieldPath() throws {
         let data = Data(#"{"tag":"videoLesson","payload":{}}"#.utf8)
@@ -37,6 +41,7 @@ struct LearningSectionContentTests {
         }
     }
 
+    /// tag는 유효해도 해당 payload의 필수 field가 없으면 정확한 payload 경로에서 실패하는지 확인한다.
     @Test
     func missingPayloadFieldReportsItsCodingKey() throws {
         let data = Data(
@@ -54,6 +59,8 @@ struct LearningSectionContentTests {
         }
     }
 
+    /// 22개 associated payload의 최소 유효값 모음.
+    /// 각 구조체의 field 의미를 실제 생성 호출로 훑고 싶을 때 이 배열을 위에서 아래로 읽는다.
     private func makeFixtures() -> [LearningSectionContent] {
         let item = LearningContentItem(id: "item", text: "내용")
         let labeledText = LabeledText(label: "자료", text: "내용")
@@ -239,6 +246,9 @@ struct LearningSectionContentTests {
     }
 }
 
+/// encode 결과에서 payload와 독립적으로 raw tag만 검사하기 위한 envelope fixture.
 private struct TagEnvelope: Decodable {
     let tag: String
 }
+
+// MARK: - 다음 읽기: Conriculum/Content/Resources/ContentResourceModels.swift

@@ -1,6 +1,12 @@
 import Foundation
 
+// MARK: - 18. decode된 세 resource 사이의 의미 계약 검사
+
+/// JSON 형태 검사가 끝난 Domain 값들을 서로 대조하는 validator.
+/// Decoder가 “각 값의 모양”을 책임진다면, 이 타입은 ID·순서·참조·identity의 “관계”를 책임진다.
 struct ContentValidator: Sendable {
+    /// 모든 검사를 실행해 발견한 문제를 한 번에 모은다.
+    /// 콘텐츠 작성자가 한 번의 실행으로 여러 잘못된 field를 함께 고칠 수 있게 fail-fast하지 않는다.
     func validate(
         chapter: Chapter,
         catalog: KnowledgeCatalog,
@@ -33,6 +39,9 @@ struct ContentValidator: Sendable {
         }
     }
 
+    // MARK: Chapter 내부 구조
+
+    /// overview/lesson 구분, page 수와 order, ID 중복, 필수 문맥과 완료 section을 검사한다.
     private func validatePageStructure(
         _ chapter: Chapter,
         resource: String,
@@ -166,6 +175,9 @@ struct ContentValidator: Sendable {
         }
     }
 
+    // MARK: Catalog 내부 구조
+
+    /// 공용 Concept와 Relation의 stable ID가 catalog 안에서 유일한지 검사한다.
     private func validateCatalog(
         _ catalog: KnowledgeCatalog,
         resource: String,
@@ -196,6 +208,10 @@ struct ContentValidator: Sendable {
         }
     }
 
+    // MARK: Resource 간 참조 무결성
+
+    /// Relation·Page·Section payload가 가리키는 Concept/Activity가 실제로 존재하는지 검사한다.
+    /// Activity ↔ Section 연결은 같은 Page 안에서만 유효하다는 경계도 여기서 강제한다.
     private func validateReferences(
         chapter: Chapter,
         catalog: KnowledgeCatalog,
@@ -290,6 +306,9 @@ struct ContentValidator: Sendable {
         }
     }
 
+    // MARK: 원본 문서 identity 추적
+
+    /// Chapter/Page/Concept stable ID가 source manifest에도 등록되어 있는지 검사한다.
     private func validateIdentity(
         chapter: Chapter,
         catalog: KnowledgeCatalog,
@@ -322,6 +341,7 @@ struct ContentValidator: Sendable {
         }
     }
 
+    /// 한 Domain 객체에 필요한 `(kind, stableID)` manifest key가 빠졌으면 issue를 추가한다.
     private func requireIdentity(
         _ kind: ContentIdentityKind,
         id: String,
@@ -337,6 +357,9 @@ struct ContentValidator: Sendable {
         ))
     }
 
+    // MARK: 공통 validation 도구
+
+    /// 처음 본 ID의 field path를 기억하고, 재등장하면 최초 위치가 포함된 중복 issue를 만든다.
     private func registerUnique<ID: Hashable>(
         id: ID,
         fieldPath: String,
@@ -357,6 +380,7 @@ struct ContentValidator: Sendable {
     }
 }
 
+/// 여러 validation issue를 한 번에 호출자에게 전달하는 aggregate 오류.
 struct ContentValidationError: Error, Sendable, CustomStringConvertible {
     let issues: [ContentValidationIssue]
 
@@ -365,6 +389,7 @@ struct ContentValidationError: Error, Sendable, CustomStringConvertible {
     }
 }
 
+/// 콘텐츠 작성자가 수정할 수 있도록 resource·field path·이유를 보존하는 단일 문제.
 struct ContentValidationIssue: Equatable, Sendable, CustomStringConvertible {
     let resource: String
     let fieldPath: String
@@ -375,7 +400,9 @@ struct ContentValidationIssue: Equatable, Sendable, CustomStringConvertible {
     }
 }
 
+/// tagged payload 내부의 cross-resource 참조를 validator가 공통 방식으로 순회하게 하는 projection.
 private extension LearningSectionContent {
+    /// 이 payload가 참조하는 모든 공용 Concept ID. Concept를 쓰지 않는 case는 빈 배열이다.
     var referencedConceptIDs: [KnowledgeConceptID] {
         switch self {
         case let .definition(content):
@@ -395,6 +422,7 @@ private extension LearningSectionContent {
         }
     }
 
+    /// 개인 지식 승격/연결 payload가 근거로 삼는 Activity ID.
     var referencedActivityIDs: [LearningActivityID] {
         switch self {
         case let .personalKnowledgePromotion(content):
@@ -406,3 +434,5 @@ private extension LearningSectionContent {
         }
     }
 }
+
+// MARK: - 다음 읽기: ConriculumTests/Content/ContentValidatorTests.swift

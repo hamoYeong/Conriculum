@@ -3,7 +3,10 @@ import Testing
 
 @testable import Conriculum
 
+// MARK: - 7. 공용 지식·개인 지식·학습 기록의 경계 확인
+
 struct KnowledgeAndLearningRecordTests {
+    /// 개인 revision이 base Concept를 교체하지 않고 ID로 참조하는 overlay인지 확인한다.
     @Test
     func personalRevisionDoesNotReplaceBaseConcept() {
         let concept = KnowledgeConcept(
@@ -34,6 +37,7 @@ struct KnowledgeAndLearningRecordTests {
         #expect(revision.explanation != concept.definition)
     }
 
+    /// 개인 지식 관계가 연결 문장뿐 아니라 이유와 근거 Activity도 보존하는지 확인한다.
     @Test
     func personalRelationKeepsReasonAndEvidenceActivity() {
         let relation = PersonalKnowledgeRelation(
@@ -50,6 +54,7 @@ struct KnowledgeAndLearningRecordTests {
         #expect(relation.evidenceActivityID == "activity-page-07-create-relation")
     }
 
+    /// Page → Concept 역할과 학습 증거 종류의 case 집합 자체를 Domain 계약으로 고정한다.
     @Test
     func linkRolesAndEvidenceKindsMatchTheDomainContract() {
         #expect(Set(KnowledgeLinkRole.allCases) == [
@@ -65,6 +70,7 @@ struct KnowledgeAndLearningRecordTests {
         ])
     }
 
+    /// 지식과 기록 값도 concurrency 경계를 안전하게 넘는 순수 `Sendable` 값인지 확인한다.
     @Test
     func knowledgeAndLearningRecordValuesAreSendable() {
         let progress = LearningProgress(
@@ -81,3 +87,5 @@ struct KnowledgeAndLearningRecordTests {
 }
 
 private func assertKnowledgeSendable<Value: Sendable>(_ value: Value) {}
+
+// MARK: - 다음 읽기: Conriculum/Content/Schema/LearningSectionContent.swift
