@@ -91,7 +91,8 @@ struct ChapterLearningFeature {
         case loaded(
             chapter: Chapter,
             knowledgeCatalog: KnowledgeCatalog,
-            progress: LearningProgress?
+            progress: LearningProgress?,
+            responses: [ActivityResponse]
         )
         case failed(message: String)
     }
@@ -100,7 +101,8 @@ struct ChapterLearningFeature {
         case saved(
             destination: NavigationDestination,
             progress: LearningProgress,
-            drafts: [ActivityDraft]
+            drafts: [ActivityDraft],
+            responses: [ActivityResponse]
         )
         case failed(
             drafts: [ActivityDraft],
@@ -139,21 +141,33 @@ struct ChapterLearningFeature {
                 state.isLoading = true
                 state.loadErrorMessage = nil
                 let chapterID = state.chapterID
+                let requestedPageID = state.currentPageID
 
                 return .run { send in
                     do {
-                        async let chapter = curriculumClient.loadChapter(
-                            chapterID
-                        )
-                        async let knowledgeCatalog = knowledgeCatalogClient
-                            .loadCatalog()
-                        async let progress = learningRecordClient.loadProgress(
-                            chapterID
-                        )
+                        async let chapterRequest = curriculumClient
+                            .loadChapter(chapterID)
+                        async let knowledgeCatalogRequest =
+                            knowledgeCatalogClient.loadCatalog()
+                        async let progressRequest = learningRecordClient
+                            .loadProgress(chapterID)
+                        let chapter = try await chapterRequest
+                        let knowledgeCatalog = try await knowledgeCatalogRequest
+                        let progress = try await progressRequest
+                        let resolvedPageID = await MainActor.run {
+                            Self.resolvedPageID(
+                                requestedPageID: requestedPageID,
+                                savedProgress: progress,
+                                chapter: chapter
+                            )
+                        }
+                        let responses = try await learningRecordClient
+                            .loadResponses(resolvedPageID)
                         await send(.loadResponse(.loaded(
-                            chapter: try await chapter,
-                            knowledgeCatalog: try await knowledgeCatalog,
-                            progress: try await progress
+                            chapter: chapter,
+                            knowledgeCatalog: knowledgeCatalog,
+                            progress: progress,
+                            responses: responses
                         )))
                     } catch {
                         await send(.loadResponse(.failed(
@@ -169,7 +183,8 @@ struct ChapterLearningFeature {
             case let .loadResponse(.loaded(
                 chapter,
                 knowledgeCatalog,
-                progress
+                progress,
+                responses
             )):
                 let requestedPageID = state.currentPageID
                 let resolvedPageID = Self.resolvedPageID(
@@ -188,8 +203,12 @@ struct ChapterLearningFeature {
                         chapter.progressPageIDs.contains($0)
                     } ?? []
                 )
-                state.activityDrafts = [:]
-                state.activitySaveStates = [:]
+                let restoredActivityState = Self.restoredActivityState(
+                    responses: responses,
+                    page: chapter.page(id: resolvedPageID)
+                )
+                state.activityDrafts = restoredActivityState.drafts
+                state.activitySaveStates = restoredActivityState.saveStates
                 state.isShowingCompletionSummary = false
                 state.loadErrorMessage = nil
                 state.navigationErrorMessage = nil
@@ -308,7 +327,12 @@ struct ChapterLearningFeature {
                     to: .page(chapter.progressPageIDs[nextIndex])
                 )
 
-            case let .navigationResponse(.saved(destination, progress, drafts)):
+            case let .navigationResponse(.saved(
+                destination,
+                progress,
+                drafts,
+                responses
+            )):
                 state.isSavingNavigation = false
                 guard drafts.allSatisfy({
                     state.activityDrafts[$0.activityID] == $0
@@ -319,18 +343,25 @@ struct ChapterLearningFeature {
                 }
                 state.navigationErrorMessage = nil
                 state.completedPageIDs = progress.completedPageIDs
-                state.activityDrafts = [:]
-                state.activitySaveStates = [:]
                 state.component = LearningComponentFeature.State()
 
                 switch destination {
                 case let .page(pageID):
-                    guard state.currentPageID != pageID else { return .none }
+                    let pageChanged = state.currentPageID != pageID
                     state.currentPageID = pageID
                     state.isShowingCompletionSummary = false
+                    let restoredActivityState = Self.restoredActivityState(
+                        responses: responses,
+                        page: state.chapter?.page(id: pageID)
+                    )
+                    state.activityDrafts = restoredActivityState.drafts
+                    state.activitySaveStates = restoredActivityState.saveStates
+                    guard pageChanged else { return .none }
                     return .send(.delegate(.currentPageChanged(pageID)))
 
                 case .completionSummary:
+                    state.activityDrafts = [:]
+                    state.activitySaveStates = [:]
                     state.isShowingCompletionSummary = true
                     return .none
                 }
@@ -434,11 +465,21 @@ struct ChapterLearningFeature {
                     try await learningRecordClient.saveResponse(response)
                     savedActivityIDs.append(draft.activityID)
                 }
+                let responses: [ActivityResponse]
+                switch destination {
+                case let .page(pageID):
+                    responses = try await learningRecordClient.loadResponses(
+                        pageID
+                    )
+                case .completionSummary:
+                    responses = []
+                }
                 try await learningRecordClient.saveProgress(progress)
                 await send(.navigationResponse(.saved(
                     destination: destination,
                     progress: progress,
-                    drafts: drafts
+                    drafts: drafts,
+                    responses: responses
                 )))
             } catch {
                 await send(.navigationResponse(.failed(
@@ -518,6 +559,51 @@ struct ChapterLearningFeature {
         for activityID: LearningActivityID
     ) -> String {
         "ChapterLearningFeature.autosave.\(activityID.rawValue)"
+    }
+
+    private static func restoredActivityState(
+        responses: [ActivityResponse],
+        page: LearningPage?
+    ) -> (
+        drafts: [LearningActivityID: ActivityDraft],
+        saveStates: [LearningActivityID: ActivityDraftSaveState]
+    ) {
+        guard let page else { return ([:], [:]) }
+        let activityIDs = Set(page.activities.map(\.id))
+        var latestResponses: [LearningActivityID: ActivityResponse] = [:]
+
+        for response in responses where response.pageID == page.id &&
+            activityIDs.contains(response.activityID)
+        {
+            if let current = latestResponses[response.activityID],
+               !responseIsNewer(response, than: current)
+            {
+                continue
+            }
+            latestResponses[response.activityID] = response
+        }
+
+        var drafts: [LearningActivityID: ActivityDraft] = [:]
+        var saveStates: [LearningActivityID: ActivityDraftSaveState] = [:]
+        for response in latestResponses.values {
+            drafts[response.activityID] = ActivityDraft(
+                responseID: response.id,
+                activityID: response.activityID,
+                fields: response.fields
+            )
+            saveStates[response.activityID] = .saved(response.recordedAt)
+        }
+        return (drafts, saveStates)
+    }
+
+    private static func responseIsNewer(
+        _ response: ActivityResponse,
+        than current: ActivityResponse
+    ) -> Bool {
+        if response.recordedAt != current.recordedAt {
+            return response.recordedAt > current.recordedAt
+        }
+        return response.id.rawValue > current.id.rawValue
     }
 
     private static func resolvedPageID(

@@ -52,7 +52,6 @@ struct ConceptInspectorView: View {
             }
         }
         .inspectorColumnWidth(min: 320, ideal: 380, max: 480)
-        .accessibilityLabel("개념 Inspector")
     }
 
     private var header: some View {

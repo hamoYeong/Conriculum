@@ -50,7 +50,8 @@ struct LearningWorkspaceFeatureTests {
         await store.receive(.chapter(.navigationResponse(.saved(
             destination: .page(pageTwo),
             progress: progress,
-            drafts: []
+            drafts: [],
+            responses: []
         )))) {
             $0.chapter.isSavingNavigation = false
             $0.chapter.currentPageID = pageTwo
@@ -192,7 +193,8 @@ struct LearningWorkspaceFeatureTests {
         await store.receive(.chapter(.navigationResponse(.saved(
             destination: .completionSummary,
             progress: progress,
-            drafts: []
+            drafts: [],
+            responses: []
         )))) {
             $0.chapter.isSavingNavigation = false
             $0.chapter.isShowingCompletionSummary = true
@@ -685,6 +687,18 @@ struct LearningWorkspaceFeatureTests {
         #expect(
             WorkspaceSidebarMode.focus.navigationSplitViewVisibility
                 == .detailOnly
+        )
+        #expect(
+            WorkspaceSidebarMode.automatic
+                .hidesKnowledgeContextFromAccessibility == false
+        )
+        #expect(
+            WorkspaceSidebarMode.visible
+                .hidesKnowledgeContextFromAccessibility == false
+        )
+        #expect(
+            WorkspaceSidebarMode.focus
+                .hidesKnowledgeContextFromAccessibility
         )
     }
 

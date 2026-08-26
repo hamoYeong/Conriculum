@@ -38,6 +38,36 @@ struct LearningWorkspaceViewRenderingTests {
         #expect(sampledColorCount(in: image) > 2)
     }
 
+    @Test
+    func focusModeRendersAtTheE2EWindowSize() throws {
+        let view = LearningWorkspaceView(
+            store: Store(
+                initialState: LearningWorkspaceFeature.State(
+                    chapterID: Chapter02.id,
+                    pageID: "chapter-02-page-07",
+                    sidebarMode: .focus
+                )
+            ) {
+                LearningWorkspaceFeature()
+            }
+        )
+        .frame(width: 900, height: 632)
+
+        let hostingView = NSHostingView(rootView: view)
+        hostingView.frame = NSRect(x: 0, y: 0, width: 900, height: 632)
+        hostingView.layoutSubtreeIfNeeded()
+        let image = try #require(
+            hostingView.bitmapImageRepForCachingDisplay(
+                in: hostingView.bounds
+            )
+        )
+        hostingView.cacheDisplay(in: hostingView.bounds, to: image)
+
+        #expect(abs(image.size.width - 900) < 0.5)
+        #expect(abs(image.size.height - 632) < 0.5)
+        #expect(sampledColorCount(in: image) > 2)
+    }
+
     private func sampledColorCount(
         in image: NSBitmapImageRep
     ) -> Int {

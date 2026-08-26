@@ -219,7 +219,8 @@ struct ChapterPagesSevenAndEightAssemblyTests {
         await store.receive(.navigationResponse(.saved(
             destination: .completionSummary,
             progress: expectedProgress,
-            drafts: []
+            drafts: [],
+            responses: []
         ))) {
             $0.isSavingNavigation = false
             $0.isShowingCompletionSummary = true
