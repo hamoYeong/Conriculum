@@ -51,12 +51,11 @@ struct ConceptInspectorView: View {
                 footer
             }
         }
-        .inspectorColumnWidth(min: 320, ideal: 380, max: 480)
     }
 
     private var header: some View {
         VStack(alignment: .leading, spacing: 7) {
-            Label("개념 Inspector", systemImage: "sidebar.trailing")
+            Label("개념 상세", systemImage: "sidebar.trailing")
                 .font(.title2.weight(.semibold))
                 .accessibilityHeading(.h1)
 
@@ -249,8 +248,8 @@ struct ConceptInspectorView: View {
                 store.personalizationReview != nil
                     ? "나의 표현 · 활동 후보에서 시작"
                     : store.latestRevision == nil
-                        ? "나의 표현 · 새 Revision"
-                        : "나의 표현 · 최신 Revision에서 시작",
+                        ? "나의 표현 · 새 표현 기록"
+                        : "나의 표현 · 최신 기록에서 시작",
                 systemImage: "person.crop.circle"
             )
             .font(.headline)
@@ -310,13 +309,13 @@ struct ConceptInspectorView: View {
 
     private var evidenceStatus: some View {
         Group {
-            if let evidenceActivityID = store.evidenceActivityID {
+            if store.evidenceActivityID != nil {
                 Label {
                     VStack(alignment: .leading, spacing: 3) {
-                        Text("저장 근거 활동")
+                        Text("저장 근거")
                             .font(.caption.weight(.semibold))
-                        Text(evidenceActivityID.rawValue)
-                            .font(.caption.monospaced())
+                        Text("현재 페이지의 학습 활동과 연결됨")
+                            .font(.caption)
                     }
                 } icon: {
                     Image(systemName: "checkmark.seal")
@@ -324,7 +323,7 @@ struct ConceptInspectorView: View {
                 .foregroundStyle(.secondary)
             } else {
                 messageBanner(
-                    title: "이 문맥에서는 새 Revision을 저장할 수 없습니다",
+                    title: "이 문맥에서는 새 표현을 저장할 수 없습니다",
                     message: "관련 학습 페이지에서 근거 활동을 남긴 뒤 편집해 주세요. 기존 기본 지식은 계속 확인할 수 있습니다.",
                     systemImage: "lock",
                     color: .orange
@@ -339,7 +338,7 @@ struct ConceptInspectorView: View {
                 relationGroupTitle("기본 지식 연결", systemImage: "books.vertical")
 
                 if store.relevantBaseRelations.isEmpty {
-                    Text("이 개념에 직접 연결된 기본 catalog 관계가 없습니다.")
+                    Text("이 개념에 직접 연결된 기본 지식 관계가 없습니다.")
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 } else {
@@ -364,7 +363,7 @@ struct ConceptInspectorView: View {
                     .controlSize(.small)
                     .disabled(!store.canCreateRelation)
                     .accessibilityHint(
-                        "현재 페이지가 허용한 두 개념으로 개인 관계 draft를 만듭니다."
+                        "현재 페이지가 허용한 두 개념으로 개인 관계 초안을 만듭니다."
                     )
                 }
 
@@ -383,7 +382,7 @@ struct ConceptInspectorView: View {
 
                 if !store.canCreateRelation {
                     Label(
-                        "새 관계는 관계 활동이 있는 Page 07·08에서 만들 수 있습니다.",
+                        "새 관계는 관계 활동이 있는 7·8페이지에서 만들 수 있습니다.",
                         systemImage: "info.circle"
                     )
                     .font(.caption)
@@ -474,7 +473,8 @@ struct ConceptInspectorView: View {
     }
 
     private func conceptTitle(_ id: KnowledgeConceptID) -> String {
-        store.availableConcepts.first { $0.id == id }?.title ?? id.rawValue
+        store.availableConcepts.first { $0.id == id }?.title
+            ?? "알 수 없는 개념"
     }
 
     private func baseRelationKindTitle(
@@ -514,8 +514,8 @@ struct ConceptInspectorView: View {
                 } else {
                     Text(
                         store.personalizationReview == nil
-                            ? "Revision 저장"
-                            : "확인하고 Revision 저장"
+                            ? "표현 저장"
+                            : "확인하고 표현 저장"
                     )
                 }
             }
@@ -580,7 +580,7 @@ struct ConceptInspectorView: View {
     }
 }
 
-#Preview("Concept Inspector · New Revision") {
+#Preview("개념 상세 · 새 표현") {
     ConceptInspectorView(
         store: Store(
             initialState: ConceptInspectorPreviewData.newRevision
@@ -591,7 +591,7 @@ struct ConceptInspectorView: View {
     .frame(width: 380, height: 760)
 }
 
-#Preview("Concept Inspector · Existing Revision") {
+#Preview("개념 상세 · 저장된 표현") {
     ConceptInspectorView(
         store: Store(
             initialState: ConceptInspectorPreviewData.existingRevision
@@ -602,7 +602,7 @@ struct ConceptInspectorView: View {
     .frame(width: 380, height: 760)
 }
 
-#Preview("Concept Inspector · Relation") {
+#Preview("개념 상세 · 관계") {
     ConceptInspectorView(
         store: Store(
             initialState: ConceptInspectorPreviewData.relationEditor
@@ -613,7 +613,7 @@ struct ConceptInspectorView: View {
     .frame(width: 380, height: 760)
 }
 
-#Preview("Concept Inspector · Activity Candidate") {
+#Preview("개념 상세 · 활동 후보") {
     ConceptInspectorView(
         store: Store(
             initialState: ConceptInspectorPreviewData.activityCandidate
@@ -719,7 +719,7 @@ private enum ConceptInspectorPreviewData {
             activityID: "activity-page05-promotion",
             confirmationQuestion:
                 "이 문장을 나의 변경 책임 기준으로 남길까?",
-            savedFields: ["나의 설명", "판단 경계", "근거 활동 ID", "수정 시각"]
+            savedFields: ["나의 설명", "판단 경계", "근거 학습 활동", "수정 시각"]
         )
         return ConceptInspectorFeature.State(
             sourcePageTitle: "변하지 않는 값을 선언하기",

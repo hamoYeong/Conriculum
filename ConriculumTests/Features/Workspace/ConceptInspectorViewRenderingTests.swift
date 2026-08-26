@@ -120,7 +120,7 @@ struct ConceptInspectorViewRenderingTests {
             evidenceActivityID: contract.evidenceActivityID
         )
         var state = ConceptInspectorFeature.State(
-            sourcePageTitle: "Chapter 2 판단 흐름 다시 사용하기",
+            sourcePageTitle: "챕터 2 판단 흐름 다시 사용하기",
             item: KnowledgeContextSnapshot.ConceptItem(
                 concept: concept,
                 personalRevision: revision,

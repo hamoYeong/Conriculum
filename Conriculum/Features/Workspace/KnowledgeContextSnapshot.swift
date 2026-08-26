@@ -45,10 +45,10 @@ enum KnowledgeContextSnapshotComposerError: LocalizedError, Equatable {
 
     var errorDescription: String? {
         switch self {
-        case let .missingPage(pageID):
-            "현재 페이지를 찾을 수 없습니다: \(pageID.rawValue)"
-        case let .missingConcept(conceptID):
-            "지식 개념을 찾을 수 없습니다: \(conceptID.rawValue)"
+        case .missingPage:
+            "현재 페이지의 지식 문맥을 찾을 수 없습니다."
+        case .missingConcept:
+            "연결된 지식 개념을 찾을 수 없습니다."
         }
     }
 }

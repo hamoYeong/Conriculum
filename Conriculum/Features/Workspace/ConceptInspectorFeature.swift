@@ -410,6 +410,6 @@ private struct ConceptRevisionReadBackError: LocalizedError {
     let revisionID: PersonalConceptRevisionID
 
     var errorDescription: String? {
-        "저장한 개인 표현을 다시 확인하지 못했습니다: \(revisionID.rawValue)"
+        "저장한 개인 표현을 다시 확인하지 못했습니다."
     }
 }

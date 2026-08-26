@@ -82,7 +82,7 @@ struct KnowledgeChangeCollectionView: View {
                 changeCard(content: content)
             }
             .buttonStyle(.plain)
-            .accessibilityHint("개념 Inspector에서 자세히 봅니다.")
+            .accessibilityHint("개념 상세에서 자세히 봅니다.")
         } else {
             changeCard(content: content)
         }

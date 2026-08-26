@@ -27,9 +27,9 @@ struct HomePresentationTests {
         let empty = HomePreviewFixtures.empty.chapter
         let populated = HomePreviewFixtures.mock.chapter
 
-        #expect(empty.primaryActionTitle == "Chapter 2 시작하기")
+        #expect(empty.primaryActionTitle == "챕터 2 시작하기")
         #expect(empty.primaryActionAccessibilityHint.contains("개요"))
-        #expect(populated.primaryActionTitle == "Chapter 2 이어하기")
+        #expect(populated.primaryActionTitle == "챕터 2 이어하기")
         #expect(populated.primaryActionAccessibilityHint.contains("마지막"))
     }
 }
