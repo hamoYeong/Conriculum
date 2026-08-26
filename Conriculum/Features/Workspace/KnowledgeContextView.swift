@@ -27,7 +27,7 @@ struct KnowledgeContextView: View {
             .padding(20)
         }
         .background(Color(nsColor: .windowBackgroundColor))
-        .navigationSplitViewColumnWidth(min: 230, ideal: 300, max: 380)
+        .navigationSplitViewColumnWidth(min: 180, ideal: 220, max: 300)
         .accessibilityLabel("현재 학습의 지식 문맥")
         .task {
             guard store.snapshot == nil else { return }
@@ -259,7 +259,7 @@ struct KnowledgeContextView: View {
         .buttonStyle(.plain)
         .accessibilityElement(children: .combine)
         .accessibilityLabel(conceptAccessibilityLabel(item))
-        .accessibilityHint("기본 지식과 나의 표현을 Inspector에서 비교합니다.")
+        .accessibilityHint("기본 지식과 나의 표현을 개념 상세에서 비교합니다.")
     }
 
     private func conceptAccessibilityLabel(
@@ -326,7 +326,7 @@ struct KnowledgeContextView: View {
     }
 }
 
-#Preview("Knowledge Context · Empty") {
+#Preview("지식 문맥 · 비어 있음") {
     KnowledgeContextView(
         store: Store(
             initialState: KnowledgeContextPreviewData.emptyState
@@ -337,7 +337,7 @@ struct KnowledgeContextView: View {
     .frame(width: 320, height: 720)
 }
 
-#Preview("Knowledge Context · Personalized") {
+#Preview("지식 문맥 · 개인화") {
     KnowledgeContextView(
         store: Store(
             initialState: KnowledgeContextPreviewData.personalizedState

@@ -19,6 +19,25 @@ struct BundledContentResourceTests {
     }
 
     @Test
+    func userFacingWorkspaceCopyDoesNotExposeInternalEnglishTerms() throws {
+        let chapter = try decode(Chapter.self, from: .chapter02)
+        let sections = chapter.allPages.flatMap(\.sections)
+
+        for section in sections {
+            switch section.content {
+            case let .personalExpressionComparison(content):
+                #expect(!content.inspectorLocation.lowercased().contains("inspector"))
+
+            case let .personalKnowledgePromotion(content):
+                #expect(!content.cancellationResult.lowercased().contains("revision"))
+
+            default:
+                break
+            }
+        }
+    }
+
+    @Test
     func knowledgeCatalogResourceDecodesFromTheApplicationBundle() throws {
         let catalog = try decode(KnowledgeCatalog.self, from: .valuesAndTypes)
 

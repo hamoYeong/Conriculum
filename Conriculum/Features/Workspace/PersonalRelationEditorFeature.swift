@@ -289,6 +289,6 @@ private struct PersonalRelationReadBackError: LocalizedError {
     let relationID: PersonalKnowledgeRelationID
 
     var errorDescription: String? {
-        "저장한 개인 지식 관계를 다시 확인하지 못했습니다: \(relationID.rawValue)"
+        "저장한 개인 지식 관계를 다시 확인하지 못했습니다."
     }
 }

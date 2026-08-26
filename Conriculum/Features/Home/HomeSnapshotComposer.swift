@@ -33,7 +33,7 @@ struct HomeSnapshotComposer {
             stage: .stageOne,
             chapter: HomeSnapshot.ChapterCard(
                 chapterID: chapter.id,
-                title: "Chapter \(chapter.order) · \(chapter.title)",
+                title: "챕터 \(chapter.order) · \(chapter.title)",
                 summary: chapter.summary,
                 startPageID: chapter.overview.id,
                 resumePageID: resumedPage?.id,
@@ -45,7 +45,7 @@ struct HomeSnapshotComposer {
                     )
                 },
                 accessNote: resumedPage == nil
-                    ? "미리보기 상태 · Chapter 2 직접 진입이 열려 있습니다."
+                    ? "미리보기 상태 · 챕터 2 직접 진입이 열려 있습니다."
                     : nil
             ),
             lastActivity: lastActivity(

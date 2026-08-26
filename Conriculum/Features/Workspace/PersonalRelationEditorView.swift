@@ -55,10 +55,10 @@ struct PersonalRelationEditorView: View {
 
                 Label {
                     VStack(alignment: .leading, spacing: 3) {
-                        Text("근거 활동")
+                        Text("근거 학습 활동")
                             .font(.caption.weight(.semibold))
-                        Text(store.evidenceActivityID.rawValue)
-                            .font(.caption.monospaced())
+                        Text("현재 페이지의 학습 활동과 연결됨")
+                            .font(.caption)
                     }
                 } icon: {
                     Image(systemName: "checkmark.seal")
@@ -107,7 +107,7 @@ struct PersonalRelationEditorView: View {
                     .buttonStyle(.borderedProminent)
                     .disabled(store.isSaving || !store.hasUnsavedChanges)
                     .accessibilityHint(
-                        "저장 후 repository에서 다시 읽은 관계로 지식 문맥을 갱신합니다."
+                        "저장 후 저장소에서 다시 읽은 관계로 지식 문맥을 갱신합니다."
                     )
                 }
             }

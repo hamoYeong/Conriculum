@@ -11,8 +11,8 @@ struct ChapterLearningView: View {
 
             content
         }
-        .navigationTitle(store.chapter?.title ?? "Chapter 2")
-        .frame(minWidth: 480, minHeight: 520)
+        .navigationTitle(store.chapter?.title ?? "챕터 2")
+        .frame(minWidth: 240, minHeight: 520)
         .task {
             guard store.chapter == nil else { return }
             await store.send(.task).finish()
@@ -45,58 +45,70 @@ struct ChapterLearningView: View {
             ContentUnavailableView(
                 "표시할 학습 페이지가 없습니다",
                 systemImage: "doc.questionmark",
-                description: Text("Chapter 2 지도에서 다시 시작해 주세요.")
+                description: Text("챕터 2 지도에서 다시 시작해 주세요.")
             )
         }
     }
 
     private func learningPage(_ page: LearningPage) -> some View {
         VStack(spacing: 0) {
-            ScrollView {
-                VStack(alignment: .leading, spacing: 24) {
-                    VStack(alignment: .leading, spacing: 10) {
-                        Text(pageEyebrow(page))
-                            .font(.caption.weight(.semibold))
-                            .foregroundStyle(.secondary)
-                            .textCase(.uppercase)
+            ScrollViewReader { proxy in
+                ScrollView {
+                    Color.clear
+                        .frame(height: 0)
+                        .id(ScrollAnchor.top)
 
-                        Text(page.title)
-                            .font(.largeTitle.weight(.bold))
-                            .accessibilityHeading(.h1)
+                    VStack(alignment: .leading, spacing: 24) {
+                        VStack(alignment: .leading, spacing: 10) {
+                            Text(pageEyebrow(page))
+                                .font(.caption.weight(.semibold))
+                                .foregroundStyle(.secondary)
+                                .textCase(.uppercase)
 
-                        Text(page.goal)
-                            .font(.title3)
-                            .foregroundStyle(.secondary)
-                            .fixedSize(horizontal: false, vertical: true)
-                    }
+                            Text(page.title)
+                                .font(.largeTitle.weight(.bold))
+                                .accessibilityHeading(.h1)
 
-                    Divider()
-
-                    if let chapter = store.chapter,
-                       Chapter02ContentAssembly.isAssembled(page) {
-                        LearningPageContentView(
-                            chapter: chapter,
-                            page: page,
-                            store: store
-                        )
-                    } else {
-                        ContentUnavailableView {
-                            Label(
-                                "학습 블록을 조립하는 중",
-                                systemImage: "square.stack.3d.up"
-                            )
-                        } description: {
-                            Text(
-                                "이 페이지의 타입화된 학습 블록을 공용 컴포넌트에 연결하고 있습니다."
-                            )
+                            Text(page.goal)
+                                .font(.title3)
+                                .foregroundStyle(.secondary)
+                                .fixedSize(horizontal: false, vertical: true)
                         }
-                        .frame(maxWidth: .infinity, minHeight: 260)
+
+                        Divider()
+
+                        if let chapter = store.chapter,
+                           Chapter02ContentAssembly.isAssembled(page) {
+                            LearningPageContentView(
+                                chapter: chapter,
+                                page: page,
+                                store: store
+                            )
+                        } else {
+                            ContentUnavailableView {
+                                Label(
+                                    "학습 블록을 조립하는 중",
+                                    systemImage: "square.stack.3d.up"
+                                )
+                            } description: {
+                                Text(
+                                    "이 페이지의 타입화된 학습 블록을 공용 컴포넌트에 연결하고 있습니다."
+                                )
+                            }
+                            .frame(maxWidth: .infinity, minHeight: 260)
+                        }
                     }
+                    .frame(maxWidth: 760, alignment: .leading)
+                    .padding(.horizontal, 24)
+                    .padding(.vertical, 32)
+                    .frame(maxWidth: .infinity)
                 }
-                .frame(maxWidth: 760, alignment: .leading)
-                .padding(.horizontal, 36)
-                .padding(.vertical, 32)
-                .frame(maxWidth: .infinity)
+                .onChange(of: page.id) {
+                    proxy.scrollTo(ScrollAnchor.top, anchor: .top)
+                }
+                .onAppear {
+                    proxy.scrollTo(ScrollAnchor.top, anchor: .top)
+                }
             }
             .disabled(store.isSavingNavigation)
 
@@ -173,7 +185,7 @@ struct ChapterLearningView: View {
     private var completionSummary: some View {
         ContentUnavailableView {
             Label(
-                "Chapter 2 학습 경로를 모두 확인했습니다",
+                "챕터 2 학습 경로를 모두 확인했습니다",
                 systemImage: "checkmark.circle"
             )
         } description: {
@@ -183,7 +195,7 @@ struct ChapterLearningView: View {
         }
         .frame(maxWidth: 680)
         .accessibilityLabel(
-            "Chapter 2 완료 요약. 페이지 이동 기록을 저장했습니다."
+            "챕터 2 완료 요약. 페이지 이동 기록을 저장했습니다."
         )
     }
 
@@ -191,12 +203,16 @@ struct ChapterLearningView: View {
         guard page.kind == .lesson,
               let position = store.progressPosition,
               let count = store.chapter?.progressDenominator
-        else { return "Chapter 2 · 학습 지도" }
-        return "Chapter 2 · \(position) / \(count)"
+        else { return "챕터 2 · 학습 지도" }
+        return "챕터 2 · \(position) / \(count)"
+    }
+
+    private enum ScrollAnchor: Hashable {
+        case top
     }
 }
 
-#Preview("Chapter Learning") {
+#Preview("챕터 학습") {
     ChapterLearningView(
         store: Store(
             initialState: ChapterLearningFeature.State(

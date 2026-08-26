@@ -65,7 +65,7 @@ private struct ReadingLearningComponentsPreview: View {
     }
 }
 
-#Preview("읽기와 관찰 · Chapter 2") {
+#Preview("읽기와 관찰 · 챕터 2") {
     ReadingLearningComponentsPreview()
         .frame(width: 820, height: 1_000)
 }

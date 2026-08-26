@@ -230,11 +230,11 @@ struct LearningSectionView: View {
             systemImage: "exclamationmark.triangle",
             accent: .red
         ) {
-            Text("\(section.id.rawValue)에 activity ID가 없습니다.")
+            Text("이 학습 블록에 활동 연결 정보가 없습니다.")
                 .foregroundStyle(.secondary)
         }
         .accessibilityLabel(
-            "활동 연결 오류. \(section.id.rawValue)에 activity ID가 없습니다."
+            "활동 연결 오류. 이 학습 블록에 활동 연결 정보가 없습니다."
         )
     }
 }

@@ -172,7 +172,7 @@ struct LearningWorkspaceFeatureTests {
             targetConceptID: "concept-type-selection",
             activityID: "activity-page08-promotion",
             confirmationQuestion: "이 문장을 나의 현재 언어로 반영할까?",
-            savedFields: ["나의 설명", "근거 활동 ID"]
+            savedFields: ["나의 설명", "근거 학습 활동"]
         )
         var initialState = LearningWorkspaceFeature.State(
             chapterID: chapter.id,
@@ -243,7 +243,7 @@ struct LearningWorkspaceFeatureTests {
             targetConceptID: revision.conceptID,
             activityID: "activity-page03-promotion",
             confirmationQuestion: "이 설명을 나의 지식으로 반영할까?",
-            savedFields: ["나의 설명", "근거 활동 ID"]
+            savedFields: ["나의 설명", "근거 학습 활동"]
         )
         let expectedSnapshot = try KnowledgeContextSnapshotComposer().compose(
             chapter: chapter,
@@ -329,7 +329,7 @@ struct LearningWorkspaceFeatureTests {
             targetConceptID: "concept-constants-variables",
             activityID: "activity-page05-promotion",
             confirmationQuestion: "이 설명을 나의 지식으로 반영할까?",
-            savedFields: ["나의 설명", "근거 활동 ID"]
+            savedFields: ["나의 설명", "근거 학습 활동"]
         )
         let item = try #require(snapshot.directConcepts.first {
             $0.id == review.targetConceptID
@@ -459,6 +459,7 @@ struct LearningWorkspaceFeatureTests {
             request
         ))) {
             $0.knowledgeContext.inspector = expectedInspector
+            $0.isInspectorPresented = true
         }
     }
 
@@ -522,7 +523,7 @@ struct LearningWorkspaceFeatureTests {
                 "let 예시",
                 "var 예시",
                 "판단 경계",
-                "근거 활동 ID",
+                "근거 학습 활동",
                 "수정 시각",
             ]
         )
@@ -574,6 +575,7 @@ struct LearningWorkspaceFeatureTests {
             .personalizationReviewRequested(review)
         )) {
             $0.knowledgeContext.inspector = expectedInspector
+            $0.isInspectorPresented = true
         }
 
         let savesBeforeConfirmation = await saveSpy.savedRevisions()
@@ -586,6 +588,7 @@ struct LearningWorkspaceFeatureTests {
             .delegate(.cancelled)
         ))) {
             $0.knowledgeContext.inspector = nil
+            $0.isInspectorPresented = false
         }
         #expect(store.state.pendingPersonalizationReviews == [review])
 
@@ -622,36 +625,29 @@ struct LearningWorkspaceFeatureTests {
     }
 
     @Test
-    func focusModeReturnsToTheModeThatWasVisibleBeforeIt() async {
-        let store = TestStore(
-            initialState: LearningWorkspaceFeature.State(
-                chapterID: Chapter02.id,
-                pageID: "chapter-02-page-03"
-            )
-        ) {
+    func focusModeHidesBothPanelsAndRestoresTheirPreviousState()
+        async throws
+    {
+        var initialState = try workspaceStateWithInspector(
+            pageID: "chapter-02-page-03"
+        )
+        initialState.sidebarMode = .visible
+        initialState.isInspectorPresented = true
+        let store = TestStore(initialState: initialState) {
             LearningWorkspaceFeature()
         }
 
-        await store.send(.sidebarModeChanged(.visible)) {
-            $0.sidebarMode = .visible
-            $0.modeBeforeFocus = .visible
+        await store.send(.focusModeButtonTapped) {
+            $0.isFocusModeEnabled = true
+            $0.isInspectorPresented = false
+            $0.wasInspectorPresentedBeforeFocus = true
         }
         await store.send(.focusModeButtonTapped) {
-            $0.sidebarMode = .focus
+            $0.isFocusModeEnabled = false
+            $0.isInspectorPresented = true
         }
-        await store.send(.focusModeButtonTapped) {
-            $0.sidebarMode = .visible
-        }
-        await store.send(.sidebarModeChanged(.automatic)) {
-            $0.sidebarMode = .automatic
-            $0.modeBeforeFocus = .automatic
-        }
-        await store.send(.focusModeButtonTapped) {
-            $0.sidebarMode = .focus
-        }
-        await store.send(.focusModeButtonTapped) {
-            $0.sidebarMode = .automatic
-        }
+
+        #expect(store.state.sidebarMode == .visible)
     }
 
     @Test
@@ -667,10 +663,37 @@ struct LearningWorkspaceFeatureTests {
 
         #expect(store.state.sidebarMode == .automatic)
         await store.send(.focusModeButtonTapped) {
-            $0.sidebarMode = .focus
+            $0.isFocusModeEnabled = true
         }
         await store.send(.focusModeButtonTapped) {
-            $0.sidebarMode = .automatic
+            $0.isFocusModeEnabled = false
+        }
+    }
+
+    @Test
+    func toolbarPanelButtonsControlSidebarAndInspectorIndependently()
+        async throws
+    {
+        var initialState = try workspaceStateWithInspector(
+            pageID: "chapter-02-page-03"
+        )
+        initialState.sidebarMode = .visible
+        initialState.isInspectorPresented = true
+        let store = TestStore(initialState: initialState) {
+            LearningWorkspaceFeature()
+        }
+
+        await store.send(.sidebarVisibilityButtonTapped) {
+            $0.sidebarMode = .hidden
+        }
+        await store.send(.sidebarVisibilityButtonTapped) {
+            $0.sidebarMode = .visible
+        }
+        await store.send(.inspectorVisibilityButtonTapped) {
+            $0.isInspectorPresented = false
+        }
+        await store.send(.inspectorVisibilityButtonTapped) {
+            $0.isInspectorPresented = true
         }
     }
 
@@ -685,7 +708,7 @@ struct LearningWorkspaceFeatureTests {
                 == .all
         )
         #expect(
-            WorkspaceSidebarMode.focus.navigationSplitViewVisibility
+            WorkspaceSidebarMode.hidden.navigationSplitViewVisibility
                 == .detailOnly
         )
         #expect(
@@ -697,9 +720,39 @@ struct LearningWorkspaceFeatureTests {
                 .hidesKnowledgeContextFromAccessibility == false
         )
         #expect(
-            WorkspaceSidebarMode.focus
+            WorkspaceSidebarMode.hidden
                 .hidesKnowledgeContextFromAccessibility
         )
+    }
+
+    private func workspaceStateWithInspector(
+        pageID: LearningPageID
+    ) throws -> LearningWorkspaceFeature.State {
+        let chapter = try loadChapter()
+        let catalog = try loadCatalog()
+        let snapshot = try KnowledgeContextSnapshotComposer().compose(
+            chapter: chapter,
+            catalog: catalog,
+            pageID: pageID,
+            revisions: []
+        )
+        let item = try #require(snapshot.directConcepts.first)
+        var state = LearningWorkspaceFeature.State(
+            chapterID: chapter.id,
+            pageID: pageID
+        )
+        state.chapter.chapter = chapter
+        state.chapter.knowledgeCatalog = catalog
+        state.knowledgeContext.snapshot = snapshot
+        state.knowledgeContext.inspector = ConceptInspectorFeature.State(
+            sourcePageTitle: snapshot.pageTitle,
+            item: item,
+            availableConcepts: snapshot.availableConcepts,
+            baseRelations: snapshot.baseRelations,
+            personalRelations: snapshot.personalRelations,
+            relationCreationContract: snapshot.relationCreationContract
+        )
+        return state
     }
 
     private func loadChapter() throws -> Chapter {

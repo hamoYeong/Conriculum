@@ -8,7 +8,7 @@
     "id": "chapter-02-overview",
     "kind": "overview",
     "order": null,
-    "title": "Chapter 2 지도",
+    "title": "챕터 2 지도",
     "goal": "현실의 정보를 값·타입·이름·변경 가능성·타입 표기로 판단하는 전체 경로를 이해한다.",
     "sections": [
       {
@@ -19,7 +19,7 @@
           "tag": "situation",
           "payload": {
             "title": "현실의 정보를 이름 붙은 Swift 값으로 옮기기",
-            "description": "Chapter 1에서 입력으로 찾은 현실의 정보를 Swift가 저장하고 읽을 수 있는 선언으로 옮긴다. 결과물은 계산식이나 완성된 앱이 아니라 다음 챕터가 안전하게 사용할 이름 붙은 값이다.",
+            "description": "챕터 1에서 입력으로 찾은 현실의 정보를 Swift가 저장하고 읽을 수 있는 선언으로 옮긴다. 결과물은 계산식이나 완성된 앱이 아니라 다음 챕터가 안전하게 사용할 이름 붙은 값이다.",
             "materials": [
               {"label":"학습 흐름","text":"현실의 정보 → 구체적인 값 → 타입 선택 → 의미 있는 이름 → let과 타입 표기 → 역할에 따른 값 묶기"}
             ],
@@ -70,8 +70,8 @@
     ],
     "knowledgeContext": {
       "currentlyUsedConceptIDs": ["concept-value","concept-type-selection","concept-identifier-naming"],
-      "currentlyUsedSummary": "Chapter 2의 전체 판단 흐름에 직접 쓰는 지식을 우선한다.",
-      "changedKnowledgeSummary": "이번 Chapter에서 확인해 저장한 개인 표현과 연결을 최근 수정 순으로 보여 준다.",
+      "currentlyUsedSummary": "챕터 2의 전체 판단 흐름에 직접 쓰는 지식을 우선한다.",
+      "changedKnowledgeSummary": "이번 챕터에서 확인해 저장한 개인 표현과 연결을 최근 수정 순으로 보여 준다.",
       "nearbyKnowledge": [
         {"conceptID":"concept-expressions-operations","reason":"이름 붙은 값은 다음 챕터에서 계산의 재료가 된다."},
         {"conceptID":"concept-type-modeling","reason":"관련된 값의 경계는 이후 사용자 정의 타입으로 확장된다."}
@@ -95,7 +95,7 @@
       "sections": [
         {
           "id":"section-page01-recall","order":1,"content":{"tag":"knowledgeRecall","payload":{
-            "questions":["Chapter 1의 주문 문제에서 결과를 바꾸는 입력은 무엇이었는가?"],
+            "questions":["챕터 1의 주문 문제에서 결과를 바꾸는 입력은 무엇이었는가?"],
             "memorySentence":"상품 금액과 회원 여부는 입력이고 할인 정책은 여러 입력에 반복되는 규칙이었다.",
             "connection":"입력으로 찾은 정보를 Swift 안에 놓으려면 먼저 구체적인 값을 골라야 한다."
           }}
@@ -181,7 +181,7 @@
         {
           "id":"section-page01-expression-comparison","order":12,"content":{"tag":"personalExpressionComparison","payload":{
             "conceptIDs":["concept-value"],"baseExpression":"프로그램이 저장하고 읽고 사용할 수 있는 구체적인 정보 하나",
-            "personalExpressionEmptyState":"나의 표현 없음","comparisonQuestion":"나의 표현만 읽어도 구체적인 값과 반복 규칙을 구분할 수 있는가?","inspectorLocation":"사이드바에서 값 개념을 선택해 연 inspector"
+            "personalExpressionEmptyState":"나의 표현 없음","comparisonQuestion":"나의 표현만 읽어도 구체적인 값과 반복 규칙을 구분할 수 있는가?","inspectorLocation":"오른쪽 개념 상세의 값 항목"
           }}
         },
         {
@@ -190,7 +190,7 @@
             "conceptIDs":["concept-value","concept-concrete-values-rules"],"candidateKind":"conceptRevision",
             "editableDraft":"값은 이 사례에서 하나로 정해져 프로그램이 직접 다룰 수 있는 정보이고 규칙은 여러 값에 반복해서 적용하는 설명이다.",
             "confirmationQuestion":"이 문장을 값과 규칙을 구분하는 나의 기준으로 남길까?",
-            "savedFields":["나의 설명","값 예시","규칙 예시","근거 활동 ID","수정 시각"],
+            "savedFields":["나의 설명","값 예시","규칙 예시","근거 학습 활동","수정 시각"],
             "cancellationResult":"개인 지식은 바꾸지 않고 분류와 설명 응답만 학습 기록에 남긴다."
           }}
         },
@@ -231,7 +231,7 @@
         "focusModeSummary":"현재 활동의 개념명과 저장된 변화 유무만 유지한다."
       },
       "navigation": {
-        "previous":{"pageID":"chapter-02-overview","label":"Chapter 2 지도"},
+        "previous":{"pageID":"chapter-02-overview","label":"챕터 2 지도"},
         "next":{"pageID":"chapter-02-page-02","label":"값의 종류 비교하기"}
       }
     },
@@ -296,12 +296,12 @@
         }}},
         {"id":"section-page02-expression-comparison","order":11,"content":{"tag":"personalExpressionComparison","payload":{
           "conceptIDs":["concept-string","concept-int","concept-double","concept-bool"],"baseExpression":"각 타입의 기본 정의와 대표 리터럴 표기",
-          "personalExpressionEmptyState":"아직 나의 언어로 다시 표현한 타입이 없다.","comparisonQuestion":"표기뿐 아니라 할 수 있는 일과 바로 할 수 없는 일이 드러나는가?","inspectorLocation":"사이드바에서 선택한 타입의 inspector"
+          "personalExpressionEmptyState":"아직 나의 언어로 다시 표현한 타입이 없다.","comparisonQuestion":"표기뿐 아니라 할 수 있는 일과 바로 할 수 없는 일이 드러나는가?","inspectorLocation":"오른쪽 개념 상세의 선택한 타입 항목"
         }}},
         {"id":"section-page02-promotion","order":12,"activityID":"activity-page02-promotion","content":{"tag":"personalKnowledgePromotion","payload":{
           "evidenceActivityIDs":["activity-page02-matching","activity-page02-choice"],"conceptIDs":["concept-string","concept-int","concept-double","concept-bool"],
           "candidateKind":"conceptRevision","editableDraft":"선택한 타입이 어떤 일을 위해 쓰이는 값의 종류인지 나의 문장으로 설명한다.",
-          "confirmationQuestion":"이 설명을 선택한 타입에 대한 나의 언어로 남길까?","savedFields":["대상 concept ID","나의 설명","나의 예시","근거 활동 ID","수정 시각"],
+          "confirmationQuestion":"이 설명을 선택한 타입에 대한 나의 언어로 남길까?","savedFields":["대상 개념","나의 설명","나의 예시","근거 학습 활동","수정 시각"],
           "cancellationResult":"개인 지식은 바꾸지 않고 분류·연결·선택 응답은 유지한다."
         }}},
         {"id":"section-page02-enrichment","order":13,"content":{"tag":"enrichmentTask","payload":{
@@ -396,12 +396,12 @@
         }}},
         {"id":"section-page03-expression-comparison","order":11,"content":{"tag":"personalExpressionComparison","payload":{
           "conceptIDs":["concept-type-selection"],"baseExpression":"정보의 의미, 이후 할 일과 허용 상태를 근거로 타입을 선택한다.",
-          "personalExpressionEmptyState":"이번 자유 작성의 설명은 저장 전 후보로만 보여 준다.","comparisonQuestion":"화면의 겉모양이 달라져도 같은 순서로 타입을 판단할 수 있는가?","inspectorLocation":"타입 선택 inspector"
+          "personalExpressionEmptyState":"이번 자유 작성의 설명은 저장 전 후보로만 보여 준다.","comparisonQuestion":"화면의 겉모양이 달라져도 같은 순서로 타입을 판단할 수 있는가?","inspectorLocation":"오른쪽 개념 상세의 타입 선택 항목"
         }}},
         {"id":"section-page03-promotion","order":12,"activityID":"activity-page03-promotion","content":{"tag":"personalKnowledgePromotion","payload":{
           "evidenceActivityIDs":["activity-page03-choice","activity-page03-free-response"],"conceptIDs":["concept-type-selection"],"candidateKind":"conceptRevision",
           "editableDraft":"먼저 정보의 의미를 말하고 프로그램이 다음에 할 일을 정한 뒤 필요한 상태를 담을 수 있는 타입을 고른다.",
-          "confirmationQuestion":"이 순서를 처음 보는 정보에도 사용할 나의 타입 선택 기준으로 남길까?","savedFields":["나의 설명","판단 단계 목록","적용 예시","근거 활동 ID","수정 시각"],
+          "confirmationQuestion":"이 순서를 처음 보는 정보에도 사용할 나의 타입 선택 기준으로 남길까?","savedFields":["나의 설명","판단 단계 목록","적용 예시","근거 학습 활동","수정 시각"],
           "cancellationResult":"타입 선택 응답은 남고 개인 지식은 바뀌지 않는다."
         }}},
         {"id":"section-page03-enrichment","order":13,"content":{"tag":"enrichmentTask","payload":{
@@ -487,12 +487,12 @@
         }}},
         {"id":"section-page04-expression-comparison","order":11,"content":{"tag":"personalExpressionComparison","payload":{
           "conceptIDs":["concept-identifier-naming"],"baseExpression":"같은 타입의 값도 문제 안의 대상과 역할이 드러나게 구분한다.",
-          "personalExpressionEmptyState":"아직 확인해 반영한 이름 짓기 기준이 없다.","comparisonQuestion":"값과 타입을 가리고 이름만 읽어도 대상과 역할을 예상할 수 있는가?","inspectorLocation":"식별자와 이름 짓기 inspector"
+          "personalExpressionEmptyState":"아직 확인해 반영한 이름 짓기 기준이 없다.","comparisonQuestion":"값과 타입을 가리고 이름만 읽어도 대상과 역할을 예상할 수 있는가?","inspectorLocation":"오른쪽 개념 상세의 식별자와 이름 짓기 항목"
         }}},
         {"id":"section-page04-promotion","order":12,"activityID":"activity-page04-promotion","content":{"tag":"personalKnowledgePromotion","payload":{
           "evidenceActivityIDs":["activity-page04-code-assembly","activity-page04-choice"],"conceptIDs":["concept-identifier-naming"],"candidateKind":"conceptRevision",
           "editableDraft":"이 이름만 읽어도 같은 타입의 다른 값과 구분되고 참일 때 자연스러운 문장이 되는가?","confirmationQuestion":"이 질문과 개선 사례를 나의 이름 짓기 기준으로 남길까?",
-          "savedFields":["나의 설명","판단 질문","개선 전 이름","개선 후 이름","근거 활동 ID","수정 시각"],"cancellationResult":"작성한 코드와 이유는 유지하고 개인 지식은 수정하지 않는다."
+          "savedFields":["나의 설명","판단 질문","개선 전 이름","개선 후 이름","근거 학습 활동","수정 시각"],"cancellationResult":"작성한 코드와 이유는 유지하고 개인 지식은 수정하지 않는다."
         }}},
         {"id":"section-page04-enrichment","order":13,"content":{"tag":"enrichmentTask","payload":{
           "requiredStateID":"deeper","materials":[{"label":"넓은 이름","text":"price · discount"},{"label":"역할 이름","text":"orderAmount · memberDiscountAmount"}],
@@ -578,12 +578,12 @@
         }}},
         {"id":"section-page05-expression-comparison","order":12,"content":{"tag":"personalExpressionComparison","payload":{
           "conceptIDs":["concept-constants-variables"],"baseExpression":"현재 책임 범위에서 같은 이름에 값을 다시 할당해야 하는지를 기준으로 let과 var를 선택한다.",
-          "personalExpressionEmptyState":"아직 확인해 반영한 변경 책임 기준이 없다.","comparisonQuestion":"언제, 누가, 어느 범위에서 다시 할당하는지가 드러나는가?","inspectorLocation":"상수와 변수 inspector"
+          "personalExpressionEmptyState":"아직 확인해 반영한 변경 책임 기준이 없다.","comparisonQuestion":"언제, 누가, 어느 범위에서 다시 할당하는지가 드러나는가?","inspectorLocation":"오른쪽 개념 상세의 상수와 변수 항목"
         }}},
         {"id":"section-page05-promotion","order":13,"activityID":"activity-page05-promotion","content":{"tag":"personalKnowledgePromotion","payload":{
           "evidenceActivityIDs":["activity-page05-card-sorting","activity-page05-choice"],"conceptIDs":["concept-constants-variables","concept-problem-boundary"],"candidateKind":"conceptRevision",
           "editableDraft":"let과 var는 값의 종류가 아니라 지금 책임 안에서 같은 이름에 새 값을 넣어야 하는지에 대한 약속이다.",
-          "confirmationQuestion":"이 문장과 범위가 다른 예를 나의 변경 책임 기준으로 남길까?","savedFields":["나의 설명","let 예시","var 예시","판단 경계","근거 활동 ID","수정 시각"],
+          "confirmationQuestion":"이 문장과 범위가 다른 예를 나의 변경 책임 기준으로 남길까?","savedFields":["나의 설명","let 예시","var 예시","판단 경계","근거 학습 활동","수정 시각"],
           "cancellationResult":"선언 선택과 이유는 남고 개인 지식은 바뀌지 않는다."
         }}},
         {"id":"section-page05-enrichment","order":14,"content":{"tag":"enrichmentTask","payload":{
@@ -674,12 +674,12 @@
         }}},
         {"id":"section-page06-expression-comparison","order":11,"content":{"tag":"personalExpressionComparison","payload":{
           "conceptIDs":["concept-type-inference-annotation"],"baseExpression":"타입 표기가 없어도 타입은 존재하고 필요할 때 타입을 직접 적어 의도를 드러낸다.",
-          "personalExpressionEmptyState":"아직 확인해 반영한 추론·명시 선택 기준이 없다.","comparisonQuestion":"코드 길이보다 실제 타입과 독자에게 전달할 의도를 기준으로 선택하는가?","inspectorLocation":"타입 추론과 타입 명시 inspector"
+          "personalExpressionEmptyState":"아직 확인해 반영한 추론·명시 선택 기준이 없다.","comparisonQuestion":"코드 길이보다 실제 타입과 독자에게 전달할 의도를 기준으로 선택하는가?","inspectorLocation":"오른쪽 개념 상세의 타입 추론과 명시 항목"
         }}},
         {"id":"section-page06-promotion","order":12,"activityID":"activity-page06-promotion","content":{"tag":"personalKnowledgePromotion","payload":{
           "evidenceActivityIDs":["activity-page06-matching","activity-page06-choice"],"conceptIDs":["concept-type-inference-annotation"],"candidateKind":"conceptRevision",
           "editableDraft":"먼저 Swift가 추론할 타입을 확인하고 그 타입을 독자에게 약속처럼 보여 줘야 할 때 명시한다.",
-          "confirmationQuestion":"이 기준을 타입 추론과 명시를 고르는 나의 설명으로 남길까?","savedFields":["나의 설명","추론 예시","명시 예시","근거 활동 ID","수정 시각"],
+          "confirmationQuestion":"이 기준을 타입 추론과 명시를 고르는 나의 설명으로 남길까?","savedFields":["나의 설명","추론 예시","명시 예시","근거 학습 활동","수정 시각"],
           "cancellationResult":"빈칸과 선택 응답은 유지하고 개인 지식은 수정하지 않는다."
         }}},
         {"id":"section-page06-enrichment","order":13,"content":{"tag":"enrichmentTask","payload":{
@@ -774,12 +774,12 @@
         }}},
         {"id":"section-page07-expression-comparison","order":11,"content":{"tag":"personalExpressionComparison","payload":{
           "conceptIDs":["concept-related-value-grouping"],"baseExpression":"같은 화면이 아니라 같은 문제 대상과 사례를 설명하는 역할을 근거로 값을 묶는다.",
-          "personalExpressionEmptyState":"자유 작성 문장은 확인 전 후보로만 표시한다.","comparisonQuestion":"대상이 사라질 때 함께 의미를 잃는 값과 화면 표현 설정을 구분할 수 있는가?","inspectorLocation":"관련된 값 묶기 inspector"
+          "personalExpressionEmptyState":"자유 작성 문장은 확인 전 후보로만 표시한다.","comparisonQuestion":"대상이 사라질 때 함께 의미를 잃는 값과 화면 표현 설정을 구분할 수 있는가?","inspectorLocation":"오른쪽 개념 상세의 관련된 값 묶기 항목"
         }}},
         {"id":"section-page07-promotion","order":12,"activityID":"activity-page07-promotion","content":{"tag":"personalKnowledgePromotion","payload":{
           "evidenceActivityIDs":["activity-page07-free-response","activity-page07-boundary-sorting"],"conceptIDs":["concept-related-value-grouping"],"candidateKind":"conceptRevision",
           "editableDraft":"값은 타입이 같아서가 아니라 같은 문제 사례를 설명하고 함께 책임지는 역할이 있을 때 묶는다.",
-          "confirmationQuestion":"이 문장과 주문·화면 설정 경계를 나의 값 묶기 기준으로 남길까?","savedFields":["나의 설명","대상과 사례","포함 값","제외 값","근거 활동 ID","수정 시각"],
+          "confirmationQuestion":"이 문장과 주문·화면 설정 경계를 나의 값 묶기 기준으로 남길까?","savedFields":["나의 설명","대상과 사례","포함 값","제외 값","근거 학습 활동","수정 시각"],
           "cancellationResult":"분류와 자유 작성 응답은 유지하고 개인 지식은 수정하지 않는다."
         }}},
         {"id":"section-page07-relation","order":13,"activityID":"activity-page07-relation","content":{"tag":"personalKnowledgeRelation","payload":{
@@ -839,7 +839,7 @@
         }}},
         {"id":"section-page08-recall","order":3,"content":{"tag":"knowledgeRecall","payload":{
           "questions":["구체적인 값을 읽었는가?","의미와 할 일로 타입을 골랐는가?","이름이 대상을 드러내는가?","변경 범위로 let과 var를 골랐는가?","추론과 명시를 설명할 수 있는가?"],
-          "memorySentence":"선언 한 줄은 이름, 타입, 값, 변경 가능성에 대한 결정을 함께 담는다.","connection":"Chapter 2의 지식을 새 서비스 문제에 독립적으로 적용한다."
+          "memorySentence":"선언 한 줄은 이름, 타입, 값, 변경 가능성에 대한 결정을 함께 담는다.","connection":"챕터 2의 지식을 새 서비스 문제에 독립적으로 적용한다."
         }}},
         {"id":"section-page08-code","order":4,"content":{"tag":"codeExplanation","payload":{
           "code":"let meetupTitle = \"Swift 기초 읽기\"\nlet attendeeCount: Int = 4\nlet participationFee = 12_500\nlet isPaid: Bool = true\nlet applicantNickname = \"초록책\"","language":"swift",
@@ -862,7 +862,7 @@
           "cards":[{"id":"title","text":"모임 이름"},{"id":"count","text":"신청 인원"},{"id":"fee","text":"참가비"},{"id":"paid","text":"결제 여부"},{"id":"nickname","text":"신청자 닉네임"},{"id":"rule","text":"정원 안이고 결제되면 신청 완료"},{"id":"result","text":"신청 완료 상태"}],
           "groups":[{"id":"value","text":"현재 주어진 값"},{"id":"rule","text":"이후 적용할 규칙"},{"id":"result","text":"이후 만들어질 결과"}],
           "interaction":"입력·규칙·출력 관점으로 먼저 나눈다.","completionCriteria":["다섯 값, 한 규칙, 한 결과를 분류한다."],
-          "feedbackCriteria":["Chapter 2가 선언할 대상과 이후 챕터가 구현할 대상을 분리한다."]
+          "feedbackCriteria":["챕터 2가 선언할 대상과 이후 챕터가 구현할 대상을 분리한다."]
         }}},
         {"id":"section-page08-code-assembly","order":8,"activityID":"activity-page08-code-assembly","content":{"tag":"codeAssembly","payload":{
           "starterCode":"___ ___: ___ = ___\n___ ___: ___ = ___\n___ ___: ___ = ___\n___ ___: ___ = ___\n___ ___: ___ = ___",
@@ -892,15 +892,15 @@
         {"id":"section-page08-expression-comparison","order":13,"content":{"tag":"personalExpressionComparison","payload":{
           "conceptIDs":["concept-value","concept-type-selection","concept-identifier-naming","concept-constants-variables","concept-type-inference-annotation","concept-related-value-grouping"],
           "baseExpression":"회상 질문에서 선택한 기본 개념의 이름과 한 문장 정의","personalExpressionEmptyState":"이번 자유 작성 문장을 개인 지식 후보로만 보여 준다.",
-          "comparisonQuestion":"나의 표현이 기본 의미를 잃지 않으면서 새 모임 문제에도 다시 사용할 수 있는가?","inspectorLocation":"선택한 개념의 inspector"
+          "comparisonQuestion":"나의 표현이 기본 의미를 잃지 않으면서 새 모임 문제에도 다시 사용할 수 있는가?","inspectorLocation":"오른쪽 개념 상세의 선택한 개념 항목"
         }}},
         {"id":"section-page08-promotion","order":14,"activityID":"activity-page08-promotion","content":{"tag":"personalKnowledgePromotion","payload":{
           "evidenceActivityIDs":["activity-page08-free-response","activity-page08-recall-check"],
           "conceptIDs":["concept-value","concept-type-selection","concept-identifier-naming","concept-constants-variables","concept-type-inference-annotation","concept-related-value-grouping"],
           "candidateKind":"conceptRevision","editableDraft":"선택한 기본 개념과 연결되는 응답 문장을 추출해 사용자가 고칠 수 있게 제시한다.",
           "confirmationQuestion":"이 문장을 선택한 개념에 대한 현재의 나의 언어로 반영할까?",
-          "savedFields":["대상 concept ID","나의 이름","나의 설명","나의 예시","원본 revision ID","근거 활동 ID","수정 시각"],
-          "cancellationResult":"적용 활동과 회상 답은 유지하며 기존 개인 지식 revision은 바꾸지 않는다."
+          "savedFields":["대상 개념","나의 이름","나의 설명","나의 예시","이전 표현 기록","근거 학습 활동","수정 시각"],
+          "cancellationResult":"적용 활동과 회상 답은 유지하며 기존 개인 지식 표현 기록은 바꾸지 않는다."
         }}},
         {"id":"section-page08-relation","order":15,"activityID":"activity-page08-relation","content":{"tag":"personalKnowledgeRelation","payload":{
           "sourceConceptIDs":["concept-value","concept-type-selection","concept-identifier-naming","concept-constants-variables","concept-type-inference-annotation","concept-related-value-grouping"],
@@ -909,7 +909,7 @@
           "evidenceActivityIDs":["activity-page08-value-sorting","activity-page08-code-assembly","activity-page08-role-sorting"],"confirmationQuestion":"이 관계 문장과 이유를 나의 지식 연결로 남길까?"
         }}},
         {"id":"section-page08-change-summary","order":16,"content":{"tag":"knowledgeChangeSummary","payload":{
-          "confirmedExpressions":"Chapter 2에서 저장된 최신 개인 개념 revision을 개념별 한 건씩 보여 준다.",
+          "confirmedExpressions":"챕터 2에서 저장된 최신 개인 개념 표현을 개념별 한 건씩 보여 준다.",
           "confirmedRelations":"저장된 나의 관계 문장, 연결 이유와 근거 활동을 보여 준다.",
           "pendingCandidates":"확인하지 않은 표현·연결 후보를 확인된 변화와 분리해 보여 준다.",
           "nextUseSuggestion":"타입 선택 기준은 새로운 입력 모델링에, 값 묶기 연결은 이후 타입 모델링에 다시 사용한다.",
@@ -941,12 +941,12 @@
       ],
       "knowledgeContext":{
         "currentlyUsedConceptIDs":["concept-value","concept-type-selection","concept-identifier-naming","concept-constants-variables","concept-type-inference-annotation","concept-related-value-grouping"],
-        "currentlyUsedSummary":"현재 적용 단계에 필요한 Chapter 2 개념만 순서에 따라 강조한다.",
-        "changedKnowledgeSummary":"Chapter 2에서 확인해 저장한 개인 표현과 관계를 최근 수정 순으로 보여 준다.",
+        "currentlyUsedSummary":"현재 적용 단계에 필요한 챕터 2 개념만 순서에 따라 강조한다.",
+        "changedKnowledgeSummary":"챕터 2에서 확인해 저장한 개인 표현과 관계를 최근 수정 순으로 보여 준다.",
         "nearbyKnowledge":[{"conceptID":"concept-expressions-operations","reason":"이름 붙은 값의 다음 쓰임을 예고한다."},{"conceptID":"concept-type-modeling","reason":"관련된 값을 타입 구조로 만드는 다음 학습을 예고한다."}],
         "refreshTriggers":["적용 활동 제출","개인 표현 저장","개인 관계 저장"],
         "emptyStateMessage":"아직 확인해 반영한 나의 표현이나 연결이 없다. 학습 답안은 그대로 저장되어 있다.",
-        "focusModeSummary":"현재 적용 단계의 직접 개념 하나와 이번 Chapter의 확인된 변화 개수만 보여 준다."
+        "focusModeSummary":"현재 적용 단계의 직접 개념 하나와 이번 챕터의 확인된 변화 개수만 보여 준다."
       },
       "navigation":{"previous":{"pageID":"chapter-02-page-07","label":"여러 정보를 값으로 구조화하기"},"next":{"pageID":"chapter-03-page-01","label":"값으로 새로운 값을 계산하기"}}
     }

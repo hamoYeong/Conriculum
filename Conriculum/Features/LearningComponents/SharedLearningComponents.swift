@@ -160,7 +160,7 @@ struct PersonalExpressionComparisonComponent: View {
                 accent: .purple
             )
 
-            Button("사이드바에서 나의 표현 보기") {
+            Button("개념 상세에서 나의 표현 보기") {
                 onAction(.expressionInspectorRequested(content.conceptIDs))
             }
             .accessibilityHint(content.inspectorLocation)
@@ -419,7 +419,7 @@ struct PersonalKnowledgePromotionComponent: View {
             }
             .pickerStyle(.menu)
             .accessibilityHint(
-                "후보를 확인한 뒤 새 Revision을 저장할 개념을 선택합니다."
+                "후보를 확인한 뒤 새 표현을 저장할 개념을 선택합니다."
             )
 
             TextEditor(
@@ -461,7 +461,7 @@ struct PersonalKnowledgePromotionComponent: View {
 
                 Spacer()
 
-                Button("Inspector에서 검토") {
+                Button("개념 상세에서 검토") {
                     isConfirming = true
                 }
                 .buttonStyle(.borderedProminent)
@@ -481,7 +481,7 @@ struct PersonalKnowledgePromotionComponent: View {
             content.confirmationQuestion,
             isPresented: $isConfirming
         ) {
-            Button("Inspector에서 최종 확인") {
+            Button("개념 상세에서 최종 확인") {
                 guard let targetConceptID = selectedTargetConceptID else {
                     return
                 }
@@ -500,7 +500,7 @@ struct PersonalKnowledgePromotionComponent: View {
             }
             Button("취소", role: .cancel) {}
         } message: {
-            Text("아직 개인 지식에 저장하지 않습니다. Inspector에서 대상, 내용과 근거를 확인한 뒤 저장합니다.")
+            Text("아직 개인 지식에 저장하지 않습니다. 개념 상세에서 대상, 내용과 근거를 확인한 뒤 저장합니다.")
         }
     }
 
@@ -636,7 +636,7 @@ struct PersonalKnowledgeRelationComponent: View {
 
                 Spacer()
 
-                Button("Inspector에서 검토") {
+                Button("개념 상세에서 검토") {
                     isConfirming = true
                 }
                 .buttonStyle(.borderedProminent)
@@ -644,7 +644,7 @@ struct PersonalKnowledgeRelationComponent: View {
                     selectedSourceConceptID == nil
                         || selectedTargetConceptID == nil
                 )
-                .accessibilityHint("선택과 문장을 확인한 뒤 trailing Inspector를 엽니다.")
+                .accessibilityHint("선택과 문장을 확인한 뒤 오른쪽 개념 상세를 엽니다.")
             }
             .focusSection()
 
@@ -654,7 +654,7 @@ struct PersonalKnowledgeRelationComponent: View {
             content.confirmationQuestion,
             isPresented: $isConfirming
         ) {
-            Button("Inspector에서 최종 확인") {
+            Button("개념 상세에서 최종 확인") {
                 let storedStatement = activity.value(
                     for: LearningActivityFieldKey.relationStatement
                 )
@@ -677,7 +677,7 @@ struct PersonalKnowledgeRelationComponent: View {
             }
             Button("취소", role: .cancel) {}
         } message: {
-            Text("아직 저장하지 않습니다. Inspector에서 관계와 근거를 확인한 뒤 저장합니다.")
+            Text("아직 저장하지 않습니다. 개념 상세에서 관계와 근거를 확인한 뒤 저장합니다.")
         }
     }
 

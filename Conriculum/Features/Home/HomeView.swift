@@ -264,7 +264,7 @@ struct HomeView: View {
 
     private func unavailableState(message: String) -> some View {
         ContentUnavailableView {
-            Label("Home을 불러오지 못했습니다", systemImage: "exclamationmark.triangle")
+            Label("학습 홈을 불러오지 못했습니다", systemImage: "exclamationmark.triangle")
         } description: {
             Text(message)
         } actions: {
@@ -291,7 +291,7 @@ struct HomeView: View {
         _ page: HomeSnapshot.PageSummary
     ) -> String {
         if let order = page.order {
-            return "Page \(order) · \(page.title)"
+            return "\(order)페이지 · \(page.title)"
         }
         return page.title
     }
@@ -407,7 +407,7 @@ private struct EvidenceCard: View {
     }
 }
 
-#Preview("Home · Empty") {
+#Preview("학습 홈 · 비어 있음") {
     HomeView(
         store: Store(
             initialState: HomeFeature.State(
@@ -420,7 +420,7 @@ private struct EvidenceCard: View {
     )
 }
 
-#Preview("Home · Populated") {
+#Preview("학습 홈 · 기록 있음") {
     HomeView(
         store: Store(
             initialState: HomeFeature.State(

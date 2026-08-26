@@ -8,7 +8,9 @@ struct LearningWorkspaceFeature {
         var chapter: ChapterLearningFeature.State
         var knowledgeContext: KnowledgeContextFeature.State
         var sidebarMode: WorkspaceSidebarMode
-        var modeBeforeFocus: WorkspaceSidebarMode
+        var isFocusModeEnabled: Bool
+        var isInspectorPresented: Bool
+        var wasInspectorPresentedBeforeFocus: Bool
         var pendingPersonalizationReviews: [
             KnowledgePersonalizationReview
         ] = []
@@ -17,6 +19,8 @@ struct LearningWorkspaceFeature {
             chapterID: ChapterID,
             pageID: LearningPageID,
             sidebarMode: WorkspaceSidebarMode = .automatic,
+            isFocusModeEnabled: Bool = false,
+            isInspectorPresented: Bool = false,
             pendingPersonalizationReviews: [
                 KnowledgePersonalizationReview
             ] = []
@@ -32,9 +36,9 @@ struct LearningWorkspaceFeature {
             )
             self.pendingPersonalizationReviews = pendingPersonalizationReviews
             self.sidebarMode = sidebarMode
-            modeBeforeFocus = sidebarMode == .focus
-                ? .automatic
-                : sidebarMode
+            self.isFocusModeEnabled = isFocusModeEnabled
+            self.isInspectorPresented = isInspectorPresented
+            wasInspectorPresentedBeforeFocus = isInspectorPresented
         }
     }
 
@@ -42,8 +46,10 @@ struct LearningWorkspaceFeature {
         case chapter(ChapterLearningFeature.Action)
         case knowledgeContext(KnowledgeContextFeature.Action)
         case homeButtonTapped
+        case sidebarVisibilityButtonTapped
         case sidebarModeChanged(WorkspaceSidebarMode)
         case focusModeButtonTapped
+        case inspectorVisibilityButtonTapped
         case delegate(Delegate)
     }
 
@@ -167,20 +173,72 @@ struct LearningWorkspaceFeature {
             case .homeButtonTapped:
                 return .send(.delegate(.homeRequested))
 
+            case .sidebarVisibilityButtonTapped:
+                if state.isFocusModeEnabled {
+                    state.isFocusModeEnabled = false
+                    state.sidebarMode = .visible
+                    state.isInspectorPresented = false
+                } else {
+                    state.sidebarMode = state.sidebarMode == .hidden
+                        ? .visible
+                        : .hidden
+                }
+                return .none
+
             case let .sidebarModeChanged(mode):
-                if mode != .focus {
-                    state.modeBeforeFocus = mode
+                guard !state.isFocusModeEnabled else {
+                    return .none
                 }
                 state.sidebarMode = mode
                 return .none
 
             case .focusModeButtonTapped:
-                if state.sidebarMode == .focus {
-                    state.sidebarMode = state.modeBeforeFocus
+                if state.isFocusModeEnabled {
+                    state.isFocusModeEnabled = false
+                    state.isInspectorPresented =
+                        state.wasInspectorPresentedBeforeFocus
+                        && state.knowledgeContext.inspector != nil
                 } else {
-                    state.modeBeforeFocus = state.sidebarMode
-                    state.sidebarMode = .focus
+                    state.wasInspectorPresentedBeforeFocus =
+                        state.isInspectorPresented
+                    state.isInspectorPresented = false
+                    state.isFocusModeEnabled = true
                 }
+                return .none
+
+            case .inspectorVisibilityButtonTapped:
+                guard state.knowledgeContext.inspector != nil else {
+                    return .none
+                }
+                if state.isFocusModeEnabled {
+                    state.isFocusModeEnabled = false
+                    state.isInspectorPresented = true
+                } else {
+                    state.isInspectorPresented.toggle()
+                }
+                return .none
+
+            case .knowledgeContext(.conceptSelected),
+                 .knowledgeContext(.personalizationReviewRequested),
+                 .knowledgeContext(.relationDraftRequested):
+                guard state.knowledgeContext.inspector != nil else {
+                    return .none
+                }
+                state.isFocusModeEnabled = false
+                state.isInspectorPresented = true
+                return .none
+
+            case .knowledgeContext(.pageChanged),
+                 .knowledgeContext(.inspectorDismissed),
+                 .knowledgeContext(.personalizationReviewCancelled),
+                 .knowledgeContext(.inspector(.delegate(.cancelled))),
+                 .knowledgeContext(.inspector(.delegate(.saved))),
+                 .knowledgeContext(.inspector(.delegate(.relationSaved))):
+                guard state.knowledgeContext.inspector == nil else {
+                    return .none
+                }
+                state.isInspectorPresented = false
+                state.wasInspectorPresentedBeforeFocus = false
                 return .none
 
             case .chapter, .knowledgeContext, .delegate:

@@ -1,4 +1,5 @@
 import ComposableArchitecture
+import Foundation
 import Testing
 
 @testable import Conriculum
@@ -76,6 +77,34 @@ struct DependencyClientContractTests {
         #expect(evidence.isEmpty)
         #expect(revisions.isEmpty)
         #expect(relations.isEmpty)
+    }
+
+    @Test
+    func clientErrorsExposeKoreanDescriptionsWithoutInternalDetails() {
+        let technicalDetail = "internal.operation.identifier"
+        let descriptions = [
+            ContentClientError.chapterNotFound("missing-chapter")
+                .localizedDescription,
+            ContentClientError.invalidBundledContent(
+                resource: technicalDetail,
+                fieldPath: technicalDetail,
+                message: technicalDetail
+            ).localizedDescription,
+            PersistenceClientError.loadFailed(
+                operation: technicalDetail,
+                message: technicalDetail
+            ).localizedDescription,
+            PersistenceClientError.invalidStoredData(
+                record: technicalDetail,
+                fieldPath: technicalDetail,
+                message: technicalDetail
+            ).localizedDescription,
+        ]
+
+        #expect(descriptions.allSatisfy { !$0.contains(technicalDetail) })
+        #expect(descriptions.allSatisfy {
+            $0.range(of: "[가-힣]", options: .regularExpression) != nil
+        })
     }
 }
 
