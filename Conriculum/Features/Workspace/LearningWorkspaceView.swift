@@ -11,22 +11,6 @@ struct LearningWorkspaceView: View {
             .toolbar {
                 ToolbarItemGroup(placement: .navigation) {
                     Button {
-                        store.send(.sidebarVisibilityButtonTapped)
-                    } label: {
-                        Label(
-                            sidebarIsHidden
-                                ? "지식 문맥 보기"
-                                : "지식 문맥 숨기기",
-                            systemImage: "sidebar.left"
-                        )
-                    }
-                    .help(
-                        sidebarIsHidden
-                            ? "왼쪽 지식 문맥을 표시합니다."
-                            : "왼쪽 지식 문맥을 숨깁니다."
-                    )
-
-                    Button {
                         store.send(.homeButtonTapped)
                     } label: {
                         Label("학습 홈", systemImage: "house")
