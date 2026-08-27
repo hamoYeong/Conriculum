@@ -228,7 +228,8 @@ struct LearningSectionView: View {
         LearningBlock(
             title: "활동 연결 오류",
             systemImage: "exclamationmark.triangle",
-            accent: .red
+            accent: .red,
+            role: .feedback
         ) {
             Text("이 학습 블록에 활동 연결 정보가 없습니다.")
                 .foregroundStyle(.secondary)

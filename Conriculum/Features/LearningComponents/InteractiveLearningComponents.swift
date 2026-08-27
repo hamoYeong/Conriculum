@@ -10,7 +10,8 @@ struct CardSortingComponent: View {
         LearningBlock(
             title: "분류하기",
             systemImage: "rectangle.3.group",
-            accent: .blue
+            accent: .blue,
+            role: .activity
         ) {
             Text(content.interaction)
                 .foregroundStyle(.secondary)
@@ -199,7 +200,8 @@ struct MatchingComponent: View {
         LearningBlock(
             title: "연결하기",
             systemImage: "point.3.connected.trianglepath.dotted",
-            accent: .purple
+            accent: .purple,
+            role: .activity
         ) {
             LearningCallout(
                 title: "연결 규칙",
@@ -260,7 +262,8 @@ struct ChoiceWithReasonComponent: View {
         LearningBlock(
             title: "고르고 설명하기",
             systemImage: "checkmark.circle",
-            accent: .indigo
+            accent: .indigo,
+            role: .activity
         ) {
             VStack(alignment: .leading, spacing: 18) {
                 ForEach(content.questions, id: \.id) { question in
@@ -316,7 +319,8 @@ struct FillInBlankComponent: View {
         LearningBlock(
             title: "빈칸 채우기",
             systemImage: "character.cursor.ibeam",
-            accent: .teal
+            accent: .teal,
+            role: .activity
         ) {
             ScrollView(.horizontal) {
                 Text(verbatim: content.template)
@@ -388,7 +392,8 @@ struct CodeAssemblyComponent: View {
         LearningBlock(
             title: "코드 조립하기",
             systemImage: "square.3.layers.3d",
-            accent: .cyan
+            accent: .cyan,
+            role: .activity
         ) {
             Text("각 줄의 역할에 맞는 이름을 선택하거나 이름 조각을 줄로 드래그합니다.")
                 .foregroundStyle(.secondary)
@@ -503,7 +508,8 @@ struct FreeResponseComponent: View {
         LearningBlock(
             title: "직접 설명하기",
             systemImage: "square.and.pencil",
-            accent: .orange
+            accent: .orange,
+            role: .activity
         ) {
             Text(content.prompt)
                 .font(.callout.weight(.semibold))
@@ -571,7 +577,8 @@ struct RecallCheckComponent: View {
         LearningBlock(
             title: "되짚어 보기",
             systemImage: "brain.head.profile",
-            accent: .green
+            accent: .green,
+            role: .activity
         ) {
             VStack(alignment: .leading, spacing: 12) {
                 ForEach(Array(content.questions.enumerated()), id: \.offset) {

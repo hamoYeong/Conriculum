@@ -39,39 +39,35 @@ struct KnowledgeLinkComponent: View {
     }
 
     private func knowledgeLink(_ link: LearningKnowledgeLink) -> some View {
-        HStack(alignment: .top, spacing: 12) {
-            Image(systemName: symbol(for: link.role))
-                .foregroundStyle(accent(for: link.role))
-                .frame(width: 22)
-                .accessibilityHidden(true)
+        LearningAccentSection(accent: accent(for: link.role)) {
+            HStack(alignment: .top, spacing: 12) {
+                Image(systemName: symbol(for: link.role))
+                    .foregroundStyle(accent(for: link.role))
+                    .frame(width: 22)
+                    .accessibilityHidden(true)
 
-            VStack(alignment: .leading, spacing: 5) {
-                HStack(alignment: .firstTextBaseline, spacing: 8) {
-                    Text(conceptNames.title(for: link.conceptID))
-                        .font(.callout.weight(.semibold))
+                VStack(alignment: .leading, spacing: 5) {
+                    HStack(alignment: .firstTextBaseline, spacing: 8) {
+                        Text(conceptNames.title(for: link.conceptID))
+                            .font(.callout.weight(.semibold))
 
-                    Text(title(for: link.role))
-                        .font(.caption)
+                        Text(title(for: link.role))
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
+
+                    Text(link.usage)
                         .foregroundStyle(.secondary)
-                }
+                        .fixedSize(horizontal: false, vertical: true)
 
-                Text(link.usage)
-                    .foregroundStyle(.secondary)
-                    .fixedSize(horizontal: false, vertical: true)
-
-                if let displayTiming = link.displayTiming {
-                    Label(displayTiming, systemImage: "clock")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
+                    if let displayTiming = link.displayTiming {
+                        Label(displayTiming, systemImage: "clock")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
                 }
             }
         }
-        .padding(12)
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .background(
-            Color(nsColor: .textBackgroundColor).opacity(0.52),
-            in: RoundedRectangle(cornerRadius: 9, style: .continuous)
-        )
         .accessibilityElement(children: .combine)
         .accessibilityLabel(
             "\(conceptNames.title(for: link.conceptID)). "
@@ -178,20 +174,16 @@ struct PersonalExpressionComparisonComponent: View {
         text: String,
         systemImage: String
     ) -> some View {
-        VStack(alignment: .leading, spacing: 8) {
-            Label(title, systemImage: systemImage)
-                .font(.subheadline.weight(.semibold))
+        LearningAccentSection(accent: .purple) {
+            VStack(alignment: .leading, spacing: 8) {
+                Label(title, systemImage: systemImage)
+                    .font(.subheadline.weight(.semibold))
 
-            Text(text)
-                .foregroundStyle(.secondary)
-                .fixedSize(horizontal: false, vertical: true)
+                Text(text)
+                    .foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
         }
-        .padding(14)
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .background(
-            Color(nsColor: .textBackgroundColor).opacity(0.55),
-            in: RoundedRectangle(cornerRadius: 10, style: .continuous)
-        )
         .accessibilityElement(children: .combine)
         .accessibilityLabel("\(title). \(text)")
     }
@@ -210,7 +202,8 @@ struct LearningStateSelectionComponent: View {
         LearningBlock(
             title: "지금의 학습 상태",
             systemImage: "gauge.with.dots.needle.33percent",
-            accent: .indigo
+            accent: .indigo,
+            role: .activity
         ) {
             Text("현재 상태에 맞는 학습 경로를 선택할 수 있습니다.")
                 .foregroundStyle(.secondary)
@@ -328,7 +321,8 @@ struct CompletionCheckComponent: View {
         LearningBlock(
             title: "완료 점검",
             systemImage: "checkmark.seal",
-            accent: .green
+            accent: .green,
+            role: .activity
         ) {
             Text(content.question)
                 .font(.title3.weight(.semibold))
@@ -396,7 +390,8 @@ struct PersonalKnowledgePromotionComponent: View {
         LearningBlock(
             title: "나의 표현으로 다듬기",
             systemImage: "person.crop.circle.badge.checkmark",
-            accent: .purple
+            accent: .purple,
+            role: .activity
         ) {
             VStack(alignment: .leading, spacing: 8) {
                 Label("연결 지식", systemImage: "link")
@@ -553,7 +548,8 @@ struct PersonalKnowledgeRelationComponent: View {
         LearningBlock(
             title: "나의 연결 만들기",
             systemImage: "point.3.connected.trianglepath.dotted",
-            accent: .teal
+            accent: .teal,
+            role: .activity
         ) {
             ViewThatFits(in: .horizontal) {
                 HStack(alignment: .top, spacing: 10) {
@@ -766,12 +762,8 @@ struct PersonalKnowledgeRelationComponent: View {
             .pickerStyle(.menu)
             .frame(maxWidth: .infinity, alignment: .leading)
         }
-        .padding(12)
+        .padding(.vertical, 3)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(
-            Color(nsColor: .textBackgroundColor).opacity(0.55),
-            in: RoundedRectangle(cornerRadius: 9, style: .continuous)
-        )
         .accessibilityElement(children: .contain)
     }
 }
@@ -831,25 +823,21 @@ struct KnowledgeChangeSummaryComponent: View {
         text: String,
         systemImage: String
     ) -> some View {
-        Label {
-            VStack(alignment: .leading, spacing: 4) {
-                Text(title)
-                    .font(.callout.weight(.semibold))
-                Text(text)
-                    .foregroundStyle(.secondary)
-                    .fixedSize(horizontal: false, vertical: true)
+        LearningAccentSection(accent: .green) {
+            Label {
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(title)
+                        .font(.callout.weight(.semibold))
+                    Text(text)
+                        .foregroundStyle(.secondary)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+            } icon: {
+                Image(systemName: systemImage)
+                    .foregroundStyle(.green)
+                    .frame(width: 22)
             }
-        } icon: {
-            Image(systemName: systemImage)
-                .foregroundStyle(.green)
-                .frame(width: 22)
         }
-        .padding(12)
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .background(
-            Color(nsColor: .textBackgroundColor).opacity(0.55),
-            in: RoundedRectangle(cornerRadius: 9, style: .continuous)
-        )
         .accessibilityElement(children: .combine)
         .accessibilityLabel("\(title). \(text)")
     }

@@ -116,34 +116,30 @@ struct ComparisonComponent: View {
     }
 
     private func comparisonItem(_ item: ComparisonItem) -> some View {
-        VStack(alignment: .leading, spacing: 8) {
-            Text(item.title)
-                .font(.headline)
+        LearningAccentSection(accent: .purple) {
+            VStack(alignment: .leading, spacing: 8) {
+                Text(item.title)
+                    .font(.headline)
 
-            Text(item.body)
-                .foregroundStyle(.secondary)
-                .fixedSize(horizontal: false, vertical: true)
+                Text(item.body)
+                    .foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
 
-            ForEach(Array(item.details.enumerated()), id: \.offset) {
-                _,
-                detail in
-                HStack(alignment: .firstTextBaseline, spacing: 6) {
-                    if let label = detail.label {
-                        Text(label)
-                            .font(.caption.weight(.semibold))
-                            .foregroundStyle(.purple)
+                ForEach(Array(item.details.enumerated()), id: \.offset) {
+                    _,
+                    detail in
+                    HStack(alignment: .firstTextBaseline, spacing: 6) {
+                        if let label = detail.label {
+                            Text(label)
+                                .font(.caption.weight(.semibold))
+                                .foregroundStyle(.purple)
+                        }
+                        Text(detail.text)
+                            .font(.callout)
                     }
-                    Text(detail.text)
-                        .font(.callout)
                 }
             }
         }
-        .padding(14)
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .background(
-            Color(nsColor: .textBackgroundColor).opacity(0.55),
-            in: RoundedRectangle(cornerRadius: 10, style: .continuous)
-        )
         .accessibilityElement(children: .combine)
     }
 }

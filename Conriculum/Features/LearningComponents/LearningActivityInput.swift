@@ -276,26 +276,22 @@ struct ActivityCriteriaView: View {
 
     var body: some View {
         if !criteria.isEmpty {
-            VStack(alignment: .leading, spacing: 8) {
-                Label(title, systemImage: systemImage)
-                    .font(.subheadline.weight(.semibold))
-                    .foregroundStyle(accent)
-                    .accessibilityHeading(.h3)
+            LearningAccentSection(accent: accent) {
+                VStack(alignment: .leading, spacing: 8) {
+                    Label(title, systemImage: systemImage)
+                        .font(.subheadline.weight(.semibold))
+                        .foregroundStyle(accent)
+                        .accessibilityHeading(.h3)
 
-                ForEach(Array(criteria.enumerated()), id: \.offset) {
-                    _,
-                    criterion in
-                    Label(criterion, systemImage: "circle.fill")
-                        .labelStyle(ActivityCriterionLabelStyle())
-                        .fixedSize(horizontal: false, vertical: true)
+                    ForEach(Array(criteria.enumerated()), id: \.offset) {
+                        _,
+                        criterion in
+                        Label(criterion, systemImage: "circle.fill")
+                            .labelStyle(ActivityCriterionLabelStyle())
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
                 }
             }
-            .padding(14)
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .background(
-                accent.opacity(0.07),
-                in: RoundedRectangle(cornerRadius: 10, style: .continuous)
-            )
             .accessibilityElement(children: .contain)
         }
     }

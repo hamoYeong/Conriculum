@@ -17,6 +17,13 @@ struct ReadingLearningComponentRenderingTests {
     ]
 
     @Test
+    func blockRolesUseASurfaceOnlyForIndependentWorkAndFeedback() {
+        #expect(LearningBlockRole.information.usesSurface == false)
+        #expect(LearningBlockRole.activity.usesSurface)
+        #expect(LearningBlockRole.feedback.usesSurface)
+    }
+
+    @Test
     func everyReadingTagRendersFromChapterTwoAtStandardAndLargeText() throws {
         let chapter = try ContentResourceDecoder().decode(
             Chapter.self,

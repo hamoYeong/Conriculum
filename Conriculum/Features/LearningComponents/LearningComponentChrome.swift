@@ -1,20 +1,33 @@
 import SwiftUI
 
+enum LearningBlockRole: Equatable {
+    case information
+    case activity
+    case feedback
+
+    var usesSurface: Bool {
+        self != .information
+    }
+}
+
 struct LearningBlock<Content: View>: View {
     let title: String
     let systemImage: String
     let accent: Color
+    let role: LearningBlockRole
     let content: Content
 
     init(
         title: String,
         systemImage: String,
         accent: Color = .accentColor,
+        role: LearningBlockRole = .information,
         @ViewBuilder content: () -> Content
     ) {
         self.title = title
         self.systemImage = systemImage
         self.accent = accent
+        self.role = role
         self.content = content()
     }
 
@@ -33,18 +46,64 @@ struct LearningBlock<Content: View>: View {
 
             content
         }
-        .padding(20)
+        .padding(role.usesSurface ? 20 : 0)
+        .padding(.vertical, role.usesSurface ? 0 : 4)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(
-            Color(nsColor: .controlBackgroundColor).opacity(0.72),
-            in: RoundedRectangle(cornerRadius: 14, style: .continuous)
-        )
+        .background {
+            if role.usesSurface {
+                surfaceBackground
+                    .clipShape(
+                        RoundedRectangle(
+                            cornerRadius: 14,
+                            style: .continuous
+                        )
+                    )
+            }
+        }
         .overlay {
-            RoundedRectangle(cornerRadius: 14, style: .continuous)
-                .stroke(accent.opacity(0.18), lineWidth: 1)
+            if role.usesSurface {
+                RoundedRectangle(cornerRadius: 14, style: .continuous)
+                    .stroke(accent.opacity(0.18), lineWidth: 1)
+            }
         }
         .accessibilityElement(children: .contain)
         .focusSection()
+    }
+
+    private var surfaceBackground: Color {
+        switch role {
+        case .information:
+            .clear
+        case .activity:
+            Color(nsColor: .controlBackgroundColor).opacity(0.72)
+        case .feedback:
+            accent.opacity(0.07)
+        }
+    }
+}
+
+struct LearningAccentSection<Content: View>: View {
+    let accent: Color
+    let content: Content
+
+    init(
+        accent: Color = .accentColor,
+        @ViewBuilder content: () -> Content
+    ) {
+        self.accent = accent
+        self.content = content()
+    }
+
+    var body: some View {
+        content
+            .padding(.leading, 13)
+            .padding(.vertical, 2)
+            .overlay(alignment: .leading) {
+                RoundedRectangle(cornerRadius: 2, style: .continuous)
+                    .fill(accent.opacity(0.62))
+                    .frame(width: 3)
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
     }
 }
 
@@ -67,27 +126,23 @@ struct LearningCallout: View {
     }
 
     var body: some View {
-        HStack(alignment: .top, spacing: 12) {
-            Image(systemName: systemImage)
-                .foregroundStyle(accent)
-                .frame(width: 20)
-                .accessibilityHidden(true)
+        LearningAccentSection(accent: accent) {
+            HStack(alignment: .top, spacing: 10) {
+                Image(systemName: systemImage)
+                    .foregroundStyle(accent)
+                    .frame(width: 20)
+                    .accessibilityHidden(true)
 
-            VStack(alignment: .leading, spacing: 4) {
-                Text(title)
-                    .font(.caption.weight(.semibold))
-                    .foregroundStyle(.secondary)
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(title)
+                        .font(.caption.weight(.semibold))
+                        .foregroundStyle(.secondary)
 
-                Text(text)
-                    .fixedSize(horizontal: false, vertical: true)
+                    Text(text)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
             }
         }
-        .padding(14)
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .background(
-            accent.opacity(0.08),
-            in: RoundedRectangle(cornerRadius: 10, style: .continuous)
-        )
         .accessibilityElement(children: .combine)
         .accessibilityLabel("\(title). \(text)")
     }
@@ -170,12 +225,14 @@ struct LearningLabeledTextGrid: View {
                     Text(item.text)
                         .fixedSize(horizontal: false, vertical: true)
                 }
-                .padding(12)
+                .padding(.leading, 12)
+                .padding(.vertical, 3)
+                .overlay(alignment: .leading) {
+                    RoundedRectangle(cornerRadius: 2, style: .continuous)
+                        .fill(accent.opacity(0.42))
+                        .frame(width: 2)
+                }
                 .frame(maxWidth: .infinity, alignment: .leading)
-                .background(
-                    Color(nsColor: .textBackgroundColor).opacity(0.55),
-                    in: RoundedRectangle(cornerRadius: 8, style: .continuous)
-                )
                 .accessibilityElement(children: .combine)
             }
         }
