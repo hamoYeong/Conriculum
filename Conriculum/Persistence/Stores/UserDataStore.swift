@@ -211,6 +211,27 @@ final class UserDataStore {
         }
     }
 
+    func loadAllRevisions() throws -> [PersonalConceptRevision] {
+        let profileID = try localProfileID()
+        let profileValue = profileID.rawValue
+        let descriptor = FetchDescriptor<PersonalConceptRevisionRecord>(
+            predicate: #Predicate {
+                $0.profileID == profileValue
+            },
+            sortBy: [
+                SortDescriptor(\PersonalConceptRevisionRecord.createdAt),
+                SortDescriptor(\PersonalConceptRevisionRecord.id),
+            ]
+        )
+
+        return try records(
+            matching: descriptor,
+            operation: "loadAllRevisions"
+        ).map {
+            try $0.domainValue(profileID: profileID)
+        }
+    }
+
     func saveRevision(_ revision: PersonalConceptRevision) throws {
         let profileID = try localProfileID()
         let revisionID = revision.id.rawValue
@@ -253,6 +274,27 @@ final class UserDataStore {
         return try records(
             matching: descriptor,
             operation: "loadRelations"
+        ).map {
+            try $0.domainValue(profileID: profileID)
+        }
+    }
+
+    func loadAllRelations() throws -> [PersonalKnowledgeRelation] {
+        let profileID = try localProfileID()
+        let profileValue = profileID.rawValue
+        let descriptor = FetchDescriptor<PersonalKnowledgeRelationRecord>(
+            predicate: #Predicate {
+                $0.profileID == profileValue
+            },
+            sortBy: [
+                SortDescriptor(\PersonalKnowledgeRelationRecord.createdAt),
+                SortDescriptor(\PersonalKnowledgeRelationRecord.id),
+            ]
+        )
+
+        return try records(
+            matching: descriptor,
+            operation: "loadAllRelations"
         ).map {
             try $0.domainValue(profileID: profileID)
         }

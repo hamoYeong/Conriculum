@@ -182,10 +182,14 @@ struct UserDataStoreRoundTripTests {
         let recoveredRelationsFromTarget = try await relaunchedClient.loadRelations(
             originalRelation.targetConceptID
         )
+        let recoveredAllRevisions = try await relaunchedClient.loadAllRevisions()
+        let recoveredAllRelations = try await relaunchedClient.loadAllRelations()
 
         #expect(recoveredRevisions == [updatedRevision])
         #expect(recoveredRelationsFromSource == [updatedRelation])
         #expect(recoveredRelationsFromTarget == [updatedRelation])
+        #expect(recoveredAllRevisions == [updatedRevision])
+        #expect(recoveredAllRelations == [updatedRelation])
     }
 
     @Test

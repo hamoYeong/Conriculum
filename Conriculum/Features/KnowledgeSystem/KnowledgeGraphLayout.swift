@@ -120,10 +120,12 @@ struct KnowledgeGraphLayout: Equatable {
         switch count {
         case 0...2:
             CGSize(width: 540, height: 420)
-        case 3...10:
-            CGSize(width: 760, height: 540)
+        case 3...8:
+            CGSize(width: 820, height: 540)
+        case 9...16:
+            CGSize(width: 1_160, height: 700)
         default:
-            CGSize(width: 980, height: 720)
+            CGSize(width: 1_480, height: 900)
         }
     }
 
@@ -158,8 +160,8 @@ struct KnowledgeGraphLayout: Equatable {
         switch count {
         case 0: []
         case 1: [0.78]
-        case 2: [0.52, 1]
-        default: [0.36, 0.68, 1]
+        case 2: [0.56, 1]
+        default: [0.42, 0.72, 1]
         }
     }
 }

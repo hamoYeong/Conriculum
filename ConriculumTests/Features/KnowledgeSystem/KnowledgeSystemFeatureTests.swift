@@ -39,14 +39,9 @@ struct KnowledgeSystemFeatureTests {
             KnowledgeSystemFeature()
         } withDependencies: {
             $0.knowledgeCatalogClient.loadCatalog = { catalog }
-            $0.personalKnowledgeClient.loadRevisions = { conceptID in
-                conceptID == revision.conceptID ? [revision] : []
-            }
-            $0.personalKnowledgeClient.loadRelations = { conceptID in
-                relation.sourceConceptID == conceptID
-                    || relation.targetConceptID == conceptID
-                    ? [relation]
-                    : []
+            $0.personalKnowledgeClient.loadAllRevisions = { [revision] }
+            $0.personalKnowledgeClient.loadAllRelations = {
+                [relation, relation]
             }
         }
 
@@ -83,12 +78,21 @@ struct KnowledgeSystemFeatureTests {
         await store.send(.searchQueryChanged("참·거짓")) {
             $0.searchQuery = "참·거짓"
         }
-        #expect(store.state.visibleConcepts.map(\.id) == ["concept-bool"])
-        #expect(store.state.visibleBaseRelations.isEmpty)
+        #expect(
+            store.state.visibleConcepts.map(\.id)
+                == ["concept-type", "concept-bool"]
+        )
+        #expect(
+            store.state.visibleBaseRelations.map(\.id)
+                == ["relation-bool-type"]
+        )
         await store.send(.displayModeChanged(.network)) {
             $0.displayMode = .network
         }
-        #expect(store.state.visibleConcepts.map(\.id) == ["concept-bool"])
+        #expect(
+            store.state.visibleConcepts.map(\.id)
+                == ["concept-type", "concept-bool"]
+        )
     }
 
     @Test
@@ -144,6 +148,8 @@ struct KnowledgeSystemFeatureTests {
                     ]
                 )
             }
+            $0.personalKnowledgeClient.loadAllRevisions = { [] }
+            $0.personalKnowledgeClient.loadAllRelations = { [] }
         }
 
         await store.send(.retryButtonTapped) {

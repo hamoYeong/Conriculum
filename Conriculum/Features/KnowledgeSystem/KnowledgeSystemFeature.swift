@@ -3,7 +3,7 @@ import Foundation
 
 @Reducer
 struct KnowledgeSystemFeature {
-    enum DisplayMode: String, CaseIterable, Equatable, Sendable {
+    enum DisplayMode: String, CaseIterable, Equatable, Hashable, Sendable {
         case shelves
         case network
 
@@ -119,23 +119,17 @@ struct KnowledgeSystemFeature {
                 state.loadErrorMessage = nil
                 return .run { send in
                     do {
-                        let catalog = try await knowledgeCatalogClient
-                            .loadCatalog()
-                        var revisions: [PersonalConceptRevision] = []
-                        var relations: [PersonalKnowledgeRelation] = []
-                        for concept in catalog.concepts {
-                            async let conceptRevisions = personalKnowledgeClient
-                                .loadRevisions(concept.id)
-                            async let conceptRelations = personalKnowledgeClient
-                                .loadRelations(concept.id)
-                            revisions += try await conceptRevisions
-                            relations += try await conceptRelations
-                        }
-                        let loadedRevisions = revisions
-                        let loadedRelations = relations
+                        async let catalog = knowledgeCatalogClient.loadCatalog()
+                        async let revisions = personalKnowledgeClient
+                            .loadAllRevisions()
+                        async let relations = personalKnowledgeClient
+                            .loadAllRelations()
+                        let loadedCatalog = try await catalog
+                        let loadedRevisions = try await revisions
+                        let loadedRelations = try await relations
                         let snapshot = await MainActor.run {
                             KnowledgeSystemSnapshotComposer().compose(
-                                catalog: catalog,
+                                catalog: loadedCatalog,
                                 revisions: loadedRevisions,
                                 personalRelations: loadedRelations
                             )
