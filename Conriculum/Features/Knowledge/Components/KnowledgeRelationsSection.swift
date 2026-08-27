@@ -36,7 +36,7 @@ struct KnowledgeRelationsSection: View {
     }
 
     var body: some View {
-        KnowledgeSectionChrome(
+        KnowledgeSection(
             title: "개념 사이의 관계",
             systemImage: "link",
             accent: .teal
@@ -52,14 +52,7 @@ struct KnowledgeRelationsSection: View {
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 } else {
-                    ForEach(baseRelations, id: \.id) { relation in
-                        KnowledgeBaseRelationRow(
-                            relation: relation,
-                            conceptIndex: conceptIndex,
-                            onConceptSelected: onConceptSelected,
-                            onCompareRequested: onCompareRequested
-                        )
-                    }
+                    baseRelationRows
                 }
 
                 Divider()
@@ -90,15 +83,7 @@ struct KnowledgeRelationsSection: View {
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 } else {
-                    ForEach(personalRelations, id: \.id) { relation in
-                        KnowledgePersonalRelationRow(
-                            relation: relation,
-                            conceptIndex: conceptIndex,
-                            onConceptSelected: onConceptSelected,
-                            onCompareRequested: onCompareRequested,
-                            onEditRequested: onEditPersonalRelation
-                        )
-                    }
+                    personalRelationRows
                 }
 
                 if let relationCreationUnavailableMessage {
@@ -111,6 +96,45 @@ struct KnowledgeRelationsSection: View {
                     .fixedSize(horizontal: false, vertical: true)
                     .accessibilityElement(children: .combine)
                 }
+            }
+        }
+    }
+
+    private var baseRelationRows: some View {
+        VStack(alignment: .leading, spacing: 0) {
+            ForEach(baseRelations.indices, id: \.self) { index in
+                if index > baseRelations.startIndex {
+                    Divider()
+                        .padding(.leading, 18)
+                }
+
+                KnowledgeBaseRelationRow(
+                    relation: baseRelations[index],
+                    conceptIndex: conceptIndex,
+                    onConceptSelected: onConceptSelected,
+                    onCompareRequested: onCompareRequested
+                )
+                .padding(.vertical, 6)
+            }
+        }
+    }
+
+    private var personalRelationRows: some View {
+        VStack(alignment: .leading, spacing: 0) {
+            ForEach(personalRelations.indices, id: \.self) { index in
+                if index > personalRelations.startIndex {
+                    Divider()
+                        .padding(.leading, 18)
+                }
+
+                KnowledgePersonalRelationRow(
+                    relation: personalRelations[index],
+                    conceptIndex: conceptIndex,
+                    onConceptSelected: onConceptSelected,
+                    onCompareRequested: onCompareRequested,
+                    onEditRequested: onEditPersonalRelation
+                )
+                .padding(.vertical, 6)
             }
         }
     }

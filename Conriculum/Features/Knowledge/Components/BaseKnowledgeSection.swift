@@ -24,14 +24,13 @@ struct BaseKnowledgeSection: View {
     }
 
     var body: some View {
-        KnowledgeSectionChrome(
+        KnowledgeSection(
             title: "기본 지식 · 변경되지 않음",
             systemImage: "book.closed",
             accent: .blue
         ) {
-            VStack(alignment: .leading, spacing: 12) {
-                Text(concept.definition)
-                    .fixedSize(horizontal: false, vertical: true)
+            VStack(alignment: .leading, spacing: 16) {
+                KnowledgeDefinitionBlock(text: concept.definition)
 
                 if let usage {
                     KnowledgeLabeledText(
@@ -41,59 +40,41 @@ struct BaseKnowledgeSection: View {
                     )
                 }
 
-                KnowledgeLabeledText(
-                    title: "핵심 질문",
-                    text: concept.essentialQuestion,
-                    systemImage: "questionmark.bubble"
+                KnowledgeQuestionBlock(
+                    question: concept.essentialQuestion
                 )
 
                 if detailLevel == .complete,
                    !concept.judgmentQuestions.isEmpty
                 {
-                    knowledgeList(
+                    KnowledgeItemList(
                         title: "판단 질문",
                         systemImage: "checklist",
-                        items: concept.judgmentQuestions
+                        items: concept.judgmentQuestions,
+                        style: .numbered
                     )
                 }
 
                 if !concept.examples.isEmpty {
-                    knowledgeList(
+                    KnowledgeItemList(
                         title: "기본 예시",
                         systemImage: "list.bullet",
-                        items: concept.examples
+                        items: concept.examples,
+                        style: .example
                     )
                 }
 
                 if detailLevel == .complete,
                    !concept.misconceptions.isEmpty
                 {
-                    knowledgeList(
+                    KnowledgeItemList(
                         title: "자주 생기는 오해",
                         systemImage: "exclamationmark.bubble",
-                        items: concept.misconceptions
+                        items: concept.misconceptions,
+                        style: .caution
                     )
                 }
             }
         }
-    }
-
-    private func knowledgeList(
-        title: String,
-        systemImage: String,
-        items: [String]
-    ) -> some View {
-        VStack(alignment: .leading, spacing: 5) {
-            Label(title, systemImage: systemImage)
-                .font(.caption.weight(.semibold))
-                .foregroundStyle(.secondary)
-
-            ForEach(Array(items.enumerated()), id: \.offset) { _, item in
-                Text("• \(item)")
-                    .font(.caption)
-                    .fixedSize(horizontal: false, vertical: true)
-            }
-        }
-        .accessibilityElement(children: .contain)
     }
 }

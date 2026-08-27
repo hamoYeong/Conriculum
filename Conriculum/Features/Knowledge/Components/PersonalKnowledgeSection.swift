@@ -14,7 +14,7 @@ struct PersonalKnowledgeSection: View {
     }
 
     var body: some View {
-        KnowledgeSectionChrome(
+        KnowledgeSection(
             title: "나의 표현",
             systemImage: "person.crop.circle",
             accent: .purple

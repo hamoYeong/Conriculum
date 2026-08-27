@@ -64,7 +64,12 @@ struct ConceptInspectorView: View {
     private func personalizationReviewBanner(
         _ review: KnowledgePersonalizationReview
     ) -> some View {
-        GroupBox {
+        KnowledgeSection(
+            title: "활동 응답 후보 · 저장 전",
+            systemImage: "person.crop.circle.badge.questionmark",
+            accent: .orange,
+            presentation: .surface
+        ) {
             VStack(alignment: .leading, spacing: 12) {
                 KnowledgeLabeledText(
                     title: "반영할 개념",
@@ -111,13 +116,6 @@ struct ConceptInspectorView: View {
                 .foregroundStyle(.secondary)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
-        } label: {
-            Label(
-                "활동 응답 후보 · 저장 전",
-                systemImage: "person.crop.circle.badge.questionmark"
-            )
-            .font(.headline)
-            .accessibilityHeading(.h2)
         }
     }
 
@@ -130,14 +128,15 @@ struct ConceptInspectorView: View {
     }
 
     private var personalKnowledgeEditor: some View {
-        KnowledgeSectionChrome(
+        KnowledgeSection(
             title: store.personalizationReview != nil
                 ? "나의 표현 · 활동 후보에서 시작"
                 : store.latestRevision == nil
                     ? "나의 표현 · 새 표현 기록"
                     : "나의 표현 · 최신 기록에서 시작",
             systemImage: "person.crop.circle",
-            accent: .purple
+            accent: .purple,
+            presentation: .surface
         ) {
             VStack(alignment: .leading, spacing: 14) {
                 TextField(
@@ -201,6 +200,10 @@ struct ConceptInspectorView: View {
 
                     ForEach(store.examples) { example in
                         exampleEditor(example)
+
+                        if example.id != store.examples.last?.id {
+                            Divider()
+                        }
                     }
                 }
             }
@@ -251,11 +254,7 @@ struct ConceptInspectorView: View {
                 .accessibilityLabel("예시 삭제")
             }
         }
-        .padding(10)
-        .background(
-            Color(nsColor: .controlBackgroundColor),
-            in: RoundedRectangle(cornerRadius: 9, style: .continuous)
-        )
+        .padding(.vertical, 2)
     }
 
     private var evidenceStatus: some View {

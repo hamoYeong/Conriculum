@@ -74,12 +74,7 @@ struct KnowledgeBaseRelationRow: View {
 
     private var styledRelationContent: some View {
         relationContent
-            .padding(10)
             .frame(maxWidth: .infinity, alignment: .leading)
-            .background(
-                Color(nsColor: .controlBackgroundColor),
-                in: RoundedRectangle(cornerRadius: 9, style: .continuous)
-            )
     }
 
     private var relationContent: some View {
@@ -166,13 +161,15 @@ struct KnowledgePersonalRelationRow: View {
     }
 
     private var styledRelationContent: some View {
-        relationContent
-            .padding(10)
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .background(
-                Color.purple.opacity(0.07),
-                in: RoundedRectangle(cornerRadius: 9, style: .continuous)
-            )
+        HStack(alignment: .top, spacing: 10) {
+            Capsule()
+                .fill(Color.purple.opacity(0.55))
+                .frame(width: 3)
+                .accessibilityHidden(true)
+
+            relationContent
+                .frame(maxWidth: .infinity, alignment: .leading)
+        }
     }
 
     private var relationContent: some View {
