@@ -26,6 +26,8 @@ struct HomeView: View {
                     } else {
                         loadingState
                     }
+
+                    knowledgeSystemCard
                 }
                 .frame(maxWidth: 1_080, alignment: .leading)
                 .padding(.horizontal, 32)
@@ -141,6 +143,54 @@ struct HomeView: View {
             RoundedRectangle(cornerRadius: 18, style: .continuous)
                 .stroke(Color.accentColor.opacity(0.24), lineWidth: 1)
         }
+    }
+
+    private var knowledgeSystemCard: some View {
+        Button {
+            store.send(.knowledgeSystemButtonTapped)
+        } label: {
+            HStack(alignment: .center, spacing: 18) {
+                Image(systemName: "point.3.connected.trianglepath.dotted")
+                    .font(.system(size: 30, weight: .medium))
+                    .foregroundStyle(.tint)
+                    .frame(width: 48, height: 48)
+                    .background(
+                        Color.accentColor.opacity(0.12),
+                        in: RoundedRectangle(
+                            cornerRadius: 12,
+                            style: .continuous
+                        )
+                    )
+
+                VStack(alignment: .leading, spacing: 5) {
+                    Text("지식 체계 둘러보기")
+                        .font(.title3.weight(.semibold))
+                    Text("학습 순서에서 벗어나 개념과 연결을 책장과 연결망으로 탐색합니다.")
+                        .font(.callout)
+                        .foregroundStyle(.secondary)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+
+                Spacer(minLength: 12)
+
+                Image(systemName: "chevron.right")
+                    .font(.body.weight(.semibold))
+                    .foregroundStyle(.secondary)
+            }
+            .padding(20)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .background(
+            .regularMaterial,
+            in: RoundedRectangle(cornerRadius: 16, style: .continuous)
+        )
+        .overlay {
+            RoundedRectangle(cornerRadius: 16, style: .continuous)
+                .stroke(Color.primary.opacity(0.08), lineWidth: 1)
+        }
+        .accessibilityHint("지식 체계 탐색 화면을 엽니다.")
     }
 
     @ViewBuilder

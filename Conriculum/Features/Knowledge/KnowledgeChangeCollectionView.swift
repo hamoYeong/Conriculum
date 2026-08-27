@@ -18,9 +18,7 @@ struct KnowledgeChangeCollectionView: View {
                     systemImage: "tray"
                 )
             } else {
-                ForEach(collection.confirmed) { change in
-                    confirmedCard(change)
-                }
+                confirmedRows
             }
 
             Divider()
@@ -36,9 +34,35 @@ struct KnowledgeChangeCollectionView: View {
                     systemImage: "text.badge.checkmark"
                 )
             } else {
-                ForEach(collection.pending) { candidate in
-                    pendingCard(candidate)
+                pendingRows
+            }
+        }
+    }
+
+    private var confirmedRows: some View {
+        VStack(alignment: .leading, spacing: 0) {
+            ForEach(collection.confirmed.indices, id: \.self) { index in
+                if index > collection.confirmed.startIndex {
+                    Divider()
+                        .padding(.leading, 18)
                 }
+
+                confirmedRow(collection.confirmed[index])
+                    .padding(.vertical, 6)
+            }
+        }
+    }
+
+    private var pendingRows: some View {
+        VStack(alignment: .leading, spacing: 0) {
+            ForEach(collection.pending.indices, id: \.self) { index in
+                if index > collection.pending.startIndex {
+                    Divider()
+                        .padding(.leading, 18)
+                }
+
+                pendingRow(collection.pending[index])
+                    .padding(.vertical, 6)
             }
         }
     }
@@ -54,24 +78,24 @@ struct KnowledgeChangeCollectionView: View {
     }
 
     @ViewBuilder
-    private func confirmedCard(
+    private func confirmedRow(
         _ change: KnowledgeChangeCollection.Confirmed
     ) -> some View {
         switch change {
         case let .revision(revision):
-            selectableCard(conceptID: revision.conceptID) {
+            selectableRow(conceptID: revision.conceptID) {
                 revisionContent(revision)
             }
 
         case let .relation(relation):
-            changeCard {
+            changeRow {
                 relationContent(relation)
             }
         }
     }
 
     @ViewBuilder
-    private func selectableCard<Content: View>(
+    private func selectableRow<Content: View>(
         conceptID: KnowledgeConceptID,
         @ViewBuilder content: () -> Content
     ) -> some View {
@@ -79,31 +103,30 @@ struct KnowledgeChangeCollectionView: View {
             Button {
                 onConceptSelected(conceptID)
             } label: {
-                changeCard(content: content)
+                HStack(alignment: .center, spacing: 10) {
+                    changeRow(content: content)
+
+                    Image(systemName: "chevron.right")
+                        .font(.caption2.weight(.semibold))
+                        .foregroundStyle(.tertiary)
+                        .accessibilityHidden(true)
+                }
+                .contentShape(Rectangle())
             }
             .buttonStyle(.plain)
             .accessibilityHint("개념 상세에서 자세히 봅니다.")
         } else {
-            changeCard(content: content)
+            changeRow(content: content)
         }
     }
 
-    private func changeCard<Content: View>(
+    private func changeRow<Content: View>(
         @ViewBuilder content: () -> Content
     ) -> some View {
         VStack(alignment: .leading, spacing: 8) {
             content()
         }
-        .padding(12)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(
-            Color(nsColor: .controlBackgroundColor),
-            in: RoundedRectangle(cornerRadius: 10, style: .continuous)
-        )
-        .overlay {
-            RoundedRectangle(cornerRadius: 10, style: .continuous)
-                .stroke(Color.purple.opacity(0.18), lineWidth: 1)
-        }
     }
 
     private func revisionContent(
@@ -182,49 +205,55 @@ struct KnowledgeChangeCollectionView: View {
         .accessibilityElement(children: .combine)
     }
 
-    private func pendingCard(
+    private func pendingRow(
         _ candidate: KnowledgeChangeCollection.Pending
     ) -> some View {
-        VStack(alignment: .leading, spacing: 7) {
-            HStack(alignment: .firstTextBaseline, spacing: 8) {
-                Label(candidate.targetConceptTitle, systemImage: "text.badge.star")
+        HStack(alignment: .top, spacing: 10) {
+            Capsule()
+                .fill(Color.orange.opacity(0.65))
+                .frame(width: 3)
+                .accessibilityHidden(true)
+
+            VStack(alignment: .leading, spacing: 7) {
+                HStack(alignment: .firstTextBaseline, spacing: 8) {
+                    Label(
+                        candidate.targetConceptTitle,
+                        systemImage: "text.badge.star"
+                    )
                     .font(.caption.weight(.semibold))
                     .foregroundStyle(.orange)
 
-                Spacer(minLength: 8)
+                    Spacer(minLength: 8)
 
-                Text("확인 전")
-                    .font(.caption2.weight(.semibold))
-                    .foregroundStyle(.orange)
-                    .padding(.horizontal, 7)
-                    .padding(.vertical, 3)
-                    .background(Color.orange.opacity(0.10), in: Capsule())
-            }
+                    Text("확인 전")
+                        .font(.caption2.weight(.semibold))
+                        .foregroundStyle(.orange)
+                        .padding(.horizontal, 7)
+                        .padding(.vertical, 3)
+                        .background(
+                            Color.orange.opacity(0.10),
+                            in: Capsule()
+                        )
+                }
 
-            Text(candidate.draft)
-                .font(.callout)
-                .foregroundStyle(.secondary)
-                .fixedSize(horizontal: false, vertical: true)
+                Text(candidate.draft)
+                    .font(.callout)
+                    .foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
 
-            if candidate.connectedConceptTitles.isEmpty == false {
-                Label(
-                    candidate.connectedConceptTitles.joined(separator: " · "),
-                    systemImage: "link"
-                )
-                .font(.caption2)
-                .foregroundStyle(.tertiary)
+                if candidate.connectedConceptTitles.isEmpty == false {
+                    Label(
+                        candidate.connectedConceptTitles.joined(
+                            separator: " · "
+                        ),
+                        systemImage: "link"
+                    )
+                    .font(.caption2)
+                    .foregroundStyle(.tertiary)
+                }
             }
         }
-        .padding(12)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(
-            Color.orange.opacity(0.07),
-            in: RoundedRectangle(cornerRadius: 10, style: .continuous)
-        )
-        .overlay {
-            RoundedRectangle(cornerRadius: 10, style: .continuous)
-                .stroke(Color.orange.opacity(0.20), lineWidth: 1)
-        }
         .accessibilityElement(children: .combine)
     }
 
@@ -240,12 +269,7 @@ struct KnowledgeChangeCollectionView: View {
         }
         .font(.callout)
         .foregroundStyle(.secondary)
-        .padding(12)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(
-            Color(nsColor: .controlBackgroundColor),
-            in: RoundedRectangle(cornerRadius: 10, style: .continuous)
-        )
         .accessibilityElement(children: .combine)
     }
 

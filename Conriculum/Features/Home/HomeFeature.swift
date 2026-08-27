@@ -47,6 +47,7 @@ struct HomeFeature {
         case loadResponse(LoadResponse)
         case startButtonTapped
         case resumeButtonTapped
+        case knowledgeSystemButtonTapped
         case delegate(Delegate)
     }
 
@@ -55,6 +56,7 @@ struct HomeFeature {
             chapterID: ChapterID,
             pageID: LearningPageID
         )
+        case knowledgeSystemRequested
     }
 
     enum LoadResponse: Equatable {
@@ -177,6 +179,9 @@ struct HomeFeature {
                     chapterID: entry.chapterID,
                     pageID: resumePageID
                 )))
+
+            case .knowledgeSystemButtonTapped:
+                return .send(.delegate(.knowledgeSystemRequested))
 
             case .delegate:
                 return .none

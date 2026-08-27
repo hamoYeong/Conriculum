@@ -5,7 +5,14 @@ struct PersonalRelationEditorView: View {
     let store: StoreOf<PersonalRelationEditorFeature>
 
     var body: some View {
-        GroupBox {
+        KnowledgeSection(
+            title: store.originalRelation == nil
+                ? "새 개인 지식 관계"
+                : "개인 지식 관계 수정",
+            systemImage: "point.3.connected.trianglepath.dotted",
+            accent: .teal,
+            presentation: .surface
+        ) {
             VStack(alignment: .leading, spacing: 14) {
                 conceptPickers
 
@@ -66,18 +73,20 @@ struct PersonalRelationEditorView: View {
                 .foregroundStyle(.secondary)
 
                 if let message = store.validationMessage {
-                    errorBanner(
+                    KnowledgeMessageBanner(
                         title: "관계 내용을 확인해 주세요",
                         message: message,
-                        color: .orange
+                        systemImage: "exclamationmark.triangle",
+                        accent: .orange
                     )
                 }
 
                 if let message = store.persistenceErrorMessage {
-                    errorBanner(
+                    KnowledgeMessageBanner(
                         title: "개인 지식 관계를 저장하지 못했습니다",
                         message: message,
-                        color: .red
+                        systemImage: "exclamationmark.triangle",
+                        accent: .red
                     )
                 }
 
@@ -112,15 +121,6 @@ struct PersonalRelationEditorView: View {
                 }
             }
             .frame(maxWidth: .infinity, alignment: .leading)
-        } label: {
-            Label(
-                store.originalRelation == nil
-                    ? "새 개인 지식 관계"
-                    : "개인 지식 관계 수정",
-                systemImage: "point.3.connected.trianglepath.dotted"
-            )
-            .font(.headline)
-            .accessibilityHeading(.h2)
         }
     }
 
@@ -162,28 +162,4 @@ struct PersonalRelationEditorView: View {
         .accessibilityElement(children: .contain)
     }
 
-    private func errorBanner(
-        title: String,
-        message: String,
-        color: Color
-    ) -> some View {
-        Label {
-            VStack(alignment: .leading, spacing: 4) {
-                Text(title)
-                    .font(.callout.weight(.semibold))
-                Text(message)
-                    .font(.caption)
-                    .fixedSize(horizontal: false, vertical: true)
-            }
-        } icon: {
-            Image(systemName: "exclamationmark.triangle")
-        }
-        .foregroundStyle(color)
-        .padding(10)
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .background(
-            color.opacity(0.08),
-            in: RoundedRectangle(cornerRadius: 9, style: .continuous)
-        )
-    }
 }

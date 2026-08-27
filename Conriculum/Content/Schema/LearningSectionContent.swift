@@ -1,5 +1,9 @@
+// MARK: - 8. Section 콘텐츠의 tagged schema
+
+/// JSON `tag`에 허용되는 section vocabulary 전체.
+/// 각 case는 아래 `LearningSectionContent`의 associated payload와 1:1로 대응한다.
 enum LearningSectionTag: String, Codable, CaseIterable, Hashable, Sendable {
-    // Reading and observation
+    // 읽기·관찰: 학습자가 먼저 이해할 재료
     case knowledgeRecall
     case situation
     case comparison
@@ -8,7 +12,7 @@ enum LearningSectionTag: String, Codable, CaseIterable, Hashable, Sendable {
     case codeExplanation
     case processGuide
 
-    // Learner work
+    // 학습자 작업: 입력과 판단을 요구하는 활동
     case cardSorting
     case matching
     case choiceWithReason
@@ -17,7 +21,7 @@ enum LearningSectionTag: String, Codable, CaseIterable, Hashable, Sendable {
     case freeResponse
     case recallCheck
 
-    // Shared and branching
+    // 공통·분기: 지식 연결, 선택 흐름, 개인 지식 반영
     case knowledgeLink
     case personalExpressionComparison
     case learningStateSelection
@@ -28,6 +32,8 @@ enum LearningSectionTag: String, Codable, CaseIterable, Hashable, Sendable {
     case knowledgeChangeSummary
 }
 
+/// `{ "tag": ..., "payload": ... }` JSON을 표현하는 tagged union.
+/// `tag`가 payload의 구체 타입을 결정하므로 잘못된 조합을 Domain 안으로 들이지 않는다.
 enum LearningSectionContent: Codable, Equatable, Sendable {
     case knowledgeRecall(KnowledgeRecallContent)
     case situation(SituationContent)
@@ -57,6 +63,7 @@ enum LearningSectionContent: Codable, Equatable, Sendable {
         case payload
     }
 
+    /// 현재 associated-value case를 JSON에 기록할 tag로 투영한다.
     var tag: LearningSectionTag {
         switch self {
         case .knowledgeRecall: .knowledgeRecall
@@ -84,6 +91,8 @@ enum LearningSectionContent: Codable, Equatable, Sendable {
         }
     }
 
+    /// JSON → enum 변환.
+    /// 먼저 raw `tag`를 검사하고, 그 tag에 대응하는 payload 타입으로만 decode한다.
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         let rawTag = try container.decode(String.self, forKey: .tag)
@@ -152,6 +161,8 @@ enum LearningSectionContent: Codable, Equatable, Sendable {
         }
     }
 
+    /// enum → JSON 변환.
+    /// 현재 case의 tag와 associated payload를 공통 envelope에 함께 기록한다.
     func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(tag.rawValue, forKey: .tag)
@@ -183,6 +194,8 @@ enum LearningSectionContent: Codable, Equatable, Sendable {
     }
 }
 
+/// schema vocabulary에 없는 tag를 발견했을 때 tag 값과 JSON 경로를 보존하는 오류.
+/// 이후 `ContentResourceDecoder`가 콘텐츠 작성자가 읽기 쉬운 리소스 오류로 변환한다.
 struct UnsupportedLearningSectionTagError: Error, Equatable, Sendable, CustomStringConvertible {
     let tag: String
     let codingPath: [String]
@@ -194,12 +207,14 @@ struct UnsupportedLearningSectionTagError: Error, Equatable, Sendable, CustomStr
 
 // MARK: - Reading and observation payloads
 
+/// 이전 지식을 질문으로 회상시키고 이번 학습과 연결한다.
 struct KnowledgeRecallContent: Codable, Equatable, Sendable {
     let questions: [String]
     let memorySentence: String
     let connection: String
 }
 
+/// 판단할 상황·자료와 첫 질문을 제시한다.
 struct SituationContent: Codable, Equatable, Sendable {
     let title: String
     let description: String
@@ -207,12 +222,14 @@ struct SituationContent: Codable, Equatable, Sendable {
     let firstQuestion: String
 }
 
+/// 동일한 기준으로 여러 항목을 관찰하고 차이를 찾게 한다.
 struct ComparisonContent: Codable, Equatable, Sendable {
     let criterion: String
     let items: [ComparisonItem]
     let observationQuestion: String
 }
 
+/// 공용 Concept의 정의와 현재 section에서 다룰 범위를 제시한다.
 struct DefinitionContent: Codable, Equatable, Sendable {
     let conceptID: KnowledgeConceptID
     let title: String
@@ -220,12 +237,14 @@ struct DefinitionContent: Codable, Equatable, Sendable {
     let scope: String
 }
 
+/// 판단 질문의 순서와 주의점을 명시한다.
 struct DecisionCriteriaContent: Codable, Equatable, Sendable {
     let questions: [String]
     let sequence: [String]
     let caution: String
 }
 
+/// 코드, 읽을 초점, 줄별 의미와 학습 범위를 함께 제공한다.
 struct CodeExplanationContent: Codable, Equatable, Sendable {
     let code: String
     let language: String
@@ -235,6 +254,7 @@ struct CodeExplanationContent: Codable, Equatable, Sendable {
     let displayTiming: String?
 }
 
+/// 순서 있는 사고·작업 절차와 완료 상태를 설명한다.
 struct ProcessGuideContent: Codable, Equatable, Sendable {
     let steps: [ProcessStep]
     let completionDescription: String
@@ -242,6 +262,7 @@ struct ProcessGuideContent: Codable, Equatable, Sendable {
 
 // MARK: - Learner work payloads
 
+/// 카드를 group으로 분류하며 개념 경계를 판단하게 한다.
 struct CardSortingContent: Codable, Equatable, Sendable {
     let cards: [LearningContentItem]
     let groups: [LearningContentItem]
@@ -250,6 +271,7 @@ struct CardSortingContent: Codable, Equatable, Sendable {
     let feedbackCriteria: [String]
 }
 
+/// 좌우 항목을 규칙에 따라 대응시키게 한다.
 struct MatchingContent: Codable, Equatable, Sendable {
     let leftItems: [LearningContentItem]
     let rightItems: [LearningContentItem]
@@ -257,18 +279,21 @@ struct MatchingContent: Codable, Equatable, Sendable {
     let completionCriteria: [String]
 }
 
+/// 선택뿐 아니라 그 선택의 이유까지 입력하게 한다.
 struct ChoiceWithReasonContent: Codable, Equatable, Sendable {
     let questions: [ChoiceQuestion]
     let reasonPrompt: String
     let feedbackCriteria: [String]
 }
 
+/// template의 빈칸을 정해진 후보로 완성하게 한다.
 struct FillInBlankContent: Codable, Equatable, Sendable {
     let template: String
     let blanks: [FillInBlankItem]
     let completionCriteria: [String]
 }
 
+/// 고정된 코드와 조각을 조립해 선언을 완성하게 한다.
 struct CodeAssemblyContent: Codable, Equatable, Sendable {
     let starterCode: String
     let pieces: [LearningContentItem]
@@ -276,6 +301,7 @@ struct CodeAssemblyContent: Codable, Equatable, Sendable {
     let completionCriteria: [String]
 }
 
+/// 정답 형태를 제한하지 않고, 요구 근거와 입력 형식만 계약한다.
 struct FreeResponseContent: Codable, Equatable, Sendable {
     let prompt: String
     let inputFormat: String
@@ -283,6 +309,7 @@ struct FreeResponseContent: Codable, Equatable, Sendable {
     let exampleAfterSubmission: String
 }
 
+/// 학습 전후의 회상 내용을 비교할 수 있도록 질문과 기록 field를 정한다.
 struct RecallCheckContent: Codable, Equatable, Sendable {
     let questions: [String]
     let comparisonTarget: String
@@ -291,10 +318,12 @@ struct RecallCheckContent: Codable, Equatable, Sendable {
 
 // MARK: - Shared and branching payloads
 
+/// section 안에서 사용할 Page → Concept 연결들을 묶는다.
 struct KnowledgeLinkSectionContent: Codable, Equatable, Sendable {
     let links: [LearningKnowledgeLink]
 }
 
+/// 공용 정의와 사용자의 표현을 나란히 비교하게 한다.
 struct PersonalExpressionComparisonContent: Codable, Equatable, Sendable {
     let conceptIDs: [KnowledgeConceptID]
     let baseExpression: String
@@ -303,11 +332,13 @@ struct PersonalExpressionComparisonContent: Codable, Equatable, Sendable {
     let inspectorLocation: String
 }
 
+/// 사용자가 다음 학습 분기를 선택할 수 있는 상태 목록.
 struct LearningStateSelectionContent: Codable, Equatable, Sendable {
     let options: [LearningStateOption]
     let defaultOptionID: String?
 }
 
+/// 특정 학습 상태를 고른 경우에만 열리는 확장 과제.
 struct EnrichmentTaskContent: Codable, Equatable, Sendable {
     let requiredStateID: String
     let materials: [LabeledText]
@@ -315,12 +346,14 @@ struct EnrichmentTaskContent: Codable, Equatable, Sendable {
     let conceptIDs: [KnowledgeConceptID]
 }
 
+/// Page 목표를 달성했는지 증거와 재시도 조건으로 확인한다.
 struct CompletionCheckContent: Codable, Equatable, Sendable {
     let question: String
     let requiredEvidence: [String]
     let retryCondition: String
 }
 
+/// 활동 근거를 검토 가능한 개인 지식 후보로 승격하는 흐름을 정의한다.
 struct PersonalKnowledgePromotionContent: Codable, Equatable, Sendable {
     let evidenceActivityIDs: [LearningActivityID]
     let conceptIDs: [KnowledgeConceptID]
@@ -331,6 +364,7 @@ struct PersonalKnowledgePromotionContent: Codable, Equatable, Sendable {
     let cancellationResult: String
 }
 
+/// 두 Concept 집합 사이의 개인 연결 문장과 근거를 작성하게 한다.
 struct PersonalKnowledgeRelationSectionContent: Codable, Equatable, Sendable {
     let sourceConceptIDs: [KnowledgeConceptID]
     let targetConceptIDs: [KnowledgeConceptID]
@@ -340,6 +374,7 @@ struct PersonalKnowledgeRelationSectionContent: Codable, Equatable, Sendable {
     let confirmationQuestion: String
 }
 
+/// 확정·대기 중인 개인 지식 변화와 다음 사용 시점을 요약한다.
 struct KnowledgeChangeSummaryContent: Codable, Equatable, Sendable {
     let confirmedExpressions: String
     let confirmedRelations: String
@@ -350,11 +385,13 @@ struct KnowledgeChangeSummaryContent: Codable, Equatable, Sendable {
 
 // MARK: - Shared payload values
 
+/// 선택적 label과 본문을 여러 payload에서 재사용하는 값.
 struct LabeledText: Codable, Equatable, Sendable {
     let label: String?
     let text: String
 }
 
+/// 비교 화면의 한 항목과 세부 근거.
 struct ComparisonItem: Codable, Equatable, Sendable {
     let id: String
     let title: String
@@ -362,31 +399,38 @@ struct ComparisonItem: Codable, Equatable, Sendable {
     let details: [LabeledText]
 }
 
+/// `ProcessGuideContent`에서 사용하는 순서 있는 한 단계.
 struct ProcessStep: Codable, Equatable, Sendable {
     let order: Int
     let title: String
     let question: String
 }
 
+/// 상호작용 payload에서 재사용하는 stable local item과 표시 문구.
 struct LearningContentItem: Codable, Equatable, Sendable {
     let id: String
     let text: String
 }
 
+/// 하나의 선택 질문과 선택지 목록.
 struct ChoiceQuestion: Codable, Equatable, Sendable {
     let id: String
     let prompt: String
     let options: [LearningContentItem]
 }
 
+/// template 빈칸의 local ID, 안내 문구와 후보 값.
 struct FillInBlankItem: Codable, Equatable, Sendable {
     let id: String
     let placeholder: String
     let options: [String]
 }
 
+/// 분기 선택지의 local ID, 제목과 이후 행동 안내.
 struct LearningStateOption: Codable, Equatable, Sendable {
     let id: String
     let title: String
     let guidance: String
 }
+
+// MARK: - 다음 읽기: ConriculumTests/Content/LearningSectionContentTests.swift

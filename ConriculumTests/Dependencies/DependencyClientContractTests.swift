@@ -39,8 +39,10 @@ struct DependencyClientContractTests {
                 saveEvidence: { _ in }
             )
             $0.personalKnowledgeClient = PersonalKnowledgeClient(
+                loadAllRevisions: { [] },
                 loadRevisions: { _ in [] },
                 saveRevision: { _ in },
+                loadAllRelations: { [] },
                 loadRelations: { _ in [] },
                 saveRelation: { _ in }
             )
@@ -71,12 +73,16 @@ struct DependencyClientContractTests {
         let evidence = try await LearningRecordClient.previewValue.loadEvidence("chapter-02-page-01")
         let revisions = try await PersonalKnowledgeClient.previewValue.loadRevisions("concept-value")
         let relations = try await PersonalKnowledgeClient.previewValue.loadRelations("concept-value")
+        let allRevisions = try await PersonalKnowledgeClient.previewValue.loadAllRevisions()
+        let allRelations = try await PersonalKnowledgeClient.previewValue.loadAllRelations()
 
         #expect(progress == nil)
         #expect(responses.isEmpty)
         #expect(evidence.isEmpty)
         #expect(revisions.isEmpty)
         #expect(relations.isEmpty)
+        #expect(allRevisions.isEmpty)
+        #expect(allRelations.isEmpty)
     }
 
     @Test
@@ -152,6 +158,8 @@ private struct ClientContractProbe {
                         _ = try await learningRecordClient.loadEvidence(page.id)
                         let revisions = try await personalKnowledgeClient.loadRevisions(concept.id)
                         _ = try await personalKnowledgeClient.loadRelations(concept.id)
+                        _ = try await personalKnowledgeClient.loadAllRevisions()
+                        _ = try await personalKnowledgeClient.loadAllRelations()
 
                         await send(.loaded(
                             chapterID: chapter.id,

@@ -3,7 +3,10 @@ import Testing
 
 @testable import Conriculum
 
+// MARK: - 3. 학습 체계 Domain의 핵심 계약을 호출로 확인
+
 struct CurriculumModelsTests {
+    /// StableID가 JSON 객체가 아니라 단일 문자열로 왕복되는지 확인한다.
     @Test
     func stableIDsEncodeAsSingleJSONStrings() throws {
         let id: LearningPageID = "chapter-02-page-01"
@@ -15,6 +18,7 @@ struct CurriculumModelsTests {
         #expect(decoded == id)
     }
 
+    /// 배열 위치가 뒤섞여도 ID로 찾고 `order`로 진도를 정렬하는지 확인한다.
     @Test
     func pageLookupUsesStableIDInsteadOfArrayPosition() {
         let page01 = makePage(id: "chapter-02-page-01", order: 1)
@@ -25,6 +29,7 @@ struct CurriculumModelsTests {
         #expect(chapter.progressPageIDs == ["chapter-02-page-01", "chapter-02-page-02"])
     }
 
+    /// overview는 전체 탐색에는 포함되지만 진도 분모에는 들어가지 않는지 확인한다.
     @Test
     func overviewIsExcludedFromProgress() {
         let chapter = makeChapter(
@@ -39,6 +44,7 @@ struct CurriculumModelsTests {
         #expect(chapter.progressPageIDs.contains("chapter-02-overview") == false)
     }
 
+    /// Curriculum 값이 UI actor에 묶이지 않고 concurrency 경계를 넘는 순수 값인지 확인한다.
     @Test
     func curriculumValuesAreSendable() {
         let chapter = makeChapter(pages: [])
@@ -47,6 +53,7 @@ struct CurriculumModelsTests {
         assertSendable(chapter.overview.knowledgeContext)
     }
 
+    // 아래 helper는 위 계약을 드러내기 위한 최소 fixture다. assertion을 이해한 뒤 읽는다.
     private func makeChapter(pages: [LearningPage]) -> Chapter {
         Chapter(
             id: "chapter-02",
@@ -92,3 +99,5 @@ struct CurriculumModelsTests {
 }
 
 private func assertSendable<Value: Sendable>(_ value: Value) {}
+
+// MARK: - 다음 읽기: Conriculum/Domain/Knowledge/KnowledgeModels.swift

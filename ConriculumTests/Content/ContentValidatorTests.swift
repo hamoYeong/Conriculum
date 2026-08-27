@@ -3,7 +3,11 @@ import Testing
 
 @testable import Conriculum
 
+// MARK: - 0·19. 전체 조립 흐름을 먼저 보고, 마지막에 validation 계약을 재확인
+
 struct ContentValidatorTests {
+    /// 세 JSON을 Domain으로 decode한 뒤 서로 대조하는 이 PR 전체의 정상 호출 흐름.
+    /// 처음에는 이 함수와 아래 `loadValidContent()`만 읽어 전체 지도를 잡는다.
     @Test
     func bundledChapterTwoContentPassesValidation() throws {
         let content = try loadValidContent()
@@ -15,6 +19,7 @@ struct ContentValidatorTests {
         )
     }
 
+    /// 중복 stable page ID와 빠진 진도 order가 각각 정확한 field로 보고되는지 확인한다.
     @Test
     func duplicatePageIDAndMissingOrderReportExactFields() throws {
         let content = try loadValidContent()
@@ -43,6 +48,7 @@ struct ContentValidatorTests {
         })
     }
 
+    /// Page/Section payload의 깨진 Concept·Activity 참조가 원래 JSON 위치로 보고되는지 확인한다.
     @Test
     func brokenKnowledgeAndActivityLinksReportTheirPayloadFields() throws {
         let content = try loadValidContent()
@@ -101,6 +107,7 @@ struct ContentValidatorTests {
         })
     }
 
+    /// Catalog Relation의 dangling Concept와 manifest의 누락 identity를 resource별로 거부하는지 확인한다.
     @Test
     func brokenCatalogRelationAndMissingIdentityAreRejected() throws {
         let content = try loadValidContent()
@@ -117,6 +124,7 @@ struct ContentValidatorTests {
             schemaVersion: content.catalog.schemaVersion,
             id: content.catalog.id,
             title: content.catalog.title,
+            collections: content.catalog.collections,
             concepts: content.catalog.concepts,
             relations: relations
         )
@@ -143,6 +151,82 @@ struct ContentValidatorTests {
         })
     }
 
+    /// Collection ID·Concept 참조·중복 소속·누락 소속을 각 원래 field에서 거부하는지 확인한다.
+    @Test
+    func brokenKnowledgeCollectionsReportExactMembershipFields() throws {
+        let content = try loadValidContent()
+        var collections = content.catalog.collections
+        let firstCollection = try #require(collections.first)
+        let secondCollection = try #require(collections.dropFirst().first)
+
+        collections[0] = KnowledgeCollection(
+            id: firstCollection.id,
+            order: firstCollection.order,
+            title: " \n",
+            summary: "",
+            systemImage: firstCollection.systemImage,
+            conceptIDs: firstCollection.conceptIDs.filter { $0 != "concept-output" }
+                + ["concept-missing-collection"]
+        )
+        collections[1] = KnowledgeCollection(
+            id: firstCollection.id,
+            order: firstCollection.order,
+            title: secondCollection.title,
+            summary: secondCollection.summary,
+            systemImage: " ",
+            conceptIDs: secondCollection.conceptIDs + ["concept-concrete-values-rules"]
+        )
+
+        let brokenCatalog = KnowledgeCatalog(
+            schemaVersion: content.catalog.schemaVersion,
+            id: content.catalog.id,
+            title: content.catalog.title,
+            collections: collections,
+            concepts: content.catalog.concepts,
+            relations: content.catalog.relations
+        )
+        let error = validationError(
+            chapter: content.chapter,
+            catalog: brokenCatalog,
+            identityManifest: content.identityManifest
+        )
+
+        #expect(error.issues.contains {
+            $0.fieldPath == "collections[1].id"
+                && $0.message.contains("duplicate collection ID")
+        })
+        #expect(error.issues.contains {
+            $0.fieldPath == "collections[1].order"
+                && $0.message.contains("duplicate collection order ID")
+        })
+        #expect(error.issues.contains {
+            $0.fieldPath == "collections[0].title"
+                && $0.message.contains("must not be empty")
+        })
+        #expect(error.issues.contains {
+            $0.fieldPath == "collections[0].summary"
+                && $0.message.contains("must not be empty")
+        })
+        #expect(error.issues.contains {
+            $0.fieldPath == "collections[1].systemImage"
+                && $0.message.contains("must not be empty")
+        })
+        #expect(error.issues.contains {
+            $0.fieldPath == "collections[0].conceptIDs[4]"
+                && $0.message.contains("does not resolve")
+        })
+        #expect(error.issues.contains {
+            $0.fieldPath == "collections[1].conceptIDs[12]"
+                && $0.message.contains("duplicate collection membership for concept ID")
+                && $0.message.contains("collections[0].conceptIDs[0]")
+        })
+        #expect(error.issues.contains {
+            $0.fieldPath == "concepts[16].id"
+                && $0.message.contains("exactly one collection")
+        })
+    }
+
+    /// 정확한 lesson 수·연속 order·KnowledgeContext 참조 계약을 함께 확인한다.
     @Test
     func wrongPageCountAndKnowledgeContextReportExactFields() throws {
         let content = try loadValidContent()
@@ -182,6 +266,9 @@ struct ContentValidatorTests {
         })
     }
 
+    /// 이 schema 전체를 가장 압축해서 보여 주는 조립 호출부.
+    /// `chapter-02 → Chapter`, `values-and-types → KnowledgeCatalog`,
+    /// `content-identity → ContentIdentityManifest` 순서로 JSON을 typed Domain 값으로 바꾼다.
     private func loadValidContent() throws -> ValidContent {
         let decoder = ContentResourceDecoder()
         return try ValidContent(
@@ -191,6 +278,7 @@ struct ContentValidatorTests {
         )
     }
 
+    /// 깨진 fixture가 던진 aggregate validation 오류를 assertion하기 쉽게 꺼낸다.
     private func validationError(
         chapter: Chapter,
         catalog: KnowledgeCatalog,
@@ -212,6 +300,8 @@ struct ContentValidatorTests {
         }
     }
 
+    // 아래 copy/broken helper는 불변 Domain fixture의 한 부분만 의도적으로 깨뜨리는 테스트 도구다.
+    // validation 규칙과 assertion을 이해한 뒤 읽는다.
     private func copyChapter(_ chapter: Chapter, pages: [LearningPage]) -> Chapter {
         Chapter(
             id: chapter.id,
@@ -335,6 +425,7 @@ struct ContentValidatorTests {
     }
 }
 
+/// Validator에 동시에 전달되는 세 root Domain 값을 묶는 테스트 전용 값.
 private struct ValidContent {
     let chapter: Chapter
     let catalog: KnowledgeCatalog
