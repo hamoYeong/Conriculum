@@ -17,10 +17,26 @@ struct ReadingLearningComponentRenderingTests {
     ]
 
     @Test
-    func blockRolesUseASurfaceOnlyForIndependentWorkAndFeedback() {
-        #expect(LearningBlockRole.information.usesSurface == false)
-        #expect(LearningBlockRole.activity.usesSurface)
+    func blockRolesSeparateFlowFromCheckpointsTasksAndFeedback() {
+        #expect(LearningBlockRole.flow.usesSurface == false)
+        #expect(LearningBlockRole.checkpoint.usesSurface)
+        #expect(LearningBlockRole.task.usesSurface)
         #expect(LearningBlockRole.feedback.usesSurface)
+    }
+
+    @Test
+    func learningIntentsUseStableActionSymbols() {
+        #expect(LearningIntent.recall.systemImage == "arrow.counterclockwise")
+        #expect(LearningIntent.context.systemImage == "text.bubble")
+        #expect(LearningIntent.observe.systemImage == "eye")
+        #expect(LearningIntent.encode.systemImage == "book.closed")
+        #expect(LearningIntent.decide.systemImage == "checklist")
+        #expect(LearningIntent.apply.systemImage == "hammer")
+        #expect(LearningIntent.reflect.systemImage == "brain.head.profile")
+        #expect(
+            LearningIntent.feedback.systemImage
+                == "exclamationmark.triangle"
+        )
     }
 
     @Test

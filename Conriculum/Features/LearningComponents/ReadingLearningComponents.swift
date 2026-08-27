@@ -5,9 +5,8 @@ struct KnowledgeRecallComponent: View {
 
     var body: some View {
         LearningBlock(
-            title: "기억 연결",
-            systemImage: "arrow.counterclockwise",
-            accent: .blue
+            title: "기억 연결하기",
+            intent: .recall
         ) {
             VStack(alignment: .leading, spacing: 12) {
                 ForEach(Array(content.questions.enumerated()), id: \.offset) {
@@ -24,14 +23,13 @@ struct KnowledgeRecallComponent: View {
             LearningCallout(
                 title: "기억할 문장",
                 text: content.memorySentence,
-                systemImage: "bookmark",
-                accent: .blue
+                accent: .blue,
+                presentation: .emphasized
             )
 
             LearningCallout(
                 title: "이번 학습과의 연결",
                 text: content.connection,
-                systemImage: "arrow.right",
                 accent: .teal
             )
         }
@@ -44,8 +42,8 @@ struct SituationComponent: View {
     var body: some View {
         LearningBlock(
             title: "상황",
-            systemImage: "text.bubble",
-            accent: .indigo
+            intent: .context,
+            role: .checkpoint
         ) {
             VStack(alignment: .leading, spacing: 8) {
                 Text(content.title)
@@ -67,8 +65,8 @@ struct SituationComponent: View {
             LearningCallout(
                 title: "먼저 생각해 보기",
                 text: content.firstQuestion,
-                systemImage: "questionmark.bubble",
-                accent: .indigo
+                accent: .indigo,
+                presentation: .emphasized
             )
         }
     }
@@ -80,13 +78,11 @@ struct ComparisonComponent: View {
     var body: some View {
         LearningBlock(
             title: "비교하며 관찰하기",
-            systemImage: "rectangle.split.2x1",
-            accent: .purple
+            intent: .observe
         ) {
             LearningCallout(
                 title: "비교 기준",
                 text: content.criterion,
-                systemImage: "slider.horizontal.3",
                 accent: .purple
             )
 
@@ -109,37 +105,37 @@ struct ComparisonComponent: View {
             LearningCallout(
                 title: "관찰 질문",
                 text: content.observationQuestion,
-                systemImage: "eye",
-                accent: .purple
+                accent: .purple,
+                presentation: .emphasized
             )
         }
     }
 
     private func comparisonItem(_ item: ComparisonItem) -> some View {
-        LearningAccentSection(accent: .purple) {
-            VStack(alignment: .leading, spacing: 8) {
-                Text(item.title)
-                    .font(.headline)
+        VStack(alignment: .leading, spacing: 8) {
+            Text(item.title)
+                .font(.headline)
 
-                Text(item.body)
-                    .foregroundStyle(.secondary)
-                    .fixedSize(horizontal: false, vertical: true)
+            Text(item.body)
+                .foregroundStyle(.secondary)
+                .fixedSize(horizontal: false, vertical: true)
 
-                ForEach(Array(item.details.enumerated()), id: \.offset) {
-                    _,
-                    detail in
-                    HStack(alignment: .firstTextBaseline, spacing: 6) {
-                        if let label = detail.label {
-                            Text(label)
-                                .font(.caption.weight(.semibold))
-                                .foregroundStyle(.purple)
-                        }
-                        Text(detail.text)
-                            .font(.callout)
+            ForEach(Array(item.details.enumerated()), id: \.offset) {
+                _,
+                detail in
+                HStack(alignment: .firstTextBaseline, spacing: 6) {
+                    if let label = detail.label {
+                        Text(label)
+                            .font(.caption.weight(.semibold))
+                            .foregroundStyle(.purple)
                     }
+                    Text(detail.text)
+                        .font(.callout)
                 }
             }
         }
+        .padding(.vertical, 3)
+        .frame(maxWidth: .infinity, alignment: .leading)
         .accessibilityElement(children: .combine)
     }
 }
@@ -150,8 +146,8 @@ struct DefinitionComponent: View {
     var body: some View {
         LearningBlock(
             title: "핵심 개념",
-            systemImage: "book.closed",
-            accent: .green
+            intent: .encode,
+            role: .checkpoint
         ) {
             VStack(alignment: .leading, spacing: 10) {
                 Text(content.title)
@@ -166,7 +162,6 @@ struct DefinitionComponent: View {
             LearningCallout(
                 title: "이번 범위",
                 text: content.scope,
-                systemImage: "scope",
                 accent: .green
             )
         }
@@ -179,8 +174,8 @@ struct DecisionCriteriaComponent: View {
     var body: some View {
         LearningBlock(
             title: "판단 기준",
-            systemImage: "checklist",
-            accent: .orange
+            intent: .decide,
+            role: .checkpoint
         ) {
             VStack(alignment: .leading, spacing: 12) {
                 Text("확인할 질문")
@@ -215,8 +210,8 @@ struct DecisionCriteriaComponent: View {
             LearningCallout(
                 title: "주의",
                 text: content.caution,
-                systemImage: "exclamationmark.triangle",
-                accent: .orange
+                accent: .orange,
+                presentation: .emphasized
             )
         }
     }
@@ -228,8 +223,7 @@ struct CodeExplanationComponent: View {
     var body: some View {
         LearningBlock(
             title: "코드로 확인하기",
-            systemImage: "chevron.left.forwardslash.chevron.right",
-            accent: .cyan
+            intent: .apply
         ) {
             ScrollView(.horizontal) {
                 Text(verbatim: content.code)
@@ -299,7 +293,6 @@ struct CodeExplanationComponent: View {
                 LearningCallout(
                     title: "지금은 다루지 않기",
                     text: content.outOfScope.joined(separator: ", "),
-                    systemImage: "clock",
                     accent: .secondary
                 )
             }
@@ -318,9 +311,9 @@ struct ProcessGuideComponent: View {
 
     var body: some View {
         LearningBlock(
-            title: "진행 순서",
-            systemImage: "list.number",
-            accent: .teal
+            title: "학습 진행 순서",
+            intent: .context,
+            role: .checkpoint
         ) {
             VStack(alignment: .leading, spacing: 14) {
                 ForEach(content.steps.sorted(by: { $0.order < $1.order }), id: \.order) {
@@ -329,7 +322,7 @@ struct ProcessGuideComponent: View {
                         number: step.order,
                         title: step.title,
                         text: step.question,
-                        accent: .teal
+                        accent: .indigo
                     )
                 }
             }
@@ -337,8 +330,8 @@ struct ProcessGuideComponent: View {
             LearningCallout(
                 title: "완료 기준",
                 text: content.completionDescription,
-                systemImage: "checkmark.circle",
-                accent: .green
+                accent: .green,
+                presentation: .emphasized
             )
         }
     }

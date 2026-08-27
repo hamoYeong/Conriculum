@@ -25,8 +25,7 @@ struct KnowledgeLinkComponent: View {
     var body: some View {
         LearningBlock(
             title: "함께 쓰는 지식",
-            systemImage: "point.3.filled.connected.trianglepath.dotted",
-            accent: .blue
+            intent: .observe
         ) {
             VStack(alignment: .leading, spacing: 12) {
                 ForEach(Array(content.links.enumerated()), id: \.offset) {
@@ -39,35 +38,34 @@ struct KnowledgeLinkComponent: View {
     }
 
     private func knowledgeLink(_ link: LearningKnowledgeLink) -> some View {
-        LearningAccentSection(accent: accent(for: link.role)) {
-            HStack(alignment: .top, spacing: 12) {
-                Image(systemName: symbol(for: link.role))
-                    .foregroundStyle(accent(for: link.role))
-                    .frame(width: 22)
-                    .accessibilityHidden(true)
+        HStack(alignment: .top, spacing: 12) {
+            Image(systemName: symbol(for: link.role))
+                .foregroundStyle(accent(for: link.role))
+                .frame(width: 22)
+                .accessibilityHidden(true)
 
-                VStack(alignment: .leading, spacing: 5) {
-                    HStack(alignment: .firstTextBaseline, spacing: 8) {
-                        Text(conceptNames.title(for: link.conceptID))
-                            .font(.callout.weight(.semibold))
+            VStack(alignment: .leading, spacing: 5) {
+                HStack(alignment: .firstTextBaseline, spacing: 8) {
+                    Text(conceptNames.title(for: link.conceptID))
+                        .font(.callout.weight(.semibold))
 
-                        Text(title(for: link.role))
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
-                    }
-
-                    Text(link.usage)
+                    Text(title(for: link.role))
+                        .font(.caption)
                         .foregroundStyle(.secondary)
-                        .fixedSize(horizontal: false, vertical: true)
+                }
 
-                    if let displayTiming = link.displayTiming {
-                        Label(displayTiming, systemImage: "clock")
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
-                    }
+                Text(link.usage)
+                    .foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
+
+                if let displayTiming = link.displayTiming {
+                    Text(displayTiming)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
                 }
             }
         }
+        .padding(.vertical, 3)
         .accessibilityElement(children: .combine)
         .accessibilityLabel(
             "\(conceptNames.title(for: link.conceptID)). "
@@ -111,9 +109,8 @@ struct PersonalExpressionComparisonComponent: View {
 
     var body: some View {
         LearningBlock(
-            title: "기본 지식과 나의 표현",
-            systemImage: "rectangle.split.2x1",
-            accent: .purple
+            title: "기본 지식과 나의 표현 비교하기",
+            intent: .observe
         ) {
             Text(conceptNamesText)
                 .font(.caption.weight(.semibold))
@@ -126,6 +123,7 @@ struct PersonalExpressionComparisonComponent: View {
                         text: content.baseExpression,
                         systemImage: "book.closed"
                     )
+                    Divider()
                     expressionPanel(
                         title: "나의 표현",
                         text: personalExpression
@@ -140,6 +138,7 @@ struct PersonalExpressionComparisonComponent: View {
                         text: content.baseExpression,
                         systemImage: "book.closed"
                     )
+                    Divider()
                     expressionPanel(
                         title: "나의 표현",
                         text: personalExpression
@@ -152,8 +151,8 @@ struct PersonalExpressionComparisonComponent: View {
             LearningCallout(
                 title: "비교 질문",
                 text: content.comparisonQuestion,
-                systemImage: "arrow.left.arrow.right",
-                accent: .purple
+                accent: .purple,
+                presentation: .emphasized
             )
 
             Button("개념 상세에서 나의 표현 보기") {
@@ -174,16 +173,15 @@ struct PersonalExpressionComparisonComponent: View {
         text: String,
         systemImage: String
     ) -> some View {
-        LearningAccentSection(accent: .purple) {
-            VStack(alignment: .leading, spacing: 8) {
-                Label(title, systemImage: systemImage)
-                    .font(.subheadline.weight(.semibold))
+        VStack(alignment: .leading, spacing: 8) {
+            Label(title, systemImage: systemImage)
+                .font(.subheadline.weight(.semibold))
 
-                Text(text)
-                    .foregroundStyle(.secondary)
-                    .fixedSize(horizontal: false, vertical: true)
-            }
+            Text(text)
+                .foregroundStyle(.secondary)
+                .fixedSize(horizontal: false, vertical: true)
         }
+        .frame(maxWidth: .infinity, alignment: .leading)
         .accessibilityElement(children: .combine)
         .accessibilityLabel("\(title). \(text)")
     }
@@ -200,10 +198,9 @@ struct LearningStateSelectionComponent: View {
 
     var body: some View {
         LearningBlock(
-            title: "지금의 학습 상태",
-            systemImage: "gauge.with.dots.needle.33percent",
-            accent: .indigo,
-            role: .activity
+            title: "지금 상태 확인하기",
+            intent: .decide,
+            role: .task
         ) {
             Text("현재 상태에 맞는 학습 경로를 선택할 수 있습니다.")
                 .foregroundStyle(.secondary)
@@ -272,9 +269,9 @@ struct EnrichmentTaskComponent: View {
     var body: some View {
         if isVisible {
             LearningBlock(
-                title: "확장·심화 과제",
-                systemImage: "sparkles",
-                accent: .purple
+                title: "더 깊이 탐구하기",
+                intent: .apply,
+                role: .checkpoint
             ) {
                 if !content.materials.isEmpty {
                     LearningLabeledTextGrid(
@@ -286,8 +283,8 @@ struct EnrichmentTaskComponent: View {
                 LearningCallout(
                     title: "더 깊게 생각하기",
                     text: content.prompt,
-                    systemImage: "brain.head.profile",
-                    accent: .purple
+                    accent: .purple,
+                    presentation: .emphasized
                 )
 
                 Text(
@@ -319,10 +316,9 @@ struct CompletionCheckComponent: View {
 
     var body: some View {
         LearningBlock(
-            title: "완료 점검",
-            systemImage: "checkmark.seal",
-            accent: .green,
-            role: .activity
+            title: "완료 여부 점검하기",
+            intent: .reflect,
+            role: .task
         ) {
             Text(content.question)
                 .font(.title3.weight(.semibold))
@@ -343,15 +339,14 @@ struct CompletionCheckComponent: View {
             ActivityCriteriaView(
                 title: "설명에 포함할 근거",
                 criteria: content.requiredEvidence,
-                systemImage: "quote.bubble",
                 accent: .green
             )
 
             LearningCallout(
                 title: "다시 확인할 때",
                 text: content.retryCondition,
-                systemImage: "arrow.counterclockwise",
-                accent: .orange
+                accent: .orange,
+                presentation: .emphasized
             )
         }
     }
@@ -389,9 +384,8 @@ struct PersonalKnowledgePromotionComponent: View {
     var body: some View {
         LearningBlock(
             title: "나의 표현으로 다듬기",
-            systemImage: "person.crop.circle.badge.checkmark",
-            accent: .purple,
-            role: .activity
+            intent: .apply,
+            role: .task
         ) {
             VStack(alignment: .leading, spacing: 8) {
                 Label("연결 지식", systemImage: "link")
@@ -444,7 +438,6 @@ struct PersonalKnowledgePromotionComponent: View {
             ActivityCriteriaView(
                 title: "반영하면 저장되는 내용",
                 criteria: content.savedFields,
-                systemImage: "internaldrive",
                 accent: .purple
             )
 
@@ -547,9 +540,8 @@ struct PersonalKnowledgeRelationComponent: View {
     var body: some View {
         LearningBlock(
             title: "나의 연결 만들기",
-            systemImage: "point.3.connected.trianglepath.dotted",
-            accent: .teal,
-            role: .activity
+            intent: .apply,
+            role: .task
         ) {
             ViewThatFits(in: .horizontal) {
                 HStack(alignment: .top, spacing: 10) {
@@ -776,43 +768,40 @@ struct KnowledgeChangeSummaryComponent: View {
     var body: some View {
         LearningBlock(
             title: "이번 학습으로 달라진 지식",
-            systemImage: "sparkles",
-            accent: .green
+            intent: .reflect,
+            role: .checkpoint
         ) {
             if !hasConfirmedChanges, !hasPendingCandidates {
                 LearningCallout(
                     title: "아직 확인된 변화 없음",
                     text: content.emptyState,
-                    systemImage: "tray",
-                    accent: .secondary
+                    accent: .secondary,
+                    presentation: .emphasized
                 )
             } else {
                 if hasConfirmedChanges {
                     summaryRow(
                         title: "확인한 나의 표현",
-                        text: content.confirmedExpressions,
-                        systemImage: "person.text.rectangle"
+                        text: content.confirmedExpressions
                     )
                     summaryRow(
                         title: "확인한 나의 연결",
-                        text: content.confirmedRelations,
-                        systemImage: "link"
+                        text: content.confirmedRelations
                     )
                 }
 
                 if hasPendingCandidates {
                     summaryRow(
                         title: "확인 전 후보",
-                        text: content.pendingCandidates,
-                        systemImage: "clock.badge.questionmark"
+                        text: content.pendingCandidates
                     )
                 }
 
                 LearningCallout(
                     title: "다음에 다시 쓰기",
                     text: content.nextUseSuggestion,
-                    systemImage: "arrow.forward.circle",
-                    accent: .green
+                    accent: .green,
+                    presentation: .emphasized
                 )
             }
         }
@@ -820,24 +809,16 @@ struct KnowledgeChangeSummaryComponent: View {
 
     private func summaryRow(
         title: String,
-        text: String,
-        systemImage: String
+        text: String
     ) -> some View {
-        LearningAccentSection(accent: .green) {
-            Label {
-                VStack(alignment: .leading, spacing: 4) {
-                    Text(title)
-                        .font(.callout.weight(.semibold))
-                    Text(text)
-                        .foregroundStyle(.secondary)
-                        .fixedSize(horizontal: false, vertical: true)
-                }
-            } icon: {
-                Image(systemName: systemImage)
-                    .foregroundStyle(.green)
-                    .frame(width: 22)
-            }
+        VStack(alignment: .leading, spacing: 4) {
+            LearningSupportLabel(title: title, accent: .teal)
+
+            Text(text)
+                .foregroundStyle(.secondary)
+                .fixedSize(horizontal: false, vertical: true)
         }
+        .padding(.vertical, 3)
         .accessibilityElement(children: .combine)
         .accessibilityLabel("\(title). \(text)")
     }

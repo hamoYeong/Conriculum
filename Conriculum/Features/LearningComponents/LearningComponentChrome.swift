@@ -1,32 +1,69 @@
 import SwiftUI
 
 enum LearningBlockRole: Equatable {
-    case information
-    case activity
+    case flow
+    case checkpoint
+    case task
     case feedback
 
     var usesSurface: Bool {
-        self != .information
+        self != .flow
+    }
+}
+
+/// 학습 단계의 인지적 의도를 헤더 아이콘과 색으로 일관되게 표현한다.
+/// 콘텐츠 JSON의 메타데이터가 아니라 SwiftUI 표현 계층에서만 사용한다.
+enum LearningIntent: Equatable {
+    case recall
+    case context
+    case observe
+    case encode
+    case decide
+    case apply
+    case reflect
+    case feedback
+
+    var systemImage: String {
+        switch self {
+        case .recall: "arrow.counterclockwise"
+        case .context: "text.bubble"
+        case .observe: "eye"
+        case .encode: "book.closed"
+        case .decide: "checklist"
+        case .apply: "hammer"
+        case .reflect: "brain.head.profile"
+        case .feedback: "exclamationmark.triangle"
+        }
+    }
+
+    var accent: Color {
+        switch self {
+        case .recall: .blue
+        case .context: .indigo
+        case .observe: .purple
+        case .encode: .green
+        case .decide: .orange
+        case .apply: .cyan
+        case .reflect: .teal
+        case .feedback: .red
+        }
     }
 }
 
 struct LearningBlock<Content: View>: View {
     let title: String
-    let systemImage: String
-    let accent: Color
+    let intent: LearningIntent
     let role: LearningBlockRole
     let content: Content
 
     init(
         title: String,
-        systemImage: String,
-        accent: Color = .accentColor,
-        role: LearningBlockRole = .information,
+        intent: LearningIntent,
+        role: LearningBlockRole = .flow,
         @ViewBuilder content: () -> Content
     ) {
         self.title = title
-        self.systemImage = systemImage
-        self.accent = accent
+        self.intent = intent
         self.role = role
         self.content = content()
     }
@@ -37,8 +74,8 @@ struct LearningBlock<Content: View>: View {
                 Text(title)
                     .font(.headline)
             } icon: {
-                Image(systemName: systemImage)
-                    .foregroundStyle(accent)
+                Image(systemName: intent.systemImage)
+                    .foregroundStyle(intent.accent)
                     .frame(width: 22)
                     .accessibilityHidden(true)
             }
@@ -63,7 +100,10 @@ struct LearningBlock<Content: View>: View {
         .overlay {
             if role.usesSurface {
                 RoundedRectangle(cornerRadius: 14, style: .continuous)
-                    .stroke(accent.opacity(0.18), lineWidth: 1)
+                    .stroke(
+                        intent.accent.opacity(surfaceStrokeOpacity),
+                        lineWidth: 1
+                    )
             }
         }
         .accessibilityElement(children: .contain)
@@ -72,75 +112,87 @@ struct LearningBlock<Content: View>: View {
 
     private var surfaceBackground: Color {
         switch role {
-        case .information:
+        case .flow:
             .clear
-        case .activity:
+        case .checkpoint:
+            Color(nsColor: .controlBackgroundColor).opacity(0.52)
+        case .task:
             Color(nsColor: .controlBackgroundColor).opacity(0.72)
         case .feedback:
-            accent.opacity(0.07)
+            intent.accent.opacity(0.07)
+        }
+    }
+
+    private var surfaceStrokeOpacity: Double {
+        switch role {
+        case .flow: 0
+        case .checkpoint: 0.11
+        case .task: 0.18
+        case .feedback: 0.22
         }
     }
 }
 
-struct LearningAccentSection<Content: View>: View {
+struct LearningSupportLabel: View {
+    let title: String
     let accent: Color
-    let content: Content
-
-    init(
-        accent: Color = .accentColor,
-        @ViewBuilder content: () -> Content
-    ) {
-        self.accent = accent
-        self.content = content()
-    }
 
     var body: some View {
-        content
-            .padding(.leading, 13)
-            .padding(.vertical, 2)
-            .overlay(alignment: .leading) {
-                RoundedRectangle(cornerRadius: 2, style: .continuous)
-                    .fill(accent.opacity(0.62))
-                    .frame(width: 3)
-            }
-            .frame(maxWidth: .infinity, alignment: .leading)
+        HStack(spacing: 7) {
+            Capsule()
+                .fill(accent.opacity(0.72))
+                .frame(width: 14, height: 3)
+                .accessibilityHidden(true)
+
+            Text(title)
+                .font(.caption.weight(.semibold))
+                .foregroundStyle(.secondary)
+        }
     }
+}
+
+enum LearningCalloutPresentation: Equatable {
+    case plain
+    case emphasized
 }
 
 struct LearningCallout: View {
     let title: String
     let text: String
-    let systemImage: String
     let accent: Color
+    let presentation: LearningCalloutPresentation
 
     init(
         title: String,
         text: String,
-        systemImage: String,
-        accent: Color = .accentColor
+        accent: Color = .accentColor,
+        presentation: LearningCalloutPresentation = .plain
     ) {
         self.title = title
         self.text = text
-        self.systemImage = systemImage
         self.accent = accent
+        self.presentation = presentation
     }
 
     var body: some View {
-        LearningAccentSection(accent: accent) {
-            HStack(alignment: .top, spacing: 10) {
-                Image(systemName: systemImage)
-                    .foregroundStyle(accent)
-                    .frame(width: 20)
-                    .accessibilityHidden(true)
+        VStack(alignment: .leading, spacing: 5) {
+            LearningSupportLabel(title: title, accent: accent)
 
-                VStack(alignment: .leading, spacing: 4) {
-                    Text(title)
-                        .font(.caption.weight(.semibold))
-                        .foregroundStyle(.secondary)
-
-                    Text(text)
-                        .fixedSize(horizontal: false, vertical: true)
-                }
+            Text(text)
+                .fixedSize(horizontal: false, vertical: true)
+        }
+        .padding(presentation == .emphasized ? 12 : 0)
+        .padding(.vertical, presentation == .plain ? 2 : 0)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background {
+            if presentation == .emphasized {
+                accent.opacity(0.065)
+                    .clipShape(
+                        RoundedRectangle(
+                            cornerRadius: 9,
+                            style: .continuous
+                        )
+                    )
             }
         }
         .accessibilityElement(children: .combine)
@@ -216,22 +268,17 @@ struct LearningLabeledTextGrid: View {
             ForEach(Array(items.enumerated()), id: \.offset) { _, item in
                 VStack(alignment: .leading, spacing: 5) {
                     if let label = item.label {
-                        Text(label)
-                            .font(.caption.weight(.semibold))
-                            .foregroundStyle(accent)
+                        LearningSupportLabel(
+                            title: label,
+                            accent: accent
+                        )
                             .accessibilityAddTraits(.isHeader)
                     }
 
                     Text(item.text)
                         .fixedSize(horizontal: false, vertical: true)
                 }
-                .padding(.leading, 12)
                 .padding(.vertical, 3)
-                .overlay(alignment: .leading) {
-                    RoundedRectangle(cornerRadius: 2, style: .continuous)
-                        .fill(accent.opacity(0.42))
-                        .frame(width: 2)
-                }
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .accessibilityElement(children: .combine)
             }
