@@ -259,27 +259,22 @@ enum LearningActivityFieldKey {
 struct ActivityCriteriaView: View {
     let title: String
     let criteria: [String]
-    let systemImage: String
     let accent: Color
 
     init(
         title: String,
         criteria: [String],
-        systemImage: String = "checkmark.circle",
         accent: Color = .green
     ) {
         self.title = title
         self.criteria = criteria
-        self.systemImage = systemImage
         self.accent = accent
     }
 
     var body: some View {
         if !criteria.isEmpty {
             VStack(alignment: .leading, spacing: 8) {
-                Label(title, systemImage: systemImage)
-                    .font(.subheadline.weight(.semibold))
-                    .foregroundStyle(accent)
+                LearningSupportLabel(title: title, accent: accent)
                     .accessibilityHeading(.h3)
 
                 ForEach(Array(criteria.enumerated()), id: \.offset) {
@@ -290,12 +285,6 @@ struct ActivityCriteriaView: View {
                         .fixedSize(horizontal: false, vertical: true)
                 }
             }
-            .padding(14)
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .background(
-                accent.opacity(0.07),
-                in: RoundedRectangle(cornerRadius: 10, style: .continuous)
-            )
             .accessibilityElement(children: .contain)
         }
     }

@@ -141,20 +141,58 @@ struct ChapterLearningFeatureTests {
     }
 
     @Test
-    func firstPageDoesNotNavigateBackward() async throws {
+    func firstPageNavigatesBackToOverview() async throws {
         let chapter = try loadChapter()
         let firstPageID = try #require(chapter.progressPageIDs.first)
+        let recorder = LearningRecordSaveRecorder()
         var state = ChapterLearningFeature.State(
             chapterID: chapter.id,
             currentPageID: firstPageID
         )
         state.chapter = chapter
+        let expectedProgress = LearningProgress(
+            chapterID: chapter.id,
+            currentPageID: chapter.overview.id,
+            completedPageIDs: [],
+            updatedAt: timestamp
+        )
         let store = TestStore(initialState: state) {
             ChapterLearningFeature()
+        } withDependencies: {
+            $0.date.now = timestamp
+            $0.learningRecordClient.loadResponses = { pageID in
+                #expect(pageID == chapter.overview.id)
+                return []
+            }
+            $0.learningRecordClient.saveProgress = { progress in
+                await recorder.record(.progress(progress))
+            }
         }
 
-        #expect(store.state.canNavigatePrevious == false)
-        await store.send(.previousButtonTapped)
+        #expect(store.state.canNavigatePrevious)
+        await store.send(.previousButtonTapped) {
+            $0.isSavingNavigation = true
+        }
+        await store.receive(.navigationResponse(.saved(
+            destination: .page(chapter.overview.id),
+            progress: expectedProgress,
+            drafts: [],
+            responses: []
+        ))) {
+            $0.isSavingNavigation = false
+            $0.currentPageID = chapter.overview.id
+        }
+        await store.receive(
+            .delegate(.currentPageChanged(chapter.overview.id))
+        )
+
+        let events = await recorder.events()
+        #expect(events.count == 1)
+        guard case let .progress(savedProgress) = events.first else {
+            Issue.record("Overview 위치가 학습 진도로 저장되지 않았다.")
+            return
+        }
+        #expect(savedProgress == expectedProgress)
     }
 
     @Test

@@ -227,8 +227,8 @@ struct LearningSectionView: View {
     private var missingActivity: some View {
         LearningBlock(
             title: "활동 연결 오류",
-            systemImage: "exclamationmark.triangle",
-            accent: .red
+            intent: .feedback,
+            role: .feedback
         ) {
             Text("이 학습 블록에 활동 연결 정보가 없습니다.")
                 .foregroundStyle(.secondary)
@@ -245,8 +245,8 @@ struct ChapterRouteMap: View {
     var body: some View {
         LearningBlock(
             title: "8개 페이지 학습 경로",
-            systemImage: "map",
-            accent: .blue
+            intent: .context,
+            role: .checkpoint
         ) {
             Text("각 페이지는 앞선 판단을 다음 판단의 근거로 이어 갑니다.")
                 .foregroundStyle(.secondary)

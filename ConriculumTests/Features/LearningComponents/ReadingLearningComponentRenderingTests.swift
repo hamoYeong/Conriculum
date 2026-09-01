@@ -17,6 +17,51 @@ struct ReadingLearningComponentRenderingTests {
     ]
 
     @Test
+    func blockRolesSeparateFlowFromCheckpointsTasksAndFeedback() {
+        #expect(LearningBlockRole.flow.usesSurface == false)
+        #expect(LearningBlockRole.checkpoint.usesSurface)
+        #expect(LearningBlockRole.task.usesSurface)
+        #expect(LearningBlockRole.feedback.usesSurface)
+    }
+
+    @Test
+    func learningIntentsUseStableActionSymbols() {
+        #expect(LearningIntent.recall.systemImage == "arrow.counterclockwise")
+        #expect(LearningIntent.context.systemImage == "text.bubble")
+        #expect(LearningIntent.observe.systemImage == "eye")
+        #expect(LearningIntent.encode.systemImage == "book.closed")
+        #expect(LearningIntent.decide.systemImage == "checklist")
+        #expect(LearningIntent.apply.systemImage == "hammer")
+        #expect(LearningIntent.reflect.systemImage == "brain.head.profile")
+        #expect(
+            LearningIntent.feedback.systemImage
+                == "exclamationmark.triangle"
+        )
+    }
+
+    @Test
+    func swiftCodeHighlighterPreservesSourceAndClassifiesCoreSyntax() {
+        let source = #"""
+        @State var count: Int = 20_000 // 주문 수
+        let name = "Swift"
+        let type = {{valueType}}
+        """#
+        let tokens = SwiftCodeHighlighter.tokens(in: source)
+
+        #expect(tokens.map(\.text).joined() == source)
+        #expect(tokens.contains(SwiftCodeToken(text: "@State", kind: .attribute)))
+        #expect(tokens.contains(SwiftCodeToken(text: "var", kind: .keyword)))
+        #expect(tokens.contains(SwiftCodeToken(text: "Int", kind: .type)))
+        #expect(tokens.contains(SwiftCodeToken(text: "20_000", kind: .number)))
+        #expect(tokens.contains(SwiftCodeToken(text: "// 주문 수", kind: .comment)))
+        #expect(tokens.contains(SwiftCodeToken(text: "\"Swift\"", kind: .string)))
+        #expect(tokens.contains(SwiftCodeToken(
+            text: "{{valueType}}",
+            kind: .placeholder
+        )))
+    }
+
+    @Test
     func everyReadingTagRendersFromChapterTwoAtStandardAndLargeText() throws {
         let chapter = try ContentResourceDecoder().decode(
             Chapter.self,

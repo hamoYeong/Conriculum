@@ -8,9 +8,9 @@ struct CardSortingComponent: View {
 
     var body: some View {
         LearningBlock(
-            title: "분류하기",
-            systemImage: "rectangle.3.group",
-            accent: .blue
+            title: "기준으로 분류하기",
+            intent: .apply,
+            role: .task
         ) {
             Text(content.interaction)
                 .foregroundStyle(.secondary)
@@ -68,7 +68,6 @@ struct CardSortingComponent: View {
             ActivityCriteriaView(
                 title: "생각을 점검할 기준",
                 criteria: content.feedbackCriteria,
-                systemImage: "arrow.triangle.2.circlepath",
                 accent: .orange
             )
 
@@ -197,14 +196,13 @@ struct MatchingComponent: View {
 
     var body: some View {
         LearningBlock(
-            title: "연결하기",
-            systemImage: "point.3.connected.trianglepath.dotted",
-            accent: .purple
+            title: "짝을 찾아 연결하기",
+            intent: .apply,
+            role: .task
         ) {
             LearningCallout(
                 title: "연결 규칙",
                 text: content.rule,
-                systemImage: "link",
                 accent: .purple
             )
 
@@ -259,8 +257,8 @@ struct ChoiceWithReasonComponent: View {
     var body: some View {
         LearningBlock(
             title: "고르고 설명하기",
-            systemImage: "checkmark.circle",
-            accent: .indigo
+            intent: .decide,
+            role: .task
         ) {
             VStack(alignment: .leading, spacing: 18) {
                 ForEach(content.questions, id: \.id) { question in
@@ -299,7 +297,6 @@ struct ChoiceWithReasonComponent: View {
             ActivityCriteriaView(
                 title: "생각을 점검할 기준",
                 criteria: content.feedbackCriteria,
-                systemImage: "arrow.triangle.2.circlepath",
                 accent: .orange
             )
 
@@ -314,26 +311,14 @@ struct FillInBlankComponent: View {
 
     var body: some View {
         LearningBlock(
-            title: "빈칸 채우기",
-            systemImage: "character.cursor.ibeam",
-            accent: .teal
+            title: "빈칸 채워 완성하기",
+            intent: .apply,
+            role: .task
         ) {
-            ScrollView(.horizontal) {
-                Text(verbatim: content.template)
-                    .font(.system(.body, design: .monospaced))
-                    .textSelection(.enabled)
-                    .padding(14)
-            }
-            .scrollIndicators(.visible)
-            .background(
-                Color(nsColor: .textBackgroundColor),
-                in: RoundedRectangle(cornerRadius: 10, style: .continuous)
-            )
-            .accessibilityElement(children: .ignore)
-            .accessibilityLabel("빈칸이 포함된 Swift 코드")
-            .accessibilityValue(content.template)
-            .accessibilityHint(
-                "가로로 스크롤하여 긴 코드를 확인할 수 있습니다."
+            SwiftCodeBlock(
+                code: content.template,
+                language: "Swift",
+                spokenLabel: "빈칸이 포함된 Swift 코드"
             )
 
             VStack(alignment: .leading, spacing: 12) {
@@ -387,8 +372,8 @@ struct CodeAssemblyComponent: View {
     var body: some View {
         LearningBlock(
             title: "코드 조립하기",
-            systemImage: "square.3.layers.3d",
-            accent: .cyan
+            intent: .apply,
+            role: .task
         ) {
             Text("각 줄의 역할에 맞는 이름을 선택하거나 이름 조각을 줄로 드래그합니다.")
                 .foregroundStyle(.secondary)
@@ -432,7 +417,6 @@ struct CodeAssemblyComponent: View {
                 LearningCallout(
                     title: "바꾸지 않는 부분",
                     text: content.fixedParts.joined(separator: ", "),
-                    systemImage: "lock",
                     accent: .secondary
                 )
             }
@@ -450,8 +434,7 @@ struct CodeAssemblyComponent: View {
         let key = LearningActivityFieldKey.codeLine(index)
 
         return VStack(alignment: .leading, spacing: 7) {
-            Text(verbatim: line)
-                .font(.callout.monospaced())
+            SwiftCodeText(line, textStyle: .callout)
                 .textSelection(.enabled)
 
             Picker(
@@ -502,8 +485,8 @@ struct FreeResponseComponent: View {
     var body: some View {
         LearningBlock(
             title: "직접 설명하기",
-            systemImage: "square.and.pencil",
-            accent: .orange
+            intent: .apply,
+            role: .task
         ) {
             Text(content.prompt)
                 .font(.callout.weight(.semibold))
@@ -512,7 +495,6 @@ struct FreeResponseComponent: View {
             LearningCallout(
                 title: "작성 형식",
                 text: content.inputFormat,
-                systemImage: "text.alignleft",
                 accent: .orange
             )
 
@@ -538,7 +520,6 @@ struct FreeResponseComponent: View {
             ActivityCriteriaView(
                 title: "응답에 포함할 근거",
                 criteria: content.requiredEvidence,
-                systemImage: "quote.bubble",
                 accent: .orange
             )
 
@@ -553,8 +534,8 @@ struct FreeResponseComponent: View {
                 LearningCallout(
                     title: "비교 예시",
                     text: content.exampleAfterSubmission,
-                    systemImage: "lightbulb",
-                    accent: .yellow
+                    accent: .yellow,
+                    presentation: .emphasized
                 )
             }
 
@@ -570,8 +551,8 @@ struct RecallCheckComponent: View {
     var body: some View {
         LearningBlock(
             title: "되짚어 보기",
-            systemImage: "brain.head.profile",
-            accent: .green
+            intent: .reflect,
+            role: .task
         ) {
             VStack(alignment: .leading, spacing: 12) {
                 ForEach(Array(content.questions.enumerated()), id: \.offset) {
@@ -588,7 +569,6 @@ struct RecallCheckComponent: View {
             LearningCallout(
                 title: "비교 대상",
                 text: content.comparisonTarget,
-                systemImage: "arrow.left.arrow.right",
                 accent: .green
             )
 
