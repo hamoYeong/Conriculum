@@ -199,6 +199,315 @@ struct LearningCallout: View {
     }
 }
 
+enum SwiftCodeTokenKind: Equatable {
+    case plain
+    case keyword
+    case type
+    case string
+    case number
+    case comment
+    case attribute
+    case placeholder
+
+    var color: Color {
+        switch self {
+        case .plain: .primary
+        case .keyword: .purple
+        case .type: .teal
+        case .string: .red
+        case .number: .blue
+        case .comment: .secondary
+        case .attribute: .orange
+        case .placeholder: .pink
+        }
+    }
+}
+
+struct SwiftCodeToken: Equatable {
+    var text: String
+    let kind: SwiftCodeTokenKind
+}
+
+enum SwiftCodeHighlighter {
+    private static let keywords: Set<String> = [
+        "actor", "any", "as", "associatedtype", "async", "await",
+        "break", "case", "catch", "class", "continue", "convenience",
+        "deinit", "do", "else", "enum", "extension", "fallthrough",
+        "false", "fileprivate", "final", "for", "func", "guard", "if",
+        "import", "in", "indirect", "init", "inout", "internal", "is",
+        "isolated", "lazy", "let", "macro", "mutating", "nil",
+        "nonisolated", "nonmutating", "open", "operator", "override",
+        "package", "precedencegroup", "private", "protocol", "public",
+        "repeat", "required", "rethrows", "return", "self", "Self",
+        "some", "static", "struct", "subscript", "super", "switch",
+        "throw", "throws", "true", "try", "typealias", "var", "weak",
+        "where", "while",
+    ]
+
+    private static let standardTypes: Set<String> = [
+        "Any", "AnyObject", "Array", "Bool", "Character", "Data",
+        "Decimal", "Dictionary", "Double", "Float", "Int", "Int8",
+        "Int16", "Int32", "Int64", "Never", "Optional", "Result", "Set",
+        "String", "UInt", "UInt8", "UInt16", "UInt32", "UInt64", "URL",
+        "UUID", "Void",
+    ]
+
+    static func attributedString(for source: String) -> AttributedString {
+        tokens(in: source).reduce(into: AttributedString()) { result, token in
+            var run = AttributedString(token.text)
+            run.foregroundColor = token.kind.color
+            result.append(run)
+        }
+    }
+
+    static func tokens(in source: String) -> [SwiftCodeToken] {
+        var tokens: [SwiftCodeToken] = []
+        var index = source.startIndex
+
+        while index < source.endIndex {
+            if source[index...].hasPrefix("{{") {
+                let end = endOfPlaceholder(in: source, from: index)
+                append(source[index..<end], as: .placeholder, to: &tokens)
+                index = end
+            } else if source[index...].hasPrefix("//") {
+                let end = source[index...].firstIndex(of: "\n")
+                    ?? source.endIndex
+                append(source[index..<end], as: .comment, to: &tokens)
+                index = end
+            } else if source[index...].hasPrefix("/*") {
+                let end = endOfBlockComment(in: source, from: index)
+                append(source[index..<end], as: .comment, to: &tokens)
+                index = end
+            } else if source[index...].hasPrefix("\"\"\"") {
+                let end = endOfMultilineString(in: source, from: index)
+                append(source[index..<end], as: .string, to: &tokens)
+                index = end
+            } else if source[index] == "\"" {
+                let end = endOfString(in: source, from: index)
+                append(source[index..<end], as: .string, to: &tokens)
+                index = end
+            } else if source[index] == "@" || source[index] == "#" {
+                let end = endOfPrefixedIdentifier(in: source, from: index)
+                append(source[index..<end], as: .attribute, to: &tokens)
+                index = end
+            } else if source[index].isNumber {
+                let end = endOfNumber(in: source, from: index)
+                append(source[index..<end], as: .number, to: &tokens)
+                index = end
+            } else if isIdentifierHead(source[index]) {
+                let end = endOfIdentifier(in: source, from: index)
+                let word = String(source[index..<end])
+                append(word, as: kind(forIdentifier: word), to: &tokens)
+                index = end
+            } else {
+                let end = source.index(after: index)
+                append(source[index..<end], as: .plain, to: &tokens)
+                index = end
+            }
+        }
+
+        return tokens
+    }
+
+    private static func kind(forIdentifier word: String) -> SwiftCodeTokenKind {
+        if keywords.contains(word) {
+            return .keyword
+        }
+        if standardTypes.contains(word) || word.first?.isUppercase == true {
+            return .type
+        }
+        return .plain
+    }
+
+    private static func endOfIdentifier(
+        in source: String,
+        from start: String.Index
+    ) -> String.Index {
+        var index = source.index(after: start)
+        while index < source.endIndex, isIdentifierBody(source[index]) {
+            index = source.index(after: index)
+        }
+        return index
+    }
+
+    private static func endOfPrefixedIdentifier(
+        in source: String,
+        from start: String.Index
+    ) -> String.Index {
+        let next = source.index(after: start)
+        guard next < source.endIndex, isIdentifierHead(source[next]) else {
+            return next
+        }
+        return endOfIdentifier(in: source, from: next)
+    }
+
+    private static func endOfNumber(
+        in source: String,
+        from start: String.Index
+    ) -> String.Index {
+        var index = source.index(after: start)
+        while index < source.endIndex {
+            let character = source[index]
+            guard character.isLetter || character.isNumber
+                    || character == "_" || character == "."
+            else { break }
+            index = source.index(after: index)
+        }
+        return index
+    }
+
+    private static func endOfString(
+        in source: String,
+        from start: String.Index
+    ) -> String.Index {
+        var index = source.index(after: start)
+        var isEscaped = false
+        while index < source.endIndex {
+            let character = source[index]
+            index = source.index(after: index)
+            if character == "\"", !isEscaped {
+                break
+            }
+            if character == "\\" {
+                isEscaped.toggle()
+            } else {
+                isEscaped = false
+            }
+        }
+        return index
+    }
+
+    private static func endOfMultilineString(
+        in source: String,
+        from start: String.Index
+    ) -> String.Index {
+        var index = source.index(start, offsetBy: 3)
+        while index < source.endIndex {
+            if source[index...].hasPrefix("\"\"\"") {
+                return source.index(index, offsetBy: 3)
+            }
+            index = source.index(after: index)
+        }
+        return source.endIndex
+    }
+
+    private static func endOfBlockComment(
+        in source: String,
+        from start: String.Index
+    ) -> String.Index {
+        var index = source.index(start, offsetBy: 2)
+        var depth = 1
+        while index < source.endIndex {
+            if source[index...].hasPrefix("/*") {
+                depth += 1
+                index = source.index(index, offsetBy: 2)
+            } else if source[index...].hasPrefix("*/") {
+                depth -= 1
+                index = source.index(index, offsetBy: 2)
+                if depth == 0 {
+                    return index
+                }
+            } else {
+                index = source.index(after: index)
+            }
+        }
+        return source.endIndex
+    }
+
+    private static func endOfPlaceholder(
+        in source: String,
+        from start: String.Index
+    ) -> String.Index {
+        var index = source.index(start, offsetBy: 2)
+        while index < source.endIndex {
+            if source[index...].hasPrefix("}}") {
+                return source.index(index, offsetBy: 2)
+            }
+            index = source.index(after: index)
+        }
+        return source.endIndex
+    }
+
+    private static func isIdentifierHead(_ character: Character) -> Bool {
+        character.isLetter || character == "_"
+    }
+
+    private static func isIdentifierBody(_ character: Character) -> Bool {
+        isIdentifierHead(character) || character.isNumber
+    }
+
+    private static func append(
+        _ text: some StringProtocol,
+        as kind: SwiftCodeTokenKind,
+        to tokens: inout [SwiftCodeToken]
+    ) {
+        guard !text.isEmpty else { return }
+        if tokens.last?.kind == kind {
+            tokens[tokens.index(before: tokens.endIndex)].text += String(text)
+        } else {
+            tokens.append(SwiftCodeToken(text: String(text), kind: kind))
+        }
+    }
+}
+
+struct SwiftCodeText: View {
+    let code: String
+    let textStyle: Font.TextStyle
+
+    init(
+        _ code: String,
+        textStyle: Font.TextStyle = .body
+    ) {
+        self.code = code
+        self.textStyle = textStyle
+    }
+
+    var body: some View {
+        Text(SwiftCodeHighlighter.attributedString(for: code))
+            .font(.system(textStyle, design: .monospaced))
+    }
+}
+
+struct SwiftCodeBlock: View {
+    let code: String
+    let language: String
+    let spokenLabel: String
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 0) {
+            Text(language.uppercased())
+                .font(.caption2.monospaced().weight(.semibold))
+                .foregroundStyle(.secondary)
+                .padding(.horizontal, 14)
+                .padding(.vertical, 9)
+
+            Divider()
+
+            ScrollView(.horizontal) {
+                SwiftCodeText(code)
+                    .textSelection(.enabled)
+                    .padding(16)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+            }
+            .scrollIndicators(.visible)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(Color(nsColor: .textBackgroundColor))
+        .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
+        .overlay {
+            RoundedRectangle(cornerRadius: 10, style: .continuous)
+                .stroke(
+                    Color(nsColor: .separatorColor).opacity(0.55),
+                    lineWidth: 1
+                )
+        }
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(spokenLabel)
+        .accessibilityValue(code)
+        .accessibilityHint("가로로 스크롤하여 긴 코드를 확인할 수 있습니다.")
+    }
+}
+
 struct LearningNumberedRow: View {
     let number: Int
     let title: String?

@@ -315,22 +315,10 @@ struct FillInBlankComponent: View {
             intent: .apply,
             role: .task
         ) {
-            ScrollView(.horizontal) {
-                Text(verbatim: content.template)
-                    .font(.system(.body, design: .monospaced))
-                    .textSelection(.enabled)
-                    .padding(14)
-            }
-            .scrollIndicators(.visible)
-            .background(
-                Color(nsColor: .textBackgroundColor),
-                in: RoundedRectangle(cornerRadius: 10, style: .continuous)
-            )
-            .accessibilityElement(children: .ignore)
-            .accessibilityLabel("빈칸이 포함된 Swift 코드")
-            .accessibilityValue(content.template)
-            .accessibilityHint(
-                "가로로 스크롤하여 긴 코드를 확인할 수 있습니다."
+            SwiftCodeBlock(
+                code: content.template,
+                language: "Swift",
+                spokenLabel: "빈칸이 포함된 Swift 코드"
             )
 
             VStack(alignment: .leading, spacing: 12) {
@@ -446,8 +434,7 @@ struct CodeAssemblyComponent: View {
         let key = LearningActivityFieldKey.codeLine(index)
 
         return VStack(alignment: .leading, spacing: 7) {
-            Text(verbatim: line)
-                .font(.callout.monospaced())
+            SwiftCodeText(line, textStyle: .callout)
                 .textSelection(.enabled)
 
             Picker(

@@ -69,6 +69,9 @@
   나타낸다. 모든 항목에 아이콘이나 세로선을 반복하지 않는다.
 - `LearningCallout`: 기본적으로 평면이며, 기억할 문장이나 관찰 질문처럼 잠시
   멈춰야 하는 내용에만 `emphasized` 색면을 사용한다.
+- `SwiftCodeBlock`, `SwiftCodeText`: 읽기 전용 Swift 코드를 `AttributedString`
+  기반 문법 강조와 고정폭 글꼴로 표시한다. 편집·복잡한 문서 레이아웃이 없으므로
+  TextKit 뷰를 도입하지 않는다.
 - `LearningLabeledTextGrid`, `ActivityCriteriaView`: 의미와 접근성 단위는
   유지하되 자체 배경 표면은 만들지 않는다.
 

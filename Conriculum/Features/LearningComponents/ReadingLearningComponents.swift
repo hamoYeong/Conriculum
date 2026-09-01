@@ -225,22 +225,11 @@ struct CodeExplanationComponent: View {
             title: "코드로 확인하기",
             intent: .apply
         ) {
-            ScrollView(.horizontal) {
-                Text(verbatim: content.code)
-                    .font(.system(.body, design: .monospaced))
-                    .textSelection(.enabled)
-                    .padding(16)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-            }
-            .scrollIndicators(.visible)
-            .background(
-                Color(nsColor: .textBackgroundColor),
-                in: RoundedRectangle(cornerRadius: 10, style: .continuous)
+            SwiftCodeBlock(
+                code: content.code,
+                language: content.language,
+                spokenLabel: "\(content.language) 코드"
             )
-            .accessibilityElement(children: .ignore)
-            .accessibilityLabel("\(content.language) 코드")
-            .accessibilityValue(content.code)
-            .accessibilityHint("가로로 스크롤하여 긴 코드를 확인할 수 있습니다.")
 
             if !content.focus.isEmpty {
                 VStack(alignment: .leading, spacing: 8) {
