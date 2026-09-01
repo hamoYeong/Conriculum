@@ -83,8 +83,7 @@ struct LearningBlock<Content: View>: View {
 
             content
         }
-        .padding(role.usesSurface ? 20 : 0)
-        .padding(.vertical, role.usesSurface ? 0 : 4)
+        .padding(20)
         .frame(maxWidth: .infinity, alignment: .leading)
         .background {
             if role.usesSurface {

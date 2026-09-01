@@ -185,7 +185,7 @@ struct ChapterTwoFullContentTests {
             currentPageID: pages[0].id
         )
         firstState.chapter = chapter
-        #expect(!firstState.canNavigatePrevious)
+        #expect(firstState.canNavigatePrevious)
 
         var lastState = ChapterLearningFeature.State(
             chapterID: chapter.id,

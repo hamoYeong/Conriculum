@@ -46,9 +46,9 @@ struct ChapterLearningFeature {
 
         var canNavigatePrevious: Bool {
             guard let chapter,
-                  let index = chapter.progressPageIDs.firstIndex(of: currentPageID)
+                  let previousPageID = currentPage?.navigation.previous?.pageID
             else { return false }
-            return index > chapter.progressPageIDs.startIndex
+            return chapter.page(id: previousPageID) != nil
         }
 
         var isLastPage: Bool {
@@ -297,15 +297,13 @@ struct ChapterLearningFeature {
 
             case .previousButtonTapped:
                 guard let chapter = state.chapter,
-                      let index = chapter.progressPageIDs.firstIndex(
-                        of: state.currentPageID
-                      ),
-                      index > chapter.progressPageIDs.startIndex
+                      let previousPageID = state.currentPage?
+                        .navigation.previous?.pageID,
+                      chapter.page(id: previousPageID) != nil
                 else { return .none }
-                let previousIndex = chapter.progressPageIDs.index(before: index)
                 return saveAndNavigate(
                     state: &state,
-                    to: .page(chapter.progressPageIDs[previousIndex])
+                    to: .page(previousPageID)
                 )
 
             case .nextButtonTapped:
