@@ -1,6 +1,25 @@
 import Foundation
 
 struct KnowledgeSystemSnapshot: Equatable, Sendable {
+    enum LearningStatus: String, Equatable, Sendable, CaseIterable {
+        case unlearned, learned, personal
+
+        var title: String {
+            switch self {
+            case .unlearned: "아직 배우지 않음"
+            case .learned: "배운 지식"
+            case .personal: "내 지식"
+            }
+        }
+
+        var systemImage: String {
+            switch self {
+            case .unlearned: "lock.fill"
+            case .learned: "book.closed.fill"
+            case .personal: "person.crop.circle.fill"
+            }
+        }
+    }
     struct CollectionItem: Equatable, Identifiable, Sendable {
         let id: KnowledgeCollectionID
         let order: Int
@@ -16,6 +35,8 @@ struct KnowledgeSystemSnapshot: Equatable, Sendable {
         let concept: KnowledgeConcept
         let collectionID: KnowledgeCollectionID
         let latestRevision: PersonalConceptRevision?
+        let learningStatus: LearningStatus
+        var isLearned: Bool { learningStatus != .unlearned }
     }
 
     let catalogID: String
@@ -24,6 +45,24 @@ struct KnowledgeSystemSnapshot: Equatable, Sendable {
     let concepts: [ConceptItem]
     let baseRelations: [KnowledgeRelation]
     let personalRelations: [PersonalKnowledgeRelation]
+
+    func relationKinds(from selectedIDs: [KnowledgeConceptID], to targetID: KnowledgeConceptID) -> Set<KnowledgeRelationKind> {
+        guard !selectedIDs.contains(targetID) else { return [] }
+        let selected = Set(selectedIDs)
+        return Set(baseRelations.compactMap { relation in
+            (selected.contains(relation.sourceConceptID) && relation.targetConceptID == targetID)
+                || (selected.contains(relation.targetConceptID) && relation.sourceConceptID == targetID)
+                ? relation.kind : nil
+        })
+    }
+
+    func hasPersonalRelation(from selectedIDs: [KnowledgeConceptID], to targetID: KnowledgeConceptID) -> Bool {
+        guard !selectedIDs.contains(targetID) else { return false }
+        return personalRelations.contains { relation in
+            (selectedIDs.contains(relation.sourceConceptID) && relation.targetConceptID == targetID)
+                || (selectedIDs.contains(relation.targetConceptID) && relation.sourceConceptID == targetID)
+        }
+    }
 
     func conceptItem(
         id: KnowledgeConceptID
@@ -85,7 +124,9 @@ struct KnowledgeSystemSnapshotComposer: Sendable {
     func compose(
         catalog: KnowledgeCatalog,
         revisions: [PersonalConceptRevision],
-        personalRelations: [PersonalKnowledgeRelation]
+        personalRelations: [PersonalKnowledgeRelation],
+        learnedConceptIDs: Set<KnowledgeConceptID> = [],
+        personalConceptIDs: Set<KnowledgeConceptID> = []
     ) -> KnowledgeSystemSnapshot {
         let conceptIDs = Set(catalog.concepts.map(\.id))
         let collectionByConceptID = collectionMemberships(
@@ -99,6 +140,9 @@ struct KnowledgeSystemSnapshotComposer: Sendable {
             personalRelations,
             allowedConceptIDs: conceptIDs
         )
+        let personalizedIDs = personalConceptIDs
+            .union(latestRevisionByConceptID.keys)
+            .union(uniquePersonalRelations.flatMap { [$0.sourceConceptID, $0.targetConceptID] })
 
         return KnowledgeSystemSnapshot(
             catalogID: catalog.id,
@@ -119,7 +163,9 @@ struct KnowledgeSystemSnapshotComposer: Sendable {
                 return KnowledgeSystemSnapshot.ConceptItem(
                     concept: concept,
                     collectionID: collectionID,
-                    latestRevision: latestRevisionByConceptID[concept.id]
+                    latestRevision: latestRevisionByConceptID[concept.id],
+                    learningStatus: personalizedIDs.contains(concept.id) ? .personal
+                        : learnedConceptIDs.contains(concept.id) ? .learned : .unlearned
                 )
             },
             baseRelations: catalog.relations.filter {

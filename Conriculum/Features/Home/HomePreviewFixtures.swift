@@ -5,13 +5,13 @@ enum HomePreviewFixtures {
         source: .empty,
         stage: .stageOne,
         chapter: HomeSnapshot.ChapterCard(
-            chapterID: Chapter02.id,
+            chapterID: "chapter-02",
             title: "Chapter 2 · 정보를 값과 타입으로 표현하기",
             summary: "현실의 정보를 이름 붙은 Swift 값으로 선언하고 선택 근거를 설명합니다.",
             startPageID: "chapter-02-overview",
             resumePageID: nil,
             lastPage: nil,
-            accessNote: "미리보기 상태 · Chapter 2 직접 진입이 열려 있습니다."
+            accessNote: "미리보기 상태 · 이 챕터에 직접 진입할 수 있습니다."
         ),
         lastActivity: nil,
         evidence: LearningEvidenceKind.allCases.map {
@@ -42,7 +42,7 @@ enum HomePreviewFixtures {
             ),
             stage: .stageOne,
             chapter: HomeSnapshot.ChapterCard(
-                chapterID: Chapter02.id,
+                chapterID: "chapter-02",
                 title: "Chapter 2 · 정보를 값과 타입으로 표현하기",
                 summary: "현실의 정보를 이름 붙은 Swift 값으로 선언하고 선택 근거를 설명합니다.",
                 startPageID: "chapter-02-overview",

@@ -2,6 +2,7 @@ import SwiftUI
 
 private enum InteractiveComponentPreviewFixtures {
     static let tags: [LearningSectionTag] = [
+        .learningCompass,
         .cardSorting,
         .matching,
         .choiceWithReason,
@@ -9,6 +10,8 @@ private enum InteractiveComponentPreviewFixtures {
         .codeAssembly,
         .freeResponse,
         .recallCheck,
+        .semanticChunkReading,
+        .learningClosure,
     ]
 
     static var sections: [LearningSection] {
@@ -43,6 +46,8 @@ private struct StatefulInteractiveComponentPreview: View {
     @ViewBuilder
     private var component: some View {
         switch section.content {
+        case let .learningCompass(payload):
+            LearningCompassComponent(content: payload, activity: activity)
         case let .cardSorting(payload):
             CardSortingComponent(content: payload, activity: activity)
         case let .matching(payload):
@@ -57,6 +62,13 @@ private struct StatefulInteractiveComponentPreview: View {
             FreeResponseComponent(content: payload, activity: activity)
         case let .recallCheck(payload):
             RecallCheckComponent(content: payload, activity: activity)
+        case let .semanticChunkReading(payload):
+            SemanticChunkReadingComponent(
+                content: payload,
+                activity: activity
+            )
+        case let .learningClosure(payload):
+            LearningClosureComponent(content: payload, activity: activity)
         default:
             EmptyView()
         }

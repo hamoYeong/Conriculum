@@ -39,6 +39,9 @@ struct KnowledgeSystemFeatureTests {
             KnowledgeSystemFeature()
         } withDependencies: {
             $0.knowledgeCatalogClient.loadCatalog = { catalog }
+            $0.learningRecordClient.loadResponses = { _ in [] }
+            $0.learningRecordClient.loadProgress = { _ in nil }
+            $0.learningRecordClient.loadEvidence = { _ in [] }
             $0.personalKnowledgeClient.loadAllRevisions = { [revision] }
             $0.personalKnowledgeClient.loadAllRelations = {
                 [relation, relation]
@@ -71,7 +74,7 @@ struct KnowledgeSystemFeatureTests {
             KnowledgeSystemFeature()
         }
 
-        #expect(store.state.visibleConcepts.count == 22)
+        #expect(store.state.visibleConcepts.count == 29)
         await store.send(.collectionSelected(valuesCollectionID)) {
             $0.selectedCollectionID = valuesCollectionID
         }
@@ -86,9 +89,6 @@ struct KnowledgeSystemFeatureTests {
             store.state.visibleBaseRelations.map(\.id)
                 == ["relation-bool-type"]
         )
-        await store.send(.displayModeChanged(.network)) {
-            $0.displayMode = .network
-        }
         #expect(
             store.state.visibleConcepts.map(\.id)
                 == ["concept-type", "concept-bool"]
@@ -102,7 +102,8 @@ struct KnowledgeSystemFeatureTests {
         let snapshot = KnowledgeSystemSnapshotComposer().compose(
             catalog: try loadCatalog(),
             revisions: [],
-            personalRelations: []
+            personalRelations: [],
+            learnedConceptIDs: ["concept-value", "concept-type", "concept-bool"]
         )
         let store = TestStore(
             initialState: KnowledgeSystemFeature.State(snapshot: snapshot)

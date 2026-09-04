@@ -3,7 +3,7 @@ import Testing
 
 @testable import Conriculum
 
-// MARK: - 9. 22개 tag와 payload의 실제 최소 호출 예제
+// MARK: - 9. 역할이 겹치지 않는 21개 tag와 payload의 실제 최소 호출 예제
 
 struct LearningSectionContentTests {
     /// 모든 지원 case가 `tag + payload` JSON으로 encode/decode되며 tag 목록과 정확히 일치하는지 확인한다.
@@ -11,7 +11,7 @@ struct LearningSectionContentTests {
     func everySupportedTagRoundTrips() throws {
         let fixtures = makeFixtures()
 
-        #expect(fixtures.count == 22)
+        #expect(fixtures.count == 21)
         #expect(Set(fixtures.map(\.tag)) == Set(LearningSectionTag.allCases))
 
         for fixture in fixtures {
@@ -45,21 +45,21 @@ struct LearningSectionContentTests {
     @Test
     func missingPayloadFieldReportsItsCodingKey() throws {
         let data = Data(
-            #"{"tag":"knowledgeRecall","payload":{"questions":[],"connection":"다음 개념으로 잇는다."}}"#.utf8
+            #"{"tag":"learningCompass","payload":{"previousConnection":"앞선 판단","coreQuestion":"무엇을 판단할까?","firstPredictionPrompt":"먼저 예상한다.","confidencePrompt":"확신을 고른다."}}"#.utf8
         )
 
         do {
             _ = try JSONDecoder().decode(LearningSectionContent.self, from: data)
             Issue.record("필수 payload field 없이 decoding되었다.")
         } catch let DecodingError.keyNotFound(key, context) {
-            #expect(key.stringValue == "memorySentence")
+            #expect(key.stringValue == "completionEvidence")
             #expect(context.codingPath.map(\.stringValue) == ["payload"])
         } catch {
             Issue.record("예상하지 못한 오류: \(error)")
         }
     }
 
-    /// 22개 associated payload의 최소 유효값 모음.
+    /// 통합된 21개 associated payload의 최소 유효값 모음.
     /// 각 구조체의 field 의미를 실제 생성 호출로 훑고 싶을 때 이 배열을 위에서 아래로 읽는다.
     private func makeFixtures() -> [LearningSectionContent] {
         let item = LearningContentItem(id: "item", text: "내용")
@@ -72,11 +72,13 @@ struct LearningSectionContentTests {
         )
 
         return [
-            .knowledgeRecall(
-                KnowledgeRecallContent(
-                    questions: ["무엇을 기억하는가?"],
-                    memorySentence: "기억할 문장",
-                    connection: "이번 연결"
+            .learningCompass(
+                LearningCompassContent(
+                    previousConnection: "앞선 판단을 이어 쓴다.",
+                    coreQuestion: "지금 무엇을 판단할까?",
+                    firstPredictionPrompt: "첫 예상을 적는다.",
+                    confidencePrompt: "현재 확신과 이유를 고른다.",
+                    completionEvidence: ["판단과 근거"]
                 )
             ),
             .situation(
@@ -181,35 +183,40 @@ struct LearningSectionContentTests {
                     recordFields: ["바뀐 생각"]
                 )
             ),
+            .learningClosure(
+                LearningClosureContent(
+                    firstPredictionReference: "처음 적은 예상",
+                    finalExplanationPrompt: "지금의 설명을 적는다.",
+                    confidenceChangePrompt: "확신이 어떻게 바뀌었는가?",
+                    changedCriterionPrompt: "어떤 기준을 바꿨는가?",
+                    nextUsePrompt: "다음에는 어디에 쓸까?",
+                    completionQuestion: "근거로 설명할 수 있는가?",
+                    requiredEvidence: ["판단", "근거"],
+                    retryCondition: "근거가 없으면 핵심 활동으로 돌아간다."
+                )
+            ),
+            .semanticChunkReading(
+                SemanticChunkReadingContent(
+                    code: "let capacity = 12\nlet isPaid = true",
+                    language: "swift",
+                    lensQuestions: ["함께 무엇을 준비하는가?"],
+                    elements: [item],
+                    selectionPrompt: "같은 책임의 요소를 고른다.",
+                    chunkNamePrompt: "조각 이름을 붙인다.",
+                    flowPrompt: "흐름을 설명한다.",
+                    boundaryPrompt: "포함·제외 근거를 적는다.",
+                    changePrompt: "변경 영향을 예상한다.",
+                    completionEvidence: ["떨어진 요소의 연결"]
+                )
+            ),
             .knowledgeLink(KnowledgeLinkSectionContent(links: [link])),
-            .personalExpressionComparison(
-                PersonalExpressionComparisonContent(
-                    conceptIDs: ["concept-value"],
-                    baseExpression: "기본 정의",
-                    personalExpressionEmptyState: "나의 표현 없음",
-                    comparisonQuestion: "구분 기준이 드러나는가?",
-                    inspectorLocation: "지식 inspector"
-                )
-            ),
-            .learningStateSelection(
-                LearningStateSelectionContent(
-                    options: [LearningStateOption(id: "deeper", title: "더 깊게 가기", guidance: "확장 과제를 연다.")],
-                    defaultOptionID: nil
-                )
-            ),
             .enrichmentTask(
                 EnrichmentTaskContent(
-                    requiredStateID: "deeper",
+                    title: "더 깊게 가기",
+                    guidance: "필요할 때만 펼친다.",
                     materials: [labeledText],
                     prompt: "복잡도를 높여 적용한다.",
                     conceptIDs: ["concept-value"]
-                )
-            ),
-            .completionCheck(
-                CompletionCheckContent(
-                    question: "목표를 달성했는가?",
-                    requiredEvidence: ["선언", "근거"],
-                    retryCondition: "근거가 없으면 다시 시도한다."
                 )
             ),
             .personalKnowledgePromotion(

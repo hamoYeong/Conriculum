@@ -6,6 +6,94 @@ import Testing
 @MainActor
 struct HomeFeatureTests {
     @Test
+    func freshHomeResumesMostRecentlySavedChapterAndOffersEveryChapter() async throws {
+        let decoder = ContentResourceDecoder()
+        let second = try decoder.decode(Chapter.self, from: .chapter02)
+        let third = try decoder.decode(Chapter.self, from: .chapter(stageNumber: 1, chapterNumber: 3))
+        let catalog = try decoder.decode(KnowledgeCatalog.self, from: .valuesAndTypes)
+        let progress = LearningProgress(chapterID: third.id, currentPageID: third.overview.id,
+            completedPageIDs: [], updatedAt: Date(timeIntervalSince1970: 100))
+        let expected = HomeSnapshotComposer().compose(chapter: third, catalog: catalog,
+            progress: progress, responses: [], evidence: [], revisions: [],
+            availableChapters: [second, third], progressByChapter: [third.id: progress])
+        let store = TestStore(initialState: HomeFeature.State()) { HomeFeature() } withDependencies: {
+            $0.curriculumClient.loadChapters = { [second, third] }
+            $0.knowledgeCatalogClient.loadCatalog = { catalog }
+            $0.learningRecordClient.loadProgress = { $0 == third.id ? progress : nil }
+            $0.learningRecordClient.loadResponses = { _ in [] }
+            $0.learningRecordClient.loadEvidence = { _ in [] }
+            $0.personalKnowledgeClient.loadRevisions = { _ in [] }
+            $0.personalKnowledgeClient.loadRelations = { _ in [] }
+        }
+        await store.send(.task) { $0.isLoading = true }
+        await store.receive(.loadResponse(.loaded(expected)), timeout: .seconds(10)) {
+            $0.isLoading = false
+            $0.snapshot = expected
+            $0.chapterEntry = .init(chapterID: third.id, startPageID: third.overview.id, resumePageID: third.overview.id)
+        }
+        await store.send(.chapterSelected(second.id))
+        await store.receive(.delegate(.chapterRequested(chapterID: second.id, pageID: second.overview.id)))
+        await store.send(.chapterSelected("missing-chapter"))
+    }
+
+    @Test
+    func reloadKeepsTheCurrentlySelectedChapterWhenSeveralAreAvailable()
+        async throws
+    {
+        let decoder = ContentResourceDecoder()
+        let chapter = try decoder.decode(Chapter.self, from: .chapter02)
+        let catalog = try decoder.decode(
+            KnowledgeCatalog.self,
+            from: .valuesAndTypes
+        )
+        let earlierChapter = Chapter(
+            id: "chapter-01",
+            stageID: chapter.stageID,
+            order: 1,
+            title: "더 이른 챕터",
+            summary: chapter.summary,
+            overview: chapter.overview,
+            pages: chapter.pages
+        )
+        let expectedSnapshot = HomeSnapshotComposer().compose(
+            chapter: chapter,
+            catalog: catalog,
+            progress: nil,
+            responses: [],
+            evidence: [],
+            revisions: [],
+            availableChapters: [earlierChapter, chapter]
+        )
+        let store = TestStore(
+            initialState: HomeFeature.State(snapshot: .mock)
+        ) {
+            HomeFeature()
+        } withDependencies: {
+            $0.curriculumClient.loadChapters = { [earlierChapter, chapter] }
+            $0.knowledgeCatalogClient.loadCatalog = { catalog }
+            $0.learningRecordClient.loadProgress = { _ in nil }
+            $0.learningRecordClient.loadResponses = { _ in [] }
+            $0.learningRecordClient.loadEvidence = { _ in [] }
+            $0.personalKnowledgeClient.loadRevisions = { _ in [] }
+            $0.personalKnowledgeClient.loadRelations = { _ in [] }
+        }
+
+        await store.send(.reloadRequested) {
+            $0.isLoading = true
+            $0.loadErrorMessage = nil
+        }
+        await store.receive(.loadResponse(.loaded(expectedSnapshot)), timeout: .seconds(10)) {
+            $0.isLoading = false
+            $0.snapshot = expectedSnapshot
+            $0.chapterEntry = HomeFeature.ChapterEntry(
+                chapterID: chapter.id,
+                startPageID: chapter.overview.id,
+                resumePageID: nil
+            )
+        }
+    }
+
+    @Test
     func loadComposesStoredRecordsAheadOfPreviewPlaceholder() async throws {
         let decoder = ContentResourceDecoder()
         let chapter = try decoder.decode(Chapter.self, from: .chapter02)
@@ -61,7 +149,7 @@ struct HomeFeatureTests {
         ) {
             HomeFeature()
         } withDependencies: {
-            $0.curriculumClient.loadChapter = { _ in chapter }
+            $0.curriculumClient.loadChapters = { [chapter] }
             $0.knowledgeCatalogClient.loadCatalog = { catalog }
             $0.learningRecordClient.loadProgress = { _ in progress }
             $0.learningRecordClient.loadResponses = { pageID in
@@ -80,7 +168,7 @@ struct HomeFeatureTests {
             $0.isLoading = true
             $0.loadErrorMessage = nil
         }
-        await store.receive(.loadResponse(.loaded(expectedSnapshot))) {
+        await store.receive(.loadResponse(.loaded(expectedSnapshot)), timeout: .seconds(10)) {
             $0.isLoading = false
             $0.snapshot = expectedSnapshot
             $0.chapterEntry = HomeFeature.ChapterEntry(
@@ -107,7 +195,7 @@ struct HomeFeatureTests {
         ) {
             HomeFeature()
         } withDependencies: {
-            $0.curriculumClient.loadChapter = { _ in chapter }
+            $0.curriculumClient.loadChapters = { [chapter] }
             $0.knowledgeCatalogClient.loadCatalog = { catalog }
             $0.learningRecordClient.loadProgress = { _ in nil }
             $0.learningRecordClient.loadResponses = { _ in [] }

@@ -18,6 +18,7 @@ struct DependencyClientContractTests {
             ClientContractProbe()
         } withDependencies: {
             $0.curriculumClient = CurriculumClient(
+                loadChapters: { [chapter] },
                 loadChapter: { _ in chapter },
                 loadPage: { _, _ in firstPage }
             )
@@ -36,7 +37,8 @@ struct DependencyClientContractTests {
                 loadResponses: { _ in [] },
                 saveResponse: { _ in },
                 loadEvidence: { _ in [] },
-                saveEvidence: { _ in }
+                saveEvidence: { _ in },
+                recordPageVisit: { _, _ in }
             )
             $0.personalKnowledgeClient = PersonalKnowledgeClient(
                 loadAllRevisions: { [] },

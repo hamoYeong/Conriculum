@@ -2,8 +2,6 @@ import ComposableArchitecture
 
 @Reducer
 struct AppFeature {
-    static let chapter02ID = Chapter02.id
-
     @ObservableState
     struct State: Equatable {
         var route: Route = .home
@@ -31,8 +29,16 @@ struct AppFeature {
 
         Reduce { state, action in
             switch action {
+            case let .workspace(.delegate(.chapterRequested(chapterID, pageID))):
+                let pending = state.workspace?.pendingPersonalizationReviews ?? []
+                state.workspace = LearningWorkspaceFeature.State(
+                    chapterID: chapterID, pageID: pageID,
+                    pendingPersonalizationReviews: pending
+                )
+                state.route = .learningWorkspace(chapterID: chapterID)
+                return .none
+
             case let .home(.delegate(.chapterRequested(chapterID, pageID))):
-                guard chapterID == Self.chapter02ID else { return .none }
                 state.workspace = LearningWorkspaceFeature.State(
                     chapterID: chapterID,
                     pageID: pageID,

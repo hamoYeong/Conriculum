@@ -1,41 +1,5 @@
 import SwiftUI
 
-struct KnowledgeRecallComponent: View {
-    let content: KnowledgeRecallContent
-
-    var body: some View {
-        LearningBlock(
-            title: "기억 연결하기",
-            intent: .recall
-        ) {
-            VStack(alignment: .leading, spacing: 12) {
-                ForEach(Array(content.questions.enumerated()), id: \.offset) {
-                    index,
-                    question in
-                    LearningNumberedRow(
-                        number: index + 1,
-                        text: question,
-                        accent: .blue
-                    )
-                }
-            }
-
-            LearningCallout(
-                title: "기억할 문장",
-                text: content.memorySentence,
-                accent: .blue,
-                presentation: .emphasized
-            )
-
-            LearningCallout(
-                title: "이번 학습과의 연결",
-                text: content.connection,
-                accent: .teal
-            )
-        }
-    }
-}
-
 struct SituationComponent: View {
     let content: SituationContent
 

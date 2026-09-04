@@ -19,7 +19,7 @@
     {
       "kind": "page",
       "stableID": "chapter-02-overview",
-      "sourcePath": "학습 체계/Stage 1 - Swift로 문제를 표현할 준비/Chapter 2 - 정보를 값과 타입으로 표현하기/00 Chapter 2 지도.md"
+      "sourcePath": "학습 체계/Stage 1 - Swift로 문제를 표현할 준비/Chapter 2 - 정보를 값과 타입으로 표현하기/00 Chapter 2 Overview.md"
     },
     {
       "kind": "page",
@@ -170,6 +170,101 @@
       "kind": "knowledgeConcept",
       "stableID": "concept-swiftui-interface",
       "sourcePath": "지식 체계/12 SwiftUI와 사용자 인터페이스/00 분류 안내.md"
+    },
+    {
+      "kind": "page",
+      "stableID": "chapter-02-page-09",
+      "sourcePath": "학습 체계/Stage 1 - Swift로 문제를 표현할 준비/Chapter 2 - 정보를 값과 타입으로 표현하기/09 선언 묶음을 의미 단위 조각으로 읽기.md"
+    },
+    {
+      "kind": "knowledgeConcept",
+      "stableID": "concept-semantic-chunk-reading",
+      "sourcePath": "지식 체계/01 문제 해결과 컴퓨팅 사고/코드를 의미 단위 조각으로 읽기.md"
+    },
+    {
+      "kind": "chapter",
+      "stableID": "chapter-03",
+      "sourcePath": "학습 체계/Stage 1 - Swift로 문제를 표현할 준비/Chapter 3 - 값으로 새로운 값을 계산하기/00 Chapter 3 지도.md"
+    },
+    {
+      "kind": "page",
+      "stableID": "chapter-03-overview",
+      "sourcePath": "학습 체계/Stage 1 - Swift로 문제를 표현할 준비/Chapter 3 - 값으로 새로운 값을 계산하기/00 Chapter 3 Overview.md"
+    },
+    {
+      "kind": "page",
+      "stableID": "chapter-03-page-01",
+      "sourcePath": "학습 체계/Stage 1 - Swift로 문제를 표현할 준비/Chapter 3 - 값으로 새로운 값을 계산하기/01 입력과 결과 사이의 관계 찾기.md"
+    },
+    {
+      "kind": "page",
+      "stableID": "chapter-03-page-02",
+      "sourcePath": "학습 체계/Stage 1 - Swift로 문제를 표현할 준비/Chapter 3 - 값으로 새로운 값을 계산하기/02 표현식의 결과 예상하기.md"
+    },
+    {
+      "kind": "page",
+      "stableID": "chapter-03-page-03",
+      "sourcePath": "학습 체계/Stage 1 - Swift로 문제를 표현할 준비/Chapter 3 - 값으로 새로운 값을 계산하기/03 산술 연산자로 값 계산하기.md"
+    },
+    {
+      "kind": "page",
+      "stableID": "chapter-03-page-04",
+      "sourcePath": "학습 체계/Stage 1 - Swift로 문제를 표현할 준비/Chapter 3 - 값으로 새로운 값을 계산하기/04 큰 계산을 중간값으로 나누기.md"
+    },
+    {
+      "kind": "page",
+      "stableID": "chapter-03-page-05",
+      "sourcePath": "학습 체계/Stage 1 - Swift로 문제를 표현할 준비/Chapter 3 - 값으로 새로운 값을 계산하기/05 계산 순서 확인하기.md"
+    },
+    {
+      "kind": "page",
+      "stableID": "chapter-03-page-06",
+      "sourcePath": "학습 체계/Stage 1 - Swift로 문제를 표현할 준비/Chapter 3 - 값으로 새로운 값을 계산하기/06 Int와 Double의 계산 비교하기.md"
+    },
+    {
+      "kind": "page",
+      "stableID": "chapter-03-page-07",
+      "sourcePath": "학습 체계/Stage 1 - Swift로 문제를 표현할 준비/Chapter 3 - 값으로 새로운 값을 계산하기/07 print로 계산 과정 관찰하기.md"
+    },
+    {
+      "kind": "page",
+      "stableID": "chapter-03-page-08",
+      "sourcePath": "학습 체계/Stage 1 - Swift로 문제를 표현할 준비/Chapter 3 - 값으로 새로운 값을 계산하기/08 새로운 문제에 적용하고 돌아보기.md"
+    },
+    {
+      "kind": "page",
+      "stableID": "chapter-03-page-09",
+      "sourcePath": "학습 체계/Stage 1 - Swift로 문제를 표현할 준비/Chapter 3 - 값으로 새로운 값을 계산하기/09 계산 흐름을 의미 단위 조각으로 읽기.md"
+    },
+    {
+      "kind": "knowledgeConcept",
+      "stableID": "concept-expression",
+      "sourcePath": "지식 체계/03 표현식과 연산/표현식.md"
+    },
+    {
+      "kind": "knowledgeConcept",
+      "stableID": "concept-arithmetic-operation",
+      "sourcePath": "지식 체계/03 표현식과 연산/산술 연산.md"
+    },
+    {
+      "kind": "knowledgeConcept",
+      "stableID": "concept-intermediate-value",
+      "sourcePath": "지식 체계/03 표현식과 연산/중간값.md"
+    },
+    {
+      "kind": "knowledgeConcept",
+      "stableID": "concept-evaluation-order",
+      "sourcePath": "지식 체계/03 표현식과 연산/계산 순서.md"
+    },
+    {
+      "kind": "knowledgeConcept",
+      "stableID": "concept-numeric-division",
+      "sourcePath": "지식 체계/03 표현식과 연산/수 타입과 나눗셈.md"
+    },
+    {
+      "kind": "knowledgeConcept",
+      "stableID": "concept-print-observation",
+      "sourcePath": "지식 체계/03 표현식과 연산/print로 관찰하기.md"
     }
   ]
 }

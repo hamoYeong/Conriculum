@@ -7,6 +7,7 @@ import Testing
 @MainActor
 struct InteractiveLearningComponentTests {
     private let expectedTags: [LearningSectionTag] = [
+        .learningCompass,
         .cardSorting,
         .matching,
         .choiceWithReason,
@@ -14,6 +15,8 @@ struct InteractiveLearningComponentTests {
         .codeAssembly,
         .freeResponse,
         .recallCheck,
+        .semanticChunkReading,
+        .learningClosure,
     ]
 
     @Test
@@ -81,6 +84,32 @@ struct InteractiveLearningComponentTests {
             key: LearningActivityFieldKey.relationTargetConceptID,
             values: ["concept-type-modeling"]
         )))
+    }
+
+    @Test
+    func closureAssessmentPreservesReflectionFieldsInTheSameActivity() {
+        let explanation = ActivityResponseField(
+            key: LearningActivityFieldKey.reflectionFinalExplanation,
+            values: ["값의 역할과 흐름으로 설명한다."]
+        )
+        var receivedFields: [ActivityResponseField] = []
+        let input = LearningActivityInput(
+            activityID: "activity-page09-closure",
+            fields: [explanation]
+        ) { _, fields in
+            receivedFields = fields
+        }
+
+        input.updating(
+            key: LearningActivityFieldKey.completionAssessment,
+            values: [CompletionSelfAssessment.ready.rawValue]
+        )
+
+        #expect(receivedFields.first == explanation)
+        #expect(receivedFields.last == ActivityResponseField(
+            key: LearningActivityFieldKey.completionAssessment,
+            values: [CompletionSelfAssessment.ready.rawValue]
+        ))
     }
 
     @Test
@@ -161,6 +190,8 @@ struct InteractiveLearningComponentTests {
         activity: LearningActivityInput
     ) -> AnyView {
         switch content {
+        case let .learningCompass(payload):
+            AnyView(LearningCompassComponent(content: payload, activity: activity))
         case let .cardSorting(payload):
             AnyView(CardSortingComponent(content: payload, activity: activity))
         case let .matching(payload):
@@ -175,6 +206,10 @@ struct InteractiveLearningComponentTests {
             AnyView(FreeResponseComponent(content: payload, activity: activity))
         case let .recallCheck(payload):
             AnyView(RecallCheckComponent(content: payload, activity: activity))
+        case let .semanticChunkReading(payload):
+            AnyView(SemanticChunkReadingComponent(content: payload, activity: activity))
+        case let .learningClosure(payload):
+            AnyView(LearningClosureComponent(content: payload, activity: activity))
         default:
             AnyView(EmptyView())
         }

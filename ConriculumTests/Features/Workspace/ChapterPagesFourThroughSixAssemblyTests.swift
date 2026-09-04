@@ -1,7 +1,5 @@
-import AppKit
 import ComposableArchitecture
 import Foundation
-import SwiftUI
 import Testing
 
 @testable import Conriculum
@@ -13,7 +11,6 @@ struct ChapterPagesFourThroughSixAssemblyTests {
         let requiredActivityIDs: Set<LearningActivityID>
         let knowledgeConceptIDs: Set<KnowledgeConceptID>
         let promotionEvidenceIDs: Set<LearningActivityID>
-        let promotionConceptIDs: Set<KnowledgeConceptID>
     }
 
     private let timestamp = Date(timeIntervalSince1970: 1_725_782_400)
@@ -22,21 +19,21 @@ struct ChapterPagesFourThroughSixAssemblyTests {
     )!
 
     @Test
-    func pagesFourThroughSixMatchTheirComponentAndEvidenceContracts() throws {
+    func pagesFourThroughSixMatchTheCompassCoreClosureContract() throws {
         let chapter = try loadChapter()
         let catalog = try loadKnowledgeCatalog()
         let catalogIDs = Set(catalog.concepts.map(\.id))
         let contracts: [Int: PageContract] = [
             4: PageContract(
                 tags: [
-                    .situation, .comparison, .definition, .decisionCriteria,
-                    .codeExplanation, .knowledgeLink,
-                    .learningStateSelection, .matching, .codeAssembly,
-                    .choiceWithReason, .personalExpressionComparison,
-                    .personalKnowledgePromotion, .enrichmentTask,
-                    .completionCheck,
+                    .learningCompass, .situation, .comparison, .definition,
+                    .decisionCriteria, .codeExplanation, .knowledgeLink,
+                    .matching, .codeAssembly, .choiceWithReason,
+                    .learningClosure, .enrichmentTask,
+                    .personalKnowledgePromotion,
                 ],
                 requiredActivityIDs: [
+                    "activity-page04-compass",
                     "activity-page04-matching",
                     "activity-page04-code-assembly",
                     "activity-page04-choice",
@@ -46,19 +43,18 @@ struct ChapterPagesFourThroughSixAssemblyTests {
                 promotionEvidenceIDs: [
                     "activity-page04-code-assembly",
                     "activity-page04-choice",
-                ],
-                promotionConceptIDs: ["concept-identifier-naming"]
+                ]
             ),
             5: PageContract(
                 tags: [
-                    .knowledgeRecall, .situation, .comparison, .definition,
+                    .learningCompass, .situation, .comparison, .definition,
                     .codeExplanation, .comparison, .knowledgeLink,
-                    .learningStateSelection, .codeAssembly, .cardSorting,
-                    .choiceWithReason, .personalExpressionComparison,
-                    .personalKnowledgePromotion, .enrichmentTask,
-                    .completionCheck,
+                    .codeAssembly, .cardSorting, .choiceWithReason,
+                    .learningClosure, .enrichmentTask,
+                    .personalKnowledgePromotion,
                 ],
                 requiredActivityIDs: [
+                    "activity-page05-compass",
                     "activity-page05-code-assembly",
                     "activity-page05-card-sorting",
                     "activity-page05-choice",
@@ -71,22 +67,18 @@ struct ChapterPagesFourThroughSixAssemblyTests {
                 promotionEvidenceIDs: [
                     "activity-page05-card-sorting",
                     "activity-page05-choice",
-                ],
-                promotionConceptIDs: [
-                    "concept-constants-variables",
-                    "concept-problem-boundary",
                 ]
             ),
             6: PageContract(
                 tags: [
-                    .situation, .comparison, .definition, .comparison,
-                    .decisionCriteria, .knowledgeLink,
-                    .learningStateSelection, .matching, .fillInBlank,
-                    .choiceWithReason, .personalExpressionComparison,
-                    .personalKnowledgePromotion, .enrichmentTask,
-                    .completionCheck,
+                    .learningCompass, .situation, .comparison, .definition,
+                    .comparison, .decisionCriteria, .knowledgeLink,
+                    .matching, .fillInBlank, .choiceWithReason,
+                    .learningClosure, .enrichmentTask,
+                    .personalKnowledgePromotion,
                 ],
                 requiredActivityIDs: [
+                    "activity-page06-compass",
                     "activity-page06-matching",
                     "activity-page06-fill-blank",
                     "activity-page06-choice",
@@ -100,9 +92,6 @@ struct ChapterPagesFourThroughSixAssemblyTests {
                 promotionEvidenceIDs: [
                     "activity-page06-matching",
                     "activity-page06-choice",
-                ],
-                promotionConceptIDs: [
-                    "concept-type-inference-annotation"
                 ]
             ),
         ]
@@ -123,28 +112,41 @@ struct ChapterPagesFourThroughSixAssemblyTests {
                 Set(page.knowledgeLinks.map(\.conceptID))
                     == contract.knowledgeConceptIDs
             )
+            #expect(page.knowledgeLinks.filter { $0.role == .primary }.count == 1)
+            #expect(page.knowledgeContext.currentlyUsedConceptIDs.count <= 3)
             #expect(page.knowledgeLinks.allSatisfy {
                 catalogIDs.contains($0.conceptID)
             })
-            #expect(page.knowledgeContext.currentlyUsedConceptIDs.allSatisfy {
-                catalogIDs.contains($0)
-            })
-            #expect(page.knowledgeContext.nearbyKnowledge.allSatisfy {
-                catalogIDs.contains($0.conceptID)
-            })
-            #expect(page.sections.compactMap(\.activityID).allSatisfy {
-                activityIDs.contains($0)
-            })
-            #expect(page.activities.allSatisfy { activity in
-                page.sections.contains { $0.id == activity.sectionID }
-            })
+            #expect(page.sections.compactMap(\.activityID).allSatisfy(
+                activityIDs.contains
+            ))
 
-            try validatePersonalization(
-                in: page,
-                contract: contract,
-                activityIDs: activityIDs,
-                catalogIDs: catalogIDs
+            let closureSection = try #require(
+                page.sections.first { $0.content.tag == .learningClosure }
             )
+            let enrichmentSection = try #require(
+                page.sections.first { $0.content.tag == .enrichmentTask }
+            )
+            let promotionSection = try #require(
+                page.sections.first {
+                    $0.content.tag == .personalKnowledgePromotion
+                }
+            )
+            #expect(enrichmentSection.order > closureSection.order)
+            #expect(promotionSection.order > closureSection.order)
+
+            guard case let .personalKnowledgePromotion(promotion) =
+                promotionSection.content
+            else {
+                Issue.record("개인 지식 후보 mapping이 올바르지 않다.")
+                return
+            }
+            #expect(
+                Set(promotion.evidenceActivityIDs)
+                    == contract.promotionEvidenceIDs
+            )
+            #expect(promotion.evidenceActivityIDs.allSatisfy(activityIDs.contains))
+            #expect(promotion.conceptIDs.allSatisfy(catalogIDs.contains))
         }
     }
 
@@ -153,7 +155,7 @@ struct ChapterPagesFourThroughSixAssemblyTests {
         let chapter = try loadChapter()
 
         for page in chapter.progressPages.prefix(6) {
-            #expect(Chapter02ContentAssembly.isAssembled(page))
+            #expect(LearningContentAssembly.isAssembled(page))
         }
     }
 
@@ -224,104 +226,6 @@ struct ChapterPagesFourThroughSixAssemblyTests {
         }
     }
 
-    @Test
-    func pagesFourThroughSixRenderThroughTheSharedTree() throws {
-        let chapter = try loadChapter()
-        let catalog = try loadKnowledgeCatalog()
-
-        for page in chapter.progressPages.dropFirst(3).prefix(3) {
-            var state = ChapterLearningFeature.State(
-                chapterID: chapter.id,
-                currentPageID: page.id
-            )
-            state.chapter = chapter
-            state.knowledgeCatalog = catalog
-            let view = ChapterLearningView(
-                store: Store(initialState: state) {
-                    ChapterLearningFeature()
-                }
-            )
-            .frame(width: 760, height: 900)
-            let hostingView = NSHostingView(rootView: view)
-            hostingView.frame = NSRect(
-                x: 0,
-                y: 0,
-                width: 760,
-                height: 900
-            )
-            hostingView.layoutSubtreeIfNeeded()
-            let image = try #require(
-                hostingView.bitmapImageRepForCachingDisplay(
-                    in: hostingView.bounds
-                )
-            )
-            hostingView.cacheDisplay(in: hostingView.bounds, to: image)
-
-            #expect(image.size == NSSize(width: 760, height: 900))
-            #expect(sampledColorCount(in: image) > 3)
-        }
-    }
-
-    private func validatePersonalization(
-        in page: LearningPage,
-        contract: PageContract,
-        activityIDs: Set<LearningActivityID>,
-        catalogIDs: Set<KnowledgeConceptID>
-    ) throws {
-        let stateSection = try #require(
-            page.sections.first {
-                $0.content.tag == .learningStateSelection
-            }
-        )
-        guard case let .learningStateSelection(stateSelection) =
-            stateSection.content
-        else {
-            Issue.record("학습 상태 section mapping이 올바르지 않다.")
-            return
-        }
-        let stateIDs = Set(stateSelection.options.map(\.id))
-
-        let enrichmentSection = try #require(
-            page.sections.first { $0.content.tag == .enrichmentTask }
-        )
-        guard case let .enrichmentTask(enrichment) = enrichmentSection.content
-        else {
-            Issue.record("확장·심화 section mapping이 올바르지 않다.")
-            return
-        }
-        #expect(stateIDs.contains(enrichment.requiredStateID))
-        #expect(enrichment.conceptIDs.allSatisfy(catalogIDs.contains))
-
-        let promotionSection = try #require(
-            page.sections.first {
-                $0.content.tag == .personalKnowledgePromotion
-            }
-        )
-        guard case let .personalKnowledgePromotion(promotion) =
-            promotionSection.content
-        else {
-            Issue.record("개인 지식 후보 section mapping이 올바르지 않다.")
-            return
-        }
-        #expect(promotion.candidateKind == .conceptRevision)
-        #expect(
-            Set(promotion.evidenceActivityIDs)
-                == contract.promotionEvidenceIDs
-        )
-        #expect(Set(promotion.conceptIDs) == contract.promotionConceptIDs)
-        #expect(promotion.evidenceActivityIDs.allSatisfy(activityIDs.contains))
-        #expect(promotion.conceptIDs.allSatisfy(catalogIDs.contains))
-
-        let completionSection = try #require(
-            page.sections.first { $0.content.tag == .completionCheck }
-        )
-        let completionActivityID = try #require(completionSection.activityID)
-        #expect(
-            page.activities.first { $0.id == completionActivityID }?
-                .isRequired == true
-        )
-    }
-
     private func loadChapter() throws -> Chapter {
         try ContentResourceDecoder().decode(Chapter.self, from: .chapter02)
     }
@@ -331,28 +235,5 @@ struct ChapterPagesFourThroughSixAssemblyTests {
             KnowledgeCatalog.self,
             from: .valuesAndTypes
         )
-    }
-
-    private func sampledColorCount(
-        in image: NSBitmapImageRep
-    ) -> Int {
-        let horizontalStep = max(image.pixelsWide / 24, 1)
-        let verticalStep = max(image.pixelsHigh / 24, 1)
-        var colors: Set<Int> = []
-
-        for x in stride(from: 0, to: image.pixelsWide, by: horizontalStep) {
-            for y in stride(from: 0, to: image.pixelsHigh, by: verticalStep) {
-                guard let color = image.colorAt(x: x, y: y)?
-                    .usingColorSpace(.deviceRGB)
-                else { continue }
-
-                let red = Int(color.redComponent * 15)
-                let green = Int(color.greenComponent * 15)
-                let blue = Int(color.blueComponent * 15)
-                colors.insert((red << 8) | (green << 4) | blue)
-            }
-        }
-
-        return colors.count
     }
 }

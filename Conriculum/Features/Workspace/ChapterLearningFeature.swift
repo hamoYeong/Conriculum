@@ -31,6 +31,7 @@ struct ChapterLearningFeature {
         var isShowingCompletionSummary = false
         var loadErrorMessage: String?
         var navigationErrorMessage: String?
+        var visitErrorMessage: String?
 
         init(
             chapterID: ChapterID,
@@ -68,6 +69,8 @@ struct ChapterLearningFeature {
 
     enum Action: Equatable {
         case task
+        case pagePresented
+        case pageVisitResponse(LearningPageID, String?)
         case loadResponse(LoadResponse)
         case activityDraftChanged(
             activityID: LearningActivityID,
@@ -83,6 +86,9 @@ struct ChapterLearningFeature {
         case startButtonTapped
         case previousButtonTapped
         case nextButtonTapped
+        case nextChapterButtonTapped
+        case nextChapterResolved(ChapterID, LearningPageID)
+        case nextChapterFailed(String)
         case navigationResponse(NavigationResponse)
         case delegate(Delegate)
     }
@@ -118,6 +124,7 @@ struct ChapterLearningFeature {
     }
 
     enum Delegate: Equatable {
+        case chapterRequested(ChapterID, LearningPageID)
         case currentPageChanged(LearningPageID)
         case personalKnowledge(PersonalKnowledgeComponentAction)
     }
@@ -136,6 +143,24 @@ struct ChapterLearningFeature {
 
         Reduce { state, action in
             switch action {
+            case .pagePresented:
+                guard let chapter = state.chapter else { return .none }
+                let pageID = state.currentPageID
+                state.visitErrorMessage = nil
+                return .run { send in
+                    do {
+                        try await learningRecordClient.recordPageVisit(chapter, pageID)
+                        await send(.pageVisitResponse(pageID, nil))
+                    } catch {
+                        await send(.pageVisitResponse(pageID, error.localizedDescription))
+                    }
+                }
+
+            case let .pageVisitResponse(pageID, message):
+                guard state.currentPageID == pageID else { return .none }
+                state.visitErrorMessage = message
+                return .none
+
             case .task:
                 guard !state.isLoading else { return .none }
                 state.isLoading = true
@@ -271,15 +296,6 @@ struct ChapterLearningFeature {
                     activityID: activityID
                 )
 
-            case let .component(.delegate(.activityFieldsChanged(
-                activityID,
-                fields
-            ))):
-                return .send(.activityDraftChanged(
-                    activityID: activityID,
-                    fields: fields
-                ))
-
             case let .component(.delegate(.personalKnowledge(action))):
                 return .send(.delegate(.personalKnowledge(action)))
 
@@ -305,6 +321,48 @@ struct ChapterLearningFeature {
                     state: &state,
                     to: .page(previousPageID)
                 )
+
+            case .nextChapterButtonTapped:
+                guard state.isShowingCompletionSummary, !state.isSavingNavigation,
+                      let chapter = state.chapter,
+                      let destination = chapter.progressPages.last?.navigation.next,
+                      chapter.page(id: destination.pageID) == nil
+                else { return .none }
+                state.isSavingNavigation = true
+                state.navigationErrorMessage = nil
+                return .run { send in
+                    do {
+                        let chapters = try await curriculumClient.loadChapters()
+                        let nextChapter = await MainActor.run {
+                            chapters.first(where: {
+                                $0.id != chapter.id && $0.page(id: destination.pageID) != nil
+                            })
+                        }
+                        guard let next = nextChapter else {
+                            await send(.nextChapterFailed("다음 챕터의 콘텐츠가 아직 준비되지 않았습니다."))
+                            return
+                        }
+                        // A new chapter starts with its learning map, not its first exercise.
+                        let saved = try await learningRecordClient.loadProgress(next.id)
+                        let pageID = next.overview.id
+                        try await learningRecordClient.saveProgress(LearningProgress(
+                            chapterID: next.id, currentPageID: pageID,
+                            completedPageIDs: saved?.completedPageIDs ?? [], updatedAt: now
+                        ))
+                        await send(.nextChapterResolved(next.id, pageID))
+                    } catch {
+                        await send(.nextChapterFailed(error.localizedDescription))
+                    }
+                }
+
+            case let .nextChapterResolved(chapterID, pageID):
+                state.isSavingNavigation = false
+                return .send(.delegate(.chapterRequested(chapterID, pageID)))
+
+            case let .nextChapterFailed(message):
+                state.isSavingNavigation = false
+                state.navigationErrorMessage = message
+                return .none
 
             case .nextButtonTapped:
                 guard let chapter = state.chapter,
@@ -439,6 +497,7 @@ struct ChapterLearningFeature {
 
         let timestamp = now
         let currentPageID = state.currentPageID
+        let chapter = state.chapter
         let progress = LearningProgress(
             chapterID: state.chapterID,
             currentPageID: targetPageID,
@@ -471,6 +530,10 @@ struct ChapterLearningFeature {
                     )
                 case .completionSummary:
                     responses = []
+                }
+                if let chapter {
+                    // Preserve old exposure before overwriting the saved position.
+                    try await learningRecordClient.recordPageVisit(chapter, currentPageID)
                 }
                 try await learningRecordClient.saveProgress(progress)
                 await send(.navigationResponse(.saved(

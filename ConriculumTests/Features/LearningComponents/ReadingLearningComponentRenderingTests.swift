@@ -7,7 +7,6 @@ import Testing
 @MainActor
 struct ReadingLearningComponentRenderingTests {
     private let expectedTags: [LearningSectionTag] = [
-        .knowledgeRecall,
         .situation,
         .comparison,
         .definition,
@@ -130,8 +129,6 @@ struct ReadingLearningComponentRenderingTests {
         for content: LearningSectionContent
     ) -> AnyView {
         switch content {
-        case let .knowledgeRecall(payload):
-            AnyView(KnowledgeRecallComponent(content: payload))
         case let .situation(payload):
             AnyView(SituationComponent(content: payload))
         case let .comparison(payload):

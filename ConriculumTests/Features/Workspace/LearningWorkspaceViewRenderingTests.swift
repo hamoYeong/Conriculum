@@ -15,7 +15,7 @@ struct LearningWorkspaceViewRenderingTests {
         let view = LearningWorkspaceView(
             store: Store(
                 initialState: LearningWorkspaceFeature.State(
-                    chapterID: Chapter02.id,
+                    chapterID: "chapter-02",
                     pageID: "chapter-02-overview"
                 )
             ) {
@@ -44,7 +44,7 @@ struct LearningWorkspaceViewRenderingTests {
         let view = LearningWorkspaceView(
             store: Store(
                 initialState: LearningWorkspaceFeature.State(
-                    chapterID: Chapter02.id,
+                    chapterID: "chapter-02",
                     pageID: "chapter-02-page-07",
                     isFocusModeEnabled: true
                 )
@@ -69,30 +69,62 @@ struct LearningWorkspaceViewRenderingTests {
         #expect(sampledColorCount(in: image) > 2)
     }
 
-    @Test
-    func narrowWindowRendersWithBothSupportingPanelsWithoutOverflow()
+    @Test(arguments: [680.0, 720.0, 899.0, 900.0, 1_100.0])
+    func windowPrioritizesLearningAndInspectorWithoutOverflow(width: Double)
         throws
     {
         var state = try workspaceStateWithInspector()
         state.sidebarMode = .visible
         state.isInspectorPresented = true
 
-        try assertNarrowLayoutFits(state: state)
+        try assertLayoutFits(state: state, width: width)
     }
 
     @Test
-    func narrowWindowRendersWithOnlyInspectorWithoutOverflow() throws {
+    func panelLayoutRespondsWithoutChangingTheSavedSidebarPreference() {
+        #expect(
+            LearningWorkspacePanelLayout.resolve(
+                availableWidth: 720,
+                inspectorIsVisible: true,
+                sidebarIsHidden: false
+            ) == .learningAndInspector
+        )
+        #expect(
+            LearningWorkspacePanelLayout.resolve(
+                availableWidth: 1_100,
+                inspectorIsVisible: true,
+                sidebarIsHidden: false
+            ) == .navigationAndInspector
+        )
+        #expect(
+            LearningWorkspacePanelLayout.resolve(
+                availableWidth: 1_100,
+                inspectorIsVisible: true,
+                sidebarIsHidden: true
+            ) == .learningAndInspector
+        )
+        #expect(
+            LearningWorkspacePanelLayout.resolve(
+                availableWidth: 720,
+                inspectorIsVisible: false,
+                sidebarIsHidden: false
+            ) == .navigation
+        )
+    }
+
+    @Test(arguments: [680.0, 720.0, 1_100.0])
+    func windowRendersWithOnlyInspectorWithoutOverflow(width: Double) throws {
         var state = try workspaceStateWithInspector()
         state.sidebarMode = .hidden
         state.isInspectorPresented = true
 
-        try assertNarrowLayoutFits(state: state)
+        try assertLayoutFits(state: state, width: width)
     }
 
-    private func assertNarrowLayoutFits(
-        state: LearningWorkspaceFeature.State
+    private func assertLayoutFits(
+        state: LearningWorkspaceFeature.State,
+        width: Double
     ) throws {
-        let width = 720.0
         let height = 720.0
         let view = LearningWorkspaceView(
             store: Store(initialState: state) {
@@ -105,10 +137,13 @@ struct LearningWorkspaceViewRenderingTests {
 
         let horizontalOverflow = hostingView
             .visibleDescendantHorizontalOverflow()
-        // NavigationSplitView의 좌측 소재는 macOS에서 24pt를 의도적으로
-        // 바깥까지 그린다. 실제 콘텐츠가 잘리던 114pt 이동은 허용하지 않는다.
+        let splitView = try #require(hostingView.descendants.compactMap {
+            $0 as? NSSplitView
+        }.first)
+        let expectsSidebar = state.sidebarMode != .hidden && width >= 900
+        #expect(splitView.arrangedSubviews.count == (expectsSidebar ? 3 : 2))
         #expect(
-            horizontalOverflow.leading <= 24.5,
+            horizontalOverflow.leading <= 0.5,
             "왼쪽 콘텐츠가 \(horizontalOverflow.leading)pt 잘렸습니다."
         )
         #expect(
@@ -123,6 +158,61 @@ struct LearningWorkspaceViewRenderingTests {
         hostingView.cacheDisplay(in: hostingView.bounds, to: image)
         #expect(abs(image.size.width - width) < 0.5)
         #expect(sampledColorCount(in: image) > 2)
+        if state.sidebarMode == .visible {
+            let png = try #require(image.representation(using: .png, properties: [:]))
+            Attachment.record(Array(png), named: "workspace-\(Int(width)).png")
+        }
+    }
+
+    @Test
+    func resizingPreservesMainScrollViewAndSidebarPreference() async throws {
+        var state = try workspaceStateWithInspector()
+        state.sidebarMode = .visible
+        state.isInspectorPresented = true
+        let store = Store(initialState: state) { LearningWorkspaceFeature() }
+        let hostingView = NSHostingView(rootView: LearningWorkspaceView(store: store))
+        hostingView.frame = NSRect(x: 0, y: 0, width: 1_100, height: 720)
+        let window = NSWindow(contentRect: hostingView.frame, styleMask: [], backing: .buffered, defer: false)
+        window.contentView = hostingView
+        window.layoutIfNeeded()
+        hostingView.layoutSubtreeIfNeeded()
+        await Task.yield()
+        hostingView.layoutSubtreeIfNeeded()
+        let split = try #require(hostingView.descendants.compactMap { $0 as? NSSplitView }.first)
+        #expect(split.arrangedSubviews.count == 3)
+        let mainScrollView = try #require(split.arrangedSubviews[1].descendants.compactMap {
+            $0 as? NSScrollView
+        }.first)
+        let event = try #require(CGEvent(
+            scrollWheelEvent2Source: nil,
+            units: .pixel,
+            wheelCount: 1,
+            wheel1: -300,
+            wheel2: 0,
+            wheel3: 0
+        ))
+        mainScrollView.scrollWheel(with: try #require(NSEvent(cgEvent: event)))
+        // ScrollView는 휠 입력을 다음 렌더링 주기에 반영한다.
+        for _ in 0..<30 where mainScrollView.contentView.bounds.minY == 0 {
+            try await Task.sleep(for: .milliseconds(10))
+        }
+        hostingView.layoutSubtreeIfNeeded()
+        #expect(mainScrollView.contentView.bounds.minY > 0,
+                "초기 스크롤: \(mainScrollView.contentView.bounds), 문서: \(String(describing: mainScrollView.documentView?.frame))")
+
+        for width in [680.0, 720.0, 900.0, 1_100.0] {
+            hostingView.frame.size.width = width
+            hostingView.layoutSubtreeIfNeeded()
+            await Task.yield()
+            let mainIndex = width < 900 ? 0 : 1
+            let currentScrollView = try #require(split.arrangedSubviews[mainIndex].descendants.compactMap {
+                $0 as? NSScrollView
+            }.first)
+            #expect(currentScrollView === mainScrollView)
+            #expect(currentScrollView.contentView.bounds.minY > 0)
+            #expect(store.sidebarMode == .visible)
+            #expect(store.isInspectorPresented)
+        }
     }
 
     private func workspaceStateWithInspector()
@@ -191,10 +281,14 @@ private extension NSView {
         leading: CGFloat,
         trailing: CGFloat
     ) {
-        descendants.reduce(into: (leading: 0, trailing: 0)) {
+        // 실제 분할 컨테이너와 스크롤 뷰의 배치만 검사한다.
+        // 화면 밖 KeyViewProxy와 스크롤 문서의 bounds는 그려지는 패널이 아니다.
+        descendants.filter {
+            $0 is NSSplitView || $0 is NSScrollView || $0.superview is NSSplitView
+        }.reduce(into: (leading: 0, trailing: 0)) {
             overflow,
             descendant in
-            guard !descendant.isHidden,
+            guard !descendant.isHiddenOrHasHiddenAncestor,
                   descendant.alphaValue > 0,
                   descendant.bounds.width > 0
             else { return }

@@ -77,7 +77,8 @@ struct KnowledgeGraphLayoutTests {
             for index in positions.indices {
                 for otherIndex in positions.indices where otherIndex > index {
                     #expect(
-                        !positions[index].intersects(positions[otherIndex])
+                        !positions[index].intersects(positions[otherIndex]),
+                        "conceptCount=\(conceptCount), nodes=\(index),\(otherIndex)"
                     )
                 }
             }

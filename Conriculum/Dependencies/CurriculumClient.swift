@@ -2,6 +2,7 @@ import ComposableArchitecture
 
 @DependencyClient
 struct CurriculumClient: Sendable {
+    var loadChapters: @Sendable () async throws -> [Chapter]
     var loadChapter: @Sendable (_ chapterID: ChapterID) async throws -> Chapter
     var loadPage: @Sendable (
         _ chapterID: ChapterID,
@@ -21,6 +22,9 @@ extension CurriculumClient: TestDependencyKey {
 extension CurriculumClient {
     static func live(store: BundledContentStore) -> Self {
         Self(
+            loadChapters: {
+                try await store.loadChapters()
+            },
             loadChapter: { chapterID in
                 try await store.loadChapter(chapterID)
             },

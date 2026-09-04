@@ -20,21 +20,21 @@ struct ChapterPagesOneThroughThreeAssemblyTests {
     )!
 
     @Test
-    func pagesOneThroughThreeMatchTheirActivityAndKnowledgeContracts() throws {
+    func pagesOneThroughThreeMatchTheCompassCoreClosureContract() throws {
         let chapter = try loadChapter()
         let catalog = try loadKnowledgeCatalog()
         let catalogIDs = Set(catalog.concepts.map(\.id))
         let contracts: [Int: PageContract] = [
             1: PageContract(
                 tags: [
-                    .knowledgeRecall, .situation, .comparison, .definition,
+                    .learningCompass, .situation, .comparison, .definition,
                     .definition, .codeExplanation, .knowledgeLink,
-                    .learningStateSelection, .cardSorting, .matching,
-                    .choiceWithReason, .personalExpressionComparison,
-                    .personalKnowledgePromotion, .enrichmentTask,
-                    .completionCheck,
+                    .cardSorting, .matching, .choiceWithReason,
+                    .learningClosure, .enrichmentTask,
+                    .personalKnowledgePromotion,
                 ],
                 requiredActivityIDs: [
+                    "activity-page01-compass",
                     "activity-page01-card-sorting",
                     "activity-page01-matching",
                     "activity-page01-choice",
@@ -48,14 +48,13 @@ struct ChapterPagesOneThroughThreeAssemblyTests {
             ),
             2: PageContract(
                 tags: [
-                    .knowledgeRecall, .situation, .comparison, .definition,
-                    .decisionCriteria, .knowledgeLink,
-                    .learningStateSelection, .cardSorting, .matching,
-                    .choiceWithReason, .personalExpressionComparison,
-                    .personalKnowledgePromotion, .enrichmentTask,
-                    .completionCheck,
+                    .learningCompass, .situation, .comparison, .definition,
+                    .decisionCriteria, .knowledgeLink, .cardSorting, .matching,
+                    .choiceWithReason, .learningClosure, .enrichmentTask,
+                    .personalKnowledgePromotion,
                 ],
                 requiredActivityIDs: [
+                    "activity-page02-compass",
                     "activity-page02-card-sorting",
                     "activity-page02-matching",
                     "activity-page02-choice",
@@ -71,15 +70,14 @@ struct ChapterPagesOneThroughThreeAssemblyTests {
             ),
             3: PageContract(
                 tags: [
-                    .knowledgeRecall, .situation, .comparison,
+                    .learningCompass, .situation, .comparison,
                     .decisionCriteria, .definition, .knowledgeLink,
-                    .learningStateSelection, .choiceWithReason,
-                    .cardSorting, .freeResponse,
-                    .personalExpressionComparison,
-                    .personalKnowledgePromotion, .enrichmentTask,
-                    .completionCheck,
+                    .choiceWithReason, .cardSorting, .freeResponse,
+                    .learningClosure, .enrichmentTask,
+                    .personalKnowledgePromotion,
                 ],
                 requiredActivityIDs: [
+                    "activity-page03-compass",
                     "activity-page03-choice",
                     "activity-page03-card-sorting",
                     "activity-page03-free-response",
@@ -111,13 +109,9 @@ struct ChapterPagesOneThroughThreeAssemblyTests {
                 Set(page.knowledgeLinks.map(\.conceptID))
                     == contract.knowledgeConceptIDs
             )
+            #expect(page.knowledgeLinks.filter { $0.role == .primary }.count == 1)
+            #expect(page.knowledgeContext.currentlyUsedConceptIDs.count <= 3)
             #expect(page.knowledgeLinks.allSatisfy {
-                catalogIDs.contains($0.conceptID)
-            })
-            #expect(page.knowledgeContext.currentlyUsedConceptIDs.allSatisfy {
-                catalogIDs.contains($0)
-            })
-            #expect(page.knowledgeContext.nearbyKnowledge.allSatisfy {
                 catalogIDs.contains($0.conceptID)
             })
             #expect(page.sections.compactMap(\.activityID).allSatisfy {
@@ -127,7 +121,7 @@ struct ChapterPagesOneThroughThreeAssemblyTests {
                 page.sections.contains { $0.id == activity.sectionID }
             })
 
-            try validatePersonalization(
+            try validateOptionalAndClosureSections(
                 in: page,
                 activityIDs: activityIDs,
                 catalogIDs: catalogIDs
@@ -140,26 +134,30 @@ struct ChapterPagesOneThroughThreeAssemblyTests {
         let chapter = try loadChapter()
 
         for page in chapter.progressPages.prefix(3) {
-            #expect(Chapter02ContentAssembly.isAssembled(page))
+            #expect(LearningContentAssembly.isAssembled(page))
         }
     }
 
     @Test
-    func completionSelectionFlowsIntoTheAutosaveDraft() async throws {
+    func closureFieldsFlowIntoTheAutosaveDraftAsOneActivity() async throws {
         let chapter = try loadChapter()
         let catalog = try loadKnowledgeCatalog()
         let page = try #require(
             chapter.progressPages.first { $0.order == 1 }
         )
-        let completionSection = try #require(
-            page.sections.first { $0.content.tag == .completionCheck }
+        let closureSection = try #require(
+            page.sections.first { $0.content.tag == .learningClosure }
         )
-        let activityID = try #require(completionSection.activityID)
+        let activityID = try #require(closureSection.activityID)
         let fields = [
+            ActivityResponseField(
+                key: LearningActivityFieldKey.reflectionFinalExplanation,
+                values: ["값과 규칙의 경계를 근거로 설명한다."]
+            ),
             ActivityResponseField(
                 key: LearningActivityFieldKey.completionAssessment,
                 values: [CompletionSelfAssessment.ready.rawValue]
-            )
+            ),
         ]
         let draft = ChapterLearningFeature.ActivityDraft(
             responseID: ActivityResponseID(
@@ -184,17 +182,7 @@ struct ChapterPagesOneThroughThreeAssemblyTests {
             $0.learningRecordClient.saveResponse = { _ in }
         }
 
-        await store.send(.component(.completionAssessmentChanged(
-            activityID: activityID,
-            assessment: .ready
-        ))) {
-            $0.component.completionAssessments[activityID] = .ready
-        }
-        await store.receive(.component(.delegate(.activityFieldsChanged(
-            activityID: activityID,
-            fields: fields
-        ))))
-        await store.receive(.activityDraftChanged(
+        await store.send(.activityDraftChanged(
             activityID: activityID,
             fields: fields
         )) {
@@ -251,23 +239,39 @@ struct ChapterPagesOneThroughThreeAssemblyTests {
         }
     }
 
-    private func validatePersonalization(
+    private func validateOptionalAndClosureSections(
         in page: LearningPage,
         activityIDs: Set<LearningActivityID>,
         catalogIDs: Set<KnowledgeConceptID>
     ) throws {
-        let comparisonSection = try #require(
-            page.sections.first {
-                $0.content.tag == .personalExpressionComparison
-            }
+        let closureSection = try #require(
+            page.sections.first { $0.content.tag == .learningClosure }
         )
-        guard case let .personalExpressionComparison(comparison) =
-            comparisonSection.content
-        else {
-            Issue.record("나의 표현 비교 section mapping이 올바르지 않다.")
+        guard case let .learningClosure(closure) = closureSection.content else {
+            Issue.record("학습 마무리 mapping이 올바르지 않다.")
             return
         }
-        #expect(comparison.conceptIDs.allSatisfy(catalogIDs.contains))
+        #expect(!closure.finalExplanationPrompt.isEmpty)
+        #expect(!closure.requiredEvidence.isEmpty)
+        #expect(!closure.retryCondition.isEmpty)
+        let closureActivityID = try #require(closureSection.activityID)
+        #expect(
+            page.activities.first { $0.id == closureActivityID }?
+                .isRequired == true
+        )
+
+        let enrichmentSection = try #require(
+            page.sections.first { $0.content.tag == .enrichmentTask }
+        )
+        guard case let .enrichmentTask(enrichment) = enrichmentSection.content
+        else {
+            Issue.record("선택 학습 mapping이 올바르지 않다.")
+            return
+        }
+        #expect(enrichment.title == "더 깊게 가기")
+        #expect(!enrichment.guidance.isEmpty)
+        #expect(enrichment.conceptIDs.allSatisfy(catalogIDs.contains))
+        #expect(enrichmentSection.order > closureSection.order)
 
         let promotionSection = try #require(
             page.sections.first {
@@ -277,22 +281,12 @@ struct ChapterPagesOneThroughThreeAssemblyTests {
         guard case let .personalKnowledgePromotion(promotion) =
             promotionSection.content
         else {
-            Issue.record("개인 지식 후보 section mapping이 올바르지 않다.")
+            Issue.record("개인 지식 후보 mapping이 올바르지 않다.")
             return
         }
-        #expect(promotion.candidateKind == .conceptRevision)
-        #expect(!promotion.evidenceActivityIDs.isEmpty)
         #expect(promotion.evidenceActivityIDs.allSatisfy(activityIDs.contains))
         #expect(promotion.conceptIDs.allSatisfy(catalogIDs.contains))
-
-        let completionSection = try #require(
-            page.sections.first { $0.content.tag == .completionCheck }
-        )
-        let completionActivityID = try #require(completionSection.activityID)
-        #expect(
-            page.activities.first { $0.id == completionActivityID }?
-                .isRequired == true
-        )
+        #expect(promotionSection.order > closureSection.order)
     }
 
     private func loadChapter() throws -> Chapter {

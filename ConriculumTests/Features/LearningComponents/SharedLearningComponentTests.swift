@@ -1,5 +1,4 @@
 import AppKit
-import ComposableArchitecture
 import SwiftUI
 import Testing
 
@@ -9,54 +8,14 @@ import Testing
 struct SharedLearningComponentTests {
     private let expectedTags: [LearningSectionTag] = [
         .knowledgeLink,
-        .personalExpressionComparison,
-        .learningStateSelection,
         .enrichmentTask,
-        .completionCheck,
         .personalKnowledgePromotion,
         .personalKnowledgeRelation,
         .knowledgeChangeSummary,
     ]
 
     @Test
-    func completionAndPersonalKnowledgeActionsRemainIndependent() async {
-        let activityID: LearningActivityID = "activity-page01-completion"
-        let personalAction = PersonalKnowledgeComponentAction
-            .promotionReviewRequested(
-            activityID: "activity-page01-promotion",
-            targetConceptID: "concept-value",
-            expression: "값과 규칙을 나누는 나의 기준"
-        )
-        let store = TestStore(
-            initialState: LearningComponentFeature.State()
-        ) {
-            LearningComponentFeature()
-        }
-
-        await store.send(.completionAssessmentChanged(
-            activityID: activityID,
-            assessment: .ready
-        )) {
-            $0.completionAssessments[activityID] = .ready
-        }
-        await store.receive(.delegate(.activityFieldsChanged(
-            activityID: activityID,
-            fields: [
-                ActivityResponseField(
-                    key: LearningActivityFieldKey.completionAssessment,
-                    values: [CompletionSelfAssessment.ready.rawValue]
-                )
-            ]
-        )))
-
-        await store.send(.personalKnowledge(personalAction))
-        await store.receive(.delegate(.personalKnowledge(personalAction)))
-
-        #expect(store.state.completionAssessments[activityID] == .ready)
-    }
-
-    @Test
-    func enrichmentAppearsOnlyForTheRequiredLearningState() throws {
+    func enrichmentExplainsThatItIsOptionalWithoutASeparateStateSelection() throws {
         let fixtures = try loadFixtures()
         let section = try #require(
             fixtures.sections.first { $0.content.tag == .enrichmentTask }
@@ -66,20 +25,8 @@ struct SharedLearningComponentTests {
             return
         }
 
-        #expect(
-            EnrichmentTaskComponent(
-                content: content,
-                selectedStateID: content.requiredStateID,
-                conceptNames: fixtures.conceptNames
-            ).isVisible
-        )
-        #expect(
-            EnrichmentTaskComponent(
-                content: content,
-                selectedStateID: nil,
-                conceptNames: fixtures.conceptNames
-            ).isVisible == false
-        )
+        #expect(content.title == "더 깊게 가기")
+        #expect(content.guidance.contains("펼쳐"))
     }
 
     @Test
@@ -177,31 +124,10 @@ struct SharedLearningComponentTests {
                 content: payload,
                 conceptNames: conceptNames
             ))
-        case let .personalExpressionComparison(payload):
-            AnyView(PersonalExpressionComparisonComponent(
-                content: payload,
-                personalExpression: nil,
-                conceptNames: conceptNames,
-                onAction: { _ in }
-            ))
-        case let .learningStateSelection(payload):
-            AnyView(LearningStateSelectionComponent(
-                content: payload,
-                selectedStateID: "deeper",
-                onSelectionChanged: { _ in }
-            ))
         case let .enrichmentTask(payload):
             AnyView(EnrichmentTaskComponent(
                 content: payload,
-                selectedStateID: payload.requiredStateID,
                 conceptNames: conceptNames
-            ))
-        case let .completionCheck(payload):
-            AnyView(CompletionCheckComponent(
-                content: payload,
-                activityID: activity.activityID,
-                assessment: nil,
-                onAssessmentChanged: { _, _ in }
             ))
         case let .personalKnowledgePromotion(payload):
             AnyView(PersonalKnowledgePromotionComponent(

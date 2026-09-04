@@ -3,6 +3,7 @@ import SwiftUI
 
 struct ConceptInspectorView: View {
     let store: StoreOf<ConceptInspectorFeature>
+    @State private var isEditingPersonalExpression = false
 
     var body: some View {
         ScrollView {
@@ -17,12 +18,21 @@ struct ConceptInspectorView: View {
                     baseKnowledge
                     knowledgeRelations
                 } else {
+                    modeBar
+
                     if let review = store.personalizationReview {
                         personalizationReviewBanner(review)
+                        baseKnowledge
+                        personalKnowledgeEditor
+                        evidenceStatus
+                    } else if isEditingPersonalExpression {
+                        baseKnowledge
+                        personalKnowledgeEditor
+                        evidenceStatus
+                    } else {
+                        baseKnowledge
+                        personalKnowledgeReadOnly
                     }
-                    baseKnowledge
-                    personalKnowledgeEditor
-                    evidenceStatus
                     knowledgeRelations
 
                     if let message = store.validationMessage {
@@ -47,10 +57,16 @@ struct ConceptInspectorView: View {
             .padding(20)
         }
         .safeAreaInset(edge: .bottom) {
-            if store.relationEditor == nil {
+            if store.relationEditor == nil,
+               isEditingPersonalExpression
+                || store.personalizationReview != nil {
                 footer
             }
         }
+        .onChange(of: store.concept.id) {
+            isEditingPersonalExpression = false
+        }
+        .background(Color(nsColor: .windowBackgroundColor))
     }
 
     private var header: some View {
@@ -127,6 +143,139 @@ struct ConceptInspectorView: View {
         )
     }
 
+    private var modeBar: some View {
+        HStack(spacing: 8) {
+            inspectorModeButton(
+                title: "읽기·비교",
+                systemImage: "book.pages",
+                isSelected: !isEditingPersonalExpression
+                    && store.personalizationReview == nil
+            ) {
+                isEditingPersonalExpression = false
+            }
+
+            inspectorModeButton(
+                title: store.personalizationReview == nil
+                    ? "내 표현 편집"
+                    : "후보 검토",
+                systemImage: store.personalizationReview == nil
+                    ? "square.and.pencil"
+                    : "person.crop.circle.badge.questionmark",
+                isSelected: isEditingPersonalExpression
+                    || store.personalizationReview != nil
+            ) {
+                isEditingPersonalExpression = true
+            }
+        }
+        .accessibilityElement(children: .contain)
+        .accessibilityLabel("개념 상세 모드")
+    }
+
+    private func inspectorModeButton(
+        title: String,
+        systemImage: String,
+        isSelected: Bool,
+        action: @escaping () -> Void
+    ) -> some View {
+        Button(action: action) {
+            Label(title, systemImage: systemImage)
+                .font(.caption.weight(.semibold))
+                .foregroundStyle(isSelected ? Color.white : Color.primary)
+                .frame(maxWidth: .infinity)
+                .padding(.horizontal, 10)
+                .padding(.vertical, 8)
+                .background(
+                    isSelected
+                        ? Color.accentColor
+                        : Color(nsColor: .controlBackgroundColor),
+                    in: RoundedRectangle(
+                        cornerRadius: 9,
+                        style: .continuous
+                    )
+                )
+        }
+        .buttonStyle(.plain)
+        .accessibilityAddTraits(isSelected ? .isSelected : [])
+    }
+
+    private var personalKnowledgeReadOnly: some View {
+        KnowledgeSection(
+            title: "나의 표현",
+            systemImage: "person.crop.circle",
+            accent: .purple,
+            presentation: .surface
+        ) {
+            VStack(alignment: .leading, spacing: 12) {
+                if let revision = store.latestRevision {
+                    if let personalTitle = revision.personalTitle,
+                       personalTitle.isEmpty == false {
+                        KnowledgeLabeledText(
+                            title: "나의 이름",
+                            text: personalTitle,
+                            systemImage: "tag"
+                        )
+                    }
+
+                    KnowledgeLabeledText(
+                        title: "나의 설명",
+                        text: revision.explanation,
+                        systemImage: "text.quote"
+                    )
+
+                    if revision.examples.isEmpty == false {
+                        VStack(alignment: .leading, spacing: 6) {
+                            Label("나의 예시", systemImage: "list.bullet")
+                                .font(.caption.weight(.semibold))
+                                .foregroundStyle(.secondary)
+                            ForEach(revision.examples, id: \.id) { example in
+                                Text(example.text)
+                                    .font(.callout)
+                                    .fixedSize(
+                                        horizontal: false,
+                                        vertical: true
+                                    )
+                            }
+                        }
+                    }
+                } else {
+                    Text("아직 확인해 저장한 나의 표현이 없습니다. 기본 지식을 읽은 뒤, 학습 활동의 근거가 생겼을 때만 새 표현을 기록할 수 있습니다.")
+                        .font(.callout)
+                        .foregroundStyle(.secondary)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+
+                Button {
+                    isEditingPersonalExpression = true
+                } label: {
+                    Label(
+                        store.latestRevision == nil
+                            ? "내 표현 만들기"
+                            : "내 표현 편집",
+                        systemImage: "square.and.pencil"
+                    )
+                    .font(.callout.weight(.semibold))
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 9)
+                    .background(
+                        Color.purple.opacity(0.10),
+                        in: RoundedRectangle(
+                            cornerRadius: 9,
+                            style: .continuous
+                        )
+                    )
+                }
+                .buttonStyle(.plain)
+                .disabled(store.evidenceActivityID == nil)
+                .accessibilityHint(
+                    store.evidenceActivityID == nil
+                        ? "관련 학습 페이지에서 근거 활동을 먼저 남겨 주세요."
+                        : "기본 지식은 유지하고 나의 표현만 편집합니다."
+                )
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+        }
+    }
+
     private var personalKnowledgeEditor: some View {
         KnowledgeSection(
             title: store.personalizationReview != nil
@@ -188,8 +337,15 @@ struct ConceptInspectorView: View {
                             store.send(.addExampleButtonTapped)
                         } label: {
                             Label("예시 추가", systemImage: "plus")
+                                .font(.caption.weight(.semibold))
+                                .padding(.horizontal, 9)
+                                .padding(.vertical, 6)
+                                .background(
+                                    Color.purple.opacity(0.10),
+                                    in: Capsule()
+                                )
                         }
-                        .controlSize(.small)
+                        .buttonStyle(.plain)
                     }
 
                     if store.examples.isEmpty {
@@ -248,8 +404,11 @@ struct ConceptInspectorView: View {
                     store.send(.removeExampleButtonTapped(example.id))
                 } label: {
                     Image(systemName: "trash")
+                        .foregroundStyle(.red)
+                        .padding(7)
+                        .background(Color.red.opacity(0.09), in: Circle())
                 }
-                .buttonStyle(.borderless)
+                .buttonStyle(.plain)
                 .help("이 예시 삭제")
                 .accessibilityLabel("예시 삭제")
             }
@@ -290,7 +449,7 @@ struct ConceptInspectorView: View {
             canCreateRelation: store.canCreateRelation,
             relationCreationUnavailableMessage: store.canCreateRelation
                 ? nil
-                : "새 관계는 관계 활동이 있는 7·8페이지에서 만들 수 있습니다.",
+                : "새 관계는 관계 만들기 활동이 제공되는 학습 페이지에서 기록할 수 있습니다.",
             onAddRelation: {
                 store.send(.addRelationButtonTapped)
             },
@@ -309,18 +468,20 @@ struct ConceptInspectorView: View {
     }
 
     private var footer: some View {
-        HStack(spacing: 10) {
+        KnowledgeEditorActionLayout {
             Button(
                 store.personalizationReview == nil
                     ? "취소"
                     : "후보 검토 닫기"
             ) {
-                store.send(.cancelButtonTapped)
+                if store.personalizationReview == nil {
+                    isEditingPersonalExpression = false
+                } else {
+                    store.send(.cancelButtonTapped)
+                }
             }
             .keyboardShortcut(.cancelAction)
             .disabled(store.isSaving)
-
-            Spacer()
 
             Button {
                 store.send(.saveButtonTapped)
@@ -344,9 +505,24 @@ struct ConceptInspectorView: View {
         }
         .padding(.horizontal, 20)
         .padding(.vertical, 12)
-        .background(.regularMaterial)
+        .background(Color(nsColor: .windowBackgroundColor))
+        .overlay(alignment: .top) { Divider() }
     }
 
+}
+
+/// 버튼 문구를 줄이지 않고, 공간이 부족하면 세로로 배치한다.
+struct KnowledgeEditorActionLayout<Content: View>: View {
+    @ViewBuilder let content: Content
+
+    var body: some View {
+        ViewThatFits(in: .horizontal) {
+            HStack(spacing: 10) { content }
+                .fixedSize(horizontal: true, vertical: false)
+            VStack(alignment: .trailing, spacing: 10) { content }
+        }
+        .frame(maxWidth: .infinity, alignment: .trailing)
+    }
 }
 
 #Preview("개념 상세 · 새 표현") {

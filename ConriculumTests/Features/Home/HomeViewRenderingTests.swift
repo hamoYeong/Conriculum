@@ -8,8 +8,15 @@ import Testing
 @MainActor
 struct HomeViewRenderingTests {
     @Test
-    func emptyAndPopulatedPreviewsRenderAtAStandardWindowSize() throws {
+    func emptyAndPopulatedPreviewsRenderAtAStandardWindowSize() async throws {
+        let decoder = ContentResourceDecoder()
+        let chapter = try decoder.decode(Chapter.self, from: .chapter02)
+        let next = try decoder.decode(Chapter.self, from: .chapter(stageNumber: 1, chapterNumber: 3))
+        let liveSnapshot = HomeSnapshotComposer().compose(chapter: chapter,
+            catalog: try decoder.decode(KnowledgeCatalog.self, from: .valuesAndTypes),
+            progress: nil, responses: [], evidence: [], revisions: [], availableChapters: [chapter, next])
         let fixtures: [(name: String, snapshot: HomeSnapshot)] = [
+            ("available-chapters", liveSnapshot),
             ("empty", HomePreviewFixtures.empty),
             ("populated", HomePreviewFixtures.mock),
         ]
@@ -29,6 +36,12 @@ struct HomeViewRenderingTests {
 
             let hostingView = NSHostingView(rootView: view)
             hostingView.frame = NSRect(x: 0, y: 0, width: 960, height: 900)
+            let window = NSWindow(contentRect: hostingView.frame, styleMask: [], backing: .buffered, defer: false)
+            window.contentView = hostingView
+            window.appearance = NSAppearance(named: .aqua)
+            window.orderFront(nil)
+            defer { window.orderOut(nil) }
+            try await Task.sleep(for: .milliseconds(150))
             hostingView.layoutSubtreeIfNeeded()
             let image = try #require(
                 hostingView.bitmapImageRepForCachingDisplay(
@@ -52,17 +65,10 @@ struct HomeViewRenderingTests {
         _ image: NSBitmapImageRep,
         name: String
     ) throws {
-        guard let directory = ProcessInfo.processInfo.environment[
-            "CONRICULUM_HOME_CAPTURE_DIRECTORY"
-        ] else { return }
-
         let data = try #require(
             image.representation(using: .png, properties: [:])
         )
-        try data.write(
-            to: URL(fileURLWithPath: directory)
-                .appendingPathComponent("home-\(name).png")
-        )
+        Attachment.record(Array(data), named: "home-\(name).png")
     }
 
     private func sampledColorCount(

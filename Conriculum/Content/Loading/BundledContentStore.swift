@@ -2,24 +2,77 @@ import Foundation
 
 @MainActor
 final class BundledContentStore {
-    private struct Snapshot: Sendable {
-        let chapter: Chapter
+    private struct SharedContent: Sendable {
         let catalog: KnowledgeCatalog
+        let identityManifest: ContentIdentityManifest
     }
 
     private let bundle: Bundle
-    private var cachedSnapshot: Snapshot?
+    private let chapterRegistrations: [BundledChapterRegistration]
+    private var cachedChapters: [ChapterID: Chapter] = [:]
+    private var cachedSharedContent: SharedContent?
 
-    init(bundle: Bundle = .main) {
+    init(
+        bundle: Bundle = .main,
+        chapterRegistrations: [BundledChapterRegistration]? = nil
+    ) {
         self.bundle = bundle
+        self.chapterRegistrations = chapterRegistrations
+            ?? BundledContentResource.chapterRegistrations
+    }
+
+    func loadChapters() throws -> [Chapter] {
+        guard chapterRegistrations.isEmpty == false else {
+            throw ContentClientError.noChaptersAvailable
+        }
+
+        return try chapterRegistrations
+            .map { try loadChapter($0.chapterID) }
+            .sorted {
+                ($0.stageID.rawValue, $0.order, $0.id.rawValue)
+                    < ($1.stageID.rawValue, $1.order, $1.id.rawValue)
+            }
     }
 
     func loadChapter(_ chapterID: ChapterID) throws -> Chapter {
-        let chapter = try snapshot().chapter
-        guard chapter.id == chapterID else {
+        if let cachedChapter = cachedChapters[chapterID] {
+            return cachedChapter
+        }
+
+        guard let registration = chapterRegistrations.first(where: {
+            $0.chapterID == chapterID
+        }) else {
             throw ContentClientError.chapterNotFound(chapterID)
         }
-        return chapter
+
+        return try mapContentErrors {
+            let decoder = ContentResourceDecoder()
+            let chapter = try decoder.decode(
+                Chapter.self,
+                from: registration.resource,
+                in: bundle
+            )
+            guard chapter.id == registration.chapterID else {
+                throw ContentClientError.invalidBundledContent(
+                    resource: registration.resource.relativePath,
+                    fieldPath: "id",
+                    message: "does not match its registered chapter ID"
+                )
+            }
+
+            let sharedContent = try sharedContent()
+            try ContentValidator().validate(
+                chapter: chapter,
+                catalog: sharedContent.catalog,
+                identityManifest: sharedContent.identityManifest,
+                chapterResource: registration.resource.relativePath,
+                catalogResource: BundledContentResource.valuesAndTypes.relativePath,
+                identityResource: BundledContentResource.contentIdentity.relativePath
+            )
+
+            cachedChapters[chapterID] = chapter
+            return chapter
+        }
     }
 
     func loadPage(
@@ -37,11 +90,12 @@ final class BundledContentStore {
     }
 
     func loadCatalog() throws -> KnowledgeCatalog {
-        try snapshot().catalog
+        _ = try loadChapters()
+        return try sharedContent().catalog
     }
 
     func loadConcept(_ conceptID: KnowledgeConceptID) throws -> KnowledgeConcept {
-        let catalog = try snapshot().catalog
+        let catalog = try loadCatalog()
         guard let concept = catalog.concepts.first(where: { $0.id == conceptID }) else {
             throw ContentClientError.conceptNotFound(conceptID)
         }
@@ -49,7 +103,7 @@ final class BundledContentStore {
     }
 
     func loadRelations(_ conceptID: KnowledgeConceptID) throws -> [KnowledgeRelation] {
-        let catalog = try snapshot().catalog
+        let catalog = try loadCatalog()
         guard catalog.concepts.contains(where: { $0.id == conceptID }) else {
             throw ContentClientError.conceptNotFound(conceptID)
         }
@@ -59,37 +113,35 @@ final class BundledContentStore {
         }
     }
 
-    private func snapshot() throws -> Snapshot {
-        if let cachedSnapshot {
-            return cachedSnapshot
+    private func sharedContent() throws -> SharedContent {
+        if let cachedSharedContent {
+            return cachedSharedContent
         }
 
         let decoder = ContentResourceDecoder()
-        do {
-            let chapter = try decoder.decode(
-                Chapter.self,
-                from: .chapter02,
-                in: bundle
-            )
-            let catalog = try decoder.decode(
+        let content = try SharedContent(
+            catalog: decoder.decode(
                 KnowledgeCatalog.self,
                 from: .valuesAndTypes,
                 in: bundle
-            )
-            let identityManifest = try decoder.decode(
+            ),
+            identityManifest: decoder.decode(
                 ContentIdentityManifest.self,
                 from: .contentIdentity,
                 in: bundle
             )
-            try ContentValidator().validate(
-                chapter: chapter,
-                catalog: catalog,
-                identityManifest: identityManifest
-            )
+        )
+        cachedSharedContent = content
+        return content
+    }
 
-            let snapshot = Snapshot(chapter: chapter, catalog: catalog)
-            cachedSnapshot = snapshot
-            return snapshot
+    private func mapContentErrors<Value>(
+        _ operation: () throws -> Value
+    ) throws -> Value {
+        do {
+            return try operation()
+        } catch let error as ContentClientError {
+            throw error
         } catch let error as ContentResourceDecodingError {
             throw ContentClientError.invalidBundledContent(
                 resource: error.resource,

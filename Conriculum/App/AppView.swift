@@ -11,12 +11,13 @@ struct AppView: View {
                 store: store.scope(state: \.home, action: \.home)
             )
 
-        case .learningWorkspace:
+        case let .learningWorkspace(chapterID):
             if let workspaceStore = store.scope(
                 state: \.workspace,
                 action: \.workspace
             ) {
                 LearningWorkspaceView(store: workspaceStore)
+                    .id(chapterID)
             } else {
                 ProgressView("학습 워크스페이스를 준비하는 중입니다.")
                     .frame(minWidth: 720, minHeight: 560)

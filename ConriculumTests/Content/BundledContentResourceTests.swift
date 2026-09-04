@@ -6,19 +6,40 @@ import Testing
 // MARK: - 15. 실제 Bundle 리소스가 root model로 조립되는지 확인
 
 struct BundledContentResourceTests {
-    /// Chapter JSON이 hierarchy 전체와 8개 진도 page, 22개 section tag를 포함해 decode되는지 확인한다.
+    /// Chapter JSON이 hierarchy 전체와 9개 진도 page, 역할이 겹치지 않는 section vocabulary를 포함하는지 확인한다.
     @Test
     func chapterTwoResourceDecodesFromTheApplicationBundle() throws {
         let chapter = try decode(Chapter.self, from: .chapter02)
-        let expectedPageIDs: [LearningPageID] = (1...8).map {
+        let expectedPageIDs: [LearningPageID] = (1...9).map {
             LearningPageID(rawValue: "chapter-02-page-\(String(format: "%02d", $0))")
         }
 
         #expect(chapter.id == "chapter-02")
         #expect(chapter.overview.kind == .overview)
-        #expect(chapter.pages.count == 8)
+        #expect(chapter.pages.count == 9)
         #expect(chapter.progressPageIDs == expectedPageIDs)
         #expect(Set(chapter.pages.flatMap(\.sections).map(\.content.tag)) == Set(LearningSectionTag.allCases))
+    }
+
+    /// 공용 Chapter resource 규칙으로 Chapter 3의 overview와 9개 lesson을 찾고 decode하는지 확인한다.
+    @Test
+    func chapterThreeResourceDecodesFromTheApplicationBundle() throws {
+        let resource = BundledContentResource.chapter(
+            stageNumber: 1,
+            chapterNumber: 3
+        )
+        let chapter = try decode(Chapter.self, from: resource)
+        let expectedPageIDs: [LearningPageID] = (1...9).map {
+            LearningPageID(rawValue: "chapter-03-page-\(String(format: "%02d", $0))")
+        }
+
+        #expect(chapter.id == "chapter-03")
+        #expect(chapter.order == 3)
+        #expect(chapter.overview.id == "chapter-03-overview")
+        #expect(chapter.progressPageIDs == expectedPageIDs)
+        #expect(chapter.pages.last?.sections.contains {
+            $0.content.tag == .semanticChunkReading
+        } == true)
     }
 
     /// 실제 사용자 문구에 내부 구현 용어가 새어 나오지 않는지 resource 수준에서 확인한다.
@@ -29,14 +50,43 @@ struct BundledContentResourceTests {
 
         for section in sections {
             switch section.content {
-            case let .personalExpressionComparison(content):
-                #expect(!content.inspectorLocation.lowercased().contains("inspector"))
-
             case let .personalKnowledgePromotion(content):
                 #expect(!content.cancellationResult.lowercased().contains("revision"))
 
             default:
                 break
+            }
+        }
+    }
+
+    @Test
+    func chunkRemainsAnInternalIdentifierNotLearnerFacingCopy() throws {
+        let resources: [BundledContentResource] = [
+            .chapter02,
+            .chapter(stageNumber: 1, chapterNumber: 3),
+            .valuesAndTypes,
+        ]
+        for resource in resources {
+            let object = try JSONSerialization.jsonObject(
+                with: Data(contentsOf: resource.url())
+            )
+            assertLearnerFacingCopy(object)
+        }
+    }
+
+    private func assertLearnerFacingCopy(_ value: Any, key: String = "") {
+        // ID와 코드, 디코딩 태그는 학습 문구가 아닌 내부 계약이다.
+        guard key != "id", !key.hasSuffix("ID"), !key.hasSuffix("IDs"),
+              key != "code", key != "tag" else { return }
+        if let text = value as? String {
+            #expect(!text.localizedCaseInsensitiveContains("chunk"), "사용자 문구: \(text)")
+        } else if let object = value as? [String: Any] {
+            for (key, value) in object {
+                assertLearnerFacingCopy(value, key: key)
+            }
+        } else if let values = value as? [Any] {
+            for value in values {
+                assertLearnerFacingCopy(value, key: key)
             }
         }
     }
@@ -73,13 +123,14 @@ struct BundledContentResourceTests {
             "SwiftUI와 사용자 인터페이스",
         ])
         #expect(hasCompletePresentationMetadata)
-        #expect(catalog.concepts.count == 22)
+        #expect(catalog.concepts.count == 29)
+        #expect(catalog.concepts.contains { $0.id == "concept-semantic-chunk-reading" })
         #expect(membershipIDs.count == catalog.concepts.count)
         #expect(Set(membershipIDs) == Set(catalog.concepts.map(\.id)))
         #expect(catalog.relations.isEmpty == false)
     }
 
-    /// identity manifest가 Chapter와 overview 포함 9개 Page의 stable ID를 추적하는지 확인한다.
+    /// identity manifest가 두 Chapter와 각 overview 포함 20개 Page의 stable ID를 추적하는지 확인한다.
     @Test
     func identityManifestResourceDecodesFromTheApplicationBundle() throws {
         let manifest = try decode(ContentIdentityManifest.self, from: .contentIdentity)
@@ -88,7 +139,8 @@ struct BundledContentResourceTests {
         #expect(manifest.identities.contains {
             $0.kind == .chapter && $0.stableID == "chapter-02"
         })
-        #expect(manifest.identities.filter { $0.kind == .page }.count == 9)
+        #expect(manifest.identities.filter { $0.kind == .chapter }.count == 2)
+        #expect(manifest.identities.filter { $0.kind == .page }.count == 20)
     }
 
     /// 이 테스트의 관심사인 Bundle URL과 기본 JSON decode만 수행하는 최소 호출 helper.

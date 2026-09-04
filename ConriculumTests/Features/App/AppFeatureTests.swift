@@ -12,10 +12,10 @@ struct AppFeatureTests {
     }
 
     @Test
-    func newRecordStartsAtTheOverviewRoute() async {
+    func anyAvailableChapterCanStartAtItsOverviewRoute() async {
         let entry = HomeFeature.ChapterEntry(
-            chapterID: AppFeature.chapter02ID,
-            startPageID: "chapter-02-overview",
+            chapterID: "chapter-03",
+            startPageID: "chapter-03-overview",
             resumePageID: nil
         )
         var initialState = AppFeature.State()
@@ -40,7 +40,7 @@ struct AppFeatureTests {
     @Test
     func savedRecordResumesAtTheLastPageRoute() async {
         let entry = HomeFeature.ChapterEntry(
-            chapterID: AppFeature.chapter02ID,
+            chapterID: "chapter-02",
             startPageID: "chapter-02-overview",
             resumePageID: "chapter-02-page-04"
         )
@@ -109,7 +109,7 @@ struct AppFeatureTests {
             savedFields: ["나의 설명", "근거 활동 ID"]
         )
         let entry = HomeFeature.ChapterEntry(
-            chapterID: AppFeature.chapter02ID,
+            chapterID: "chapter-02",
             startPageID: "chapter-02-overview",
             resumePageID: "chapter-02-page-02"
         )
@@ -198,7 +198,7 @@ struct AppFeatureTests {
         let store = TestStore(initialState: initialState) {
             AppFeature()
         } withDependencies: {
-            $0.curriculumClient.loadChapter = { _ in chapter }
+            $0.curriculumClient.loadChapters = { [chapter] }
             $0.knowledgeCatalogClient.loadCatalog = { catalog }
             $0.learningRecordClient.loadProgress = { _ in progress }
             $0.learningRecordClient.loadResponses = { _ in [] }

@@ -6,7 +6,14 @@ struct LearningWorkspaceView: View {
     let store: StoreOf<LearningWorkspaceFeature>
 
     var body: some View {
-        workspaceContent
+        GeometryReader { geometry in
+            let layout = LearningWorkspacePanelLayout.resolve(
+                availableWidth: geometry.size.width,
+                inspectorIsVisible: inspectorIsVisible,
+                sidebarIsHidden: sidebarIsHidden
+            )
+            let showsSidebar = !sidebarIsHidden && layout != .learningAndInspector
+            workspaceContent(showsSidebar: showsSidebar)
             .toolbar(removing: .sidebarToggle)
             .toolbar {
                 ToolbarItemGroup(placement: .navigation) {
@@ -17,6 +24,21 @@ struct LearningWorkspaceView: View {
                     }
                     .help("학습 홈으로 돌아가기")
                     .accessibilityHint("현재 학습 위치를 저장한 채 학습 홈으로 돌아갑니다.")
+
+                    Button {
+                        toggleSidebar(
+                            isVisible: showsSidebar,
+                            availableWidth: geometry.size.width
+                        )
+                    } label: {
+                        Label(
+                            showsSidebar ? "학습 문맥 숨기기" : "학습 문맥 보기",
+                            systemImage: "sidebar.left"
+                        )
+                    }
+                    .help(showsSidebar
+                        ? "왼쪽 학습 문맥을 숨깁니다."
+                        : "학습 문맥을 표시합니다. 좁은 창에서는 개념 상세와 번갈아 봅니다.")
                 }
 
                 ToolbarItemGroup(placement: .primaryAction) {
@@ -62,65 +84,67 @@ struct LearningWorkspaceView: View {
                     .disabled(store.knowledgeContext.inspector == nil)
                 }
             }
-            .frame(minWidth: 680, minHeight: 560)
+        }
+        .frame(minWidth: 680, minHeight: 560)
+    }
+
+    private func workspaceContent(showsSidebar: Bool) -> some View {
+        // 본문은 항상 같은 위치에 둔다. 창 크기 변경으로 본문 트리를
+        // 교체하면 ScrollView의 onAppear가 학습 위치를 초기화할 수 있다.
+        HSplitView {
+            if showsSidebar {
+                KnowledgeContextView(
+                    store: store.scope(
+                        state: \.knowledgeContext,
+                        action: \.knowledgeContext
+                    )
+                )
+                .frame(minWidth: 200, idealWidth: 250, maxWidth: 300)
+            }
+
+            chapterContent
+                .frame(minWidth: 380, maxWidth: .infinity)
+
+            if inspectorIsVisible {
+                inspectorContent
+                    .frame(minWidth: 240, idealWidth: 280, maxWidth: 360)
+            }
+        }
+    }
+
+    private var chapterContent: some View {
+        ChapterLearningView(
+            store: store.scope(
+                state: \.chapter,
+                action: \.chapter
+            )
+        )
     }
 
     @ViewBuilder
-    private var workspaceContent: some View {
-        if inspectorIsVisible,
-           let inspectorStore = store.scope(
-               state: \.knowledgeContext.inspector,
-               action: \.knowledgeContext.inspector
-           )
-        {
-            HSplitView {
-                navigationContent
-                    .frame(minWidth: 420, maxWidth: .infinity)
+    private var inspectorContent: some View {
+        if let inspectorStore = store.scope(
+            state: \.knowledgeContext.inspector,
+            action: \.knowledgeContext.inspector
+        ) {
+            ConceptInspectorView(store: inspectorStore)
+        }
+    }
 
-                ConceptInspectorView(store: inspectorStore)
-                    .frame(minWidth: 220, idealWidth: 240, maxWidth: 360)
-            }
+    private func toggleSidebar(isVisible: Bool, availableWidth: CGFloat) {
+        if isVisible {
+            store.send(.sidebarModeChanged(.hidden))
         } else {
-            navigationContent
-        }
-    }
-
-    private var navigationContent: some View {
-        NavigationSplitView(columnVisibility: columnVisibility) {
-            KnowledgeContextView(
-                store: store.scope(
-                    state: \.knowledgeContext,
-                    action: \.knowledgeContext
-                )
-            )
-            .accessibilityHidden(
-                store.isFocusModeEnabled
-                    || store.sidebarMode.hidesKnowledgeContextFromAccessibility
-            )
-        } detail: {
-            ChapterLearningView(
-                store: store.scope(
-                    state: \.chapter,
-                    action: \.chapter
-                )
-            )
-        }
-        .navigationSplitViewStyle(.prominentDetail)
-    }
-
-    private var columnVisibility: Binding<NavigationSplitViewVisibility> {
-        Binding(
-            get: {
-                store.isFocusModeEnabled
-                    ? .detailOnly
-                    : store.sidebarMode.navigationSplitViewVisibility
-            },
-            set: { visibility in
-                store.send(.sidebarModeChanged(
-                    WorkspaceSidebarMode(visibility: visibility)
-                ))
+            if store.isFocusModeEnabled {
+                store.send(.sidebarVisibilityButtonTapped)
+            } else {
+                store.send(.sidebarModeChanged(.visible))
             }
-        )
+            if availableWidth < LearningWorkspacePanelLayout.threePanelMinimumWidth,
+               inspectorIsVisible {
+                store.send(.inspectorVisibilityButtonTapped)
+            }
+        }
     }
 
     private var sidebarIsHidden: Bool {
@@ -143,6 +167,28 @@ struct LearningWorkspaceView: View {
             await Task.yield()
             window.makeFirstResponder(firstResponder)
         }
+    }
+}
+
+enum LearningWorkspacePanelLayout: Equatable {
+    case navigation
+    case navigationAndInspector
+    case learningAndInspector
+
+    static let threePanelMinimumWidth: CGFloat = 900
+
+    static func resolve(
+        availableWidth: CGFloat,
+        inspectorIsVisible: Bool,
+        sidebarIsHidden: Bool
+    ) -> Self {
+        guard inspectorIsVisible else { return .navigation }
+
+        if sidebarIsHidden || availableWidth < threePanelMinimumWidth {
+            return .learningAndInspector
+        }
+
+        return .navigationAndInspector
     }
 }
 
@@ -176,7 +222,7 @@ extension WorkspaceSidebarMode {
     LearningWorkspaceView(
         store: Store(
             initialState: LearningWorkspaceFeature.State(
-                chapterID: Chapter02.id,
+                chapterID: "chapter-02",
                 pageID: "chapter-02-overview"
             )
         ) {
@@ -190,7 +236,7 @@ extension WorkspaceSidebarMode {
     LearningWorkspaceView(
         store: Store(
             initialState: LearningWorkspaceFeature.State(
-                chapterID: Chapter02.id,
+                chapterID: "chapter-02",
                 pageID: "chapter-02-overview"
             )
         ) {
@@ -204,7 +250,7 @@ extension WorkspaceSidebarMode {
     LearningWorkspaceView(
         store: Store(
             initialState: LearningWorkspaceFeature.State(
-                chapterID: Chapter02.id,
+                chapterID: "chapter-02",
                 pageID: "chapter-02-page-03",
                 isFocusModeEnabled: true
             )

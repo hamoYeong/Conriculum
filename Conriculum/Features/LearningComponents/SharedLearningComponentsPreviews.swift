@@ -3,10 +3,7 @@ import SwiftUI
 private enum SharedComponentPreviewFixtures {
     static let tags: [LearningSectionTag] = [
         .knowledgeLink,
-        .personalExpressionComparison,
-        .learningStateSelection,
         .enrichmentTask,
-        .completionCheck,
         .personalKnowledgePromotion,
         .personalKnowledgeRelation,
         .knowledgeChangeSummary,
@@ -35,8 +32,6 @@ private enum SharedComponentPreviewFixtures {
 private struct StatefulSharedComponentPreview: View {
     let section: LearningSection
     @State private var fields: [ActivityResponseField] = []
-    @State private var selectedStateID: String? = "deeper"
-    @State private var assessment: CompletionSelfAssessment?
 
     private var activity: LearningActivityInput {
         LearningActivityInput(
@@ -59,33 +54,10 @@ private struct StatefulSharedComponentPreview: View {
                 content: payload,
                 conceptNames: SharedComponentPreviewFixtures.conceptNames
             )
-        case let .personalExpressionComparison(payload):
-            PersonalExpressionComparisonComponent(
-                content: payload,
-                personalExpression: nil,
-                conceptNames: SharedComponentPreviewFixtures.conceptNames,
-                onAction: { _ in }
-            )
-        case let .learningStateSelection(payload):
-            LearningStateSelectionComponent(
-                content: payload,
-                selectedStateID: selectedStateID,
-                onSelectionChanged: { selectedStateID = $0 }
-            )
         case let .enrichmentTask(payload):
             EnrichmentTaskComponent(
                 content: payload,
-                selectedStateID: selectedStateID,
                 conceptNames: SharedComponentPreviewFixtures.conceptNames
-            )
-        case let .completionCheck(payload):
-            CompletionCheckComponent(
-                content: payload,
-                activityID: section.activityID ?? "preview-completion",
-                assessment: assessment,
-                onAssessmentChanged: { _, value in
-                    assessment = value
-                }
             )
         case let .personalKnowledgePromotion(payload):
             PersonalKnowledgePromotionComponent(

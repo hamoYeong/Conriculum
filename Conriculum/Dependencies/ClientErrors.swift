@@ -1,6 +1,7 @@
 import Foundation
 
 enum ContentClientError: Error, Equatable, Sendable {
+    case noChaptersAvailable
     case chapterNotFound(ChapterID)
     case pageNotFound(chapterID: ChapterID, pageID: LearningPageID)
     case conceptNotFound(KnowledgeConceptID)
@@ -10,6 +11,8 @@ enum ContentClientError: Error, Equatable, Sendable {
 extension ContentClientError: LocalizedError {
     var errorDescription: String? {
         switch self {
+        case .noChaptersAvailable:
+            "사용할 수 있는 챕터 콘텐츠가 없습니다."
         case .chapterNotFound:
             "챕터 콘텐츠를 찾을 수 없습니다."
         case .pageNotFound:

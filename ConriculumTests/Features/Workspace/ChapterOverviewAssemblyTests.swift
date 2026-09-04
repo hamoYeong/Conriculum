@@ -11,16 +11,19 @@ struct ChapterOverviewAssemblyTests {
     private let timestamp = Date(timeIntervalSince1970: 1_725_782_400)
 
     @Test
-    func overviewContainsTheSixCriteriaAndEightPageRoute() throws {
+    func overviewStartsWithACompassAndShowsTheNinePageRoute() throws {
         let chapter = try loadChapter()
 
-        #expect(Chapter02ContentAssembly.isAssembled(chapter.overview))
-        #expect(chapter.progressDenominator == 8)
-        #expect(chapter.progressPages.compactMap(\.order) == Array(1...8))
+        #expect(LearningContentAssembly.isAssembled(chapter.overview))
+        #expect(chapter.progressDenominator == 9)
+        #expect(chapter.progressPages.compactMap(\.order) == Array(1...9))
         #expect(chapter.overview.sections.map(\.content.tag) == [
+            .learningCompass,
             .situation,
+            .comparison,
             .processGuide,
             .knowledgeLink,
+            .choiceWithReason,
         ])
 
         let processSection = try #require(
@@ -32,7 +35,8 @@ struct ChapterOverviewAssemblyTests {
             Issue.record("overview 완료 기준이 processGuide가 아니다.")
             return
         }
-        #expect(content.steps.count == 6)
+        #expect(content.steps.count == 4)
+        #expect(content.steps.last?.title == "의미 단위로 읽기 9")
     }
 
     @Test

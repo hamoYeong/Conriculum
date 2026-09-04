@@ -2,28 +2,44 @@ import Foundation
 
 // MARK: - 11. 앱 Bundle에 포함된 JSON 리소스의 주소
 
-/// 파일명 문자열을 호출부에 흩뜨리지 않고, 지원하는 bundled content를 case로 제한한다.
-enum BundledContentResource: CaseIterable, Equatable, Sendable {
-    case chapter02
-    case valuesAndTypes
-    case contentIdentity
-
+/// 파일명과 하위 경로를 한 값으로 묶어 호출부에 문자열 주소가 흩어지지 않게 한다.
+/// Chapter 리소스는 공용 naming convention으로 만들므로 Chapter별 enum case가 필요 없다.
+struct BundledContentResource: Equatable, Sendable {
     /// 확장자를 제외한 실제 JSON 파일명.
-    var name: String {
-        switch self {
-        case .chapter02: "chapter-02"
-        case .valuesAndTypes: "values-and-types"
-        case .contentIdentity: "content-identity"
-        }
-    }
+    let name: String
 
     /// Xcode resource group 안에서 기대하는 논리적 하위 경로.
-    var subdirectory: String {
-        switch self {
-        case .chapter02: "Curriculum/Stage01/Chapter02"
-        case .valuesAndTypes: "KnowledgeCatalog"
-        case .contentIdentity: "ContentManifest"
-        }
+    let subdirectory: String
+
+    /// Stage·Chapter 번호를 `Stage01/Chapter03/chapter-03.json` 같은 공용 주소로 바꾼다.
+    static func chapter(
+        stageNumber: Int,
+        chapterNumber: Int
+    ) -> Self {
+        let stage = String(format: "%02d", stageNumber)
+        let chapter = String(format: "%02d", chapterNumber)
+        return Self(
+            name: "chapter-\(chapter)",
+            subdirectory: "Curriculum/Stage\(stage)/Chapter\(chapter)"
+        )
+    }
+
+    /// Chapter 2를 직접 decode하는 기존 fixture와 preview용 별칭.
+    static let chapter02 = chapter(stageNumber: 1, chapterNumber: 2)
+
+    static let valuesAndTypes = Self(
+        name: "values-and-types",
+        subdirectory: "KnowledgeCatalog"
+    )
+
+    static let contentIdentity = Self(
+        name: "content-identity",
+        subdirectory: "ContentManifest"
+    )
+
+    /// Validation 오류와 진단에 사용하는 Bundle 기준 상대 경로.
+    var relativePath: String {
+        "\(subdirectory)/\(name).json"
     }
 
     /// Bundle에서 리소스 URL을 찾는다.
@@ -42,10 +58,30 @@ enum BundledContentResource: CaseIterable, Equatable, Sendable {
         }
 
         throw BundledContentResourceError.resourceNotFound(
-            name: "\(subdirectory)/\(name).json",
+            name: relativePath,
             bundlePath: bundle.bundlePath
         )
     }
+}
+
+/// Chapter stable ID와 실제 번들 리소스의 연결을 콘텐츠 등록 지점 한곳에 모은다.
+struct BundledChapterRegistration: Equatable, Sendable {
+    let chapterID: ChapterID
+    let resource: BundledContentResource
+}
+
+extension BundledContentResource {
+    /// 새 Chapter를 번들에 추가할 때 화면·feature 코드 대신 이 목록만 확장한다.
+    static let chapterRegistrations: [BundledChapterRegistration] = [
+        BundledChapterRegistration(
+            chapterID: "chapter-02",
+            resource: .chapter(stageNumber: 1, chapterNumber: 2)
+        ),
+        BundledChapterRegistration(
+            chapterID: "chapter-03",
+            resource: .chapter(stageNumber: 1, chapterNumber: 3)
+        ),
+    ]
 }
 
 /// 어떤 리소스를 어느 Bundle에서 찾지 못했는지 호출자에게 전달한다.

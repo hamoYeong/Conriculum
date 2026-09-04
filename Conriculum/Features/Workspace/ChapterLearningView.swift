@@ -11,8 +11,11 @@ struct ChapterLearningView: View {
 
             content
         }
-        .navigationTitle(store.chapter?.title ?? "Chapter 2")
+        .navigationTitle(chapterTitle)
         .frame(minWidth: 240, minHeight: 520)
+        .onChange(of: store.currentPage?.id, initial: true) { _, pageID in
+            if pageID != nil { store.send(.pagePresented) }
+        }
         .task {
             guard store.chapter == nil else { return }
             await store.send(.task).finish()
@@ -45,7 +48,7 @@ struct ChapterLearningView: View {
             ContentUnavailableView(
                 "표시할 학습 페이지가 없습니다",
                 systemImage: "doc.questionmark",
-                description: Text("Chapter 2 지도에서 다시 시작해 주세요.")
+                description: Text("챕터 지도에서 다시 시작해 주세요.")
             )
         }
     }
@@ -77,8 +80,16 @@ struct ChapterLearningView: View {
 
                         Divider()
 
+                        if let message = store.visitErrorMessage {
+                            VStack(alignment: .leading, spacing: 8) {
+                                Text("열람 기록을 저장하지 못했습니다. \(message)")
+                                    .font(.caption).foregroundStyle(.red)
+                                Button("열람 기록 다시 저장") { store.send(.pagePresented) }
+                            }
+                        }
+
                         if let chapter = store.chapter,
-                           Chapter02ContentAssembly.isAssembled(page) {
+                           LearningContentAssembly.isAssembled(page) {
                             LearningPageContentView(
                                 chapter: chapter,
                                 page: page,
@@ -104,9 +115,6 @@ struct ChapterLearningView: View {
                     .frame(maxWidth: .infinity)
                 }
                 .onChange(of: page.id) {
-                    proxy.scrollTo(ScrollAnchor.top, anchor: .top)
-                }
-                .onAppear {
                     proxy.scrollTo(ScrollAnchor.top, anchor: .top)
                 }
             }
@@ -185,17 +193,30 @@ struct ChapterLearningView: View {
     private var completionSummary: some View {
         ContentUnavailableView {
             Label(
-                "Chapter 2 학습 경로를 모두 확인했습니다",
+                "\(chapterLabel) 학습 경로를 모두 확인했습니다",
                 systemImage: "checkmark.circle"
             )
         } description: {
             Text(
-                "페이지 이동 기록은 저장했습니다. 실제 완료 여부는 저장된 활동과 학습 증거를 바탕으로 다음 단계에서 판단합니다."
+                "여기까지의 입력과 이동 기록을 저장했습니다. 다음 챕터의 학습 지도에서 이어질 질문을 확인해 보세요."
             )
+        } actions: {
+            if let chapter = store.chapter,
+               let destination = chapter.progressPages.last?.navigation.next,
+               chapter.page(id: destination.pageID) == nil {
+                Button("다음 챕터로 · \(destination.label)") {
+                    store.send(.nextChapterButtonTapped)
+                }
+                .buttonStyle(.borderedProminent)
+                .disabled(store.isSavingNavigation)
+            }
+            if let message = store.navigationErrorMessage {
+                Text(message).foregroundStyle(.red)
+            }
         }
         .frame(maxWidth: 680)
         .accessibilityLabel(
-            "Chapter 2 완료 요약. 페이지 이동 기록을 저장했습니다."
+            "\(chapterLabel) 완료 요약. 페이지 이동 기록을 저장했습니다."
         )
     }
 
@@ -203,8 +224,18 @@ struct ChapterLearningView: View {
         guard page.kind == .lesson,
               let position = store.progressPosition,
               let count = store.chapter?.progressDenominator
-        else { return "Chapter 2 · 학습 지도" }
-        return "Chapter 2 · \(position) / \(count)"
+        else { return "\(chapterLabel) · 학습 지도" }
+        return "\(chapterLabel) · \(position) / \(count)"
+    }
+
+    private var chapterLabel: String {
+        guard let chapter = store.chapter else { return "챕터" }
+        return "Chapter \(chapter.order)"
+    }
+
+    private var chapterTitle: String {
+        guard let chapter = store.chapter else { return "학습 챕터" }
+        return "Chapter \(chapter.order) · \(chapter.title)"
     }
 
     private enum ScrollAnchor: Hashable {
@@ -216,7 +247,7 @@ struct ChapterLearningView: View {
     ChapterLearningView(
         store: Store(
             initialState: ChapterLearningFeature.State(
-                chapterID: Chapter02.id,
+                chapterID: "chapter-02",
                 currentPageID: "chapter-02-overview"
             )
         ) {

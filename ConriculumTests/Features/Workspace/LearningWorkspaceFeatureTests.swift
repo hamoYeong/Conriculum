@@ -254,7 +254,7 @@ struct LearningWorkspaceFeatureTests {
         )
         let store = TestStore(
             initialState: LearningWorkspaceFeature.State(
-                chapterID: Chapter02.id,
+                chapterID: "chapter-02",
                 pageID: pageID,
                 pendingPersonalizationReviews: [pendingReview]
             )
@@ -613,7 +613,7 @@ struct LearningWorkspaceFeatureTests {
     func homeButtonDelegatesWithoutOwningAppRouting() async {
         let store = TestStore(
             initialState: LearningWorkspaceFeature.State(
-                chapterID: Chapter02.id,
+                chapterID: "chapter-02",
                 pageID: "chapter-02-overview"
             )
         ) {
@@ -654,7 +654,7 @@ struct LearningWorkspaceFeatureTests {
     func automaticIsTheDefaultAndFocusDoesNotPersistAcrossNewState() async {
         let store = TestStore(
             initialState: LearningWorkspaceFeature.State(
-                chapterID: Chapter02.id,
+                chapterID: "chapter-02",
                 pageID: "chapter-02-overview"
             )
         ) {

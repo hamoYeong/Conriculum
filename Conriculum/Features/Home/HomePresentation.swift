@@ -34,13 +34,13 @@ struct HomeEvidencePresentation: Equatable, Sendable {
 extension HomeSnapshot.ChapterCard {
     var primaryActionTitle: String {
         resumePageID == nil
-            ? "Chapter 2 시작하기"
-            : "Chapter 2 이어하기"
+            ? "챕터 시작하기"
+            : "챕터 이어하기"
     }
 
     var primaryActionAccessibilityHint: String {
         resumePageID == nil
-            ? "Chapter 2 개요에서 학습을 시작합니다."
+            ? "챕터 개요에서 학습을 시작합니다."
             : "마지막으로 저장된 학습 페이지에서 계속합니다."
     }
 }

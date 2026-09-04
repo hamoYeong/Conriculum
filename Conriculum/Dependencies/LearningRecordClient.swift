@@ -10,6 +10,7 @@ struct LearningRecordClient: Sendable {
 
     var loadEvidence: @Sendable (_ pageID: LearningPageID) async throws -> [LearningEvidence]
     var saveEvidence: @Sendable (_ evidence: LearningEvidence) async throws -> Void
+    var recordPageVisit: @Sendable (_ chapter: Chapter, _ pageID: LearningPageID) async throws -> Void
 }
 
 extension LearningRecordClient: DependencyKey {
@@ -59,6 +60,10 @@ extension LearningRecordClient {
             saveEvidence: { evidence in
                 let store = try await resolveStore()
                 try await store.saveEvidence(evidence)
+            },
+            recordPageVisit: { chapter, pageID in
+                let store = try await resolveStore()
+                try await store.recordPageVisit(chapter: chapter, pageID: pageID)
             }
         )
     }

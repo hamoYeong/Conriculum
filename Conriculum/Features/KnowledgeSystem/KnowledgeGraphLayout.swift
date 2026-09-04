@@ -79,6 +79,7 @@ struct KnowledgeGraphLayout: Equatable {
         var positioned: [KnowledgeConceptID: CGPoint] = [hub.id: center]
         let remaining = stableConcepts.filter { $0.id != hub.id }
         let rings = Self.rings(from: remaining)
+        let usesExpandableRings = stableConcepts.count > 16
 
         let maximumRadiusX = max(
             126,
@@ -91,9 +92,18 @@ struct KnowledgeGraphLayout: Equatable {
         let radiusScales = Self.radiusScales(forRingCount: rings.count)
 
         for (ringIndex, ring) in rings.enumerated() {
-            let scale = radiusScales[ringIndex]
-            let radiusX = maximumRadiusX * scale
-            let radiusY = maximumRadiusY * scale
+            let radiusX: CGFloat
+            let radiusY: CGFloat
+            if usesExpandableRings {
+                let radius = Self.expandableRingSpacing
+                    * CGFloat(ringIndex + 1)
+                radiusX = radius
+                radiusY = radius
+            } else {
+                let scale = radiusScales[ringIndex]
+                radiusX = maximumRadiusX * scale
+                radiusY = maximumRadiusY * scale
+            }
             let angleStep = (Double.pi * 2) / Double(max(ring.count, 1))
             let startAngle = -Double.pi / 2
                 + (ringIndex.isMultiple(of: 2) ? 0 : angleStep / 2)
@@ -119,13 +129,26 @@ struct KnowledgeGraphLayout: Equatable {
     ) -> CGSize {
         switch count {
         case 0...2:
-            CGSize(width: 540, height: 420)
+            return CGSize(width: 540, height: 420)
         case 3...8:
-            CGSize(width: 820, height: 540)
+            return CGSize(width: 820, height: 540)
         case 9...16:
-            CGSize(width: 1_160, height: 700)
+            return CGSize(width: 1_160, height: 700)
         default:
-            CGSize(width: 1_480, height: 900)
+            let ringCount = expandableRingCapacities(
+                forConceptCount: max(count - 1, 0)
+            ).count
+            let outerRadius = expandableRingSpacing * CGFloat(ringCount)
+            return CGSize(
+                width: max(
+                    1_160,
+                    2 * (outerRadius + nodeSize.width / 2 + 48)
+                ),
+                height: max(
+                    700,
+                    2 * (outerRadius + nodeSize.height / 2 + 42)
+                )
+            )
         }
     }
 
@@ -138,10 +161,12 @@ struct KnowledgeGraphLayout: Equatable {
         switch concepts.count {
         case 0...7:
             capacities = [concepts.count]
-        case 8...16:
+        case 8...15:
             capacities = [6, concepts.count - 6]
         default:
-            capacities = [6, 10, concepts.count - 16]
+            capacities = expandableRingCapacities(
+                forConceptCount: concepts.count
+            )
         }
 
         var cursor = concepts.startIndex
@@ -154,6 +179,30 @@ struct KnowledgeGraphLayout: Equatable {
             defer { cursor = end }
             return Array(concepts[cursor..<end])
         }
+    }
+
+    /// 큰 catalog는 고정된 세 ring에 남은 노드를 몰아넣지 않는다.
+    /// ring 반지름과 수용량을 함께 늘려 인접·교차 ring 모두 노드 대각선보다 멀게 둔다.
+    private static func expandableRingCapacities(
+        forConceptCount count: Int
+    ) -> [Int] {
+        guard count > 0 else { return [] }
+
+        var remaining = count
+        var ringNumber = 1
+        var capacities: [Int] = []
+        while remaining > 0 {
+            let capacity = min(remaining, ringNumber * 6)
+            capacities.append(capacity)
+            remaining -= capacity
+            ringNumber += 1
+        }
+        return capacities
+    }
+
+    /// 테스트가 사용하는 2pt 외곽 여백까지 포함한 노드 대각선에 추가 간격을 둔다.
+    private static var expandableRingSpacing: CGFloat {
+        hypot(nodeSize.width + 4, nodeSize.height + 4) + 24
     }
 
     private static func radiusScales(forRingCount count: Int) -> [CGFloat] {

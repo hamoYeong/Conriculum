@@ -78,7 +78,7 @@ struct LearningComponentAccessibilityTests {
     }
 
     @Test
-    func codeAssemblyPickersWriteEveryLineWithoutDragging() throws {
+    func codeAssemblyOptionCardsWriteEveryLineWithoutDragging() throws {
         let section = try #require(
             try interactiveSection(tag: .codeAssembly)
         )

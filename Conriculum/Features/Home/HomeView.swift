@@ -15,6 +15,7 @@ struct HomeView: View {
                         stageHeader(snapshot.stage)
                         previewDisclosure(for: snapshot.source)
                         chapterCard(snapshot.chapter)
+                        chapterLibrary(snapshot.availableChapters)
 
                         if let loadErrorMessage = store.loadErrorMessage {
                             loadErrorBanner(message: loadErrorMessage)
@@ -84,7 +85,7 @@ struct HomeView: View {
         _ chapter: HomeSnapshot.ChapterCard
     ) -> some View {
         VStack(alignment: .leading, spacing: 18) {
-            Label("지금 이어갈 학습", systemImage: "play.circle.fill")
+            Label(chapter.resumePageID == nil ? "여기서 시작해 보세요" : "이어서 학습하기", systemImage: "play.circle.fill")
                 .font(.headline)
                 .foregroundStyle(.tint)
 
@@ -150,7 +151,7 @@ struct HomeView: View {
             store.send(.knowledgeSystemButtonTapped)
         } label: {
             HStack(alignment: .center, spacing: 18) {
-                Image(systemName: "point.3.connected.trianglepath.dotted")
+                Image(systemName: "books.vertical")
                     .font(.system(size: 30, weight: .medium))
                     .foregroundStyle(.tint)
                     .frame(width: 48, height: 48)
@@ -165,7 +166,7 @@ struct HomeView: View {
                 VStack(alignment: .leading, spacing: 5) {
                     Text("지식 체계 둘러보기")
                         .font(.title3.weight(.semibold))
-                    Text("학습 순서에서 벗어나 개념과 연결을 책장과 연결망으로 탐색합니다.")
+                    Text("배운 지식을 다시 읽고, 선택한 지식과 연결되는 개념을 책장에서 확인합니다.")
                         .font(.callout)
                         .foregroundStyle(.secondary)
                         .fixedSize(horizontal: false, vertical: true)
@@ -195,26 +196,53 @@ struct HomeView: View {
 
     @ViewBuilder
     private func learningSummary(_ snapshot: HomeSnapshot) -> some View {
-        ViewThatFits(in: .horizontal) {
-            HStack(alignment: .top, spacing: 18) {
-                lastActivityPanel(snapshot.lastActivity)
-                knowledgeChangePanel(
-                    snapshot.knowledgeChanges,
-                    emptyMessage: snapshot.knowledgeChangesEmptyStateMessage
-                )
-            }
-            .frame(minWidth: 760)
-
-            VStack(spacing: 18) {
-                lastActivityPanel(snapshot.lastActivity)
-                knowledgeChangePanel(
-                    snapshot.knowledgeChanges,
-                    emptyMessage: snapshot.knowledgeChangesEmptyStateMessage
-                )
+        if snapshot.lastActivity != nil || !snapshot.knowledgeChanges.confirmed.isEmpty
+            || !snapshot.knowledgeChanges.pending.isEmpty {
+            DisclosureGroup("이 챕터에 남긴 학습 기록") {
+                VStack(alignment: .leading, spacing: 18) {
+                    if snapshot.lastActivity != nil {
+                        lastActivityPanel(snapshot.lastActivity)
+                    }
+                    if !snapshot.knowledgeChanges.confirmed.isEmpty || !snapshot.knowledgeChanges.pending.isEmpty {
+                        knowledgeChangePanel(
+                            snapshot.knowledgeChanges,
+                            emptyMessage: snapshot.knowledgeChangesEmptyStateMessage
+                        )
+                    }
+                }.padding(.top, 12)
             }
         }
+        if snapshot.evidence.contains(where: { $0.count > 0 }) {
+            evidenceSection(snapshot.evidence.filter { $0.count > 0 })
+        }
+    }
 
-        evidenceSection(snapshot.evidence)
+    private func chapterLibrary(_ chapters: [HomeSnapshot.ChapterCard]) -> some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Text("챕터 선택").font(.title3.weight(.semibold))
+                .accessibilityHeading(.h2)
+            Text("처음 읽거나, 이전 챕터로 돌아가 확인할 수 있습니다.")
+                .font(.callout).foregroundStyle(.secondary)
+            ForEach(chapters, id: \.chapterID) { chapter in
+                Button {
+                    store.send(.chapterSelected(chapter.chapterID))
+                } label: {
+                    HStack(spacing: 16) {
+                        VStack(alignment: .leading, spacing: 5) {
+                            Text(chapter.title).font(.headline)
+                            Text(chapter.lastPage.map(lastPageLabel) ?? "학습 지도부터 시작")
+                                .font(.caption).foregroundStyle(.secondary)
+                        }
+                        Spacer(minLength: 8)
+                        Text(chapter.resumePageID == nil ? "시작하기" : "이어보기")
+                        Image(systemName: "chevron.right")
+                    }
+                    .padding(18).contentShape(Rectangle())
+                }
+                .buttonStyle(.plain)
+                .background(Color.primary.opacity(0.04), in: RoundedRectangle(cornerRadius: 12))
+            }
+        }
     }
 
     private func lastActivityPanel(

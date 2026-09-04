@@ -101,178 +101,63 @@ struct KnowledgeLinkComponent: View {
     }
 }
 
-struct PersonalExpressionComparisonComponent: View {
-    let content: PersonalExpressionComparisonContent
-    let personalExpression: String?
-    let conceptNames: KnowledgeConceptNames
-    let onAction: (PersonalKnowledgeComponentAction) -> Void
-
-    var body: some View {
-        LearningBlock(
-            title: "기본 지식과 나의 표현 비교하기",
-            intent: .observe
-        ) {
-            Text(conceptNamesText)
-                .font(.caption.weight(.semibold))
-                .foregroundStyle(.secondary)
-
-            ViewThatFits(in: .horizontal) {
-                HStack(alignment: .top, spacing: 12) {
-                    expressionPanel(
-                        title: "기본 지식",
-                        text: content.baseExpression,
-                        systemImage: "book.closed"
-                    )
-                    Divider()
-                    expressionPanel(
-                        title: "나의 표현",
-                        text: personalExpression
-                            ?? content.personalExpressionEmptyState,
-                        systemImage: "person.text.rectangle"
-                    )
-                }
-
-                VStack(spacing: 12) {
-                    expressionPanel(
-                        title: "기본 지식",
-                        text: content.baseExpression,
-                        systemImage: "book.closed"
-                    )
-                    Divider()
-                    expressionPanel(
-                        title: "나의 표현",
-                        text: personalExpression
-                            ?? content.personalExpressionEmptyState,
-                        systemImage: "person.text.rectangle"
-                    )
-                }
-            }
-
-            LearningCallout(
-                title: "비교 질문",
-                text: content.comparisonQuestion,
-                accent: .purple,
-                presentation: .emphasized
-            )
-
-            Button("개념 상세에서 나의 표현 보기") {
-                onAction(.expressionInspectorRequested(content.conceptIDs))
-            }
-            .accessibilityHint(content.inspectorLocation)
-        }
-    }
-
-    private var conceptNamesText: String {
-        content.conceptIDs
-            .map { conceptNames.title(for: $0) }
-            .joined(separator: " · ")
-    }
-
-    private func expressionPanel(
-        title: String,
-        text: String,
-        systemImage: String
-    ) -> some View {
-        VStack(alignment: .leading, spacing: 8) {
-            Label(title, systemImage: systemImage)
-                .font(.subheadline.weight(.semibold))
-
-            Text(text)
-                .foregroundStyle(.secondary)
-                .fixedSize(horizontal: false, vertical: true)
-        }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .accessibilityElement(children: .combine)
-        .accessibilityLabel("\(title). \(text)")
-    }
-}
-
-struct LearningStateSelectionComponent: View {
-    let content: LearningStateSelectionContent
-    let selectedStateID: String?
-    let onSelectionChanged: (String?) -> Void
-
-    private var effectiveSelectionID: String? {
-        selectedStateID ?? content.defaultOptionID
-    }
-
-    var body: some View {
-        LearningBlock(
-            title: "지금 상태 확인하기",
-            intent: .decide,
-            role: .task
-        ) {
-            Text("현재 상태에 맞는 학습 경로를 선택할 수 있습니다.")
-                .foregroundStyle(.secondary)
-
-            VStack(alignment: .leading, spacing: 10) {
-                ForEach(content.options, id: \.id) { option in
-                    optionButton(option)
-                }
-            }
-            .focusSection()
-
-            if effectiveSelectionID != nil {
-                Button("기본 학습으로 돌아가기") {
-                    onSelectionChanged(nil)
-                }
-                .accessibilityHint(
-                    "선택한 확장·심화 경로를 해제하고 기본 학습을 표시합니다."
-                )
-            }
-        }
-    }
-
-    private func optionButton(_ option: LearningStateOption) -> some View {
-        let isSelected = effectiveSelectionID == option.id
-
-        return Button {
-            onSelectionChanged(isSelected ? nil : option.id)
-        } label: {
-            HStack(alignment: .top, spacing: 10) {
-                Image(
-                    systemName: isSelected
-                        ? "checkmark.circle.fill"
-                        : "circle"
-                )
-                .foregroundStyle(isSelected ? Color.accentColor : .secondary)
-                .accessibilityHidden(true)
-
-                VStack(alignment: .leading, spacing: 4) {
-                    Text(option.title)
-                        .font(.callout.weight(.semibold))
-                    Text(option.guidance)
-                        .font(.callout)
-                        .foregroundStyle(.secondary)
-                        .fixedSize(horizontal: false, vertical: true)
-                }
-            }
-            .padding(10)
-            .frame(maxWidth: .infinity, alignment: .leading)
-        }
-        .buttonStyle(.bordered)
-        .accessibilityLabel(option.title)
-        .accessibilityValue(isSelected ? "선택됨" : "선택 안 됨")
-        .accessibilityHint(option.guidance)
-    }
-}
-
 struct EnrichmentTaskComponent: View {
     let content: EnrichmentTaskContent
-    let selectedStateID: String?
     let conceptNames: KnowledgeConceptNames
-
-    var isVisible: Bool {
-        selectedStateID == content.requiredStateID
-    }
+    @State private var isExpanded = false
 
     var body: some View {
-        if isVisible {
-            LearningBlock(
-                title: "더 깊이 탐구하기",
-                intent: .apply,
-                role: .checkpoint
-            ) {
+        LearningBlock(
+            title: "선택 학습",
+            intent: .apply,
+            role: .checkpoint
+        ) {
+            Button {
+                withAnimation(.easeInOut(duration: 0.18)) {
+                    isExpanded.toggle()
+                }
+            } label: {
+                HStack(alignment: .top, spacing: 12) {
+                    Image(systemName: "sparkles")
+                        .foregroundStyle(.purple)
+                        .accessibilityHidden(true)
+
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text(content.title)
+                            .font(.callout.weight(.semibold))
+                        Text(content.guidance)
+                            .font(.callout)
+                            .foregroundStyle(.secondary)
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
+                    .frame(maxWidth: .infinity, alignment: .leading)
+
+                    Image(
+                        systemName: isExpanded
+                            ? "chevron.up"
+                            : "chevron.down"
+                    )
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(.secondary)
+                    .accessibilityHidden(true)
+                }
+                .padding(12)
+                .contentShape(Rectangle())
+                .background(
+                    Color.purple.opacity(isExpanded ? 0.10 : 0.05),
+                    in: RoundedRectangle(cornerRadius: 10, style: .continuous)
+                )
+                .overlay {
+                    RoundedRectangle(cornerRadius: 10, style: .continuous)
+                        .stroke(Color.purple.opacity(0.20), lineWidth: 1)
+                }
+            }
+            .buttonStyle(.plain)
+            .accessibilityLabel(content.title)
+            .accessibilityValue(isExpanded ? "펼쳐짐" : "접힘")
+            .accessibilityHint(content.guidance)
+
+            if isExpanded {
                 if !content.materials.isEmpty {
                     LearningLabeledTextGrid(
                         items: content.materials,
@@ -300,77 +185,9 @@ struct EnrichmentTaskComponent: View {
                             .map { conceptNames.title(for: $0) }
                             .joined(separator: ", ")
                 )
+                .transition(.opacity.combined(with: .move(edge: .top)))
             }
         }
-    }
-}
-
-struct CompletionCheckComponent: View {
-    let content: CompletionCheckContent
-    let activityID: LearningActivityID
-    let assessment: CompletionSelfAssessment?
-    let onAssessmentChanged: (
-        _ activityID: LearningActivityID,
-        _ assessment: CompletionSelfAssessment
-    ) -> Void
-
-    var body: some View {
-        LearningBlock(
-            title: "완료 여부 점검하기",
-            intent: .reflect,
-            role: .task
-        ) {
-            Text(content.question)
-                .font(.title3.weight(.semibold))
-                .fixedSize(horizontal: false, vertical: true)
-
-            ViewThatFits(in: .horizontal) {
-                HStack(spacing: 10) {
-                    assessmentButton(.ready)
-                    assessmentButton(.retry)
-                }
-                VStack(spacing: 10) {
-                    assessmentButton(.ready)
-                    assessmentButton(.retry)
-                }
-            }
-            .focusSection()
-
-            ActivityCriteriaView(
-                title: "설명에 포함할 근거",
-                criteria: content.requiredEvidence,
-                accent: .green
-            )
-
-            LearningCallout(
-                title: "다시 확인할 때",
-                text: content.retryCondition,
-                accent: .orange,
-                presentation: .emphasized
-            )
-        }
-    }
-
-    private func assessmentButton(
-        _ option: CompletionSelfAssessment
-    ) -> some View {
-        let isSelected = assessment == option
-
-        return Button {
-            onAssessmentChanged(activityID, option)
-        } label: {
-            Label(
-                option.title,
-                systemImage: isSelected
-                    ? "checkmark.circle.fill"
-                    : "circle"
-            )
-            .frame(maxWidth: .infinity)
-        }
-        .buttonStyle(.bordered)
-        .accessibilityLabel(option.title)
-        .accessibilityValue(isSelected ? "선택됨" : "선택 안 됨")
-        .accessibilityHint("현재 페이지의 완료 상태로 선택합니다.")
     }
 }
 
@@ -400,13 +217,18 @@ struct PersonalKnowledgePromotionComponent: View {
                 .fixedSize(horizontal: false, vertical: true)
             }
 
-            Picker("반영할 개념", selection: targetConceptSelection) {
-                ForEach(content.conceptIDs, id: \.self) { conceptID in
-                    Text(conceptNames.title(for: conceptID))
-                        .tag(Optional(conceptID))
-                }
-            }
-            .pickerStyle(.menu)
+            LearningOptionGrid(
+                title: "반영할 개념",
+                options: content.conceptIDs.map {
+                    LearningContentItem(
+                        id: $0.rawValue,
+                        text: conceptNames.title(for: $0)
+                    )
+                },
+                selection: targetConceptRawSelection,
+                accent: .purple,
+                allowsEmptySelection: false
+            )
             .accessibilityHint(
                 "후보를 확인한 뒤 새 표현을 저장할 개념을 선택합니다."
             )
@@ -515,6 +337,18 @@ struct PersonalKnowledgePromotionComponent: View {
                     key: LearningActivityFieldKey
                         .personalizationTargetConceptID,
                     values: [conceptID.rawValue]
+                )
+            }
+        )
+    }
+
+    private var targetConceptRawSelection: Binding<String> {
+        Binding(
+            get: { targetConceptSelection.wrappedValue?.rawValue ?? "" },
+            set: { rawValue in
+                guard rawValue.isEmpty == false else { return }
+                targetConceptSelection.wrappedValue = KnowledgeConceptID(
+                    rawValue: rawValue
                 )
             }
         )
@@ -740,19 +574,29 @@ struct PersonalKnowledgeRelationComponent: View {
         conceptIDs: [KnowledgeConceptID],
         selection: Binding<KnowledgeConceptID?>
     ) -> some View {
-        VStack(alignment: .leading, spacing: 5) {
-            Text(title)
-                .font(.caption.weight(.semibold))
-                .foregroundStyle(.secondary)
-            Picker(title, selection: selection) {
-                ForEach(conceptIDs, id: \.self) { conceptID in
-                    Text(conceptNames.title(for: conceptID))
-                        .tag(Optional(conceptID))
-                }
+        let rawSelection = Binding<String>(
+            get: { selection.wrappedValue?.rawValue ?? "" },
+            set: { rawValue in
+                guard rawValue.isEmpty == false else { return }
+                selection.wrappedValue = KnowledgeConceptID(
+                    rawValue: rawValue
+                )
             }
-            .labelsHidden()
-            .pickerStyle(.menu)
-            .frame(maxWidth: .infinity, alignment: .leading)
+        )
+
+        return VStack(alignment: .leading, spacing: 5) {
+            LearningOptionGrid(
+                title: title,
+                options: conceptIDs.map {
+                    LearningContentItem(
+                        id: $0.rawValue,
+                        text: conceptNames.title(for: $0)
+                    )
+                },
+                selection: rawSelection,
+                accent: .teal,
+                allowsEmptySelection: false
+            )
         }
         .padding(.vertical, 3)
         .frame(maxWidth: .infinity, alignment: .leading)

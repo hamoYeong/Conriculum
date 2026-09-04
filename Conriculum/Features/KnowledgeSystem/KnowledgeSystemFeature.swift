@@ -3,25 +3,6 @@ import Foundation
 
 @Reducer
 struct KnowledgeSystemFeature {
-    enum DisplayMode: String, CaseIterable, Equatable, Hashable, Sendable {
-        case shelves
-        case network
-
-        var title: String {
-            switch self {
-            case .shelves: "책장"
-            case .network: "연결망"
-            }
-        }
-
-        var systemImage: String {
-            switch self {
-            case .shelves: "books.vertical"
-            case .network: "point.3.connected.trianglepath.dotted"
-            }
-        }
-    }
-
     @ObservableState
     struct State: Equatable {
         var snapshot: KnowledgeSystemSnapshot?
@@ -29,7 +10,6 @@ struct KnowledgeSystemFeature {
         var loadErrorMessage: String?
         var searchQuery = ""
         var selectedCollectionID: KnowledgeCollectionID?
-        var displayMode: DisplayMode = .shelves
         var selectedConceptIDs: [KnowledgeConceptID] = []
 
         var selectedConcepts: [KnowledgeSystemSnapshot.ConceptItem] {
@@ -84,7 +64,6 @@ struct KnowledgeSystemFeature {
         case loadResponse(LoadResponse)
         case searchQueryChanged(String)
         case collectionSelected(KnowledgeCollectionID?)
-        case displayModeChanged(DisplayMode)
         case conceptSelected(KnowledgeConceptID)
         case compareConceptRequested(KnowledgeConceptID)
         case conceptClosed(KnowledgeConceptID)
@@ -104,6 +83,8 @@ struct KnowledgeSystemFeature {
 
     @Dependency(\.knowledgeCatalogClient) var knowledgeCatalogClient
     @Dependency(\.personalKnowledgeClient) var personalKnowledgeClient
+    @Dependency(\.curriculumClient) var curriculumClient
+    @Dependency(\.learningRecordClient) var learningRecordClient
 
     var body: some Reducer<State, Action> {
         Reduce { state, action in
@@ -127,11 +108,33 @@ struct KnowledgeSystemFeature {
                         let loadedCatalog = try await catalog
                         let loadedRevisions = try await revisions
                         let loadedRelations = try await relations
+                        let chapters = try await curriculumClient.loadChapters()
+                        var learnedIDs = Set<KnowledgeConceptID>()
+                        var personalIDs = Set<KnowledgeConceptID>()
+                        for chapter in chapters {
+                            let progress = try await learningRecordClient.loadProgress(chapter.id)
+                            let historicalIDs = await LearningExposure.historicalPageIDs(chapter: chapter, progress: progress)
+                            for page in chapter.pages {
+                                let responses = try await learningRecordClient.loadResponses(page.id)
+                                let evidence = try await learningRecordClient.loadEvidence(page.id)
+                                if historicalIDs.contains(page.id) || evidence.contains(where: { $0.kind == .viewed && $0.pageID == page.id }) {
+                                    learnedIDs.formUnion(await LearningExposure.directConceptIDs(page: page))
+                                }
+                                learnedIDs.formUnion(await LearnedKnowledgeResolver.conceptIDs(
+                                    page: page, responses: responses
+                                ))
+                                personalIDs.formUnion(await LearnedKnowledgeResolver.personalConceptIDs(page: page, responses: responses))
+                            }
+                        }
+                        let loadedLearnedIDs = learnedIDs
+                        let loadedPersonalIDs = personalIDs
                         let snapshot = await MainActor.run {
                             KnowledgeSystemSnapshotComposer().compose(
                                 catalog: loadedCatalog,
                                 revisions: loadedRevisions,
-                                personalRelations: loadedRelations
+                                personalRelations: loadedRelations,
+                                learnedConceptIDs: loadedLearnedIDs,
+                                personalConceptIDs: loadedPersonalIDs
                             )
                         }
                         await send(.loadResponse(.loaded(snapshot)))
@@ -151,7 +154,7 @@ struct KnowledgeSystemFeature {
                 state.loadErrorMessage = nil
                 state.snapshot = snapshot
                 state.selectedConceptIDs = state.selectedConceptIDs.filter {
-                    snapshot.conceptItem(id: $0) != nil
+                    snapshot.conceptItem(id: $0)?.isLearned == true
                 }
                 if let selectedCollectionID = state.selectedCollectionID,
                    snapshot.collection(id: selectedCollectionID) == nil {
@@ -172,18 +175,14 @@ struct KnowledgeSystemFeature {
                 state.selectedCollectionID = collectionID
                 return .none
 
-            case let .displayModeChanged(mode):
-                state.displayMode = mode
-                return .none
-
             case let .conceptSelected(conceptID):
-                guard state.snapshot?.conceptItem(id: conceptID) != nil
+                guard state.snapshot?.conceptItem(id: conceptID)?.isLearned == true
                 else { return .none }
                 state.selectedConceptIDs = [conceptID]
                 return .none
 
             case let .compareConceptRequested(conceptID):
-                guard state.snapshot?.conceptItem(id: conceptID) != nil,
+                guard state.snapshot?.conceptItem(id: conceptID)?.isLearned == true,
                       !state.selectedConceptIDs.contains(conceptID)
                 else { return .none }
                 switch state.selectedConceptIDs.count {

@@ -212,18 +212,14 @@ struct MatchingComponent: View {
                         Text(item.text)
                             .font(.callout.weight(.semibold))
 
-                        Picker(
-                            "\(item.text)에 연결할 항목",
+                        LearningOptionGrid(
+                            title: "연결할 항목",
+                            options: content.rightItems,
                             selection: activity.textBinding(
                                 for: LearningActivityFieldKey.match(item.id)
-                            )
-                        ) {
-                            Text("선택 안 함").tag("")
-                            ForEach(content.rightItems, id: \.id) { target in
-                                Text(target.text).tag(target.id)
-                            }
-                        }
-                        .labelsHidden()
+                            ),
+                            accent: .purple
+                        )
                         .accessibilityLabel("\(item.text)에 연결할 항목")
                         .accessibilityHint(
                             "연결할 오른쪽 항목을 선택합니다."
@@ -267,19 +263,14 @@ struct ChoiceWithReasonComponent: View {
                             .font(.callout.weight(.semibold))
                             .fixedSize(horizontal: false, vertical: true)
 
-                        Picker(
-                            question.prompt,
+                        LearningOptionGrid(
+                            title: nil,
+                            options: question.options,
                             selection: activity.textBinding(
                                 for: LearningActivityFieldKey.choice(question.id)
-                            )
-                        ) {
-                            Text("선택 안 함").tag("")
-                            ForEach(question.options, id: \.id) { option in
-                                Text(option.text).tag(option.id)
-                            }
-                        }
-                        .pickerStyle(.radioGroup)
-                        .labelsHidden()
+                            ),
+                            accent: .blue
+                        )
                         .accessibilityLabel(question.prompt)
                         .accessibilityHint("답을 하나 선택합니다.")
                     }
@@ -334,17 +325,16 @@ struct FillInBlankComponent: View {
                         .accessibilityLabel(blank.placeholder)
                         .accessibilityHint("빈칸에 들어갈 내용을 입력합니다.")
                     } else {
-                        Picker(
-                            blank.placeholder,
+                        LearningOptionGrid(
+                            title: blank.placeholder,
+                            options: blank.options.map {
+                                LearningContentItem(id: $0, text: $0)
+                            },
                             selection: activity.textBinding(
                                 for: LearningActivityFieldKey.blank(blank.id)
-                            )
-                        ) {
-                            Text("선택 안 함").tag("")
-                            ForEach(blank.options, id: \.self) { option in
-                                Text(option).tag(option)
-                            }
-                        }
+                            ),
+                            accent: .orange
+                        )
                         .accessibilityLabel(blank.placeholder)
                         .accessibilityHint("빈칸에 들어갈 항목을 선택합니다.")
                     }
@@ -437,15 +427,12 @@ struct CodeAssemblyComponent: View {
             SwiftCodeText(line, textStyle: .callout)
                 .textSelection(.enabled)
 
-            Picker(
-                "\(index + 1)번째 줄의 이름",
-                selection: selectionBinding(at: index)
-            ) {
-                Text("이름 선택 안 함").tag("")
-                ForEach(content.pieces, id: \.id) { piece in
-                    Text(piece.text).tag(piece.id)
-                }
-            }
+            LearningOptionGrid(
+                title: "이 줄에 사용할 이름",
+                options: content.pieces,
+                selection: selectionBinding(at: index),
+                accent: .cyan
+            )
             .accessibilityLabel("\(index + 1)번째 줄에 사용할 이름")
             .accessibilityHint(
                 "이름을 선택합니다. 드래그하지 않고도 완료할 수 있습니다."
@@ -594,5 +581,402 @@ struct RecallCheckComponent: View {
 
             ActivityDraftStatusView(activity: activity)
         }
+    }
+}
+
+struct LearningCompassComponent: View {
+    let content: LearningCompassContent
+    let activity: LearningActivityInput
+
+    private let confidenceLevels = ["낮음", "중간", "높음"]
+
+    var body: some View {
+        LearningBlock(
+            title: "이번 판단의 방향",
+            intent: .context,
+            role: .checkpoint
+        ) {
+            LearningCallout(
+                title: "이전 학습과 연결",
+                text: content.previousConnection,
+                accent: .indigo
+            )
+
+            LearningCallout(
+                title: "지금의 핵심 질문",
+                text: content.coreQuestion,
+                accent: .indigo,
+                presentation: .emphasized
+            )
+
+            VStack(alignment: .leading, spacing: 8) {
+                Text(content.firstPredictionPrompt)
+                    .font(.callout.weight(.semibold))
+                    .fixedSize(horizontal: false, vertical: true)
+
+                TextField(
+                    "첫 예상을 근거와 함께 적기",
+                    text: activity.textBinding(
+                        for: LearningActivityFieldKey.compassPrediction
+                    ),
+                    axis: .vertical
+                )
+                .textFieldStyle(.roundedBorder)
+                .accessibilityLabel("첫 예상")
+            }
+
+            VStack(alignment: .leading, spacing: 9) {
+                Text(content.confidencePrompt)
+                    .font(.callout.weight(.semibold))
+
+                HStack(spacing: 8) {
+                    ForEach(confidenceLevels, id: \.self) { level in
+                        LearningSelectionChip(
+                            title: level,
+                            isSelected: activity.value(
+                                for: LearningActivityFieldKey
+                                    .compassConfidence
+                            ) == level
+                        ) {
+                            activity.updating(
+                                key: LearningActivityFieldKey
+                                    .compassConfidence,
+                                values: [level]
+                            )
+                        }
+                    }
+                }
+
+                TextField(
+                    "그 확신을 고른 이유",
+                    text: activity.textBinding(
+                        for: LearningActivityFieldKey
+                            .compassConfidenceReason
+                    ),
+                    axis: .vertical
+                )
+                .textFieldStyle(.roundedBorder)
+            }
+
+            ActivityCriteriaView(
+                title: "이 페이지의 완료 증거",
+                criteria: content.completionEvidence,
+                accent: .green
+            )
+
+            ActivityDraftStatusView(activity: activity)
+        }
+    }
+}
+
+struct LearningClosureComponent: View {
+    let content: LearningClosureContent
+    let activity: LearningActivityInput
+
+    private let confidenceLevels = ["낮음", "중간", "높음"]
+
+    var body: some View {
+        LearningBlock(
+            title: "처음과 지금 비교하기",
+            intent: .reflect,
+            role: .task
+        ) {
+            LearningCallout(
+                title: "처음 기록",
+                text: content.firstPredictionReference,
+                accent: .teal
+            )
+
+            responseField(
+                prompt: content.finalExplanationPrompt,
+                placeholder: "수행 뒤의 설명",
+                key: LearningActivityFieldKey.reflectionFinalExplanation
+            )
+
+            VStack(alignment: .leading, spacing: 9) {
+                Text(content.confidenceChangePrompt)
+                    .font(.callout.weight(.semibold))
+                    .fixedSize(horizontal: false, vertical: true)
+
+                HStack(spacing: 8) {
+                    ForEach(confidenceLevels, id: \.self) { level in
+                        LearningSelectionChip(
+                            title: level,
+                            isSelected: activity.value(
+                                for: LearningActivityFieldKey
+                                    .reflectionConfidence
+                            ) == level
+                        ) {
+                            activity.updating(
+                                key: LearningActivityFieldKey
+                                    .reflectionConfidence,
+                                values: [level]
+                            )
+                        }
+                    }
+                }
+
+                TextField(
+                    "확신이 달라진 근거",
+                    text: activity.textBinding(
+                        for: LearningActivityFieldKey
+                            .reflectionConfidenceReason
+                    ),
+                    axis: .vertical
+                )
+                .textFieldStyle(.roundedBorder)
+            }
+
+            responseField(
+                prompt: content.changedCriterionPrompt,
+                placeholder: "버린 기준과 새로 쓴 기준",
+                key: LearningActivityFieldKey.reflectionChangedCriterion
+            )
+
+            responseField(
+                prompt: content.nextUsePrompt,
+                placeholder: "다음에 이 판단을 쓸 상황",
+                key: LearningActivityFieldKey.reflectionNextUse
+            )
+
+            Divider()
+
+            VStack(alignment: .leading, spacing: 12) {
+                Text(content.completionQuestion)
+                    .font(.title3.weight(.semibold))
+                    .fixedSize(horizontal: false, vertical: true)
+
+                ViewThatFits(in: .horizontal) {
+                    HStack(spacing: 8) {
+                        assessmentButton(.ready)
+                        assessmentButton(.retry)
+                    }
+                    VStack(spacing: 8) {
+                        assessmentButton(.ready)
+                        assessmentButton(.retry)
+                    }
+                }
+            }
+
+            ActivityCriteriaView(
+                title: "설명에 포함할 근거",
+                criteria: content.requiredEvidence,
+                accent: .green
+            )
+
+            LearningCallout(
+                title: "다시 확인할 때",
+                text: content.retryCondition,
+                accent: .orange,
+                presentation: .emphasized
+            )
+
+            ActivityDraftStatusView(activity: activity)
+        }
+    }
+
+    private func assessmentButton(
+        _ option: CompletionSelfAssessment
+    ) -> some View {
+        LearningSelectionChip(
+            title: option.title,
+            isSelected: activity.value(
+                for: LearningActivityFieldKey.completionAssessment
+            ) == option.rawValue
+        ) {
+            activity.updating(
+                key: LearningActivityFieldKey.completionAssessment,
+                values: [option.rawValue]
+            )
+        }
+    }
+
+    private func responseField(
+        prompt: String,
+        placeholder: String,
+        key: String
+    ) -> some View {
+        VStack(alignment: .leading, spacing: 7) {
+            Text(prompt)
+                .font(.callout.weight(.semibold))
+                .fixedSize(horizontal: false, vertical: true)
+            TextField(
+                placeholder,
+                text: activity.textBinding(for: key),
+                axis: .vertical
+            )
+            .textFieldStyle(.roundedBorder)
+            .accessibilityLabel(prompt)
+        }
+    }
+}
+
+struct SemanticChunkReadingComponent: View {
+    let content: SemanticChunkReadingContent
+    let activity: LearningActivityInput
+
+    private var selectedElementIDs: [String] {
+        activity.values(
+            for: LearningActivityFieldKey.semanticChunkSelection
+        )
+    }
+
+    var body: some View {
+        LearningBlock(
+            title: "의미 단위 조각으로 읽기",
+            intent: .apply,
+            role: .task
+        ) {
+            SwiftCodeBlock(
+                code: content.code,
+                language: content.language,
+                spokenLabel: "의미 단위 조각을 찾을 \(content.language) 코드"
+            )
+
+            VStack(alignment: .leading, spacing: 10) {
+                Text("읽기 렌즈")
+                    .font(.subheadline.weight(.semibold))
+                ForEach(
+                    Array(content.lensQuestions.enumerated()),
+                    id: \.offset
+                ) { index, question in
+                    LearningNumberedRow(
+                        number: index + 1,
+                        text: question,
+                        accent: .cyan
+                    )
+                }
+            }
+
+            VStack(alignment: .leading, spacing: 10) {
+                Text(content.selectionPrompt)
+                    .font(.callout.weight(.semibold))
+                    .fixedSize(horizontal: false, vertical: true)
+
+                LazyVGrid(
+                    columns: [
+                        GridItem(.adaptive(minimum: 190), spacing: 10)
+                    ],
+                    alignment: .leading,
+                    spacing: 10
+                ) {
+                    ForEach(content.elements, id: \.id) { element in
+                        LearningSelectionChip(
+                            title: element.text,
+                            isSelected: selectedElementIDs.contains(
+                                element.id
+                            )
+                        ) {
+                            toggle(element.id)
+                        }
+                    }
+                }
+            }
+
+            responseField(
+                prompt: content.chunkNamePrompt,
+                placeholder: "이 조각이 하는 일을 동사로 이름 붙이기",
+                key: LearningActivityFieldKey.semanticChunkName
+            )
+            responseField(
+                prompt: content.flowPrompt,
+                placeholder: "선택한 요소와 다른 조각 사이의 흐름",
+                key: LearningActivityFieldKey.semanticChunkFlow
+            )
+            responseField(
+                prompt: content.boundaryPrompt,
+                placeholder: "포함하거나 제외한 근거",
+                key: LearningActivityFieldKey.semanticChunkBoundary
+            )
+            responseField(
+                prompt: content.changePrompt,
+                placeholder: "한 요소가 바뀌면 달라질 조각과 결과",
+                key: LearningActivityFieldKey.semanticChunkChange
+            )
+
+            ActivityCriteriaView(
+                title: "완료 증거",
+                criteria: content.completionEvidence
+            )
+
+            ActivityDraftStatusView(activity: activity)
+        }
+    }
+
+    private func toggle(_ id: String) {
+        var selection = selectedElementIDs
+        if let index = selection.firstIndex(of: id) {
+            selection.remove(at: index)
+        } else {
+            selection.append(id)
+        }
+        activity.updating(
+            key: LearningActivityFieldKey.semanticChunkSelection,
+            values: selection
+        )
+    }
+
+    private func responseField(
+        prompt: String,
+        placeholder: String,
+        key: String
+    ) -> some View {
+        VStack(alignment: .leading, spacing: 7) {
+            Text(prompt)
+                .font(.callout.weight(.semibold))
+                .fixedSize(horizontal: false, vertical: true)
+            TextField(
+                placeholder,
+                text: activity.textBinding(for: key),
+                axis: .vertical
+            )
+            .textFieldStyle(.roundedBorder)
+            .accessibilityLabel(prompt)
+        }
+    }
+}
+
+private struct LearningSelectionChip: View {
+    let title: String
+    let isSelected: Bool
+    let action: () -> Void
+
+    var body: some View {
+        Button(action: action) {
+            HStack(spacing: 7) {
+                Image(
+                    systemName: isSelected
+                        ? "checkmark.circle.fill"
+                        : "circle"
+                )
+                .accessibilityHidden(true)
+                Text(title)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+            .font(.callout.weight(isSelected ? .semibold : .regular))
+            .foregroundStyle(isSelected ? Color.accentColor : .primary)
+            .padding(.horizontal, 11)
+            .padding(.vertical, 8)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .background(
+                isSelected
+                    ? Color.accentColor.opacity(0.12)
+                    : Color(nsColor: .controlBackgroundColor),
+                in: RoundedRectangle(cornerRadius: 9, style: .continuous)
+            )
+            .overlay {
+                RoundedRectangle(cornerRadius: 9, style: .continuous)
+                    .stroke(
+                        isSelected
+                            ? Color.accentColor.opacity(0.55)
+                            : Color(nsColor: .separatorColor).opacity(0.7),
+                        lineWidth: 1
+                    )
+            }
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .accessibilityLabel(title)
+        .accessibilityValue(isSelected ? "선택됨" : "선택 안 됨")
     }
 }

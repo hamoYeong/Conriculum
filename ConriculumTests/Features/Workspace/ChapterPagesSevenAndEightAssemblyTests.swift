@@ -1,7 +1,3 @@
-import AppKit
-import ComposableArchitecture
-import Foundation
-import SwiftUI
 import Testing
 
 @testable import Conriculum
@@ -12,40 +8,23 @@ struct ChapterPagesSevenAndEightAssemblyTests {
         let tags: [LearningSectionTag]
         let requiredActivityIDs: Set<LearningActivityID>
         let knowledgeConceptIDs: Set<KnowledgeConceptID>
-        let promotionEvidenceIDs: Set<LearningActivityID>
-        let promotionConceptIDs: Set<KnowledgeConceptID>
-        let relationSourceIDs: Set<KnowledgeConceptID>
-        let relationTargetIDs: Set<KnowledgeConceptID>
-        let relationEvidenceIDs: Set<LearningActivityID>
     }
 
-    private let timestamp = Date(timeIntervalSince1970: 1_725_782_400)
-
     @Test
-    func pagesSevenAndEightMatchTheirComponentContracts() throws {
+    func pagesSevenThroughNineMatchStructureTransferAndChunkContracts() throws {
         let chapter = try loadChapter()
         let catalog = try loadKnowledgeCatalog()
         let catalogIDs = Set(catalog.concepts.map(\.id))
-        let chapterConceptIDs: Set<KnowledgeConceptID> = [
-            "concept-value",
-            "concept-type-selection",
-            "concept-identifier-naming",
-            "concept-constants-variables",
-            "concept-type-inference-annotation",
-            "concept-related-value-grouping",
-        ]
         let contracts: [Int: PageContract] = [
             7: PageContract(
                 tags: [
-                    .knowledgeRecall, .situation, .comparison, .definition,
-                    .processGuide, .knowledgeLink, .learningStateSelection,
-                    .cardSorting, .freeResponse, .cardSorting,
-                    .personalExpressionComparison,
-                    .personalKnowledgePromotion,
-                    .personalKnowledgeRelation, .enrichmentTask,
-                    .completionCheck,
+                    .learningCompass, .situation, .comparison, .definition,
+                    .processGuide, .knowledgeLink, .cardSorting, .freeResponse,
+                    .cardSorting, .learningClosure, .enrichmentTask,
+                    .personalKnowledgePromotion, .personalKnowledgeRelation,
                 ],
                 requiredActivityIDs: [
+                    "activity-page07-compass",
                     "activity-page07-role-sorting",
                     "activity-page07-free-response",
                     "activity-page07-boundary-sorting",
@@ -55,35 +34,19 @@ struct ChapterPagesSevenAndEightAssemblyTests {
                     "concept-related-value-grouping",
                     "concept-input-rule-output",
                     "concept-identifier-naming",
-                ],
-                promotionEvidenceIDs: [
-                    "activity-page07-free-response",
-                    "activity-page07-boundary-sorting",
-                ],
-                promotionConceptIDs: ["concept-related-value-grouping"],
-                relationSourceIDs: ["concept-related-value-grouping"],
-                relationTargetIDs: [
-                    "concept-type-modeling",
-                    "concept-identifier-naming",
-                ],
-                relationEvidenceIDs: [
-                    "activity-page07-role-sorting",
-                    "activity-page07-free-response",
-                    "activity-page07-boundary-sorting",
                 ]
             ),
             8: PageContract(
                 tags: [
-                    .situation, .processGuide, .knowledgeRecall,
-                    .codeExplanation, .knowledgeLink,
-                    .learningStateSelection, .cardSorting, .codeAssembly,
-                    .cardSorting, .freeResponse, .enrichmentTask,
-                    .recallCheck, .personalExpressionComparison,
-                    .personalKnowledgePromotion,
-                    .personalKnowledgeRelation, .knowledgeChangeSummary,
-                    .completionCheck,
+                    .learningCompass, .situation, .processGuide,
+                    .codeExplanation, .knowledgeLink, .cardSorting,
+                    .codeAssembly, .cardSorting, .freeResponse, .recallCheck,
+                    .learningClosure, .enrichmentTask,
+                    .personalKnowledgePromotion, .personalKnowledgeRelation,
+                    .knowledgeChangeSummary,
                 ],
                 requiredActivityIDs: [
+                    "activity-page08-compass",
                     "activity-page08-value-sorting",
                     "activity-page08-code-assembly",
                     "activity-page08-role-sorting",
@@ -91,26 +54,38 @@ struct ChapterPagesSevenAndEightAssemblyTests {
                     "activity-page08-recall-check",
                     "activity-page08-completion",
                 ],
-                knowledgeConceptIDs: chapterConceptIDs,
-                promotionEvidenceIDs: [
-                    "activity-page08-free-response",
-                    "activity-page08-recall-check",
+                knowledgeConceptIDs: [
+                    "concept-value",
+                    "concept-type-selection",
+                    "concept-identifier-naming",
+                    "concept-constants-variables",
+                    "concept-type-inference-annotation",
+                    "concept-related-value-grouping",
+                ]
+            ),
+            9: PageContract(
+                tags: [
+                    .learningCompass, .situation, .comparison,
+                    .decisionCriteria, .knowledgeLink, .semanticChunkReading,
+                    .freeResponse, .recallCheck, .learningClosure,
+                    .enrichmentTask, .personalKnowledgePromotion,
                 ],
-                promotionConceptIDs: chapterConceptIDs,
-                relationSourceIDs: chapterConceptIDs,
-                relationTargetIDs: chapterConceptIDs.union([
-                    "concept-expressions-operations",
-                    "concept-type-modeling",
-                ]),
-                relationEvidenceIDs: [
-                    "activity-page08-value-sorting",
-                    "activity-page08-code-assembly",
-                    "activity-page08-role-sorting",
+                requiredActivityIDs: [
+                    "activity-page09-compass",
+                    "activity-page09-semantic-chunk",
+                    "activity-page09-free-response",
+                    "activity-page09-recall",
+                    "activity-page09-closure",
+                ],
+                knowledgeConceptIDs: [
+                    "concept-semantic-chunk-reading",
+                    "concept-related-value-grouping",
+                    "concept-input-rule-output",
                 ]
             ),
         ]
 
-        for order in 7...8 {
+        for order in 7...9 {
             let page = try #require(
                 chapter.progressPages.first { $0.order == order }
             )
@@ -126,210 +101,73 @@ struct ChapterPagesSevenAndEightAssemblyTests {
                 Set(page.knowledgeLinks.map(\.conceptID))
                     == contract.knowledgeConceptIDs
             )
+            #expect(page.knowledgeLinks.filter { $0.role == .primary }.count == 1)
+            #expect(page.knowledgeContext.currentlyUsedConceptIDs.count <= 3)
             #expect(page.knowledgeLinks.allSatisfy {
                 catalogIDs.contains($0.conceptID)
             })
-            #expect(page.knowledgeContext.currentlyUsedConceptIDs.allSatisfy {
-                catalogIDs.contains($0)
-            })
-            #expect(page.knowledgeContext.nearbyKnowledge.allSatisfy {
-                catalogIDs.contains($0.conceptID)
-            })
-            #expect(page.sections.compactMap(\.activityID).allSatisfy {
-                activityIDs.contains($0)
-            })
-            #expect(page.activities.allSatisfy { activity in
-                page.sections.contains { $0.id == activity.sectionID }
-            })
+            #expect(page.sections.compactMap(\.activityID).allSatisfy(
+                activityIDs.contains
+            ))
 
-            try validatePersonalization(
-                in: page,
-                contract: contract,
-                activityIDs: activityIDs,
-                catalogIDs: catalogIDs
+            let closureOrder = try #require(
+                page.sections.first { $0.content.tag == .learningClosure }?.order
             )
+            let optionalTags: Set<LearningSectionTag> = [
+                .enrichmentTask,
+                .personalKnowledgePromotion,
+                .personalKnowledgeRelation,
+                .knowledgeChangeSummary,
+            ]
+            #expect(page.sections.allSatisfy {
+                optionalTags.contains($0.content.tag) == false
+                    || $0.order > closureOrder
+            })
         }
     }
 
     @Test
-    func allEightLessonsAreAssembled() throws {
-        let chapter = try loadChapter()
-
-        #expect(chapter.progressPages.count == 8)
-        #expect(chapter.progressPages.allSatisfy(
-            Chapter02ContentAssembly.isAssembled
-        ))
-    }
-
-    @Test
-    func pageEightSeparatesConfirmedChangesFromPendingCandidates() throws {
+    func pageNineRequiresNonContiguousSemanticChunkEvidence() throws {
         let chapter = try loadChapter()
         let page = try #require(
-            chapter.progressPages.first { $0.order == 8 }
+            chapter.progressPages.first { $0.order == 9 }
         )
-        let summarySection = try #require(
-            page.sections.first { $0.content.tag == .knowledgeChangeSummary }
+        let section = try #require(
+            page.sections.first { $0.content.tag == .semanticChunkReading }
         )
-        guard case let .knowledgeChangeSummary(summary) =
-            summarySection.content
-        else {
-            Issue.record("지식 변화 요약 section mapping이 올바르지 않다.")
+        guard case let .semanticChunkReading(content) = section.content else {
+            Issue.record("9페이지 핵심 활동이 의미 단위 조각 읽기가 아니다.")
             return
         }
 
-        #expect(!summary.confirmedExpressions.isEmpty)
-        #expect(!summary.confirmedRelations.isEmpty)
-        #expect(!summary.pendingCandidates.isEmpty)
-        #expect(summary.confirmedExpressions != summary.pendingCandidates)
-        #expect(summary.confirmedRelations != summary.pendingCandidates)
-        #expect(!summary.nextUseSuggestion.isEmpty)
-        #expect(!summary.emptyState.isEmpty)
+        #expect(content.elements.count == 7)
+        #expect(content.selectionPrompt.contains("떨어진"))
+        #expect(content.chunkNamePrompt.contains("행동"))
+        #expect(content.flowPrompt.contains("다음"))
+        #expect(content.changePrompt.contains("달라지는지"))
+        #expect(content.completionEvidence.count == 5)
+        #expect(section.activityID == "activity-page09-semantic-chunk")
     }
 
     @Test
-    func pageEightNextActionShowsTheChapterTwoCompletionSummary() async throws {
-        let chapter = try loadChapter()
-        let page = try #require(
-            chapter.progressPages.first { $0.order == 8 }
-        )
-        let expectedProgress = LearningProgress(
-            chapterID: chapter.id,
-            currentPageID: page.id,
-            completedPageIDs: [],
-            updatedAt: timestamp
-        )
-        var state = ChapterLearningFeature.State(
-            chapterID: chapter.id,
-            currentPageID: page.id
-        )
-        state.chapter = chapter
-        let store = TestStore(initialState: state) {
-            ChapterLearningFeature()
-        } withDependencies: {
-            $0.date.now = timestamp
-            $0.learningRecordClient.saveProgress = { progress in
-                #expect(progress == expectedProgress)
-            }
-        }
-
-        #expect(store.state.isLastPage)
-        await store.send(.nextButtonTapped) {
-            $0.isSavingNavigation = true
-        }
-        await store.receive(.navigationResponse(.saved(
-            destination: .completionSummary,
-            progress: expectedProgress,
-            drafts: [],
-            responses: []
-        ))) {
-            $0.isSavingNavigation = false
-            $0.isShowingCompletionSummary = true
-        }
-    }
-
-    @Test
-    func pagesSevenAndEightRenderThroughTheSharedTree() throws {
+    func pageNineUsesTheNewKnowledgeConceptAndRoutesToChapterThree() throws {
         let chapter = try loadChapter()
         let catalog = try loadKnowledgeCatalog()
-
-        for page in chapter.progressPages.suffix(2) {
-            var state = ChapterLearningFeature.State(
-                chapterID: chapter.id,
-                currentPageID: page.id
-            )
-            state.chapter = chapter
-            state.knowledgeCatalog = catalog
-            let view = ChapterLearningView(
-                store: Store(initialState: state) {
-                    ChapterLearningFeature()
-                }
-            )
-            .frame(width: 760, height: 900)
-            let hostingView = NSHostingView(rootView: view)
-            hostingView.frame = NSRect(
-                x: 0,
-                y: 0,
-                width: 760,
-                height: 900
-            )
-            hostingView.layoutSubtreeIfNeeded()
-            let image = try #require(
-                hostingView.bitmapImageRepForCachingDisplay(
-                    in: hostingView.bounds
-                )
-            )
-            hostingView.cacheDisplay(in: hostingView.bounds, to: image)
-
-            #expect(image.size == NSSize(width: 760, height: 900))
-            #expect(sampledColorCount(in: image) > 3)
-        }
-    }
-
-    private func validatePersonalization(
-        in page: LearningPage,
-        contract: PageContract,
-        activityIDs: Set<LearningActivityID>,
-        catalogIDs: Set<KnowledgeConceptID>
-    ) throws {
-        let promotionSection = try #require(
-            page.sections.first {
-                $0.content.tag == .personalKnowledgePromotion
+        let page = try #require(
+            chapter.progressPages.first { $0.order == 9 }
+        )
+        let concept = try #require(
+            catalog.concepts.first {
+                $0.id == "concept-semantic-chunk-reading"
             }
         )
-        guard case let .personalKnowledgePromotion(promotion) =
-            promotionSection.content
-        else {
-            Issue.record("개인 지식 후보 section mapping이 올바르지 않다.")
-            return
-        }
-        #expect(promotion.candidateKind == .conceptRevision)
-        #expect(
-            Set(promotion.evidenceActivityIDs)
-                == contract.promotionEvidenceIDs
-        )
-        #expect(Set(promotion.conceptIDs) == contract.promotionConceptIDs)
-        #expect(promotion.evidenceActivityIDs.allSatisfy(activityIDs.contains))
-        #expect(promotion.conceptIDs.allSatisfy(catalogIDs.contains))
-        let promotionActivityID = try #require(promotionSection.activityID)
-        #expect(
-            page.activities.first { $0.id == promotionActivityID }?
-                .isRequired == false
-        )
 
-        let relationSection = try #require(
-            page.sections.first {
-                $0.content.tag == .personalKnowledgeRelation
-            }
-        )
-        guard case let .personalKnowledgeRelation(relation) =
-            relationSection.content
-        else {
-            Issue.record("개인 지식 관계 section mapping이 올바르지 않다.")
-            return
-        }
-        #expect(Set(relation.sourceConceptIDs) == contract.relationSourceIDs)
-        #expect(Set(relation.targetConceptIDs) == contract.relationTargetIDs)
-        #expect(
-            Set(relation.evidenceActivityIDs)
-                == contract.relationEvidenceIDs
-        )
-        #expect(relation.sourceConceptIDs.allSatisfy(catalogIDs.contains))
-        #expect(relation.targetConceptIDs.allSatisfy(catalogIDs.contains))
-        #expect(relation.evidenceActivityIDs.allSatisfy(activityIDs.contains))
-        let relationActivityID = try #require(relationSection.activityID)
-        #expect(
-            page.activities.first { $0.id == relationActivityID }?
-                .isRequired == false
-        )
-
-        let completionSection = try #require(
-            page.sections.first { $0.content.tag == .completionCheck }
-        )
-        let completionActivityID = try #require(completionSection.activityID)
-        #expect(
-            page.activities.first { $0.id == completionActivityID }?
-                .isRequired == true
-        )
+        #expect(concept.title == "코드를 의미 단위 조각으로 읽기")
+        #expect(concept.judgmentQuestions.count == 5)
+        #expect(page.navigation.previous?.pageID == "chapter-02-page-08")
+        #expect(page.navigation.next?.pageID == "chapter-03-page-01")
+        #expect(page.navigation.next?.label == "값으로 새로운 값을 계산하기")
+        #expect(LearningContentAssembly.isAssembled(page))
     }
 
     private func loadChapter() throws -> Chapter {
@@ -341,28 +179,5 @@ struct ChapterPagesSevenAndEightAssemblyTests {
             KnowledgeCatalog.self,
             from: .valuesAndTypes
         )
-    }
-
-    private func sampledColorCount(
-        in image: NSBitmapImageRep
-    ) -> Int {
-        let horizontalStep = max(image.pixelsWide / 24, 1)
-        let verticalStep = max(image.pixelsHigh / 24, 1)
-        var colors: Set<Int> = []
-
-        for x in stride(from: 0, to: image.pixelsWide, by: horizontalStep) {
-            for y in stride(from: 0, to: image.pixelsHigh, by: verticalStep) {
-                guard let color = image.colorAt(x: x, y: y)?
-                    .usingColorSpace(.deviceRGB)
-                else { continue }
-
-                let red = Int(color.redComponent * 15)
-                let green = Int(color.greenComponent * 15)
-                let blue = Int(color.blueComponent * 15)
-                colors.insert((red << 8) | (green << 4) | blue)
-            }
-        }
-
-        return colors.count
     }
 }

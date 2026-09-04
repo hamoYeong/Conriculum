@@ -148,7 +148,7 @@ struct HomeSnapshotComposerTests {
 
         #expect(snapshot.source == .empty)
         #expect(snapshot.chapter.resumePageID == nil)
-        #expect(snapshot.chapter.accessNote?.contains("미리보기 상태") == true)
+        #expect(snapshot.chapter.accessNote == nil)
         #expect(snapshot.knowledgeChanges.confirmed.isEmpty)
         #expect(snapshot.knowledgeChanges.pending.isEmpty)
         #expect(

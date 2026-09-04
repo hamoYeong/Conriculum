@@ -11,18 +11,24 @@ struct ContentValidator: Sendable {
         chapter: Chapter,
         catalog: KnowledgeCatalog,
         identityManifest: ContentIdentityManifest,
-        chapterResource: String = "Curriculum/Stage01/Chapter02/chapter-02.json",
+        chapterResource: String? = nil,
         catalogResource: String = "KnowledgeCatalog/values-and-types.json",
         identityResource: String = "ContentManifest/content-identity.json"
     ) throws {
         var issues: [ContentValidationIssue] = []
+        let resolvedChapterResource = chapterResource
+            ?? "\(chapter.id.rawValue).json"
 
-        validatePageStructure(chapter, resource: chapterResource, issues: &issues)
+        validatePageStructure(
+            chapter,
+            resource: resolvedChapterResource,
+            issues: &issues
+        )
         validateCatalog(catalog, resource: catalogResource, issues: &issues)
         validateReferences(
             chapter: chapter,
             catalog: catalog,
-            chapterResource: chapterResource,
+            chapterResource: resolvedChapterResource,
             catalogResource: catalogResource,
             issues: &issues
         )
@@ -41,7 +47,7 @@ struct ContentValidator: Sendable {
 
     // MARK: Chapter 내부 구조
 
-    /// overview/lesson 구분, page 수와 order, ID 중복, 필수 문맥과 완료 section을 검사한다.
+    /// overview/lesson 구분, 연속 order, ID 중복, 필수 문맥과 완료 section을 검사한다.
     private func validatePageStructure(
         _ chapter: Chapter,
         resource: String,
@@ -57,8 +63,12 @@ struct ContentValidator: Sendable {
         if chapter.overview.order != nil {
             issues.append(.init(resource: resource, fieldPath: "overview.order", message: "must be null"))
         }
-        if chapter.pages.count != 8 {
-            issues.append(.init(resource: resource, fieldPath: "pages", message: "must contain exactly 8 lesson pages"))
+        if chapter.pages.isEmpty {
+            issues.append(.init(
+                resource: resource,
+                fieldPath: "pages",
+                message: "must contain at least one lesson page"
+            ))
         }
 
         registerUnique(
@@ -99,6 +109,15 @@ struct ContentValidator: Sendable {
                 issues: &issues
             )
         }
+        if chapter.overview.sections.contains(
+            where: { $0.content.tag == .learningCompass }
+        ) == false {
+            issues.append(.init(
+                resource: resource,
+                fieldPath: "overview.sections",
+                message: "must contain a learningCompass section"
+            ))
+        }
 
         for (pageIndex, page) in chapter.pages.enumerated() {
             let pagePath = "pages[\(pageIndex)]"
@@ -123,14 +142,43 @@ struct ContentValidator: Sendable {
             if page.knowledgeContext.currentlyUsedConceptIDs.isEmpty {
                 issues.append(.init(resource: resource, fieldPath: "\(pagePath).knowledgeContext.currentlyUsedConceptIDs", message: "must not be empty"))
             }
+            if page.knowledgeContext.currentlyUsedConceptIDs.count > 3 {
+                issues.append(.init(
+                    resource: resource,
+                    fieldPath: "\(pagePath).knowledgeContext.currentlyUsedConceptIDs",
+                    message: "must contain one core concept and at most two supporting concepts"
+                ))
+            }
             if page.knowledgeContext.emptyStateMessage.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
                 issues.append(.init(resource: resource, fieldPath: "\(pagePath).knowledgeContext.emptyStateMessage", message: "must not be empty"))
             }
             if page.knowledgeContext.focusModeSummary.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
                 issues.append(.init(resource: resource, fieldPath: "\(pagePath).knowledgeContext.focusModeSummary", message: "must not be empty"))
             }
-            if page.sections.contains(where: { $0.content.tag == .completionCheck }) == false {
-                issues.append(.init(resource: resource, fieldPath: "\(pagePath).sections", message: "must contain a completionCheck section"))
+            if page.sections.contains(where: { $0.content.tag == .learningCompass }) == false {
+                issues.append(.init(resource: resource, fieldPath: "\(pagePath).sections", message: "must contain a learningCompass section"))
+            }
+            let closureOrder = page.sections.first(
+                where: { $0.content.tag == .learningClosure }
+            )?.order
+            if closureOrder == nil {
+                issues.append(.init(resource: resource, fieldPath: "\(pagePath).sections", message: "must contain a learningClosure section"))
+            }
+            let optionalTags: Set<LearningSectionTag> = [
+                .enrichmentTask,
+                .personalKnowledgePromotion,
+                .personalKnowledgeRelation,
+                .knowledgeChangeSummary,
+            ]
+            if let closureOrder, page.sections.contains(where: {
+                optionalTags.contains($0.content.tag)
+                    && $0.order < closureOrder
+            }) {
+                issues.append(.init(
+                    resource: resource,
+                    fieldPath: "\(pagePath).sections",
+                    message: "optional learning and personalization must follow learningClosure"
+                ))
             }
 
             var sectionOrders: [Int: String] = [:]
@@ -167,10 +215,17 @@ struct ContentValidator: Sendable {
         }
 
         let actualOrders = chapter.progressPages.compactMap(\.order)
-        if actualOrders != Array(1...8) {
-            issues.append(.init(resource: resource, fieldPath: "pages.order", message: "must contain each order from 1 through 8 exactly once"))
+        let expectedOrders = Array(1..<(chapter.progressPages.count + 1))
+        if actualOrders != expectedOrders {
+            issues.append(.init(
+                resource: resource,
+                fieldPath: "pages.order",
+                message: "must contain each order from 1 through \(chapter.progressPages.count) exactly once"
+            ))
         }
-        if chapter.progressDenominator != 8 || chapter.progressPageIDs.contains(chapter.overview.id) {
+        if chapter.progressDenominator != chapter.pages.count
+            || chapter.progressPageIDs.contains(chapter.overview.id)
+        {
             issues.append(.init(resource: resource, fieldPath: "overview", message: "must be excluded from the progress denominator"))
         }
     }
@@ -483,8 +538,6 @@ private extension LearningSectionContent {
             [content.conceptID]
         case let .knowledgeLink(content):
             content.links.map(\.conceptID)
-        case let .personalExpressionComparison(content):
-            content.conceptIDs
         case let .enrichmentTask(content):
             content.conceptIDs
         case let .personalKnowledgePromotion(content):

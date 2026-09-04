@@ -44,7 +44,7 @@ struct ContentValidatorTests {
         })
         #expect(error.issues.contains {
             $0.fieldPath == "pages.order"
-                && $0.message.contains("1 through 8")
+                && $0.message.contains("1 through 9")
         })
     }
 
@@ -212,7 +212,7 @@ struct ContentValidatorTests {
                 && $0.message.contains("must not be empty")
         })
         #expect(error.issues.contains {
-            $0.fieldPath == "collections[0].conceptIDs[4]"
+            $0.fieldPath == "collections[0].conceptIDs[5]"
                 && $0.message.contains("does not resolve")
         })
         #expect(error.issues.contains {
@@ -226,9 +226,22 @@ struct ContentValidatorTests {
         })
     }
 
-    /// 정확한 lesson 수·연속 order·KnowledgeContext 참조 계약을 함께 확인한다.
     @Test
-    func wrongPageCountAndKnowledgeContextReportExactFields() throws {
+    func chapterWithSevenContiguousLessonsPassesValidation() throws {
+        let content = try loadValidContent()
+        var pages = content.chapter.pages
+        pages.removeLast()
+
+        try ContentValidator().validate(
+            chapter: copyChapter(content.chapter, pages: pages),
+            catalog: content.catalog,
+            identityManifest: content.identityManifest
+        )
+    }
+
+    /// Chapter마다 다른 lesson 수를 허용하면서 현재 개수 안의 연속 order는 강제한다.
+    @Test
+    func nonContiguousOrderAndKnowledgeContextReportExactFields() throws {
         let content = try loadValidContent()
         var pages = content.chapter.pages
         let firstPage = pages[0]
@@ -245,6 +258,11 @@ struct ContentValidatorTests {
         )
         pages[0] = copyPage(firstPage, knowledgeContext: brokenContext)
         pages.removeLast()
+        pages[6] = copyPage(
+            pages[6],
+            id: pages[6].id,
+            order: 8
+        )
 
         let error = validationError(
             chapter: copyChapter(content.chapter, pages: pages),
@@ -252,10 +270,6 @@ struct ContentValidatorTests {
             identityManifest: content.identityManifest
         )
 
-        #expect(error.issues.contains {
-            $0.fieldPath == "pages"
-                && $0.message.contains("exactly 8 lesson pages")
-        })
         #expect(error.issues.contains {
             $0.fieldPath == "pages[0].knowledgeContext"
                 && $0.message.contains("concept-missing-context")

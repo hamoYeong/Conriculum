@@ -82,8 +82,15 @@ struct LearningSectionView: View {
     @ViewBuilder
     var body: some View {
         switch section.content {
-        case let .knowledgeRecall(content):
-            KnowledgeRecallComponent(content: content)
+        case let .learningCompass(content):
+            if let activity {
+                LearningCompassComponent(
+                    content: content,
+                    activity: activity
+                )
+            } else {
+                missingActivity
+            }
         case let .situation(content):
             SituationComponent(content: content)
         case let .comparison(content):
@@ -139,56 +146,35 @@ struct LearningSectionView: View {
             } else {
                 missingActivity
             }
+        case let .learningClosure(content):
+            if let activity {
+                LearningClosureComponent(
+                    content: content,
+                    activity: activity
+                )
+            } else {
+                missingActivity
+            }
+        case let .semanticChunkReading(content):
+            if let activity {
+                SemanticChunkReadingComponent(
+                    content: content,
+                    activity: activity
+                )
+            } else {
+                missingActivity
+            }
 
         case let .knowledgeLink(content):
             KnowledgeLinkComponent(
                 content: content,
                 conceptNames: conceptNames
             )
-        case let .personalExpressionComparison(content):
-            PersonalExpressionComparisonComponent(
-                content: content,
-                personalExpression: nil,
-                conceptNames: conceptNames,
-                onAction: {
-                    onComponentAction(.personalKnowledge($0))
-                }
-            )
-        case let .learningStateSelection(content):
-            LearningStateSelectionComponent(
-                content: content,
-                selectedStateID: componentState.selectedLearningStateID,
-                onSelectionChanged: {
-                    onComponentAction(.learningStateSelected($0))
-                }
-            )
         case let .enrichmentTask(content):
             EnrichmentTaskComponent(
                 content: content,
-                selectedStateID: componentState.selectedLearningStateID,
                 conceptNames: conceptNames
             )
-        case let .completionCheck(content):
-            if let activity {
-                VStack(alignment: .leading, spacing: 10) {
-                    CompletionCheckComponent(
-                        content: content,
-                        activityID: activity.activityID,
-                        assessment: componentState.completionAssessments[
-                            activity.activityID
-                        ],
-                        onAssessmentChanged: { activityID, assessment in
-                            onComponentAction(.completionAssessmentChanged(
-                                activityID: activityID,
-                                assessment: assessment
-                            ))
-                        }
-                    )
-                    ActivityDraftStatusView(activity: activity)
-                }
-            } else {
-                missingActivity
-            }
         case let .personalKnowledgePromotion(content):
             if let activity {
                 PersonalKnowledgePromotionComponent(
@@ -244,7 +230,7 @@ struct ChapterRouteMap: View {
 
     var body: some View {
         LearningBlock(
-            title: "8개 페이지 학습 경로",
+            title: "\(chapter.progressDenominator)개 페이지 학습 경로",
             intent: .context,
             role: .checkpoint
         ) {

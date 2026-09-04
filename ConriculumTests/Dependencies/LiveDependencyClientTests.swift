@@ -11,6 +11,7 @@ struct LiveDependencyClientTests {
         let curriculumClient = CurriculumClient.live(store: contentStore)
         let knowledgeClient = KnowledgeCatalogClient.live(store: contentStore)
 
+        let chapters = try await curriculumClient.loadChapters()
         let chapter = try await curriculumClient.loadChapter("chapter-02")
         let overview = try await curriculumClient.loadPage(
             chapter.id,
@@ -26,7 +27,8 @@ struct LiveDependencyClientTests {
         let loadedConcept = try await knowledgeClient.loadConcept(firstConcept.id)
         let relations = try await knowledgeClient.loadRelations(firstConcept.id)
 
-        #expect(chapter.progressDenominator == 8)
+        #expect(chapters.map(\.id) == ["chapter-02", "chapter-03"])
+        #expect(chapter.progressDenominator == chapter.progressPages.count)
         #expect(overview.kind == .overview)
         #expect(loadedLesson == firstLesson)
         #expect(loadedConcept == firstConcept)

@@ -12,7 +12,9 @@ struct HomeSnapshotComposer {
         pendingPersonalizationReviews: [
             KnowledgePersonalizationReview
         ] = [],
-        placeholder: HomeSnapshot? = nil
+        placeholder: HomeSnapshot? = nil,
+        availableChapters: [Chapter]? = nil,
+        progressByChapter: [ChapterID: LearningProgress] = [:]
     ) -> HomeSnapshot {
         let hasStoredRecords = progress != nil
             || responses.isEmpty == false
@@ -44,9 +46,7 @@ struct HomeSnapshotComposer {
                         title: $0.title
                     )
                 },
-                accessNote: resumedPage == nil
-                    ? "미리보기 상태 · Chapter 2 직접 진입이 열려 있습니다."
-                    : nil
+                accessNote: nil
             ),
             lastActivity: lastActivity(
                 chapter: chapter,
@@ -68,7 +68,21 @@ struct HomeSnapshotComposer {
                 pendingReviews: pendingPersonalizationReviews
             ),
             knowledgeChangesEmptyStateMessage: chapter.overview
-                .knowledgeContext.emptyStateMessage
+                .knowledgeContext.emptyStateMessage,
+            availableChapters: (availableChapters ?? [chapter]).sorted {
+                ($0.order, $0.id.rawValue) < ($1.order, $1.id.rawValue)
+            }.map { item in
+                let record = progressByChapter[item.id] ?? (item.id == chapter.id ? progress : nil)
+                let page = record.flatMap { item.page(id: $0.currentPageID) }
+                return HomeSnapshot.ChapterCard(
+                    chapterID: item.id,
+                    title: "Chapter \(item.order) · \(item.title)",
+                    summary: item.summary, startPageID: item.overview.id,
+                    resumePageID: page?.id,
+                    lastPage: page.map { .init(id: $0.id, order: $0.order, title: $0.title) },
+                    accessNote: nil
+                )
+            }
         )
     }
 

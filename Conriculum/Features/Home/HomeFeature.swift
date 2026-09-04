@@ -47,6 +47,7 @@ struct HomeFeature {
         case loadResponse(LoadResponse)
         case startButtonTapped
         case resumeButtonTapped
+        case chapterSelected(ChapterID)
         case knowledgeSystemButtonTapped
         case delegate(Delegate)
     }
@@ -79,19 +80,30 @@ struct HomeFeature {
             case .task, .reloadRequested:
                 state.isLoading = true
                 state.loadErrorMessage = nil
-                let chapterID = Chapter02.id
                 let placeholder = state.placeholderSnapshot
+                let preferredChapterID = state.chapterEntry?.chapterID
                 let pendingReviews = state.pendingPersonalizationReviews
 
                 return .run { send in
                     do {
-                        let chapter = try await curriculumClient.loadChapter(
-                            chapterID
-                        )
+                        let chapters = try await curriculumClient.loadChapters()
+                        var progressByChapter: [ChapterID: LearningProgress] = [:]
+                        for item in chapters {
+                            if let progress = try await learningRecordClient.loadProgress(item.id),
+                               await MainActor.run(body: { item.page(id: progress.currentPageID) != nil }) {
+                                progressByChapter[item.id] = progress
+                            }
+                        }
+                        let mostRecent = progressByChapter.values.max {
+                            ($0.updatedAt, $0.chapterID.rawValue) < ($1.updatedAt, $1.chapterID.rawValue)
+                        }?.chapterID
+                        guard let chapter = chapters.first(where: {
+                            $0.id == (mostRecent ?? preferredChapterID)
+                        }) ?? chapters.first else {
+                            throw ContentClientError.noChaptersAvailable
+                        }
                         let catalog = try await knowledgeCatalogClient.loadCatalog()
-                        let progress = try await learningRecordClient.loadProgress(
-                            chapter.id
-                        )
+                        let progress = progressByChapter[chapter.id]
                         let pageIDs = await MainActor.run {
                             chapter.allPages.map(\.id)
                         }
@@ -127,6 +139,7 @@ struct HomeFeature {
                         let loadedEvidence = evidence
                         let loadedRevisions = revisions
                         let loadedRelations = relations
+                        let loadedProgress = progressByChapter
                         let snapshot = await MainActor.run {
                             HomeSnapshotComposer().compose(
                                 chapter: chapter,
@@ -137,7 +150,9 @@ struct HomeFeature {
                                 revisions: loadedRevisions,
                                 relations: loadedRelations,
                                 pendingPersonalizationReviews: pendingReviews,
-                                placeholder: placeholder
+                                placeholder: placeholder,
+                                availableChapters: chapters,
+                                progressByChapter: loadedProgress
                             )
                         }
                         await send(.loadResponse(.loaded(snapshot)))
@@ -182,6 +197,15 @@ struct HomeFeature {
 
             case .knowledgeSystemButtonTapped:
                 return .send(.delegate(.knowledgeSystemRequested))
+
+            case let .chapterSelected(chapterID):
+                guard let chapter = state.snapshot?.availableChapters.first(where: {
+                    $0.chapterID == chapterID
+                }) else { return .none }
+                return .send(.delegate(.chapterRequested(
+                    chapterID: chapterID,
+                    pageID: chapter.resumePageID ?? chapter.startPageID
+                )))
 
             case .delegate:
                 return .none

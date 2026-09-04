@@ -55,6 +55,7 @@ struct LearningWorkspaceFeature {
 
     enum Delegate: Equatable {
         case homeRequested
+        case chapterRequested(ChapterID, LearningPageID)
     }
 
     @Dependency(\.date.now) var now
@@ -71,6 +72,9 @@ struct LearningWorkspaceFeature {
 
         Reduce { state, action in
             switch action {
+            case let .chapter(.delegate(.chapterRequested(chapterID, pageID))):
+                return .send(.delegate(.chapterRequested(chapterID, pageID)))
+
             case let .chapter(.delegate(.currentPageChanged(pageID))):
                 return .send(.knowledgeContext(.pageChanged(pageID)))
 

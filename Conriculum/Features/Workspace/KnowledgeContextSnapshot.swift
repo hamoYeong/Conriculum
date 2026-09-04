@@ -26,6 +26,7 @@ struct KnowledgeContextSnapshot: Equatable, Sendable {
 
     let pageID: LearningPageID
     let pageTitle: String
+    let currentQuestion: String
     let currentlyUsedSummary: String
     let changedKnowledgeSummary: String
     let emptyStateMessage: String
@@ -82,9 +83,10 @@ struct KnowledgeContextSnapshotComposer {
         )
         let revisionEvidenceByConcept = revisionEvidenceByConcept(in: page)
 
+        // 페이지의 전체 지식 연결은 학습 콘텐츠와 관계 작성에 남겨 두고,
+        // 사이드바에는 저자가 현재 문맥으로 고른 핵심 1개와 보조 최대 2개만 보낸다.
         let directConceptIDs = orderedUnique(
             page.knowledgeContext.currentlyUsedConceptIDs
-                + page.knowledgeLinks.map(\.conceptID)
         )
         let directConcepts = try directConceptIDs.map { conceptID in
             let link = linksByID[conceptID]
@@ -143,6 +145,7 @@ struct KnowledgeContextSnapshotComposer {
         return KnowledgeContextSnapshot(
             pageID: page.id,
             pageTitle: page.title,
+            currentQuestion: currentQuestion(in: page),
             currentlyUsedSummary: page.knowledgeContext.currentlyUsedSummary,
             changedKnowledgeSummary: page.knowledgeContext
                 .changedKnowledgeSummary,
@@ -158,6 +161,16 @@ struct KnowledgeContextSnapshotComposer {
             personalRelations: personalRelations,
             relationCreationContract: relationCreationContract(in: page)
         )
+    }
+
+    private func currentQuestion(in page: LearningPage) -> String {
+        for section in page.sections {
+            guard case let .learningCompass(content) = section.content else {
+                continue
+            }
+            return content.coreQuestion
+        }
+        return page.goal
     }
 
     static func chapterConceptIDs(in chapter: Chapter) -> [KnowledgeConceptID] {

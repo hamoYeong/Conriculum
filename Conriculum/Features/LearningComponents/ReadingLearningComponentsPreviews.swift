@@ -2,7 +2,6 @@ import SwiftUI
 
 private enum ReadingComponentPreviewFixtures {
     static let tags: [LearningSectionTag] = [
-        .knowledgeRecall,
         .situation,
         .comparison,
         .definition,
@@ -45,8 +44,6 @@ private struct ReadingLearningComponentsPreview: View {
         for content: LearningSectionContent
     ) -> some View {
         switch content {
-        case let .knowledgeRecall(payload):
-            KnowledgeRecallComponent(content: payload)
         case let .situation(payload):
             SituationComponent(content: payload)
         case let .comparison(payload):

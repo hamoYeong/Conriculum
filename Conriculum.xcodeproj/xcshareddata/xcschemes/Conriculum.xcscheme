@@ -79,7 +79,7 @@
       </BuildableProductRunnable>
       <CommandLineArguments>
          <CommandLineArgument
-            argument = "-CleanOnLaunch YES"
+            argument = "-cleanOnLaunch"
             isEnabled = "YES">
          </CommandLineArgument>
       </CommandLineArguments>

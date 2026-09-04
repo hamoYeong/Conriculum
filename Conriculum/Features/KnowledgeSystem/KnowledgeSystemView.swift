@@ -143,10 +143,10 @@ struct KnowledgeSystemView: View {
             store.send(.conceptSelected(item.id))
         } label: {
             HStack(spacing: 7) {
-                Image(systemName: isSelected ? "circle.fill" : "circle")
-                    .font(.system(size: 7))
+                Image(systemName: item.learningStatus.systemImage)
+                    .font(.caption)
                     .foregroundStyle(
-                        isSelected ? Color.accentColor : Color.secondary
+                        item.learningStatus == .personal ? Color.purple : isSelected ? Color.accentColor : Color.secondary
                     )
                     .accessibilityHidden(true)
 
@@ -163,7 +163,10 @@ struct KnowledgeSystemView: View {
             .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
-        .accessibilityValue(isSelected ? "상세 열림" : "")
+        .disabled(!item.isLearned)
+        .opacity(item.isLearned ? 1 : 0.55)
+        .accessibilityValue(item.learningStatus.title + (isSelected ? ", 상세 열림" : ""))
+        .help(item.learningStatus.title)
     }
 
     @ViewBuilder
@@ -216,18 +219,8 @@ struct KnowledgeSystemView: View {
     private func systemHeader(
         _ snapshot: KnowledgeSystemSnapshot
     ) -> some View {
-        ViewThatFits(in: .horizontal) {
-            HStack(alignment: .center, spacing: 16) {
-                systemTitle(snapshot)
-                Spacer(minLength: 12)
-                displayModePicker
-            }
-
-            VStack(alignment: .leading, spacing: 12) {
-                systemTitle(snapshot)
-                displayModePicker
-            }
-        }
+        systemTitle(snapshot)
+        .frame(maxWidth: .infinity, alignment: .leading)
         .padding(.horizontal, 20)
         .padding(.vertical, 14)
     }
@@ -236,7 +229,7 @@ struct KnowledgeSystemView: View {
         _ snapshot: KnowledgeSystemSnapshot
     ) -> some View {
         VStack(alignment: .leading, spacing: 4) {
-            Text("지식 체계")
+            Text("지식 책장")
                 .font(.title.weight(.bold))
                 .accessibilityHeading(.h1)
             Text(
@@ -246,25 +239,13 @@ struct KnowledgeSystemView: View {
             )
             .font(.caption)
             .foregroundStyle(.secondary)
+            Text("배운 지식 \(snapshot.concepts.filter { $0.learningStatus == .learned }.count) · 내 지식 \(snapshot.concepts.filter { $0.learningStatus == .personal }.count) · 아직 배우지 않음 \(snapshot.concepts.filter { $0.learningStatus == .unlearned }.count)")
+                .font(.caption).foregroundStyle(.secondary)
+                .fixedSize(horizontal: false, vertical: true)
+            Text("학습에서 만난 개념은 ‘배운 지식’, 내 설명이나 연결을 남긴 개념은 ‘내 지식’입니다.")
+                .font(.caption).foregroundStyle(.secondary)
+                .fixedSize(horizontal: false, vertical: true)
         }
-    }
-
-    private var displayModePicker: some View {
-        Picker(
-            "보기 방식",
-            selection: Binding(
-                get: { store.displayMode },
-                set: { store.send(.displayModeChanged($0)) }
-            )
-        ) {
-            ForEach(KnowledgeSystemFeature.DisplayMode.allCases, id: \.self) {
-                mode in
-                Label(mode.title, systemImage: mode.systemImage)
-                    .tag(mode)
-            }
-        }
-        .pickerStyle(.segmented)
-        .frame(maxWidth: 250)
     }
 
     @ViewBuilder
@@ -272,30 +253,41 @@ struct KnowledgeSystemView: View {
         snapshot: KnowledgeSystemSnapshot,
         availableWidth: CGFloat
     ) -> some View {
-        switch store.selectedConcepts.count {
-        case 0:
-            explorer(snapshot: snapshot)
-
-        case 1:
-            if let item = store.selectedConcepts.first {
-                if availableWidth >= 760 {
-                    HSplitView {
-                        explorer(snapshot: snapshot)
-                            .frame(minWidth: 360, maxWidth: .infinity)
-
-                        detailPane(item, snapshot: snapshot)
-                            .frame(minWidth: 320, idealWidth: 380, maxWidth: 520)
-                    }
-                } else {
-                    detailPane(item, snapshot: snapshot)
+        let layout = KnowledgeBookshelfLayout.resolve(
+            availableWidth: availableWidth,
+            hasDetail: !store.selectedConcepts.isEmpty
+        )
+        // The horizontal allocation is responsive, not a remembered draggable split ratio.
+        // Keep the bookshelf in the same structural position to preserve its scroll view.
+        HStack(spacing: 0) {
+            VSplitView {
+                explorer(snapshot: snapshot)
+                    .frame(minHeight: 180, maxHeight: .infinity)
+                if !store.selectedConcepts.isEmpty && !layout.showsSideDetail {
+                    detailArea(snapshot)
+                        .frame(minHeight: 180, idealHeight: 300, maxHeight: .infinity)
                 }
             }
+            .frame(width: layout.shelfWidth)
+            if layout.showsSideDetail {
+                Divider().frame(width: KnowledgeBookshelfLayout.dividerWidth)
+                detailArea(snapshot)
+                    .frame(minWidth: KnowledgeBookshelfLayout.minimumDetailWidth, maxWidth: .infinity)
+            }
+        }
+    }
 
-        default:
-            HSplitView {
-                ForEach(store.selectedConcepts) { item in
-                    detailPane(item, snapshot: snapshot)
-                        .frame(minWidth: 245, maxWidth: .infinity)
+    private func detailArea(_ snapshot: KnowledgeSystemSnapshot) -> some View {
+        Group {
+            if store.selectedConcepts.count == 1,
+               let item = store.selectedConcepts.first {
+                detailPane(item, snapshot: snapshot)
+            } else {
+                VSplitView {
+                    ForEach(store.selectedConcepts) { item in
+                        detailPane(item, snapshot: snapshot)
+                            .frame(minHeight: 160, maxHeight: .infinity)
+                    }
                 }
             }
         }
@@ -313,9 +305,7 @@ struct KnowledgeSystemView: View {
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
         } else {
-            switch store.displayMode {
-            case .shelves:
-                KnowledgeBookshelfView(
+            KnowledgeBookshelfView(
                     snapshot: snapshot,
                     concepts: store.visibleConcepts,
                     selectedConceptIDs: store.selectedConceptIDs,
@@ -324,22 +314,6 @@ struct KnowledgeSystemView: View {
                         store.send(.compareConceptRequested($0))
                     }
                 )
-
-            case .network:
-                KnowledgeGraphView(
-                    snapshot: snapshot,
-                    concepts: store.visibleConcepts,
-                    baseRelations: store.visibleBaseRelations,
-                    personalRelations: visiblePersonalRelations(
-                        in: snapshot
-                    ),
-                    selectedConceptIDs: store.selectedConceptIDs,
-                    onSelect: { store.send(.conceptSelected($0)) },
-                    onCompare: {
-                        store.send(.compareConceptRequested($0))
-                    }
-                )
-            }
         }
     }
 
@@ -357,27 +331,8 @@ struct KnowledgeSystemView: View {
             ),
             onClose: {
                 store.send(.conceptClosed(item.id))
-            },
-            onConceptSelected: {
-                store.send(.conceptSelected($0))
-            },
-            onCompareRequested: { sourceID, targetID in
-                let comparisonID = sourceID == item.id
-                    ? targetID
-                    : sourceID
-                store.send(.compareConceptRequested(comparisonID))
             }
         )
-    }
-
-    private func visiblePersonalRelations(
-        in snapshot: KnowledgeSystemSnapshot
-    ) -> [PersonalKnowledgeRelation] {
-        let visibleIDs = Set(store.visibleConcepts.map(\.id))
-        return snapshot.personalRelations.filter {
-            visibleIDs.contains($0.sourceConceptID)
-                && visibleIDs.contains($0.targetConceptID)
-        }
     }
 
     private func reloadBanner(message: String) -> some View {
@@ -403,21 +358,12 @@ private struct KnowledgeSystemDetailPane: View {
     let personalRelations: [PersonalKnowledgeRelation]
     let conceptIndex: KnowledgeConceptIndex
     let onClose: () -> Void
-    let onConceptSelected: (KnowledgeConceptID) -> Void
-    let onCompareRequested: (
-        KnowledgeConceptID,
-        KnowledgeConceptID
-    ) -> Void
 
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 18) {
                 HStack(alignment: .top, spacing: 12) {
-                    KnowledgeConceptHeader(
-                        sectionTitle: "지식 상세",
-                        sectionSystemImage: "book.pages",
-                        concept: item.concept
-                    )
+                    KnowledgeConceptHeader(concept: item.concept)
 
                     Spacer(minLength: 8)
 
@@ -442,13 +388,16 @@ private struct KnowledgeSystemDetailPane: View {
                 )
 
                 PersonalKnowledgeSection(revision: item.latestRevision)
+                if item.learningStatus == .personal && item.latestRevision == nil {
+                    Label("학습 응답에 내 설명을 남겼거나 나의 연결이 있는 지식입니다. 기본 지식은 그대로 유지됩니다.", systemImage: item.learningStatus.systemImage)
+                        .font(.caption).foregroundStyle(.purple)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
 
                 KnowledgeRelationsSection(
                     baseRelations: baseRelations,
                     personalRelations: personalRelations,
-                    conceptIndex: conceptIndex,
-                    onConceptSelected: onConceptSelected,
-                    onCompareRequested: onCompareRequested
+                    conceptIndex: conceptIndex
                 )
             }
             .padding(20)

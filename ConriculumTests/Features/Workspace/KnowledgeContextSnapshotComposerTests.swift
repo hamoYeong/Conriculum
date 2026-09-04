@@ -19,7 +19,7 @@ struct KnowledgeContextSnapshotComposerTests {
                 [
                     "concept-value",
                     "concept-type-selection",
-                    "concept-identifier-naming",
+                    "concept-semantic-chunk-reading",
                 ],
                 ["concept-expressions-operations", "concept-type-modeling"]
             ),
@@ -36,8 +36,6 @@ struct KnowledgeContextSnapshotComposerTests {
                     "concept-type",
                     "concept-string",
                     "concept-int",
-                    "concept-double",
-                    "concept-bool",
                 ],
                 ["concept-type-selection"]
             ),
@@ -46,8 +44,6 @@ struct KnowledgeContextSnapshotComposerTests {
                     "concept-type-selection",
                     "concept-string",
                     "concept-int",
-                    "concept-double",
-                    "concept-bool",
                 ],
                 ["concept-identifier-naming"]
             ),
@@ -62,16 +58,16 @@ struct KnowledgeContextSnapshotComposerTests {
             "chapter-02-page-06": (
                 [
                     "concept-type-inference-annotation",
-                    "concept-literal",
                     "concept-identifier-naming",
+                    "concept-literal",
                 ],
                 ["concept-type-selection", "concept-identifier-naming"]
             ),
             "chapter-02-page-07": (
                 [
                     "concept-related-value-grouping",
-                    "concept-input-rule-output",
                     "concept-identifier-naming",
+                    "concept-input-rule-output",
                 ],
                 ["concept-type-modeling", "concept-identifier-naming"]
             ),
@@ -80,11 +76,16 @@ struct KnowledgeContextSnapshotComposerTests {
                     "concept-value",
                     "concept-type-selection",
                     "concept-identifier-naming",
-                    "concept-constants-variables",
-                    "concept-type-inference-annotation",
-                    "concept-related-value-grouping",
                 ],
                 ["concept-expressions-operations", "concept-type-modeling"]
+            ),
+            "chapter-02-page-09": (
+                [
+                    "concept-semantic-chunk-reading",
+                    "concept-related-value-grouping",
+                    "concept-input-rule-output",
+                ],
+                ["concept-expressions-operations", "concept-execution-flow"]
             ),
         ]
 

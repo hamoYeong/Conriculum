@@ -7,9 +7,10 @@ import Testing
 @testable import Conriculum
 
 @MainActor
+@Suite(.serialized)
 struct ConceptInspectorViewRenderingTests {
-    @Test
-    func revisionRelationAndCandidateStatesRenderAtInspectorWidth() throws {
+    @Test(arguments: [240.0, 280.0, 380.0])
+    func revisionRelationAndCandidateStatesRenderAtInspectorWidth(width: Double) throws {
         let states = [
             state(revision: nil),
             state(revision: revision),
@@ -17,16 +18,16 @@ struct ConceptInspectorViewRenderingTests {
             activityCandidateState(),
         ]
 
-        for state in states {
+        for (index, state) in states.enumerated() {
             let view = ConceptInspectorView(
                 store: Store(initialState: state) {
                     ConceptInspectorFeature()
                 }
             )
-            .frame(width: 380, height: 760)
+            .frame(width: width, height: 760)
             .background(Color(nsColor: .windowBackgroundColor))
             let hostingView = NSHostingView(rootView: view)
-            hostingView.frame = NSRect(x: 0, y: 0, width: 380, height: 760)
+            hostingView.frame = NSRect(x: 0, y: 0, width: width, height: 760)
             let window = NSWindow(
                 contentRect: hostingView.frame,
                 styleMask: [],
@@ -43,8 +44,10 @@ struct ConceptInspectorViewRenderingTests {
             )
             hostingView.cacheDisplay(in: hostingView.bounds, to: image)
 
-            #expect(image.size == NSSize(width: 380, height: 760))
+            #expect(image.size == NSSize(width: width, height: 760))
             #expect(sampledColorCount(in: image) > 4)
+            let png = try #require(image.representation(using: .png, properties: [:]))
+            Attachment.record(Array(png), named: "inspector-\(Int(width))-state-\(index).png")
         }
     }
 

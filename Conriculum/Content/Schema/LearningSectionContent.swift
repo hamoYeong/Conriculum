@@ -4,7 +4,7 @@
 /// 각 case는 아래 `LearningSectionContent`의 associated payload와 1:1로 대응한다.
 enum LearningSectionTag: String, Codable, CaseIterable, Hashable, Sendable {
     // 읽기·관찰: 학습자가 먼저 이해할 재료
-    case knowledgeRecall
+    case learningCompass
     case situation
     case comparison
     case definition
@@ -20,13 +20,12 @@ enum LearningSectionTag: String, Codable, CaseIterable, Hashable, Sendable {
     case codeAssembly
     case freeResponse
     case recallCheck
+    case semanticChunkReading
+    case learningClosure
 
     // 공통·분기: 지식 연결, 선택 흐름, 개인 지식 반영
     case knowledgeLink
-    case personalExpressionComparison
-    case learningStateSelection
     case enrichmentTask
-    case completionCheck
     case personalKnowledgePromotion
     case personalKnowledgeRelation
     case knowledgeChangeSummary
@@ -35,7 +34,7 @@ enum LearningSectionTag: String, Codable, CaseIterable, Hashable, Sendable {
 /// `{ "tag": ..., "payload": ... }` JSON을 표현하는 tagged union.
 /// `tag`가 payload의 구체 타입을 결정하므로 잘못된 조합을 Domain 안으로 들이지 않는다.
 enum LearningSectionContent: Codable, Equatable, Sendable {
-    case knowledgeRecall(KnowledgeRecallContent)
+    case learningCompass(LearningCompassContent)
     case situation(SituationContent)
     case comparison(ComparisonContent)
     case definition(DefinitionContent)
@@ -49,11 +48,10 @@ enum LearningSectionContent: Codable, Equatable, Sendable {
     case codeAssembly(CodeAssemblyContent)
     case freeResponse(FreeResponseContent)
     case recallCheck(RecallCheckContent)
+    case semanticChunkReading(SemanticChunkReadingContent)
+    case learningClosure(LearningClosureContent)
     case knowledgeLink(KnowledgeLinkSectionContent)
-    case personalExpressionComparison(PersonalExpressionComparisonContent)
-    case learningStateSelection(LearningStateSelectionContent)
     case enrichmentTask(EnrichmentTaskContent)
-    case completionCheck(CompletionCheckContent)
     case personalKnowledgePromotion(PersonalKnowledgePromotionContent)
     case personalKnowledgeRelation(PersonalKnowledgeRelationSectionContent)
     case knowledgeChangeSummary(KnowledgeChangeSummaryContent)
@@ -66,7 +64,7 @@ enum LearningSectionContent: Codable, Equatable, Sendable {
     /// 현재 associated-value case를 JSON에 기록할 tag로 투영한다.
     var tag: LearningSectionTag {
         switch self {
-        case .knowledgeRecall: .knowledgeRecall
+        case .learningCompass: .learningCompass
         case .situation: .situation
         case .comparison: .comparison
         case .definition: .definition
@@ -80,11 +78,10 @@ enum LearningSectionContent: Codable, Equatable, Sendable {
         case .codeAssembly: .codeAssembly
         case .freeResponse: .freeResponse
         case .recallCheck: .recallCheck
+        case .semanticChunkReading: .semanticChunkReading
+        case .learningClosure: .learningClosure
         case .knowledgeLink: .knowledgeLink
-        case .personalExpressionComparison: .personalExpressionComparison
-        case .learningStateSelection: .learningStateSelection
         case .enrichmentTask: .enrichmentTask
-        case .completionCheck: .completionCheck
         case .personalKnowledgePromotion: .personalKnowledgePromotion
         case .personalKnowledgeRelation: .personalKnowledgeRelation
         case .knowledgeChangeSummary: .knowledgeChangeSummary
@@ -104,8 +101,10 @@ enum LearningSectionContent: Codable, Equatable, Sendable {
         }
 
         switch tag {
-        case .knowledgeRecall:
-            self = .knowledgeRecall(try container.decode(KnowledgeRecallContent.self, forKey: .payload))
+        case .learningCompass:
+            self = .learningCompass(
+                try container.decode(LearningCompassContent.self, forKey: .payload)
+            )
         case .situation:
             self = .situation(try container.decode(SituationContent.self, forKey: .payload))
         case .comparison:
@@ -132,20 +131,18 @@ enum LearningSectionContent: Codable, Equatable, Sendable {
             self = .freeResponse(try container.decode(FreeResponseContent.self, forKey: .payload))
         case .recallCheck:
             self = .recallCheck(try container.decode(RecallCheckContent.self, forKey: .payload))
+        case .semanticChunkReading:
+            self = .semanticChunkReading(
+                try container.decode(SemanticChunkReadingContent.self, forKey: .payload)
+            )
+        case .learningClosure:
+            self = .learningClosure(
+                try container.decode(LearningClosureContent.self, forKey: .payload)
+            )
         case .knowledgeLink:
             self = .knowledgeLink(try container.decode(KnowledgeLinkSectionContent.self, forKey: .payload))
-        case .personalExpressionComparison:
-            self = .personalExpressionComparison(
-                try container.decode(PersonalExpressionComparisonContent.self, forKey: .payload)
-            )
-        case .learningStateSelection:
-            self = .learningStateSelection(
-                try container.decode(LearningStateSelectionContent.self, forKey: .payload)
-            )
         case .enrichmentTask:
             self = .enrichmentTask(try container.decode(EnrichmentTaskContent.self, forKey: .payload))
-        case .completionCheck:
-            self = .completionCheck(try container.decode(CompletionCheckContent.self, forKey: .payload))
         case .personalKnowledgePromotion:
             self = .personalKnowledgePromotion(
                 try container.decode(PersonalKnowledgePromotionContent.self, forKey: .payload)
@@ -168,7 +165,7 @@ enum LearningSectionContent: Codable, Equatable, Sendable {
         try container.encode(tag.rawValue, forKey: .tag)
 
         switch self {
-        case let .knowledgeRecall(payload): try container.encode(payload, forKey: .payload)
+        case let .learningCompass(payload): try container.encode(payload, forKey: .payload)
         case let .situation(payload): try container.encode(payload, forKey: .payload)
         case let .comparison(payload): try container.encode(payload, forKey: .payload)
         case let .definition(payload): try container.encode(payload, forKey: .payload)
@@ -182,11 +179,10 @@ enum LearningSectionContent: Codable, Equatable, Sendable {
         case let .codeAssembly(payload): try container.encode(payload, forKey: .payload)
         case let .freeResponse(payload): try container.encode(payload, forKey: .payload)
         case let .recallCheck(payload): try container.encode(payload, forKey: .payload)
+        case let .semanticChunkReading(payload): try container.encode(payload, forKey: .payload)
+        case let .learningClosure(payload): try container.encode(payload, forKey: .payload)
         case let .knowledgeLink(payload): try container.encode(payload, forKey: .payload)
-        case let .personalExpressionComparison(payload): try container.encode(payload, forKey: .payload)
-        case let .learningStateSelection(payload): try container.encode(payload, forKey: .payload)
         case let .enrichmentTask(payload): try container.encode(payload, forKey: .payload)
-        case let .completionCheck(payload): try container.encode(payload, forKey: .payload)
         case let .personalKnowledgePromotion(payload): try container.encode(payload, forKey: .payload)
         case let .personalKnowledgeRelation(payload): try container.encode(payload, forKey: .payload)
         case let .knowledgeChangeSummary(payload): try container.encode(payload, forKey: .payload)
@@ -207,11 +203,13 @@ struct UnsupportedLearningSectionTagError: Error, Equatable, Sendable, CustomStr
 
 // MARK: - Reading and observation payloads
 
-/// 이전 지식을 질문으로 회상시키고 이번 학습과 연결한다.
-struct KnowledgeRecallContent: Codable, Equatable, Sendable {
-    let questions: [String]
-    let memorySentence: String
-    let connection: String
+/// 페이지 시작에서 이전 연결·핵심 질문·첫 예상·확신·완료 증거를 한곳에 둔다.
+struct LearningCompassContent: Codable, Equatable, Sendable {
+    let previousConnection: String
+    let coreQuestion: String
+    let firstPredictionPrompt: String
+    let confidencePrompt: String
+    let completionEvidence: [String]
 }
 
 /// 판단할 상황·자료와 첫 질문을 제시한다.
@@ -316,6 +314,32 @@ struct RecallCheckContent: Codable, Equatable, Sendable {
     let recordFields: [String]
 }
 
+/// 성찰과 완료 판단을 한 흐름에서 기록해 페이지의 학습 루프를 닫는다.
+struct LearningClosureContent: Codable, Equatable, Sendable {
+    let firstPredictionReference: String
+    let finalExplanationPrompt: String
+    let confidenceChangePrompt: String
+    let changedCriterionPrompt: String
+    let nextUsePrompt: String
+    let completionQuestion: String
+    let requiredEvidence: [String]
+    let retryCondition: String
+}
+
+/// 물리적으로 떨어진 코드 요소를 같은 책임과 흐름의 의미 Chunk로 묶게 한다.
+struct SemanticChunkReadingContent: Codable, Equatable, Sendable {
+    let code: String
+    let language: String
+    let lensQuestions: [String]
+    let elements: [LearningContentItem]
+    let selectionPrompt: String
+    let chunkNamePrompt: String
+    let flowPrompt: String
+    let boundaryPrompt: String
+    let changePrompt: String
+    let completionEvidence: [String]
+}
+
 // MARK: - Shared and branching payloads
 
 /// section 안에서 사용할 Page → Concept 연결들을 묶는다.
@@ -323,34 +347,13 @@ struct KnowledgeLinkSectionContent: Codable, Equatable, Sendable {
     let links: [LearningKnowledgeLink]
 }
 
-/// 공용 정의와 사용자의 표현을 나란히 비교하게 한다.
-struct PersonalExpressionComparisonContent: Codable, Equatable, Sendable {
-    let conceptIDs: [KnowledgeConceptID]
-    let baseExpression: String
-    let personalExpressionEmptyState: String
-    let comparisonQuestion: String
-    let inspectorLocation: String
-}
-
-/// 사용자가 다음 학습 분기를 선택할 수 있는 상태 목록.
-struct LearningStateSelectionContent: Codable, Equatable, Sendable {
-    let options: [LearningStateOption]
-    let defaultOptionID: String?
-}
-
-/// 특정 학습 상태를 고른 경우에만 열리는 확장 과제.
+/// 핵심 완료 뒤 사용자가 선택해 펼치는 확장 과제.
 struct EnrichmentTaskContent: Codable, Equatable, Sendable {
-    let requiredStateID: String
+    let title: String
+    let guidance: String
     let materials: [LabeledText]
     let prompt: String
     let conceptIDs: [KnowledgeConceptID]
-}
-
-/// Page 목표를 달성했는지 증거와 재시도 조건으로 확인한다.
-struct CompletionCheckContent: Codable, Equatable, Sendable {
-    let question: String
-    let requiredEvidence: [String]
-    let retryCondition: String
 }
 
 /// 활동 근거를 검토 가능한 개인 지식 후보로 승격하는 흐름을 정의한다.
@@ -424,13 +427,6 @@ struct FillInBlankItem: Codable, Equatable, Sendable {
     let id: String
     let placeholder: String
     let options: [String]
-}
-
-/// 분기 선택지의 local ID, 제목과 이후 행동 안내.
-struct LearningStateOption: Codable, Equatable, Sendable {
-    let id: String
-    let title: String
-    let guidance: String
 }
 
 // MARK: - 다음 읽기: ConriculumTests/Content/LearningSectionContentTests.swift

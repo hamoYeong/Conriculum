@@ -189,6 +189,29 @@ final class UserDataStore {
         try saveChanges(operation: "saveEvidence")
     }
 
+    /// Append-only exposure: returning to an earlier page must not relock knowledge.
+    /// Uses the existing viewed evidence schema, so no store migration is required.
+    func recordPageVisit(chapter: Chapter, pageID: LearningPageID) throws {
+        guard chapter.page(id: pageID) != nil else { return }
+        let progress = try loadProgress(chapterID: chapter.id)
+        var pageIDs = LearningExposure.historicalPageIDs(chapter: chapter, progress: progress)
+        if chapter.page(id: pageID)?.kind == .lesson { pageIDs.insert(pageID) }
+        let profileID = try localProfileID()
+        var pending: [LearningEvidenceRecord] = []
+        for id in pageIDs.sorted(by: { $0.rawValue < $1.rawValue }) {
+            guard try !loadEvidence(pageID: id).contains(where: { $0.kind == .viewed }) else { continue }
+            let evidence = LearningEvidence(
+                id: LearningEvidenceID(rawValue: "viewed:\(profileID.rawValue):\(id.rawValue)"),
+                kind: .viewed, pageID: id, activityID: nil, responseID: nil,
+                note: id == pageID ? nil : "기존 저장 진도에서 복원한 열람 이력",
+                recordedAt: Date()
+            )
+            pending.append(try LearningEvidenceRecord(profileID: profileID, domainValue: evidence))
+        }
+        for record in pending { modelContext.insert(record) }
+        if !pending.isEmpty { try saveChanges(operation: "recordPageVisit") }
+    }
+
     func loadRevisions(conceptID: KnowledgeConceptID) throws -> [PersonalConceptRevision] {
         let profileID = try localProfileID()
         let profileValue = profileID.rawValue

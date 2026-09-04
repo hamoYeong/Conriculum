@@ -49,6 +49,7 @@ struct HomeSnapshot: Equatable, Sendable {
     let evidence: [EvidenceSummary]
     let knowledgeChanges: KnowledgeChangeCollection
     let knowledgeChangesEmptyStateMessage: String
+    var availableChapters: [ChapterCard] = []
 }
 
 extension HomeSnapshot.StageSummary {
