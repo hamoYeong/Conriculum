@@ -89,7 +89,7 @@ struct ChapterThreeFullContentTests {
             }
         }
 
-        #expect(chapter.progressPages.last?.navigation.next?.pageID == "chapter-04-page-01")
+        #expect(chapter.progressPages.last?.navigation.next?.pageID == "chapter-04-overview")
     }
 
     @Test

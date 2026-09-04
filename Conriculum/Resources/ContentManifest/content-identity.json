@@ -265,6 +265,91 @@
       "kind": "knowledgeConcept",
       "stableID": "concept-print-observation",
       "sourcePath": "지식 체계/03 표현식과 연산/print로 관찰하기.md"
+    },
+    {
+      "kind": "knowledgeConcept",
+      "stableID": "concept-condition-question",
+      "sourcePath": "지식 체계/03 표현식과 연산/판단 가능한 질문.md"
+    },
+    {
+      "kind": "knowledgeConcept",
+      "stableID": "concept-comparison-operator",
+      "sourcePath": "지식 체계/03 표현식과 연산/비교 연산.md"
+    },
+    {
+      "kind": "knowledgeConcept",
+      "stableID": "concept-condition-boundary",
+      "sourcePath": "지식 체계/03 표현식과 연산/조건의 경계.md"
+    },
+    {
+      "kind": "knowledgeConcept",
+      "stableID": "concept-logical-composition",
+      "sourcePath": "지식 체계/03 표현식과 연산/논리 연산과 조건 조합.md"
+    },
+    {
+      "kind": "knowledgeConcept",
+      "stableID": "concept-named-condition",
+      "sourcePath": "지식 체계/03 표현식과 연산/이름 붙인 조건.md"
+    },
+    {
+      "kind": "knowledgeConcept",
+      "stableID": "concept-condition-counterexample",
+      "sourcePath": "지식 체계/03 표현식과 연산/조건의 반례.md"
+    },
+    {
+      "kind": "page",
+      "stableID": "chapter-04-overview",
+      "sourcePath": "학습 체계/Stage 1 - Swift로 문제를 표현할 준비/Chapter 4 - 판단 가능한 조건 만들기/00 Chapter 4 Overview.md"
+    },
+    {
+      "kind": "page",
+      "stableID": "chapter-04-page-01",
+      "sourcePath": "학습 체계/Stage 1 - Swift로 문제를 표현할 준비/Chapter 4 - 판단 가능한 조건 만들기/01 자연어 조건을 질문으로 바꾸기.md"
+    },
+    {
+      "kind": "page",
+      "stableID": "chapter-04-page-02",
+      "sourcePath": "학습 체계/Stage 1 - Swift로 문제를 표현할 준비/Chapter 4 - 판단 가능한 조건 만들기/02 참과 거짓을 값으로 바라보기.md"
+    },
+    {
+      "kind": "page",
+      "stableID": "chapter-04-page-03",
+      "sourcePath": "학습 체계/Stage 1 - Swift로 문제를 표현할 준비/Chapter 4 - 판단 가능한 조건 만들기/03 비교 연산자로 조건 만들기.md"
+    },
+    {
+      "kind": "page",
+      "stableID": "chapter-04-page-04",
+      "sourcePath": "학습 체계/Stage 1 - Swift로 문제를 표현할 준비/Chapter 4 - 판단 가능한 조건 만들기/04 경계가 포함되는지 판단하기.md"
+    },
+    {
+      "kind": "page",
+      "stableID": "chapter-04-page-05",
+      "sourcePath": "학습 체계/Stage 1 - Swift로 문제를 표현할 준비/Chapter 4 - 판단 가능한 조건 만들기/05 여러 조건을 조합하기.md"
+    },
+    {
+      "kind": "page",
+      "stableID": "chapter-04-page-06",
+      "sourcePath": "학습 체계/Stage 1 - Swift로 문제를 표현할 준비/Chapter 4 - 판단 가능한 조건 만들기/06 조건에 의미 있는 이름 붙이기.md"
+    },
+    {
+      "kind": "page",
+      "stableID": "chapter-04-page-07",
+      "sourcePath": "학습 체계/Stage 1 - Swift로 문제를 표현할 준비/Chapter 4 - 판단 가능한 조건 만들기/07 반례로 조건 확인하기.md"
+    },
+    {
+      "kind": "page",
+      "stableID": "chapter-04-page-08",
+      "sourcePath": "학습 체계/Stage 1 - Swift로 문제를 표현할 준비/Chapter 4 - 판단 가능한 조건 만들기/08 새로운 문제에 적용하고 돌아보기.md"
+    },
+    {
+      "kind": "page",
+      "stableID": "chapter-04-page-09",
+      "sourcePath": "학습 체계/Stage 1 - Swift로 문제를 표현할 준비/Chapter 4 - 판단 가능한 조건 만들기/09 조건 흐름을 의미 단위 조각으로 읽기.md"
+    },
+    {
+      "kind": "chapter",
+      "stableID": "chapter-04",
+      "sourcePath": "학습 체계/Stage 1 - Swift로 문제를 표현할 준비/Chapter 4 - 판단 가능한 조건 만들기/00 Chapter 4 지도.md"
     }
   ]
 }

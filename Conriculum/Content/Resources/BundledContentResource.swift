@@ -81,6 +81,10 @@ extension BundledContentResource {
             chapterID: "chapter-03",
             resource: .chapter(stageNumber: 1, chapterNumber: 3)
         ),
+        BundledChapterRegistration(
+            chapterID: "chapter-04",
+            resource: .chapter(stageNumber: 1, chapterNumber: 4)
+        ),
     ]
 }
 
