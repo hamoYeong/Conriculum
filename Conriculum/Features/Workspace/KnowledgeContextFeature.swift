@@ -66,6 +66,7 @@ struct KnowledgeContextFeature {
         case personalizationSaved(
             candidateID: KnowledgePersonalizationCandidateID?
         )
+        case learningRequested(ChapterID, LearningPageID)
     }
 
     @Dependency(\.curriculumClient) var curriculumClient
@@ -195,6 +196,13 @@ struct KnowledgeContextFeature {
             case .inspector(.delegate(.relationSaved)):
                 state.inspector = nil
                 return .send(.personalizationSaved(candidateID: nil))
+
+            case let .inspector(.delegate(.learningRequested(
+                chapterID,
+                pageID
+            ))):
+                state.inspector = nil
+                return .send(.delegate(.learningRequested(chapterID, pageID)))
 
             case let .personalizationSaved(candidateID):
                 return .send(.delegate(.personalizationSaved(

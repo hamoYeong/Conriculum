@@ -69,22 +69,85 @@ def main():
                     assert target[:-3] in source, (page['id'], destination)
         if args.vault:
             for target in re.findall(r'\[\[([^\]|]+)', source):
-                assert (args.vault / (target.split('#')[0] + '.md')).is_file(), target
+                target_path = target.split('#')[0].rstrip('\\')
+                assert (args.vault / (target_path + '.md')).is_file(), target
     catalog = read_json('KnowledgeCatalog/values-and-types.json')
-    new_ids = {entry['stableID'] for entry in manifest['identities']
-               if entry['kind'] == 'knowledgeConcept' and (SNAPSHOTS / entry['sourcePath']).is_file()}
+    # Existing notes copied for connection review retain their earlier wording.
+    promoted_ids = {'concept-' + name for name in [
+        'condition-question', 'comparison-operator', 'condition-boundary',
+        'logical-composition', 'named-condition', 'condition-counterexample',
+        'example-validation',
+    ]}
     for concept in catalog['concepts']:
-        if concept['id'] not in new_ids or concept['id'] in ['concept-bool', 'concept-semantic-chunk-reading']:
+        if concept['id'] not in promoted_ids:
             continue
         source = normalize((SNAPSHOTS / paths[concept['id']]).read_text())
         for key in ['title', 'definition', 'essentialQuestion', 'judgmentQuestions', 'examples', 'misconceptions']:
             for value in strings(concept[key]):
                 assert normalize(value) in source, (concept['id'], key)
+    # Every catalog concept has one canonical revisit section. Runtime references
+    # must contain the same page link and explanation as the Obsidian source.
+    revisit_count = 0
+    banned_revisit_headings = {
+        '## 이 지식을 사용하는 학습 페이지',
+        '## Chapter 4에서 다시 쓰기',
+        '## Chapter 4와 연결되는 지식',
+    }
+    for concept in catalog['concepts']:
+        source_path = SNAPSHOTS / paths[concept['id']]
+        source = source_path.read_text()
+        assert source.count('\n## 다시 보기\n') == 1, concept['id']
+        assert not any(heading in source for heading in banned_revisit_headings), concept['id']
+        references = concept.get('revisitPages')
+        assert references is not None, concept['id']
+        page_ids = [reference['pageID'] for reference in references]
+        assert len(page_ids) == len(set(page_ids)), concept['id']
+        assert references == sorted(
+            references,
+            key=lambda reference: (
+                reference['chapterOrder'],
+                reference.get('pageOrder') or 0,
+                reference['pageID'],
+            ),
+        ), concept['id']
+        for reference in references:
+            assert paths[reference['pageID']][:-3] in source, (concept['id'], reference['pageID'])
+            assert reference['connection'] in source, (concept['id'], reference['pageID'])
+            revisit_count += 1
+    assert revisit_count == 149, revisit_count
+    # Check old and new pages' optional links, plus both ends of documented graph edges.
+    linked_pages = 0
+    for number in [2, 3, 4]:
+        resource = read_json(f'Curriculum/Stage01/Chapter{number:02}/chapter-{number:02}.json')
+        for page in [resource['overview']] + resource['pages']:
+            path = SNAPSHOTS / paths[page['id']]
+            if not path.exists():
+                continue
+            source = path.read_text()
+            if '- 가까운 지식:' not in source:
+                continue
+            for nearby in page['knowledgeContext']['nearbyKnowledge']:
+                assert nearby['reason'] in source, (page['id'], nearby)
+                assert paths[nearby['conceptID']][:-3] in source
+            linked_pages += 1
+    linked_edges = 0
+    for edge in catalog['relations']:
+        endpoint_paths = [SNAPSHOTS / paths[edge[key]] for key in ['sourceConceptID', 'targetConceptID']]
+        marker = '<!-- relation: ' + edge['id'] + ' -->'
+        if not any(path.exists() and marker in path.read_text() for path in endpoint_paths):
+            continue
+        for path in endpoint_paths:
+            source = path.read_text()
+            assert marker in source and edge['summary'] in source, (edge['id'], path)
+        linked_edges += 1
     snapshots = list(SNAPSHOTS.rglob('*.md'))
     if args.vault:
         for path in snapshots:
             assert path.read_bytes() == (args.vault / path.relative_to(SNAPSHOTS)).read_bytes(), path
-    print(f'PASS: 10 pages, {count} payload strings, 6 new concepts, {len(snapshots)} source snapshots')
+            for target in re.findall(r'\[\[([^\]|]+)', path.read_text()):
+                target_path = target.split('#')[0].rstrip('\\')
+                assert (args.vault / (target_path + '.md')).is_file(), (path, target)
+    print(f'PASS: 10 pages, {count} payload strings, {len(promoted_ids)} promoted concepts, {len(snapshots)} source snapshots; {revisit_count} revisit links, {linked_pages} nearby scopes, {linked_edges} two-ended graph links')
 
 
 if __name__ == '__main__':

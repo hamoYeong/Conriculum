@@ -350,6 +350,11 @@
       "kind": "chapter",
       "stableID": "chapter-04",
       "sourcePath": "학습 체계/Stage 1 - Swift로 문제를 표현할 준비/Chapter 4 - 판단 가능한 조건 만들기/00 Chapter 4 지도.md"
+    },
+    {
+      "kind": "knowledgeConcept",
+      "stableID": "concept-example-validation",
+      "sourcePath": "지식 체계/01 문제 해결과 컴퓨팅 사고/사례를 통한 검증.md"
     }
   ]
 }

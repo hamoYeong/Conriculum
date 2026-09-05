@@ -38,7 +38,7 @@ Chapter 3 마지막 페이지의 다음 목적지를 `chapter-04-overview`로 �
 - 실제 in-memory SwiftData 저장소로 활동 자동 저장과 저장소 재생성 후 응답 read-back을 확인했다. 활동 응답만 저장해도 개인 개념 revision이 생기지 않음을 확인했다.
 - 콘텐츠 validator, 기존 Chapter 2·3, 공용 접근성·렌더링·홈·지식 체계 회귀 테스트가 통과했다. VoiceOver를 켠 수동 전 구간 학습은 이번에 수행하지 않았다.
 - 마지막 페이지의 Swift 코드 원문을 실행해 `true` 결과를 확인했다.
-- `verify_sources.py`로 10개 페이지의 본문 필드 640개, 새 지식 6개, 원문 사본 22개와 실제 vault를 대조했다. Chapter 4의 모든 wikilink 대상도 확인했다.
+- `verify_sources.py`로 10개 페이지의 본문 필드 640개, 승격한 지식 7개, 원문 사본 64개와 실제 vault를 대조했다. `다시 보기` 149개, 가까운 지식이 있는 페이지 21개, 양쪽 노트에 기록한 지식 관계 12개와 모든 wikilink 대상도 확인했다.
 - `git diff --check` 통과.
 
 ```sh
@@ -51,3 +51,13 @@ xcodebuild -project Conriculum.xcodeproj -scheme Conriculum \
 전체 결과: `Test-Conriculum-2026.09.05_00-35-49-+0900.xcresult`
 
 이동 테스트 재검증: `Test-Conriculum-2026.09.05_00-37-47-+0900.xcresult`
+
+## 기존 학습과 새 지식의 다시 보기 연결
+
+Chapter 2·3의 기존 학습과 Chapter 4의 새 지식을 양방향으로 다시 대조했다. 앱 catalog에 포함된 지식 36개는 각 Obsidian 지식 노트의 `## 다시 보기` 섹션 하나에 직접 사용 페이지와 완료 뒤 살펴볼 가까운 지식 페이지를 합쳤다. 같은 지식과 페이지가 두 경로에 모두 있으면 직접 사용을 우선하고, Chapter와 페이지 순서로 정렬했다. 기존 Chapter 1 자료만 참조하는 지식 노트 3개도 같은 단일 섹션 형식으로 정리했다.
+
+Knowledge Catalog의 `revisitPages`에는 총 149개 연결의 Chapter·페이지 stable ID, 제목, 순서, 연결 종류와 이유를 저장했다. SwiftUI의 전체 지식 체계 상세와 학습 중 지식 상세는 이 목록을 보여 주며, 항목을 선택하면 해당 Chapter의 학습 페이지로 이동한다. 링크 노출과 이동은 배운 지식이나 내 지식 상태를 열지 않는다.
+
+기존 지식과 새 지식 사이에 지식 그래프 관계 12개를 양쪽 노트에 기록했고, Chapter 2·3·4의 21개 페이지에는 해당 페이지에서 이해에 도움이 되는 가까운 지식을 연결했다. `학습 체계/00 학습 체계 지도.md`에도 단일 다시 보기 섹션, 중복 우선순위, 정렬, JSON과 SwiftUI 이동, 학습 상태 분리, 새 Chapter 작성 시 기존 페이지 재검토 규칙을 추가했다.
+
+전체 macOS 회귀 테스트는 197개 테스트(매개변수 실행 209회)가 모두 통과했다. 결과 번들은 `Test-Conriculum-2026.09.05_09-40-05-+0900.xcresult`다.

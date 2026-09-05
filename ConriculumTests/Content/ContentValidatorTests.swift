@@ -212,7 +212,7 @@ struct ContentValidatorTests {
                 && $0.message.contains("must not be empty")
         })
         #expect(error.issues.contains {
-            $0.fieldPath == "collections[0].conceptIDs[5]"
+            $0.fieldPath == "collections[0].conceptIDs[6]"
                 && $0.message.contains("does not resolve")
         })
         #expect(error.issues.contains {

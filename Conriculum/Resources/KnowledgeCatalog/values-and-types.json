@@ -15,7 +15,8 @@
         "concept-input-rule-output",
         "concept-input",
         "concept-output",
-        "concept-semantic-chunk-reading"
+        "concept-semantic-chunk-reading",
+        "concept-example-validation"
       ]
     },
     {
@@ -121,6 +122,58 @@
       "misconceptions": [
         "숫자만 값이라고 생각한다.",
         "아직 계산하지 않은 결과를 이미 주어진 값처럼 다룬다."
+      ],
+      "revisitPages": [
+        {
+          "chapterID": "chapter-02",
+          "chapterOrder": 2,
+          "chapterTitle": "정보를 값과 타입으로 표현하기",
+          "pageID": "chapter-02-overview",
+          "pageOrder": null,
+          "pageTitle": "Chapter 2 Overview",
+          "kind": "direct",
+          "connection": "현실의 정보를 Swift가 직접 다룰 값으로 읽는 출발점이다."
+        },
+        {
+          "chapterID": "chapter-02",
+          "chapterOrder": 2,
+          "chapterTitle": "정보를 값과 타입으로 표현하기",
+          "pageID": "chapter-02-page-01",
+          "pageOrder": 1,
+          "pageTitle": "현실의 정보를 값으로 바라보기",
+          "kind": "direct",
+          "connection": "현실 정보에서 구체적인 값을 찾는다."
+        },
+        {
+          "chapterID": "chapter-02",
+          "chapterOrder": 2,
+          "chapterTitle": "정보를 값과 타입으로 표현하기",
+          "pageID": "chapter-02-page-04",
+          "pageOrder": 4,
+          "pageTitle": "의미가 드러나는 이름 붙이기",
+          "kind": "nearby",
+          "connection": "이름이 가리키는 대상을 함께 읽는다."
+        },
+        {
+          "chapterID": "chapter-02",
+          "chapterOrder": 2,
+          "chapterTitle": "정보를 값과 타입으로 표현하기",
+          "pageID": "chapter-02-page-08",
+          "pageOrder": 8,
+          "pageTitle": "새로운 문제에 적용하고 돌아보기",
+          "kind": "direct",
+          "connection": "새 맥락에서 값을 찾는다."
+        },
+        {
+          "chapterID": "chapter-03",
+          "chapterOrder": 3,
+          "chapterTitle": "값으로 새로운 값을 계산하기",
+          "pageID": "chapter-03-page-02",
+          "pageOrder": 2,
+          "pageTitle": "표현식의 결과 예상하기",
+          "kind": "direct",
+          "connection": "입력과 결과를 값으로 구분한다."
+        }
       ]
     },
     {
@@ -142,6 +195,28 @@
       "misconceptions": [
         "\"20_000\"과 20_000을 같은 종류의 값이라고 생각한다.",
         "리터럴과 식별자를 같은 것으로 본다."
+      ],
+      "revisitPages": [
+        {
+          "chapterID": "chapter-02",
+          "chapterOrder": 2,
+          "chapterTitle": "정보를 값과 타입으로 표현하기",
+          "pageID": "chapter-02-page-01",
+          "pageOrder": 1,
+          "pageTitle": "현실의 정보를 값으로 바라보기",
+          "kind": "direct",
+          "connection": "값을 Swift 표기로 적는다."
+        },
+        {
+          "chapterID": "chapter-02",
+          "chapterOrder": 2,
+          "chapterTitle": "정보를 값과 타입으로 표현하기",
+          "pageID": "chapter-02-page-06",
+          "pageOrder": 6,
+          "pageTitle": "타입 명시와 타입 추론 비교하기",
+          "kind": "direct",
+          "connection": "추론 단서를 제공한다."
+        }
       ]
     },
     {
@@ -160,6 +235,28 @@
       "misconceptions": [
         "타입을 값을 보관할 상자의 이름으로만 본다.",
         "화면에 보이는 모양만 보고 타입을 고른다."
+      ],
+      "revisitPages": [
+        {
+          "chapterID": "chapter-02",
+          "chapterOrder": 2,
+          "chapterTitle": "정보를 값과 타입으로 표현하기",
+          "pageID": "chapter-02-page-01",
+          "pageOrder": 1,
+          "pageTitle": "현실의 정보를 값으로 바라보기",
+          "kind": "nearby",
+          "connection": "찾은 값을 어떤 종류로 다룰지는 다음 페이지에서 판단한다."
+        },
+        {
+          "chapterID": "chapter-02",
+          "chapterOrder": 2,
+          "chapterTitle": "정보를 값과 타입으로 표현하기",
+          "pageID": "chapter-02-page-02",
+          "pageOrder": 2,
+          "pageTitle": "값의 종류 비교하기",
+          "kind": "direct",
+          "connection": "값의 종류와 허용되는 일을 비교한다."
+        }
       ]
     },
     {
@@ -180,6 +277,28 @@
       "misconceptions": [
         "화면에 표시되는 모든 정보는 처음부터 String이어야 한다.",
         "숫자로만 된 글자는 언제나 Int다."
+      ],
+      "revisitPages": [
+        {
+          "chapterID": "chapter-02",
+          "chapterOrder": 2,
+          "chapterTitle": "정보를 값과 타입으로 표현하기",
+          "pageID": "chapter-02-page-02",
+          "pageOrder": 2,
+          "pageTitle": "값의 종류 비교하기",
+          "kind": "direct",
+          "connection": "글자 내용을 보존한다."
+        },
+        {
+          "chapterID": "chapter-02",
+          "chapterOrder": 2,
+          "chapterTitle": "정보를 값과 타입으로 표현하기",
+          "pageID": "chapter-02-page-03",
+          "pageOrder": 3,
+          "pageTitle": "정보에 맞는 타입 선택하기",
+          "kind": "direct",
+          "connection": "문자 목적의 후보 타입이다."
+        }
       ]
     },
     {
@@ -200,6 +319,38 @@
       "misconceptions": [
         "금액은 언제나 Int여야 한다.",
         "정수 리터럴의 밑줄이 값을 바꾼다고 생각한다."
+      ],
+      "revisitPages": [
+        {
+          "chapterID": "chapter-02",
+          "chapterOrder": 2,
+          "chapterTitle": "정보를 값과 타입으로 표현하기",
+          "pageID": "chapter-02-page-02",
+          "pageOrder": 2,
+          "pageTitle": "값의 종류 비교하기",
+          "kind": "direct",
+          "connection": "정수 계산을 다룬다."
+        },
+        {
+          "chapterID": "chapter-02",
+          "chapterOrder": 2,
+          "chapterTitle": "정보를 값과 타입으로 표현하기",
+          "pageID": "chapter-02-page-03",
+          "pageOrder": 3,
+          "pageTitle": "정보에 맞는 타입 선택하기",
+          "kind": "direct",
+          "connection": "정수 계산 목적의 후보 타입이다."
+        },
+        {
+          "chapterID": "chapter-03",
+          "chapterOrder": 3,
+          "chapterTitle": "값으로 새로운 값을 계산하기",
+          "pageID": "chapter-03-page-06",
+          "pageOrder": 6,
+          "pageTitle": "Int와 Double의 계산 비교하기",
+          "kind": "direct",
+          "connection": "온전한 단위 결과를 읽는다."
+        }
       ]
     },
     {
@@ -219,6 +370,38 @@
       "misconceptions": [
         "소수가 보이면 어떤 맥락에서도 Double이면 충분하다.",
         "0.1 + 0.2가 언제나 정확한 십진 결과라고 생각한다."
+      ],
+      "revisitPages": [
+        {
+          "chapterID": "chapter-02",
+          "chapterOrder": 2,
+          "chapterTitle": "정보를 값과 타입으로 표현하기",
+          "pageID": "chapter-02-page-02",
+          "pageOrder": 2,
+          "pageTitle": "값의 종류 비교하기",
+          "kind": "direct",
+          "connection": "소수 수치를 다룬다."
+        },
+        {
+          "chapterID": "chapter-02",
+          "chapterOrder": 2,
+          "chapterTitle": "정보를 값과 타입으로 표현하기",
+          "pageID": "chapter-02-page-03",
+          "pageOrder": 3,
+          "pageTitle": "정보에 맞는 타입 선택하기",
+          "kind": "direct",
+          "connection": "소수 수치 목적의 후보 타입이다."
+        },
+        {
+          "chapterID": "chapter-03",
+          "chapterOrder": 3,
+          "chapterTitle": "값으로 새로운 값을 계산하기",
+          "pageID": "chapter-03-page-06",
+          "pageOrder": 6,
+          "pageTitle": "Int와 Double의 계산 비교하기",
+          "kind": "direct",
+          "connection": "소수 부분을 보존하는 결과를 읽는다."
+        }
       ]
     },
     {
@@ -238,6 +421,88 @@
       "misconceptions": [
         "두 단어로 보이는 모든 상태를 Bool로 만든다.",
         "아직 정해지지 않음을 false에 섞는다."
+      ],
+      "revisitPages": [
+        {
+          "chapterID": "chapter-02",
+          "chapterOrder": 2,
+          "chapterTitle": "정보를 값과 타입으로 표현하기",
+          "pageID": "chapter-02-page-02",
+          "pageOrder": 2,
+          "pageTitle": "값의 종류 비교하기",
+          "kind": "direct",
+          "connection": "참·거짓 상태를 다룬다."
+        },
+        {
+          "chapterID": "chapter-02",
+          "chapterOrder": 2,
+          "chapterTitle": "정보를 값과 타입으로 표현하기",
+          "pageID": "chapter-02-page-03",
+          "pageOrder": 3,
+          "pageTitle": "정보에 맞는 타입 선택하기",
+          "kind": "direct",
+          "connection": "두 상태 판단 목적의 후보 타입이다."
+        },
+        {
+          "chapterID": "chapter-03",
+          "chapterOrder": 3,
+          "chapterTitle": "값으로 새로운 값을 계산하기",
+          "pageID": "chapter-03-page-09",
+          "pageOrder": 9,
+          "pageTitle": "계산 흐름을 의미 단위 조각으로 읽기",
+          "kind": "nearby",
+          "connection": "계산 결과는 다음 Chapter에서 참·거짓 조건의 입력이 된다."
+        },
+        {
+          "chapterID": "chapter-04",
+          "chapterOrder": 4,
+          "chapterTitle": "판단 가능한 조건 만들기",
+          "pageID": "chapter-04-overview",
+          "pageOrder": null,
+          "pageTitle": "Chapter 4 Overview",
+          "kind": "direct",
+          "connection": "이 정보는 지금 참인가 거짓인가라는 두 경우로 충분히 표현되는가?"
+        },
+        {
+          "chapterID": "chapter-04",
+          "chapterOrder": 4,
+          "chapterTitle": "판단 가능한 조건 만들기",
+          "pageID": "chapter-04-page-01",
+          "pageOrder": 1,
+          "pageTitle": "자연어 조건을 질문으로 바꾸기",
+          "kind": "direct",
+          "connection": "이 정보는 지금 참인가 거짓인가라는 두 경우로 충분히 표현되는가?"
+        },
+        {
+          "chapterID": "chapter-04",
+          "chapterOrder": 4,
+          "chapterTitle": "판단 가능한 조건 만들기",
+          "pageID": "chapter-04-page-02",
+          "pageOrder": 2,
+          "pageTitle": "참과 거짓을 값으로 바라보기",
+          "kind": "direct",
+          "connection": "비교식은 질문이고 Bool은 그 답이다. 따옴표가 붙은 \"true\"는 질문의 답으로 사용할 Bool이 아니라 텍스트다."
+        },
+        {
+          "chapterID": "chapter-04",
+          "chapterOrder": 4,
+          "chapterTitle": "판단 가능한 조건 만들기",
+          "pageID": "chapter-04-page-03",
+          "pageOrder": 3,
+          "pageTitle": "비교 연산자로 조건 만들기",
+          "kind": "direct",
+          "connection": "이 정보는 지금 참인가 거짓인가라는 두 경우로 충분히 표현되는가?"
+        },
+        {
+          "chapterID": "chapter-04",
+          "chapterOrder": 4,
+          "chapterTitle": "판단 가능한 조건 만들기",
+          "pageID": "chapter-04-page-05",
+          "pageOrder": 5,
+          "pageTitle": "여러 조건을 조합하기",
+          "kind": "direct",
+          "connection": "이 정보는 지금 참인가 거짓인가라는 두 경우로 충분히 표현되는가?"
+        }
       ]
     },
     {
@@ -256,6 +521,68 @@
       "misconceptions": [
         "화면 모양만 따라 타입을 고른다.",
         "가장 간단한 타입이 언제나 가장 좋다고 생각한다."
+      ],
+      "revisitPages": [
+        {
+          "chapterID": "chapter-02",
+          "chapterOrder": 2,
+          "chapterTitle": "정보를 값과 타입으로 표현하기",
+          "pageID": "chapter-02-overview",
+          "pageOrder": null,
+          "pageTitle": "Chapter 2 Overview",
+          "kind": "direct",
+          "connection": "값의 의미와 이후 할 일을 타입 선택으로 연결한다."
+        },
+        {
+          "chapterID": "chapter-02",
+          "chapterOrder": 2,
+          "chapterTitle": "정보를 값과 타입으로 표현하기",
+          "pageID": "chapter-02-page-02",
+          "pageOrder": 2,
+          "pageTitle": "값의 종류 비교하기",
+          "kind": "nearby",
+          "connection": "종류 비교가 실제 정보의 타입을 고르는 판단으로 이어진다."
+        },
+        {
+          "chapterID": "chapter-02",
+          "chapterOrder": 2,
+          "chapterTitle": "정보를 값과 타입으로 표현하기",
+          "pageID": "chapter-02-page-03",
+          "pageOrder": 3,
+          "pageTitle": "정보에 맞는 타입 선택하기",
+          "kind": "direct",
+          "connection": "의미와 할 일로 타입을 고른다."
+        },
+        {
+          "chapterID": "chapter-02",
+          "chapterOrder": 2,
+          "chapterTitle": "정보를 값과 타입으로 표현하기",
+          "pageID": "chapter-02-page-06",
+          "pageOrder": 6,
+          "pageTitle": "타입 명시와 타입 추론 비교하기",
+          "kind": "nearby",
+          "connection": "타입을 정하는 일과 표기 방식을 구분한다."
+        },
+        {
+          "chapterID": "chapter-02",
+          "chapterOrder": 2,
+          "chapterTitle": "정보를 값과 타입으로 표현하기",
+          "pageID": "chapter-02-page-08",
+          "pageOrder": 8,
+          "pageTitle": "새로운 문제에 적용하고 돌아보기",
+          "kind": "direct",
+          "connection": "의미와 할 일로 타입을 선택한다."
+        },
+        {
+          "chapterID": "chapter-03",
+          "chapterOrder": 3,
+          "chapterTitle": "값으로 새로운 값을 계산하기",
+          "pageID": "chapter-03-page-03",
+          "pageOrder": 3,
+          "pageTitle": "산술 연산자로 값 계산하기",
+          "kind": "direct",
+          "connection": "결과 단위와 타입을 예상한다."
+        }
       ]
     },
     {
@@ -276,6 +603,88 @@
       "misconceptions": [
         "짧은 이름이 언제나 읽기 좋다.",
         "코드가 실행되면 이름은 중요하지 않다."
+      ],
+      "revisitPages": [
+        {
+          "chapterID": "chapter-02",
+          "chapterOrder": 2,
+          "chapterTitle": "정보를 값과 타입으로 표현하기",
+          "pageID": "chapter-02-page-03",
+          "pageOrder": 3,
+          "pageTitle": "정보에 맞는 타입 선택하기",
+          "kind": "nearby",
+          "connection": "타입으로 가능한 일을 정한 다음 값의 역할을 이름으로 남긴다."
+        },
+        {
+          "chapterID": "chapter-02",
+          "chapterOrder": 2,
+          "chapterTitle": "정보를 값과 타입으로 표현하기",
+          "pageID": "chapter-02-page-04",
+          "pageOrder": 4,
+          "pageTitle": "의미가 드러나는 이름 붙이기",
+          "kind": "direct",
+          "connection": "값의 의미와 역할을 이름에 남긴다."
+        },
+        {
+          "chapterID": "chapter-02",
+          "chapterOrder": 2,
+          "chapterTitle": "정보를 값과 타입으로 표현하기",
+          "pageID": "chapter-02-page-05",
+          "pageOrder": 5,
+          "pageTitle": "변하지 않는 값을 선언하기",
+          "kind": "nearby",
+          "connection": "어떤 책임에서 바뀌는 값인지 이름으로 드러내는 판단과 이어진다."
+        },
+        {
+          "chapterID": "chapter-02",
+          "chapterOrder": 2,
+          "chapterTitle": "정보를 값과 타입으로 표현하기",
+          "pageID": "chapter-02-page-06",
+          "pageOrder": 6,
+          "pageTitle": "타입 명시와 타입 추론 비교하기",
+          "kind": "direct",
+          "connection": "타입 표기와 역할 이름의 책임을 구분한다."
+        },
+        {
+          "chapterID": "chapter-02",
+          "chapterOrder": 2,
+          "chapterTitle": "정보를 값과 타입으로 표현하기",
+          "pageID": "chapter-02-page-07",
+          "pageOrder": 7,
+          "pageTitle": "여러 정보를 값으로 구조화하기",
+          "kind": "direct",
+          "connection": "묶음 안의 역할을 이름으로 읽는다."
+        },
+        {
+          "chapterID": "chapter-02",
+          "chapterOrder": 2,
+          "chapterTitle": "정보를 값과 타입으로 표현하기",
+          "pageID": "chapter-02-page-08",
+          "pageOrder": 8,
+          "pageTitle": "새로운 문제에 적용하고 돌아보기",
+          "kind": "direct",
+          "connection": "역할을 이름에 담는다."
+        },
+        {
+          "chapterID": "chapter-03",
+          "chapterOrder": 3,
+          "chapterTitle": "값으로 새로운 값을 계산하기",
+          "pageID": "chapter-03-page-04",
+          "pageOrder": 4,
+          "pageTitle": "큰 계산을 중간값으로 나누기",
+          "kind": "direct",
+          "connection": "중간값의 책임을 이름으로 남긴다."
+        },
+        {
+          "chapterID": "chapter-04",
+          "chapterOrder": 4,
+          "chapterTitle": "판단 가능한 조건 만들기",
+          "pageID": "chapter-04-page-06",
+          "pageOrder": 6,
+          "pageTitle": "조건에 의미 있는 이름 붙이기",
+          "kind": "direct",
+          "connection": "이 이름만 보고도 값이 무엇이며 어디에 쓰이는지 구분할 수 있는가?"
+        }
       ]
     },
     {
@@ -294,6 +703,48 @@
       "misconceptions": [
         "현실에서 바뀔 수 있는 정보는 언제나 var다.",
         "모든 값을 편하게 var로 선언한다."
+      ],
+      "revisitPages": [
+        {
+          "chapterID": "chapter-02",
+          "chapterOrder": 2,
+          "chapterTitle": "정보를 값과 타입으로 표현하기",
+          "pageID": "chapter-02-page-04",
+          "pageOrder": 4,
+          "pageTitle": "의미가 드러나는 이름 붙이기",
+          "kind": "nearby",
+          "connection": "다음 페이지에서 이름의 변경 약속을 선언한다."
+        },
+        {
+          "chapterID": "chapter-02",
+          "chapterOrder": 2,
+          "chapterTitle": "정보를 값과 타입으로 표현하기",
+          "pageID": "chapter-02-page-05",
+          "pageOrder": 5,
+          "pageTitle": "변하지 않는 값을 선언하기",
+          "kind": "direct",
+          "connection": "현재 범위에서 값의 변경 약속을 정한다."
+        },
+        {
+          "chapterID": "chapter-02",
+          "chapterOrder": 2,
+          "chapterTitle": "정보를 값과 타입으로 표현하기",
+          "pageID": "chapter-02-page-08",
+          "pageOrder": 8,
+          "pageTitle": "새로운 문제에 적용하고 돌아보기",
+          "kind": "direct",
+          "connection": "변경 범위를 선언한다."
+        },
+        {
+          "chapterID": "chapter-04",
+          "chapterOrder": 4,
+          "chapterTitle": "판단 가능한 조건 만들기",
+          "pageID": "chapter-04-page-06",
+          "pageOrder": 6,
+          "pageTitle": "조건에 의미 있는 이름 붙이기",
+          "kind": "nearby",
+          "connection": "Chapter 2의 let은 한 번 저장한 값을 유지한다. 이름 붙인 Bool과 입력 변경 뒤 다시 평가할 조건식을 구분한다."
+        }
       ]
     },
     {
@@ -313,6 +764,38 @@
       "misconceptions": [
         "타입 추론은 타입이 없다는 뜻이다.",
         "모든 선언에 타입을 적는 것이 언제나 더 안전하다."
+      ],
+      "revisitPages": [
+        {
+          "chapterID": "chapter-02",
+          "chapterOrder": 2,
+          "chapterTitle": "정보를 값과 타입으로 표현하기",
+          "pageID": "chapter-02-page-06",
+          "pageOrder": 6,
+          "pageTitle": "타입 명시와 타입 추론 비교하기",
+          "kind": "direct",
+          "connection": "추론과 명시의 정보 출처를 구분한다."
+        },
+        {
+          "chapterID": "chapter-02",
+          "chapterOrder": 2,
+          "chapterTitle": "정보를 값과 타입으로 표현하기",
+          "pageID": "chapter-02-page-08",
+          "pageOrder": 8,
+          "pageTitle": "새로운 문제에 적용하고 돌아보기",
+          "kind": "direct",
+          "connection": "타입 표기를 선택한다."
+        },
+        {
+          "chapterID": "chapter-04",
+          "chapterOrder": 4,
+          "chapterTitle": "판단 가능한 조건 만들기",
+          "pageID": "chapter-04-page-03",
+          "pageOrder": 3,
+          "pageTitle": "비교 연산자로 조건 만들기",
+          "kind": "nearby",
+          "connection": "Chapter 2의 타입 추론 기준으로 let isFull = participantCount == capacity의 결과 타입을 Bool로 읽는다."
+        }
       ]
     },
     {
@@ -331,6 +814,48 @@
       "misconceptions": [
         "한 파일에 있는 값을 모두 한 묶음으로 본다.",
         "타입이 같은 값끼리만 묶는다."
+      ],
+      "revisitPages": [
+        {
+          "chapterID": "chapter-02",
+          "chapterOrder": 2,
+          "chapterTitle": "정보를 값과 타입으로 표현하기",
+          "pageID": "chapter-02-page-07",
+          "pageOrder": 7,
+          "pageTitle": "여러 정보를 값으로 구조화하기",
+          "kind": "direct",
+          "connection": "여러 선언을 한 사례의 역할 구조로 읽는다."
+        },
+        {
+          "chapterID": "chapter-02",
+          "chapterOrder": 2,
+          "chapterTitle": "정보를 값과 타입으로 표현하기",
+          "pageID": "chapter-02-page-08",
+          "pageOrder": 8,
+          "pageTitle": "새로운 문제에 적용하고 돌아보기",
+          "kind": "direct",
+          "connection": "선언을 역할별로 정리한다."
+        },
+        {
+          "chapterID": "chapter-02",
+          "chapterOrder": 2,
+          "chapterTitle": "정보를 값과 타입으로 표현하기",
+          "pageID": "chapter-02-page-09",
+          "pageOrder": 9,
+          "pageTitle": "선언 묶음을 의미 단위 조각으로 읽기",
+          "kind": "direct",
+          "connection": "같은 사례와 결과에 기여하는 값의 포함·제외 경계를 설명한다."
+        },
+        {
+          "chapterID": "chapter-03",
+          "chapterOrder": 3,
+          "chapterTitle": "값으로 새로운 값을 계산하기",
+          "pageID": "chapter-03-overview",
+          "pageOrder": null,
+          "pageTitle": "Chapter 3 Overview",
+          "kind": "direct",
+          "connection": "같은 결과에 기여하는 값을 묶는다."
+        }
       ]
     },
     {
@@ -347,6 +872,18 @@
       ],
       "misconceptions": [
         "모든 숫자를 구체적인 값으로만 본다."
+      ],
+      "revisitPages": [
+        {
+          "chapterID": "chapter-02",
+          "chapterOrder": 2,
+          "chapterTitle": "정보를 값과 타입으로 표현하기",
+          "pageID": "chapter-02-page-01",
+          "pageOrder": 1,
+          "pageTitle": "현실의 정보를 값으로 바라보기",
+          "kind": "direct",
+          "connection": "값과 규칙을 구분한다."
+        }
       ]
     },
     {
@@ -363,6 +900,38 @@
       ],
       "misconceptions": [
         "입력과 규칙의 구분에는 언제나 하나의 답만 있다고 생각한다."
+      ],
+      "revisitPages": [
+        {
+          "chapterID": "chapter-02",
+          "chapterOrder": 2,
+          "chapterTitle": "정보를 값과 타입으로 표현하기",
+          "pageID": "chapter-02-page-05",
+          "pageOrder": 5,
+          "pageTitle": "변하지 않는 값을 선언하기",
+          "kind": "direct",
+          "connection": "변경 책임을 판단할 범위를 정한다."
+        },
+        {
+          "chapterID": "chapter-03",
+          "chapterOrder": 3,
+          "chapterTitle": "값으로 새로운 값을 계산하기",
+          "pageID": "chapter-03-page-07",
+          "pageOrder": 7,
+          "pageTitle": "print로 계산 과정 관찰하기",
+          "kind": "nearby",
+          "connection": "필요한 관찰 범위와 출력 소음을 구분한다."
+        },
+        {
+          "chapterID": "chapter-04",
+          "chapterOrder": 4,
+          "chapterTitle": "판단 가능한 조건 만들기",
+          "pageID": "chapter-04-page-04",
+          "pageOrder": 4,
+          "pageTitle": "경계가 포함되는지 판단하기",
+          "kind": "nearby",
+          "connection": "Chapter 2의 변경 책임을 정한 문제의 경계와 지금의 기준값 포함 여부를 구분한다."
+        }
       ]
     },
     {
@@ -380,6 +949,68 @@
       ],
       "misconceptions": [
         "입력·규칙·출력을 단어 세 개로 나열하기만 한다."
+      ],
+      "revisitPages": [
+        {
+          "chapterID": "chapter-02",
+          "chapterOrder": 2,
+          "chapterTitle": "정보를 값과 타입으로 표현하기",
+          "pageID": "chapter-02-page-07",
+          "pageOrder": 7,
+          "pageTitle": "여러 정보를 값으로 구조화하기",
+          "kind": "direct",
+          "connection": "값의 역할을 입력·규칙·출력 관점으로 본다."
+        },
+        {
+          "chapterID": "chapter-02",
+          "chapterOrder": 2,
+          "chapterTitle": "정보를 값과 타입으로 표현하기",
+          "pageID": "chapter-02-page-09",
+          "pageOrder": 9,
+          "pageTitle": "선언 묶음을 의미 단위 조각으로 읽기",
+          "kind": "direct",
+          "connection": "선언 묶음이 다음 판단과 결과에 어떻게 이어지는지 읽는다."
+        },
+        {
+          "chapterID": "chapter-03",
+          "chapterOrder": 3,
+          "chapterTitle": "값으로 새로운 값을 계산하기",
+          "pageID": "chapter-03-page-01",
+          "pageOrder": 1,
+          "pageTitle": "입력과 결과 사이의 관계 찾기",
+          "kind": "direct",
+          "connection": "결과에서 거꾸로 필요한 입력을 찾는다."
+        },
+        {
+          "chapterID": "chapter-03",
+          "chapterOrder": 3,
+          "chapterTitle": "값으로 새로운 값을 계산하기",
+          "pageID": "chapter-03-page-04",
+          "pageOrder": 4,
+          "pageTitle": "큰 계산을 중간값으로 나누기",
+          "kind": "direct",
+          "connection": "출력이 다음 입력이 되는 흐름을 본다."
+        },
+        {
+          "chapterID": "chapter-03",
+          "chapterOrder": 3,
+          "chapterTitle": "값으로 새로운 값을 계산하기",
+          "pageID": "chapter-03-page-08",
+          "pageOrder": 8,
+          "pageTitle": "새로운 문제에 적용하고 돌아보기",
+          "kind": "direct",
+          "connection": "결과에서 거꾸로 입력과 규칙을 찾는다."
+        },
+        {
+          "chapterID": "chapter-04",
+          "chapterOrder": 4,
+          "chapterTitle": "판단 가능한 조건 만들기",
+          "pageID": "chapter-04-page-01",
+          "pageOrder": 1,
+          "pageTitle": "자연어 조건을 질문으로 바꾸기",
+          "kind": "direct",
+          "connection": "문제의 정보와 해결 방법, 결과는 어떻게 연결되는가?"
+        }
       ]
     },
     {
@@ -397,7 +1028,8 @@
       ],
       "misconceptions": [
         "문제에 나온 모든 정보를 입력이라고 부른다."
-      ]
+      ],
+      "revisitPages": []
     },
     {
       "id": "concept-output",
@@ -413,7 +1045,8 @@
       ],
       "misconceptions": [
         "가장 눈에 띄는 숫자를 출력으로 고른다."
-      ]
+      ],
+      "revisitPages": []
     },
     {
       "id": "concept-expressions-operations",
@@ -429,6 +1062,58 @@
       ],
       "misconceptions": [
 
+      ],
+      "revisitPages": [
+        {
+          "chapterID": "chapter-02",
+          "chapterOrder": 2,
+          "chapterTitle": "정보를 값과 타입으로 표현하기",
+          "pageID": "chapter-02-overview",
+          "pageOrder": null,
+          "pageTitle": "Chapter 2 Overview",
+          "kind": "nearby",
+          "connection": "이름 붙은 값은 다음 챕터에서 계산의 재료가 된다."
+        },
+        {
+          "chapterID": "chapter-02",
+          "chapterOrder": 2,
+          "chapterTitle": "정보를 값과 타입으로 표현하기",
+          "pageID": "chapter-02-page-08",
+          "pageOrder": 8,
+          "pageTitle": "새로운 문제에 적용하고 돌아보기",
+          "kind": "nearby",
+          "connection": "이름 붙은 값의 다음 쓰임을 예고한다."
+        },
+        {
+          "chapterID": "chapter-02",
+          "chapterOrder": 2,
+          "chapterTitle": "정보를 값과 타입으로 표현하기",
+          "pageID": "chapter-02-page-09",
+          "pageOrder": 9,
+          "pageTitle": "선언 묶음을 의미 단위 조각으로 읽기",
+          "kind": "nearby",
+          "connection": "선언 조각은 Chapter 3의 계산 조각에 입력값을 제공한다."
+        },
+        {
+          "chapterID": "chapter-03",
+          "chapterOrder": 3,
+          "chapterTitle": "값으로 새로운 값을 계산하기",
+          "pageID": "chapter-03-overview",
+          "pageOrder": null,
+          "pageTitle": "Chapter 3 Overview",
+          "kind": "direct",
+          "connection": "값과 연산의 전체 계산 흐름을 본다."
+        },
+        {
+          "chapterID": "chapter-03",
+          "chapterOrder": 3,
+          "chapterTitle": "값으로 새로운 값을 계산하기",
+          "pageID": "chapter-03-page-08",
+          "pageOrder": 8,
+          "pageTitle": "새로운 문제에 적용하고 돌아보기",
+          "kind": "direct",
+          "connection": "계산의 전체 사고 흐름을 적용한다."
+        }
       ]
     },
     {
@@ -449,6 +1134,88 @@
         "연산자가 있어야만 표현식이라고 생각한다.",
         "표현식과 그 평가 결과를 같은 것으로 여긴다.",
         "실행해야만 결과를 생각할 수 있다고 여긴다."
+      ],
+      "revisitPages": [
+        {
+          "chapterID": "chapter-03",
+          "chapterOrder": 3,
+          "chapterTitle": "값으로 새로운 값을 계산하기",
+          "pageID": "chapter-03-page-01",
+          "pageOrder": 1,
+          "pageTitle": "입력과 결과 사이의 관계 찾기",
+          "kind": "direct",
+          "connection": "관계를 식으로 옮길 준비를 한다."
+        },
+        {
+          "chapterID": "chapter-03",
+          "chapterOrder": 3,
+          "chapterTitle": "값으로 새로운 값을 계산하기",
+          "pageID": "chapter-03-page-02",
+          "pageOrder": 2,
+          "pageTitle": "표현식의 결과 예상하기",
+          "kind": "direct",
+          "connection": "표현식을 결과값으로 접어 읽는다."
+        },
+        {
+          "chapterID": "chapter-03",
+          "chapterOrder": 3,
+          "chapterTitle": "값으로 새로운 값을 계산하기",
+          "pageID": "chapter-03-page-03",
+          "pageOrder": 3,
+          "pageTitle": "산술 연산자로 값 계산하기",
+          "kind": "direct",
+          "connection": "연산을 표현식으로 조립한다."
+        },
+        {
+          "chapterID": "chapter-03",
+          "chapterOrder": 3,
+          "chapterTitle": "값으로 새로운 값을 계산하기",
+          "pageID": "chapter-03-page-05",
+          "pageOrder": 5,
+          "pageTitle": "계산 순서 확인하기",
+          "kind": "direct",
+          "connection": "결과값으로 접을 표현식 경계를 찾는다."
+        },
+        {
+          "chapterID": "chapter-03",
+          "chapterOrder": 3,
+          "chapterTitle": "값으로 새로운 값을 계산하기",
+          "pageID": "chapter-03-page-09",
+          "pageOrder": 9,
+          "pageTitle": "계산 흐름을 의미 단위 조각으로 읽기",
+          "kind": "direct",
+          "connection": "입력에서 결과로 가는 관계를 읽는다."
+        },
+        {
+          "chapterID": "chapter-04",
+          "chapterOrder": 4,
+          "chapterTitle": "판단 가능한 조건 만들기",
+          "pageID": "chapter-04-overview",
+          "pageOrder": null,
+          "pageTitle": "Chapter 4 Overview",
+          "kind": "nearby",
+          "connection": "Chapter 3의 표현식이 만든 totalCost를 가져와 이번에는 Bool 결과를 만드는 질문으로 연결한다."
+        },
+        {
+          "chapterID": "chapter-04",
+          "chapterOrder": 4,
+          "chapterTitle": "판단 가능한 조건 만들기",
+          "pageID": "chapter-04-page-02",
+          "pageOrder": 2,
+          "pageTitle": "참과 거짓을 값으로 바라보기",
+          "kind": "direct",
+          "connection": "이 코드 조각을 평가했을 때 하나의 값으로 읽을 수 있는가?"
+        },
+        {
+          "chapterID": "chapter-04",
+          "chapterOrder": 4,
+          "chapterTitle": "판단 가능한 조건 만들기",
+          "pageID": "chapter-04-page-03",
+          "pageOrder": 3,
+          "pageTitle": "비교 연산자로 조건 만들기",
+          "kind": "direct",
+          "connection": "이 코드 조각을 평가했을 때 하나의 값으로 읽을 수 있는가?"
+        }
       ]
     },
     {
@@ -470,6 +1237,48 @@
         "문장에 더라는 말이 있으면 언제나 +라고 생각한다.",
         "뺄셈과 나눗셈의 입력 순서를 구분하지 않는다.",
         "연산자만 맞으면 결과 의미와 단위는 설명하지 않아도 된다고 여긴다."
+      ],
+      "revisitPages": [
+        {
+          "chapterID": "chapter-03",
+          "chapterOrder": 3,
+          "chapterTitle": "값으로 새로운 값을 계산하기",
+          "pageID": "chapter-03-page-01",
+          "pageOrder": 1,
+          "pageTitle": "입력과 결과 사이의 관계 찾기",
+          "kind": "nearby",
+          "connection": "찾은 관계는 다음 페이지에서 연산으로 표현된다."
+        },
+        {
+          "chapterID": "chapter-03",
+          "chapterOrder": 3,
+          "chapterTitle": "값으로 새로운 값을 계산하기",
+          "pageID": "chapter-03-page-02",
+          "pageOrder": 2,
+          "pageTitle": "표현식의 결과 예상하기",
+          "kind": "nearby",
+          "connection": "연산자는 표현식에서 값의 관계를 정한다."
+        },
+        {
+          "chapterID": "chapter-03",
+          "chapterOrder": 3,
+          "chapterTitle": "값으로 새로운 값을 계산하기",
+          "pageID": "chapter-03-page-03",
+          "pageOrder": 3,
+          "pageTitle": "산술 연산자로 값 계산하기",
+          "kind": "direct",
+          "connection": "자연어 관계를 산술 기호로 표현한다."
+        },
+        {
+          "chapterID": "chapter-04",
+          "chapterOrder": 4,
+          "chapterTitle": "판단 가능한 조건 만들기",
+          "pageID": "chapter-04-page-03",
+          "pageOrder": 3,
+          "pageTitle": "비교 연산자로 조건 만들기",
+          "kind": "nearby",
+          "connection": "Chapter 3의 산술식은 새 수를 만들었다. 같은 입력을 비교하는 식은 관계에 대한 Bool을 만든다."
+        }
       ]
     },
     {
@@ -490,6 +1299,98 @@
         "긴 식을 일정한 글자 수마다 나눈다.",
         "임시 값이라 이름은 중요하지 않다고 생각한다.",
         "중간값이 많을수록 언제나 읽기 쉽다고 생각한다."
+      ],
+      "revisitPages": [
+        {
+          "chapterID": "chapter-03",
+          "chapterOrder": 3,
+          "chapterTitle": "값으로 새로운 값을 계산하기",
+          "pageID": "chapter-03-page-01",
+          "pageOrder": 1,
+          "pageTitle": "입력과 결과 사이의 관계 찾기",
+          "kind": "direct",
+          "connection": "한 계산의 결과이자 다음 계산의 입력을 찾는다."
+        },
+        {
+          "chapterID": "chapter-03",
+          "chapterOrder": 3,
+          "chapterTitle": "값으로 새로운 값을 계산하기",
+          "pageID": "chapter-03-page-03",
+          "pageOrder": 3,
+          "pageTitle": "산술 연산자로 값 계산하기",
+          "kind": "nearby",
+          "connection": "여러 관계는 중간값으로 책임을 나눌 수 있다."
+        },
+        {
+          "chapterID": "chapter-03",
+          "chapterOrder": 3,
+          "chapterTitle": "값으로 새로운 값을 계산하기",
+          "pageID": "chapter-03-page-04",
+          "pageOrder": 4,
+          "pageTitle": "큰 계산을 중간값으로 나누기",
+          "kind": "direct",
+          "connection": "계산 단계를 의미 있는 결과로 나눈다."
+        },
+        {
+          "chapterID": "chapter-03",
+          "chapterOrder": 3,
+          "chapterTitle": "값으로 새로운 값을 계산하기",
+          "pageID": "chapter-03-page-05",
+          "pageOrder": 5,
+          "pageTitle": "계산 순서 확인하기",
+          "kind": "direct",
+          "connection": "복잡한 순서를 단계로 드러낸다."
+        },
+        {
+          "chapterID": "chapter-03",
+          "chapterOrder": 3,
+          "chapterTitle": "값으로 새로운 값을 계산하기",
+          "pageID": "chapter-03-page-07",
+          "pageOrder": 7,
+          "pageTitle": "print로 계산 과정 관찰하기",
+          "kind": "direct",
+          "connection": "첫 차이를 찾을 관찰 지점을 제공한다."
+        },
+        {
+          "chapterID": "chapter-03",
+          "chapterOrder": 3,
+          "chapterTitle": "값으로 새로운 값을 계산하기",
+          "pageID": "chapter-03-page-08",
+          "pageOrder": 8,
+          "pageTitle": "새로운 문제에 적용하고 돌아보기",
+          "kind": "direct",
+          "connection": "계산 경계와 관찰 지점을 만든다."
+        },
+        {
+          "chapterID": "chapter-03",
+          "chapterOrder": 3,
+          "chapterTitle": "값으로 새로운 값을 계산하기",
+          "pageID": "chapter-03-page-09",
+          "pageOrder": 9,
+          "pageTitle": "계산 흐름을 의미 단위 조각으로 읽기",
+          "kind": "direct",
+          "connection": "조각 사이 결과·입력 연결을 찾는다."
+        },
+        {
+          "chapterID": "chapter-04",
+          "chapterOrder": 4,
+          "chapterTitle": "판단 가능한 조건 만들기",
+          "pageID": "chapter-04-page-06",
+          "pageOrder": 6,
+          "pageTitle": "조건에 의미 있는 이름 붙이기",
+          "kind": "nearby",
+          "connection": "Chapter 3에서 중간값을 다음 계산의 입력으로 썼듯 meetsMinimum을 전체 조건의 입력으로 사용한다."
+        },
+        {
+          "chapterID": "chapter-04",
+          "chapterOrder": 4,
+          "chapterTitle": "판단 가능한 조건 만들기",
+          "pageID": "chapter-04-page-09",
+          "pageOrder": 9,
+          "pageTitle": "조건 흐름을 의미 단위 조각으로 읽기",
+          "kind": "nearby",
+          "connection": "Chapter 3의 계산 조각과 비교해 각 조각의 결과가 다음 조각의 입력이 되는 공통 흐름을 설명한다."
+        }
       ]
     },
     {
@@ -510,6 +1411,38 @@
         "항상 왼쪽 기호부터 계산한다.",
         "우선순위를 알면 괄호는 불필요하다고 생각한다.",
         "최종 결과만 맞으면 평가 순서는 중요하지 않다고 여긴다."
+      ],
+      "revisitPages": [
+        {
+          "chapterID": "chapter-03",
+          "chapterOrder": 3,
+          "chapterTitle": "값으로 새로운 값을 계산하기",
+          "pageID": "chapter-03-page-04",
+          "pageOrder": 4,
+          "pageTitle": "큰 계산을 중간값으로 나누기",
+          "kind": "nearby",
+          "connection": "한 단계 안의 여러 연산은 평가 순서를 가진다."
+        },
+        {
+          "chapterID": "chapter-03",
+          "chapterOrder": 3,
+          "chapterTitle": "값으로 새로운 값을 계산하기",
+          "pageID": "chapter-03-page-05",
+          "pageOrder": 5,
+          "pageTitle": "계산 순서 확인하기",
+          "kind": "direct",
+          "connection": "괄호와 우선순위로 평가 순서를 찾는다."
+        },
+        {
+          "chapterID": "chapter-04",
+          "chapterOrder": 4,
+          "chapterTitle": "판단 가능한 조건 만들기",
+          "pageID": "chapter-04-page-05",
+          "pageOrder": 5,
+          "pageTitle": "여러 조건을 조합하기",
+          "kind": "nearby",
+          "connection": "Chapter 3에서 괄호로 계산 범위를 명시한 기준을 !(a || b)의 부정 범위에 다시 적용한다."
+        }
       ]
     },
     {
@@ -530,6 +1463,28 @@
         "Swift 나눗셈은 언제나 수학의 소수 답을 자동으로 보존한다고 생각한다.",
         "Double이 언제나 더 좋은 수 타입이라고 생각한다.",
         "리터럴에 점만 붙이면 문제 모델도 자동으로 맞는다고 여긴다."
+      ],
+      "revisitPages": [
+        {
+          "chapterID": "chapter-03",
+          "chapterOrder": 3,
+          "chapterTitle": "값으로 새로운 값을 계산하기",
+          "pageID": "chapter-03-page-05",
+          "pageOrder": 5,
+          "pageTitle": "계산 순서 확인하기",
+          "kind": "nearby",
+          "connection": "평가 순서와 함께 입력 타입도 결과를 결정한다."
+        },
+        {
+          "chapterID": "chapter-03",
+          "chapterOrder": 3,
+          "chapterTitle": "값으로 새로운 값을 계산하기",
+          "pageID": "chapter-03-page-06",
+          "pageOrder": 6,
+          "pageTitle": "Int와 Double의 계산 비교하기",
+          "kind": "direct",
+          "connection": "수 타입에 따른 나눗셈 결과를 해석한다."
+        }
       ]
     },
     {
@@ -550,6 +1505,38 @@
         "print가 계산을 실행하거나 결과를 만든다고 생각한다.",
         "실제 출력을 본 뒤 예상을 맞춘다.",
         "모든 값을 출력할수록 원인을 빨리 찾는다고 생각한다."
+      ],
+      "revisitPages": [
+        {
+          "chapterID": "chapter-03",
+          "chapterOrder": 3,
+          "chapterTitle": "값으로 새로운 값을 계산하기",
+          "pageID": "chapter-03-page-06",
+          "pageOrder": 6,
+          "pageTitle": "Int와 Double의 계산 비교하기",
+          "kind": "nearby",
+          "connection": "예상한 값과 타입을 실행 결과로 관찰한다."
+        },
+        {
+          "chapterID": "chapter-03",
+          "chapterOrder": 3,
+          "chapterTitle": "값으로 새로운 값을 계산하기",
+          "pageID": "chapter-03-page-07",
+          "pageOrder": 7,
+          "pageTitle": "print로 계산 과정 관찰하기",
+          "kind": "direct",
+          "connection": "예상과 실제를 비교한다."
+        },
+        {
+          "chapterID": "chapter-04",
+          "chapterOrder": 4,
+          "chapterTitle": "판단 가능한 조건 만들기",
+          "pageID": "chapter-04-page-07",
+          "pageOrder": 7,
+          "pageTitle": "반례로 조건 확인하기",
+          "kind": "nearby",
+          "connection": "Chapter 3의 관찰 순서로 작은 Bool과 전체 Bool을 비교하면 어떤 판단이 처음 어긋났는지 찾을 수 있다."
+        }
       ]
     },
     {
@@ -566,6 +1553,68 @@
       ],
       "misconceptions": [
 
+      ],
+      "revisitPages": [
+        {
+          "chapterID": "chapter-02",
+          "chapterOrder": 2,
+          "chapterTitle": "정보를 값과 타입으로 표현하기",
+          "pageID": "chapter-02-page-09",
+          "pageOrder": 9,
+          "pageTitle": "선언 묶음을 의미 단위 조각으로 읽기",
+          "kind": "nearby",
+          "connection": "의미 단위 조각 사이의 연결은 이후 실행 순서와 조건으로 확장된다."
+        },
+        {
+          "chapterID": "chapter-03",
+          "chapterOrder": 3,
+          "chapterTitle": "값으로 새로운 값을 계산하기",
+          "pageID": "chapter-03-overview",
+          "pageOrder": null,
+          "pageTitle": "Chapter 3 Overview",
+          "kind": "nearby",
+          "connection": "계산 결과는 이후 조건과 실행 흐름의 입력이 된다."
+        },
+        {
+          "chapterID": "chapter-03",
+          "chapterOrder": 3,
+          "chapterTitle": "값으로 새로운 값을 계산하기",
+          "pageID": "chapter-03-page-07",
+          "pageOrder": 7,
+          "pageTitle": "print로 계산 과정 관찰하기",
+          "kind": "direct",
+          "connection": "계산과 관찰의 실행 위치를 읽는다."
+        },
+        {
+          "chapterID": "chapter-03",
+          "chapterOrder": 3,
+          "chapterTitle": "값으로 새로운 값을 계산하기",
+          "pageID": "chapter-03-page-09",
+          "pageOrder": 9,
+          "pageTitle": "계산 흐름을 의미 단위 조각으로 읽기",
+          "kind": "nearby",
+          "connection": "조건 조각은 이후 실행 흐름을 결정한다."
+        },
+        {
+          "chapterID": "chapter-04",
+          "chapterOrder": 4,
+          "chapterTitle": "판단 가능한 조건 만들기",
+          "pageID": "chapter-04-overview",
+          "pageOrder": null,
+          "pageTitle": "Chapter 4 Overview",
+          "kind": "nearby",
+          "connection": "만든 조건은 Chapter 5에서 경우에 따라 결과를 결정하는 입력이 된다."
+        },
+        {
+          "chapterID": "chapter-04",
+          "chapterOrder": 4,
+          "chapterTitle": "판단 가능한 조건 만들기",
+          "pageID": "chapter-04-page-09",
+          "pageOrder": 9,
+          "pageTitle": "조건 흐름을 의미 단위 조각으로 읽기",
+          "kind": "nearby",
+          "connection": "Chapter 5에서 canEnter 같은 Bool을 입력으로 받아 경우에 따라 다른 결과를 결정한다."
+        }
       ]
     },
     {
@@ -582,7 +1631,8 @@
       ],
       "misconceptions": [
 
-      ]
+      ],
+      "revisitPages": []
     },
     {
       "id": "concept-type-modeling",
@@ -598,6 +1648,38 @@
       ],
       "misconceptions": [
 
+      ],
+      "revisitPages": [
+        {
+          "chapterID": "chapter-02",
+          "chapterOrder": 2,
+          "chapterTitle": "정보를 값과 타입으로 표현하기",
+          "pageID": "chapter-02-overview",
+          "pageOrder": null,
+          "pageTitle": "Chapter 2 Overview",
+          "kind": "nearby",
+          "connection": "관련된 값의 경계는 이후 사용자 정의 타입으로 확장된다."
+        },
+        {
+          "chapterID": "chapter-02",
+          "chapterOrder": 2,
+          "chapterTitle": "정보를 값과 타입으로 표현하기",
+          "pageID": "chapter-02-page-07",
+          "pageOrder": 7,
+          "pageTitle": "여러 정보를 값으로 구조화하기",
+          "kind": "nearby",
+          "connection": "반복해서 함께 다루는 값의 관계는 사용자 정의 타입으로 이어진다."
+        },
+        {
+          "chapterID": "chapter-02",
+          "chapterOrder": 2,
+          "chapterTitle": "정보를 값과 타입으로 표현하기",
+          "pageID": "chapter-02-page-08",
+          "pageOrder": 8,
+          "pageTitle": "새로운 문제에 적용하고 돌아보기",
+          "kind": "nearby",
+          "connection": "관련된 값을 타입 구조로 만드는 다음 학습을 예고한다."
+        }
       ]
     },
     {
@@ -614,7 +1696,8 @@
       ],
       "misconceptions": [
 
-      ]
+      ],
+      "revisitPages": []
     },
     {
       "id": "concept-semantic-chunk-reading",
@@ -636,6 +1719,88 @@
         "연속된 코드 줄을 그대로 조각으로 부른다.",
         "같은 타입이나 문법을 쓴 요소끼리 묶는다.",
         "모범 조각 이름과 경계를 하나의 정답으로 외운다."
+      ],
+      "revisitPages": [
+        {
+          "chapterID": "chapter-02",
+          "chapterOrder": 2,
+          "chapterTitle": "정보를 값과 타입으로 표현하기",
+          "pageID": "chapter-02-overview",
+          "pageOrder": null,
+          "pageTitle": "Chapter 2 Overview",
+          "kind": "direct",
+          "connection": "여러 선언을 같은 책임과 흐름의 의미 단위로 다시 읽는다."
+        },
+        {
+          "chapterID": "chapter-02",
+          "chapterOrder": 2,
+          "chapterTitle": "정보를 값과 타입으로 표현하기",
+          "pageID": "chapter-02-page-09",
+          "pageOrder": 9,
+          "pageTitle": "선언 묶음을 의미 단위 조각으로 읽기",
+          "kind": "direct",
+          "connection": "떨어진 선언을 같은 책임과 흐름의 의미 단위로 연결한다."
+        },
+        {
+          "chapterID": "chapter-03",
+          "chapterOrder": 3,
+          "chapterTitle": "값으로 새로운 값을 계산하기",
+          "pageID": "chapter-03-overview",
+          "pageOrder": null,
+          "pageTitle": "Chapter 3 Overview",
+          "kind": "direct",
+          "connection": "계산 코드를 의미 단위 조각으로 읽는다."
+        },
+        {
+          "chapterID": "chapter-03",
+          "chapterOrder": 3,
+          "chapterTitle": "값으로 새로운 값을 계산하기",
+          "pageID": "chapter-03-page-08",
+          "pageOrder": 8,
+          "pageTitle": "새로운 문제에 적용하고 돌아보기",
+          "kind": "nearby",
+          "connection": "완성한 흐름을 비연속적인 계산 조각으로 다시 읽는다."
+        },
+        {
+          "chapterID": "chapter-03",
+          "chapterOrder": 3,
+          "chapterTitle": "값으로 새로운 값을 계산하기",
+          "pageID": "chapter-03-page-09",
+          "pageOrder": 9,
+          "pageTitle": "계산 흐름을 의미 단위 조각으로 읽기",
+          "kind": "direct",
+          "connection": "계산 요소를 책임과 흐름으로 묶는다."
+        },
+        {
+          "chapterID": "chapter-04",
+          "chapterOrder": 4,
+          "chapterTitle": "판단 가능한 조건 만들기",
+          "pageID": "chapter-04-overview",
+          "pageOrder": null,
+          "pageTitle": "Chapter 4 Overview",
+          "kind": "direct",
+          "connection": "이 요소들은 붙어 있거나 문법이 같아서가 아니라, 함께 무엇을 설명하고 만드는가?"
+        },
+        {
+          "chapterID": "chapter-04",
+          "chapterOrder": 4,
+          "chapterTitle": "판단 가능한 조건 만들기",
+          "pageID": "chapter-04-page-08",
+          "pageOrder": 8,
+          "pageTitle": "새로운 문제에 적용하고 돌아보기",
+          "kind": "nearby",
+          "connection": "완성된 조건 코드를 떨어진 입력과 판단의 의미 단위 조각으로 다시 읽는다."
+        },
+        {
+          "chapterID": "chapter-04",
+          "chapterOrder": 4,
+          "chapterTitle": "판단 가능한 조건 만들기",
+          "pageID": "chapter-04-page-09",
+          "pageOrder": 9,
+          "pageTitle": "조건 흐름을 의미 단위 조각으로 읽기",
+          "kind": "direct",
+          "connection": "조건 조각은 같은 질문을 만드는 입력과 비교를 함께 묶고, Bool 결과가 다음 판단으로 흐르는 연결로 설명한다."
+        }
       ]
     },
     {
@@ -655,6 +1820,88 @@
       "misconceptions": [
         "모호한 표현을 그대로 변수 이름만 바꾸면 조건이 된다고 생각한다.",
         "조건이 참이라는 사실과 조건에 따라 할 행동을 섞는다."
+      ],
+      "revisitPages": [
+        {
+          "chapterID": "chapter-02",
+          "chapterOrder": 2,
+          "chapterTitle": "정보를 값과 타입으로 표현하기",
+          "pageID": "chapter-02-page-02",
+          "pageOrder": 2,
+          "pageTitle": "값의 종류 비교하기",
+          "kind": "nearby",
+          "connection": "Bool로 구분한 참·거짓 값을 Chapter 4에서는 명확한 질문을 평가한 답으로 다시 사용한다."
+        },
+        {
+          "chapterID": "chapter-03",
+          "chapterOrder": 3,
+          "chapterTitle": "값으로 새로운 값을 계산하기",
+          "pageID": "chapter-03-overview",
+          "pageOrder": null,
+          "pageTitle": "Chapter 3 Overview",
+          "kind": "nearby",
+          "connection": "이 Chapter에서 계산한 totalCost는 Chapter 4에서 기준값과 비교할 질문의 입력이 된다."
+        },
+        {
+          "chapterID": "chapter-04",
+          "chapterOrder": 4,
+          "chapterTitle": "판단 가능한 조건 만들기",
+          "pageID": "chapter-04-overview",
+          "pageOrder": null,
+          "pageTitle": "Chapter 4 Overview",
+          "kind": "direct",
+          "connection": "비교할 정보와 기준을 정하고 질문의 답을 Bool로 연결한다."
+        },
+        {
+          "chapterID": "chapter-04",
+          "chapterOrder": 4,
+          "chapterTitle": "판단 가능한 조건 만들기",
+          "pageID": "chapter-04-page-01",
+          "pageOrder": 1,
+          "pageTitle": "자연어 조건을 질문으로 바꾸기",
+          "kind": "direct",
+          "connection": "조건을 쓰기 전에 비교할 정보, 기준, 기준과 같은 경우의 답부터 정한다."
+        },
+        {
+          "chapterID": "chapter-04",
+          "chapterOrder": 4,
+          "chapterTitle": "판단 가능한 조건 만들기",
+          "pageID": "chapter-04-page-02",
+          "pageOrder": 2,
+          "pageTitle": "참과 거짓을 값으로 바라보기",
+          "kind": "direct",
+          "connection": "누가 판단해도 같은 입력에서 같은 답을 얻을 수 있는가?"
+        },
+        {
+          "chapterID": "chapter-04",
+          "chapterOrder": 4,
+          "chapterTitle": "판단 가능한 조건 만들기",
+          "pageID": "chapter-04-page-04",
+          "pageOrder": 4,
+          "pageTitle": "경계가 포함되는지 판단하기",
+          "kind": "direct",
+          "connection": "누가 판단해도 같은 입력에서 같은 답을 얻을 수 있는가?"
+        },
+        {
+          "chapterID": "chapter-04",
+          "chapterOrder": 4,
+          "chapterTitle": "판단 가능한 조건 만들기",
+          "pageID": "chapter-04-page-05",
+          "pageOrder": 5,
+          "pageTitle": "여러 조건을 조합하기",
+          "kind": "direct",
+          "connection": "누가 판단해도 같은 입력에서 같은 답을 얻을 수 있는가?"
+        },
+        {
+          "chapterID": "chapter-04",
+          "chapterOrder": 4,
+          "chapterTitle": "판단 가능한 조건 만들기",
+          "pageID": "chapter-04-page-08",
+          "pageOrder": 8,
+          "pageTitle": "새로운 문제에 적용하고 돌아보기",
+          "kind": "direct",
+          "connection": "새 조건 문제에서도 질문을 작게 나누고 경계와 조합을 검증한 뒤 전체 판단으로 묶는다."
+        }
       ]
     },
     {
@@ -675,6 +1922,78 @@
       "misconceptions": [
         "=와 ==를 같은 의미로 읽는다.",
         "비교식 결과를 비교에 쓴 숫자 타입이라고 생각한다."
+      ],
+      "revisitPages": [
+        {
+          "chapterID": "chapter-02",
+          "chapterOrder": 2,
+          "chapterTitle": "정보를 값과 타입으로 표현하기",
+          "pageID": "chapter-02-page-06",
+          "pageOrder": 6,
+          "pageTitle": "타입 명시와 타입 추론 비교하기",
+          "kind": "nearby",
+          "connection": "리터럴뿐 아니라 표현식의 결과도 타입 추론의 단서다. Chapter 4에서는 Int를 비교한 결과가 Bool임을 확인한다."
+        },
+        {
+          "chapterID": "chapter-03",
+          "chapterOrder": 3,
+          "chapterTitle": "값으로 새로운 값을 계산하기",
+          "pageID": "chapter-03-page-02",
+          "pageOrder": 2,
+          "pageTitle": "표현식의 결과 예상하기",
+          "kind": "nearby",
+          "connection": "표현식은 수만 만들지 않는다. Chapter 4에서는 두 값을 비교하는 표현식이 Bool 하나로 평가되는 흐름을 읽는다."
+        },
+        {
+          "chapterID": "chapter-03",
+          "chapterOrder": 3,
+          "chapterTitle": "값으로 새로운 값을 계산하기",
+          "pageID": "chapter-03-page-03",
+          "pageOrder": 3,
+          "pageTitle": "산술 연산자로 값 계산하기",
+          "kind": "nearby",
+          "connection": "새 수를 만드는 산술 연산과 값의 관계를 Bool로 답하는 비교 연산의 목적을 Chapter 4에서 대조한다."
+        },
+        {
+          "chapterID": "chapter-04",
+          "chapterOrder": 4,
+          "chapterTitle": "판단 가능한 조건 만들기",
+          "pageID": "chapter-04-page-01",
+          "pageOrder": 1,
+          "pageTitle": "자연어 조건을 질문으로 바꾸기",
+          "kind": "nearby",
+          "connection": "같은 질문의 답을 Bool 값과 비교식으로 표현한다."
+        },
+        {
+          "chapterID": "chapter-04",
+          "chapterOrder": 4,
+          "chapterTitle": "판단 가능한 조건 만들기",
+          "pageID": "chapter-04-page-02",
+          "pageOrder": 2,
+          "pageTitle": "참과 거짓을 값으로 바라보기",
+          "kind": "nearby",
+          "connection": "참과 거짓을 만드는 비교 관계를 직접 코드로 고른다."
+        },
+        {
+          "chapterID": "chapter-04",
+          "chapterOrder": 4,
+          "chapterTitle": "판단 가능한 조건 만들기",
+          "pageID": "chapter-04-page-03",
+          "pageOrder": 3,
+          "pageTitle": "비교 연산자로 조건 만들기",
+          "kind": "direct",
+          "connection": "비교식을 읽을 때 양쪽 값과 관계를 먼저 말한 뒤 Bool 결과를 예상한다."
+        },
+        {
+          "chapterID": "chapter-04",
+          "chapterOrder": 4,
+          "chapterTitle": "판단 가능한 조건 만들기",
+          "pageID": "chapter-04-page-04",
+          "pageOrder": 4,
+          "pageTitle": "경계가 포함되는지 판단하기",
+          "kind": "direct",
+          "connection": "어떤 관계를 확인하며 결과는 어떤 타입인가?"
+        }
       ]
     },
     {
@@ -694,6 +2013,38 @@
       "misconceptions": [
         "보통 값 하나만 맞으면 경계도 맞다고 생각한다.",
         "이상과 초과를 모두 >로 옮긴다."
+      ],
+      "revisitPages": [
+        {
+          "chapterID": "chapter-04",
+          "chapterOrder": 4,
+          "chapterTitle": "판단 가능한 조건 만들기",
+          "pageID": "chapter-04-page-03",
+          "pageOrder": 3,
+          "pageTitle": "비교 연산자로 조건 만들기",
+          "kind": "nearby",
+          "connection": "기준값과 같은 경우를 따로 대입해 포함 여부를 확인한다."
+        },
+        {
+          "chapterID": "chapter-04",
+          "chapterOrder": 4,
+          "chapterTitle": "판단 가능한 조건 만들기",
+          "pageID": "chapter-04-page-04",
+          "pageOrder": 4,
+          "pageTitle": "경계가 포함되는지 판단하기",
+          "kind": "direct",
+          "connection": "경계 연산자를 고를 때 기준값과 정확히 같은 사례를 먼저 자연어 규칙으로 판단한다."
+        },
+        {
+          "chapterID": "chapter-04",
+          "chapterOrder": 4,
+          "chapterTitle": "판단 가능한 조건 만들기",
+          "pageID": "chapter-04-page-07",
+          "pageOrder": 7,
+          "pageTitle": "반례로 조건 확인하기",
+          "kind": "direct",
+          "connection": "기준과 같은 값은 어느 쪽에 속하는가?"
+        }
       ]
     },
     {
@@ -714,6 +2065,68 @@
       "misconceptions": [
         "||를 둘 중 정확히 하나만 참인 경우로 읽는다.",
         "!(a || b)를 !a || b와 같다고 생각한다."
+      ],
+      "revisitPages": [
+        {
+          "chapterID": "chapter-03",
+          "chapterOrder": 3,
+          "chapterTitle": "값으로 새로운 값을 계산하기",
+          "pageID": "chapter-03-page-05",
+          "pageOrder": 5,
+          "pageTitle": "계산 순서 확인하기",
+          "kind": "nearby",
+          "connection": "괄호로 의도한 범위를 표시하는 기준을 Chapter 4에서는 여러 Bool의 조합과 부정 범위에 다시 사용한다."
+        },
+        {
+          "chapterID": "chapter-04",
+          "chapterOrder": 4,
+          "chapterTitle": "판단 가능한 조건 만들기",
+          "pageID": "chapter-04-page-05",
+          "pageOrder": 5,
+          "pageTitle": "여러 조건을 조합하기",
+          "kind": "direct",
+          "connection": "모두 필요하면 &&, 하나 이상이면 ||를 고르고 둘 다 참과 일부만 참인 사례로 뜻을 확인한다."
+        },
+        {
+          "chapterID": "chapter-04",
+          "chapterOrder": 4,
+          "chapterTitle": "판단 가능한 조건 만들기",
+          "pageID": "chapter-04-page-06",
+          "pageOrder": 6,
+          "pageTitle": "조건에 의미 있는 이름 붙이기",
+          "kind": "direct",
+          "connection": "모두 필요한가, 하나라도 충분한가, 반대로 묻는가?"
+        },
+        {
+          "chapterID": "chapter-04",
+          "chapterOrder": 4,
+          "chapterTitle": "판단 가능한 조건 만들기",
+          "pageID": "chapter-04-page-07",
+          "pageOrder": 7,
+          "pageTitle": "반례로 조건 확인하기",
+          "kind": "direct",
+          "connection": "모두 필요한가, 하나라도 충분한가, 반대로 묻는가?"
+        },
+        {
+          "chapterID": "chapter-04",
+          "chapterOrder": 4,
+          "chapterTitle": "판단 가능한 조건 만들기",
+          "pageID": "chapter-04-page-08",
+          "pageOrder": 8,
+          "pageTitle": "새로운 문제에 적용하고 돌아보기",
+          "kind": "direct",
+          "connection": "모두 필요한가, 하나라도 충분한가, 반대로 묻는가?"
+        },
+        {
+          "chapterID": "chapter-04",
+          "chapterOrder": 4,
+          "chapterTitle": "판단 가능한 조건 만들기",
+          "pageID": "chapter-04-page-09",
+          "pageOrder": 9,
+          "pageTitle": "조건 흐름을 의미 단위 조각으로 읽기",
+          "kind": "direct",
+          "connection": "모두 필요한가, 하나라도 충분한가, 반대로 묻는가?"
+        }
       ]
     },
     {
@@ -734,6 +2147,88 @@
       "misconceptions": [
         "check나 flag만으로 판단 내용을 충분히 설명했다고 생각한다.",
         "이름을 붙이면 원래 기준이 무엇인지 확인할 필요가 없다고 생각한다."
+      ],
+      "revisitPages": [
+        {
+          "chapterID": "chapter-02",
+          "chapterOrder": 2,
+          "chapterTitle": "정보를 값과 타입으로 표현하기",
+          "pageID": "chapter-02-page-04",
+          "pageOrder": 4,
+          "pageTitle": "의미가 드러나는 이름 붙이기",
+          "kind": "nearby",
+          "connection": "대상과 역할을 드러내는 이름 짓기는 Chapter 4에서 참일 때 성립하는 사실을 이름 붙이는 기준이 된다."
+        },
+        {
+          "chapterID": "chapter-02",
+          "chapterOrder": 2,
+          "chapterTitle": "정보를 값과 타입으로 표현하기",
+          "pageID": "chapter-02-page-05",
+          "pageOrder": 5,
+          "pageTitle": "변하지 않는 값을 선언하기",
+          "kind": "nearby",
+          "connection": "let에 저장한 Bool도 선언 시 평가한 값이다. Chapter 4에서 입력이 달라진 뒤 다시 평가할 식과 저장값을 구분한다."
+        },
+        {
+          "chapterID": "chapter-03",
+          "chapterOrder": 3,
+          "chapterTitle": "값으로 새로운 값을 계산하기",
+          "pageID": "chapter-03-page-04",
+          "pageOrder": 4,
+          "pageTitle": "큰 계산을 중간값으로 나누기",
+          "kind": "nearby",
+          "connection": "중간값으로 큰 계산을 나누던 기준을 작은 Bool 판단에 적용해 전체 조건의 입력을 만든다."
+        },
+        {
+          "chapterID": "chapter-03",
+          "chapterOrder": 3,
+          "chapterTitle": "값으로 새로운 값을 계산하기",
+          "pageID": "chapter-03-page-09",
+          "pageOrder": 9,
+          "pageTitle": "계산 흐름을 의미 단위 조각으로 읽기",
+          "kind": "nearby",
+          "connection": "계산 조각의 출력이 다음 입력이 되듯, 조건 조각의 Bool도 다음 전체 판단에 전달된다."
+        },
+        {
+          "chapterID": "chapter-04",
+          "chapterOrder": 4,
+          "chapterTitle": "판단 가능한 조건 만들기",
+          "pageID": "chapter-04-page-05",
+          "pageOrder": 5,
+          "pageTitle": "여러 조건을 조합하기",
+          "kind": "nearby",
+          "connection": "각 작은 질문과 전체 질문에 의미가 드러나는 이름을 붙인다."
+        },
+        {
+          "chapterID": "chapter-04",
+          "chapterOrder": 4,
+          "chapterTitle": "판단 가능한 조건 만들기",
+          "pageID": "chapter-04-page-06",
+          "pageOrder": 6,
+          "pageTitle": "조건에 의미 있는 이름 붙이기",
+          "kind": "direct",
+          "connection": "Bool 이름은 참일 때 성립하는 사실로 읽고, 그 값을 만든 식과 평가 시점도 함께 확인한다."
+        },
+        {
+          "chapterID": "chapter-04",
+          "chapterOrder": 4,
+          "chapterTitle": "판단 가능한 조건 만들기",
+          "pageID": "chapter-04-page-07",
+          "pageOrder": 7,
+          "pageTitle": "반례로 조건 확인하기",
+          "kind": "nearby",
+          "connection": "작은 조건에 붙인 이름을 읽으며 반례에서 처음 어긋난 질문이 무엇인지 추적한다."
+        },
+        {
+          "chapterID": "chapter-04",
+          "chapterOrder": 4,
+          "chapterTitle": "판단 가능한 조건 만들기",
+          "pageID": "chapter-04-page-09",
+          "pageOrder": 9,
+          "pageTitle": "조건 흐름을 의미 단위 조각으로 읽기",
+          "kind": "direct",
+          "connection": "참일 때 어떤 사실이 성립하는지 이름만으로 읽히는가?"
+        }
       ]
     },
     {
@@ -753,6 +2248,91 @@
       "misconceptions": [
         "조건식 결과를 그대로 기대 결과로 쓰며 검증했다고 생각한다.",
         "반례를 하나 못 찾으면 모든 입력에서 맞는 것이 증명됐다고 생각한다."
+      ],
+      "revisitPages": [
+        {
+          "chapterID": "chapter-03",
+          "chapterOrder": 3,
+          "chapterTitle": "값으로 새로운 값을 계산하기",
+          "pageID": "chapter-03-page-07",
+          "pageOrder": 7,
+          "pageTitle": "print로 계산 과정 관찰하기",
+          "kind": "nearby",
+          "connection": "예상과 실제가 처음 달라진 중간값을 찾던 관찰을 Chapter 4에서는 잘못된 작은 판단과 전체 조건에 적용한다."
+        },
+        {
+          "chapterID": "chapter-04",
+          "chapterOrder": 4,
+          "chapterTitle": "판단 가능한 조건 만들기",
+          "pageID": "chapter-04-page-04",
+          "pageOrder": 4,
+          "pageTitle": "경계가 포함되는지 판단하기",
+          "kind": "nearby",
+          "connection": "경계값을 포함하는 규칙에 >를 쓰면 기준과 같은 입력이 반례가 된다. 경계 사례로 조건이 어긋나는지 확인한다."
+        },
+        {
+          "chapterID": "chapter-04",
+          "chapterOrder": 4,
+          "chapterTitle": "판단 가능한 조건 만들기",
+          "pageID": "chapter-04-page-06",
+          "pageOrder": 6,
+          "pageTitle": "조건에 의미 있는 이름 붙이기",
+          "kind": "nearby",
+          "connection": "이름만 그럴듯한 조건에 반례를 넣어 실제 기준과 일치하는지 확인한다."
+        },
+        {
+          "chapterID": "chapter-04",
+          "chapterOrder": 4,
+          "chapterTitle": "판단 가능한 조건 만들기",
+          "pageID": "chapter-04-page-07",
+          "pageOrder": 7,
+          "pageTitle": "반례로 조건 확인하기",
+          "kind": "direct",
+          "connection": "기대 결과는 규칙에서 먼저 정하고, 경계와 일부 조건만 참인 입력으로 작성한 식을 시험한다."
+        },
+        {
+          "chapterID": "chapter-04",
+          "chapterOrder": 4,
+          "chapterTitle": "판단 가능한 조건 만들기",
+          "pageID": "chapter-04-page-08",
+          "pageOrder": 8,
+          "pageTitle": "새로운 문제에 적용하고 돌아보기",
+          "kind": "direct",
+          "connection": "이 조건이 틀렸음을 드러낼 입력은 무엇인가?"
+        }
+      ]
+    },
+    {
+      "id": "concept-example-validation",
+      "title": "사례를 통한 검증",
+      "definition": "사례를 통한 검증은 서로 다른 입력과 예상 결과를 사용해 구조와 규칙이 의도대로 작동하는지 확인하는 과정이다.",
+      "essentialQuestion": "내가 만든 구조와 규칙은 값이 달라져도 문제를 제대로 설명하는가?",
+      "judgmentQuestions": [
+        "평범한 사례에서 예상한 결과가 나오는가?",
+        "규칙이 갈라지는 서로 다른 경우를 모두 확인했는가?",
+        "필요한 정보가 빠진 사례를 알아차리는가?",
+        "불필요한 정보를 바꿔도 결과가 유지되는가?",
+        "예상 결과를 실행이나 계산 전에 먼저 적었는가?"
+      ],
+      "examples": [
+        "입장 규칙이 나이에 따라 달라진다면 기준보다 작은 값, 같은 값, 큰 값을 각각 넣어 예상 결과를 비교한다. 이름처럼 규칙에 쓰이지 않는 정보도 바꾸어 결과가 유지되는지 본다."
+      ],
+      "misconceptions": [
+        "잘 되는 사례 하나만 보면 규칙이 맞다고 생각한다.",
+        "결과를 본 뒤 예상값을 맞추어 적는다.",
+        "계산 결과만 확인하고 입력이 충분한지는 확인하지 않는다."
+      ],
+      "revisitPages": [
+        {
+          "chapterID": "chapter-04",
+          "chapterOrder": 4,
+          "chapterTitle": "판단 가능한 조건 만들기",
+          "pageID": "chapter-04-page-07",
+          "pageOrder": 7,
+          "pageTitle": "반례로 조건 확인하기",
+          "kind": "nearby",
+          "connection": "기존 사례 검증처럼 규칙에서 기대 결과를 먼저 정하고, 그 기대와 작성한 조건식이 다르게 답하는 입력을 찾는다."
+        }
       ]
     }
   ],
@@ -1127,6 +2707,90 @@
       "targetConceptID": "concept-execution-flow",
       "kind": "leadsTo",
       "summary": "Chapter 4에서 만든 Bool은 Chapter 5에서 실행할 경우를 나누는 입력이 된다."
+    },
+    {
+      "id": "relation-input-rule-output-condition-question",
+      "sourceConceptID": "concept-input-rule-output",
+      "targetConceptID": "concept-condition-question",
+      "kind": "appliesTo",
+      "summary": "입력·규칙·출력 구조에서 정한 입력과 규칙을 이용해 참·거짓으로 답할 질문을 만든다."
+    },
+    {
+      "id": "relation-concrete-values-rules-condition-question",
+      "sourceConceptID": "concept-concrete-values-rules",
+      "targetConceptID": "concept-condition-question",
+      "kind": "appliesTo",
+      "summary": "한 주문의 금액과 여러 주문에 반복 적용할 기준을 구분해야 같은 규칙으로 조건을 판단할 수 있다."
+    },
+    {
+      "id": "relation-expression-comparison-operator",
+      "sourceConceptID": "concept-expression",
+      "targetConceptID": "concept-comparison-operator",
+      "kind": "appliesTo",
+      "summary": "비교식도 입력을 평가해 결과 하나를 만드는 표현식이며 그 결과 타입은 Bool이다."
+    },
+    {
+      "id": "relation-arithmetic-operation-comparison-operator",
+      "sourceConceptID": "concept-arithmetic-operation",
+      "targetConceptID": "concept-comparison-operator",
+      "kind": "contrastsWith",
+      "summary": "산술 연산은 수 관계로 새 수를 만들고, 비교 연산은 두 값의 관계를 Bool로 답한다."
+    },
+    {
+      "id": "relation-type-inference-annotation-comparison-operator",
+      "sourceConceptID": "concept-type-inference-annotation",
+      "targetConceptID": "concept-comparison-operator",
+      "kind": "appliesTo",
+      "summary": "비교에 사용한 값이 Int여도 비교식 결과에서 추론하는 선언의 타입은 Bool이다."
+    },
+    {
+      "id": "relation-identifier-naming-named-condition",
+      "sourceConceptID": "concept-identifier-naming",
+      "targetConceptID": "concept-named-condition",
+      "kind": "appliesTo",
+      "summary": "값의 역할을 드러내는 이름 짓기를 Bool에 적용하면 참일 때 성립하는 사실을 읽을 수 있다."
+    },
+    {
+      "id": "relation-intermediate-value-named-condition",
+      "sourceConceptID": "concept-intermediate-value",
+      "targetConceptID": "concept-named-condition",
+      "kind": "leadsTo",
+      "summary": "계산의 중간값처럼 작은 판단의 Bool에 이름을 붙여 다음 전체 조건의 입력으로 사용한다."
+    },
+    {
+      "id": "relation-evaluation-order-logical-composition",
+      "sourceConceptID": "concept-evaluation-order",
+      "targetConceptID": "concept-logical-composition",
+      "kind": "appliesTo",
+      "summary": "괄호로 평가할 범위를 명시하는 읽기 기준을 복합 조건과 부정의 범위에도 적용한다."
+    },
+    {
+      "id": "relation-problem-boundary-condition-boundary",
+      "sourceConceptID": "concept-problem-boundary",
+      "targetConceptID": "concept-condition-boundary",
+      "kind": "contrastsWith",
+      "summary": "문제의 경계는 해결이 책임질 범위이고, 조건의 경계는 참과 거짓이 바뀌는 기준값과 그 포함 여부다."
+    },
+    {
+      "id": "relation-print-observation-condition-counterexample",
+      "sourceConceptID": "concept-print-observation",
+      "targetConceptID": "concept-condition-counterexample",
+      "kind": "appliesTo",
+      "summary": "규칙에서 기대값을 먼저 정한 뒤 작은 Bool과 최종 Bool을 관찰해 처음 어긋난 판단을 찾는다."
+    },
+    {
+      "id": "relation-condition-counterexample-example-validation",
+      "sourceConceptID": "concept-condition-counterexample",
+      "targetConceptID": "concept-example-validation",
+      "kind": "refines",
+      "summary": "조건의 반례는 여러 사례로 규칙을 확인하는 검증 중 기대한 판단과 조건식의 답이 다른 입력에 초점을 둔다."
+    },
+    {
+      "id": "relation-example-validation-condition-boundary",
+      "sourceConceptID": "concept-example-validation",
+      "targetConceptID": "concept-condition-boundary",
+      "kind": "appliesTo",
+      "summary": "서로 다른 입력을 확인하는 검증 기준으로 경계 아래·같음·위의 기대 결과를 먼저 정한다."
     }
   ]
 }

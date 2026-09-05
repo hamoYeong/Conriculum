@@ -467,6 +467,40 @@ struct ContentValidator: Sendable {
         }
         for concept in catalog.concepts {
             requireIdentity(.knowledgeConcept, id: concept.id.rawValue, keys: keys, resource: resource, issues: &issues)
+            var seenRevisitPageIDs = Set<LearningPageID>()
+            for (index, reference) in (concept.revisitPages ?? []).enumerated() {
+                let path = "concept[\(concept.id.rawValue)].revisitPages[\(index)]"
+                if seenRevisitPageIDs.insert(reference.pageID).inserted == false {
+                    issues.append(.init(
+                        resource: resource,
+                        fieldPath: path,
+                        message: "duplicates a learning page in the same revisit section"
+                    ))
+                }
+                requireIdentity(
+                    .chapter,
+                    id: reference.chapterID.rawValue,
+                    keys: keys,
+                    resource: resource,
+                    issues: &issues
+                )
+                requireIdentity(
+                    .page,
+                    id: reference.pageID.rawValue,
+                    keys: keys,
+                    resource: resource,
+                    issues: &issues
+                )
+                if reference.connection
+                    .trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+                {
+                    issues.append(.init(
+                        resource: resource,
+                        fieldPath: "\(path).connection",
+                        message: "must explain why the learning page is connected"
+                    ))
+                }
+            }
         }
     }
 

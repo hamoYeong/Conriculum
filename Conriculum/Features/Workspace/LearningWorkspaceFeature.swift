@@ -75,6 +75,12 @@ struct LearningWorkspaceFeature {
             case let .chapter(.delegate(.chapterRequested(chapterID, pageID))):
                 return .send(.delegate(.chapterRequested(chapterID, pageID)))
 
+            case let .knowledgeContext(.delegate(.learningRequested(
+                chapterID,
+                pageID
+            ))):
+                return .send(.delegate(.chapterRequested(chapterID, pageID)))
+
             case let .chapter(.delegate(.currentPageChanged(pageID))):
                 return .send(.knowledgeContext(.pageChanged(pageID)))
 

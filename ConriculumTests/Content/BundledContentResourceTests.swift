@@ -123,7 +123,7 @@ struct BundledContentResourceTests {
             "SwiftUI와 사용자 인터페이스",
         ])
         #expect(hasCompletePresentationMetadata)
-        #expect(catalog.concepts.count == 35)
+        #expect(catalog.concepts.count == 36)
         #expect(catalog.concepts.contains { $0.id == "concept-semantic-chunk-reading" })
         #expect(membershipIDs.count == catalog.concepts.count)
         #expect(Set(membershipIDs) == Set(catalog.concepts.map(\.id)))

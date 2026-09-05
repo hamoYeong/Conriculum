@@ -19,6 +19,27 @@ struct KnowledgeConcept: Codable, Equatable, Sendable {
     let judgmentQuestions: [String]
     let examples: [String]
     let misconceptions: [String]
+    /// 이 개념을 직접 사용하거나 완료 뒤 연결해서 볼 수 있는 학습 페이지.
+    /// 링크 자체는 학습 노출이나 개인 지식 상태를 만들지 않는다.
+    var revisitPages: [KnowledgeLearningReference]? = nil
+}
+
+/// 지식 노트의 단일 `다시 보기` 섹션을 앱에서도 이동 가능한 링크로 보존한다.
+struct KnowledgeLearningReference: Codable, Equatable, Identifiable, Sendable {
+    enum Kind: String, Codable, Equatable, Sendable {
+        case direct
+        case nearby
+    }
+
+    var id: LearningPageID { pageID }
+    let chapterID: ChapterID
+    let chapterOrder: Int
+    let chapterTitle: String
+    let pageID: LearningPageID
+    let pageOrder: Int?
+    let pageTitle: String
+    let kind: Kind
+    let connection: String
 }
 
 /// 두 `KnowledgeConcept` 사이의 방향 있는 지식 그래프 edge.

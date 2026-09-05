@@ -217,6 +217,7 @@ struct ConceptInspectorFeature {
         case relationEditor(PersonalRelationEditorFeature.Action)
         case saveButtonTapped
         case cancelButtonTapped
+        case learningPageTapped(KnowledgeLearningReference)
         case saveResponse(SaveResponse)
         case delegate(Delegate)
     }
@@ -230,6 +231,7 @@ struct ConceptInspectorFeature {
         case cancelled
         case saved(PersonalConceptRevision)
         case relationSaved(PersonalKnowledgeRelation)
+        case learningRequested(ChapterID, LearningPageID)
     }
 
     @Dependency(\.date.now) var now
@@ -360,6 +362,12 @@ struct ConceptInspectorFeature {
 
             case .cancelButtonTapped:
                 return .send(.delegate(.cancelled))
+
+            case let .learningPageTapped(reference):
+                return .send(.delegate(.learningRequested(
+                    reference.chapterID,
+                    reference.pageID
+                )))
 
             case let .saveResponse(.saved(revision)):
                 state.isSaving = false
