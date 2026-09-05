@@ -3,7 +3,7 @@ import Testing
 
 @testable import Conriculum
 
-// MARK: - 7. 공용 지식·개인 지식·학습 기록의 경계 확인
+// MARK: - 공용 지식·개인 지식·학습 기록의 경계 확인
 
 struct KnowledgeAndLearningRecordTests {
     /// Collection이 type-safe ID와 Concept ID 순서를 단일 JSON 값으로 왕복하는지 확인한다.

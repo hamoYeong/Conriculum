@@ -1,6 +1,6 @@
 import Foundation
 
-// MARK: - 16. Bundle JSON을 Domain으로 바꾸고 오류 문맥을 보강하는 경계
+// MARK: - Bundle JSON을 Domain으로 바꾸고 오류 문맥을 보강하는 경계
 
 /// 콘텐츠 리소스 로딩과 `Decodable` 변환을 한곳에 모으는 stateless decoder.
 struct ContentResourceDecoder: Sendable {

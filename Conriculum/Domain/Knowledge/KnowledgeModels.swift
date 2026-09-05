@@ -1,4 +1,4 @@
-// MARK: - 4. 모든 학습자에게 공통인 지식 그래프
+// MARK: - 모든 학습자에게 공통인 지식 그래프
 
 /// 지식 체계의 한 분류와 그 안에 포함되는 공용 Concept의 순서를 보존한다.
 struct KnowledgeCollection: Codable, Equatable, Sendable {

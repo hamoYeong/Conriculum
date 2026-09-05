@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate the bundled Chapter 2-4 JSON knowledge and revisit references."""
+"""Validate bundled curriculum JSON knowledge and revisit references."""
 import json
 from pathlib import Path
 

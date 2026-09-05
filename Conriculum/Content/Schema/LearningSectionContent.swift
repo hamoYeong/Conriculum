@@ -1,4 +1,4 @@
-// MARK: - 8. Section 콘텐츠의 tagged schema
+// MARK: - Section 콘텐츠의 tagged schema
 
 /// JSON `tag`에 허용되는 section vocabulary 전체.
 /// 각 case는 아래 `LearningSectionContent`의 associated payload와 1:1로 대응한다.

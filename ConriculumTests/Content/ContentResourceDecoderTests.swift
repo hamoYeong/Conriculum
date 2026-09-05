@@ -3,7 +3,7 @@ import Testing
 
 @testable import Conriculum
 
-// MARK: - 17. Decoder가 저수준 오류를 콘텐츠 작성자 문맥으로 번역하는지 확인
+// MARK: - Decoder가 저수준 오류를 콘텐츠 작성자 문맥으로 번역하는지 확인
 
 struct ContentResourceDecoderTests {
     /// 필수 field 누락 오류에 resource 이름과 정확한 field path가 포함되는지 확인한다.

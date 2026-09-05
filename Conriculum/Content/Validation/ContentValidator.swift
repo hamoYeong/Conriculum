@@ -1,6 +1,6 @@
 import Foundation
 
-// MARK: - 18. decode된 세 resource 사이의 의미 계약 검사
+// MARK: - decode된 resource 사이의 의미 계약 검사
 
 /// JSON 형태 검사가 끝난 Domain 값들을 서로 대조하는 validator.
 /// Decoder가 “각 값의 모양”을 책임진다면, 이 타입은 ID·순서·참조·identity의 “관계”를 책임진다.

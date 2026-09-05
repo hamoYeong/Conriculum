@@ -3,10 +3,10 @@ import Testing
 
 @testable import Conriculum
 
-// MARK: - 0·19. 전체 조립 흐름을 먼저 보고, 마지막에 validation 계약을 재확인
+// MARK: - 전체 조립 흐름을 먼저 보고, 마지막에 validation 계약을 재확인
 
 struct ContentValidatorTests {
-    /// 세 JSON을 Domain으로 decode한 뒤 서로 대조하는 이 PR 전체의 정상 호출 흐름.
+    /// 관련 JSON을 Domain으로 decode한 뒤 서로 대조하는 정상 호출 흐름.
     /// 처음에는 이 함수와 아래 `loadValidContent()`만 읽어 전체 지도를 잡는다.
     @Test
     func bundledChapterTwoContentPassesValidation() throws {
@@ -439,7 +439,7 @@ struct ContentValidatorTests {
     }
 }
 
-/// Validator에 동시에 전달되는 세 root Domain 값을 묶는 테스트 전용 값.
+/// Validator에 동시에 전달되는 root Domain 값을 묶는 테스트 전용 값.
 private struct ValidContent {
     let chapter: Chapter
     let catalog: KnowledgeCatalog
