@@ -6,7 +6,7 @@
 
 ## 구현 결과
 
-Obsidian의 `학습 체계/00 학습 체계 지도.md`에 있는 새 Chapter 생성 계약을 기준으로 지도·학습 경험 설계·Overview·9개 lesson을 먼저 작성했다. 원문을 다시 읽고 본문 문구와 링크를 대조한 뒤 Chapter JSON, 공용 지식 catalog와 content identity manifest에 반영했다. `Obsidian/`은 검토용 원문 사본이며 실제 편집 원본은 사용자의 vault다.
+Obsidian의 `학습 체계/00 학습 체계 지도.md`에 있는 새 Chapter 생성 계약을 기준으로 지도·학습 경험 설계·Overview·9개 lesson을 먼저 작성했다. 원문을 다시 읽고 본문 문구와 링크를 대조한 뒤 Chapter JSON, 공용 지식 catalog와 content identity manifest에 반영했다. Git 저장소에는 앱에서 사용하는 JSON만 유지하고 Obsidian Markdown 사본은 포함하지 않는다.
 
 | 경로 | 맡은 판단 | 공용 SwiftUI 작업 컴포넌트 |
 | --- | --- | --- |
@@ -38,12 +38,11 @@ Chapter 3 마지막 페이지의 다음 목적지를 `chapter-04-overview`로 �
 - 실제 in-memory SwiftData 저장소로 활동 자동 저장과 저장소 재생성 후 응답 read-back을 확인했다. 활동 응답만 저장해도 개인 개념 revision이 생기지 않음을 확인했다.
 - 콘텐츠 validator, 기존 Chapter 2·3, 공용 접근성·렌더링·홈·지식 체계 회귀 테스트가 통과했다. VoiceOver를 켠 수동 전 구간 학습은 이번에 수행하지 않았다.
 - 마지막 페이지의 Swift 코드 원문을 실행해 `true` 결과를 확인했다.
-- `verify_sources.py`로 10개 페이지의 본문 필드 640개, 승격한 지식 7개, 원문 사본 64개와 실제 vault를 대조했다. `다시 보기` 149개, 가까운 지식이 있는 페이지 21개, 양쪽 노트에 기록한 지식 관계 12개와 모든 wikilink 대상도 확인했다.
+- `verify_sources.py`로 Chapter 2·3·4 JSON의 30개 페이지, 지식 36개, `다시 보기` 149개, 가까운 지식 범위 30개와 지식 관계의 stable ID를 확인했다.
 - `git diff --check` 통과.
 
 ```sh
 python3 Documentation/Chapter4/verify_sources.py
-python3 Documentation/Chapter4/verify_sources.py --vault '/path/to/Conriculum-vault'
 xcodebuild -project Conriculum.xcodeproj -scheme Conriculum \
   -destination 'platform=macOS' test
 ```
