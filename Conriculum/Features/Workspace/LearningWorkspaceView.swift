@@ -13,7 +13,10 @@ struct LearningWorkspaceView: View {
                 sidebarIsHidden: sidebarIsHidden
             )
             let showsSidebar = !sidebarIsHidden && layout != .learningAndInspector
-            workspaceContent(showsSidebar: showsSidebar)
+            workspaceContent(
+                showsSidebar: showsSidebar,
+                availableWidth: geometry.size.width
+            )
             .toolbar(removing: .sidebarToggle)
             .toolbar {
                 ToolbarItemGroup(placement: .navigation) {
@@ -88,7 +91,7 @@ struct LearningWorkspaceView: View {
         .frame(minWidth: 680, minHeight: 560)
     }
 
-    private func workspaceContent(showsSidebar: Bool) -> some View {
+    private func workspaceContent(showsSidebar: Bool, availableWidth: CGFloat) -> some View {
         // 본문은 항상 같은 위치에 둔다. 창 크기 변경으로 본문 트리를
         // 교체하면 ScrollView의 onAppear가 학습 위치를 초기화할 수 있다.
         HSplitView {
@@ -99,15 +102,24 @@ struct LearningWorkspaceView: View {
                         action: \.knowledgeContext
                     )
                 )
-                .frame(minWidth: 200, idealWidth: 250, maxWidth: 300)
+                .frame(minWidth: 200, idealWidth: 300, maxWidth: 300)
             }
 
             chapterContent
                 .frame(minWidth: 380, maxWidth: .infinity)
+                .background {
+                    LearningWorkspacePanelSizing(
+                        configuration: .init(
+                            showsSidebar: showsSidebar,
+                            showsInspector: inspectorIsVisible,
+                            availableWidth: availableWidth
+                        )
+                    )
+                }
 
             if inspectorIsVisible {
                 inspectorContent
-                    .frame(minWidth: 240, idealWidth: 280, maxWidth: 360)
+                    .frame(minWidth: 240, idealWidth: 360, maxWidth: 360)
             }
         }
     }
@@ -166,6 +178,102 @@ struct LearningWorkspaceView: View {
         Task { @MainActor in
             await Task.yield()
             window.makeFirstResponder(firstResponder)
+        }
+    }
+}
+
+// HSplitView의 idealWidth는 동적으로 추가되는 패널의 너비를 보장하지 않는다.
+// 본문 뷰를 유지한 채 패널 표시 상태나 창 너비가 바뀔 때 분할선을 맞춘다.
+private struct LearningWorkspacePanelSizing: NSViewRepresentable {
+    struct Configuration: Equatable {
+        var showsSidebar: Bool
+        var showsInspector: Bool
+        var availableWidth: CGFloat
+    }
+
+    var configuration: Configuration
+
+    func makeNSView(context: Context) -> SizingView {
+        SizingView()
+    }
+
+    func updateNSView(_ nsView: SizingView, context: Context) {
+        nsView.configuration = configuration
+        nsView.scheduleSizing()
+    }
+
+    final class SizingView: NSView {
+        var configuration: Configuration? {
+            didSet {
+                if configuration != oldValue {
+                    // 중간 창 크기에서 패널 교체가 진행 중이었더라도 다시 적용한다.
+                    appliedConfiguration = nil
+                }
+            }
+        }
+        private var appliedConfiguration: Configuration?
+        private var sizingIsScheduled = false
+
+        override func viewDidMoveToWindow() {
+            super.viewDidMoveToWindow()
+            scheduleSizing()
+        }
+
+        override func layout() {
+            super.layout()
+            scheduleSizing()
+        }
+
+        func scheduleSizing() {
+            guard configuration != appliedConfiguration, !sizingIsScheduled else { return }
+            sizingIsScheduled = true
+            // SwiftUI의 패널 추가·삭제와 레이아웃이 끝난 뒤 적용한다.
+            DispatchQueue.main.async { [weak self] in
+                guard let self else { return }
+                self.sizingIsScheduled = false
+                self.applySizing()
+            }
+        }
+
+        private func applySizing() {
+            guard let configuration, configuration != appliedConfiguration else { return }
+            var ancestor = superview
+            while let view = ancestor, !(view is NSSplitView) {
+                ancestor = view.superview
+            }
+            guard let splitView = ancestor as? NSSplitView else { return }
+            splitView.layoutSubtreeIfNeeded()
+            let panelCount = (configuration.showsSidebar ? 1 : 0)
+                + (configuration.showsInspector ? 1 : 0)
+            guard splitView.arrangedSubviews.count == panelCount + 1 else { return }
+
+            appliedConfiguration = configuration
+            guard panelCount > 0 else { return }
+
+            let minimum = (configuration.showsSidebar ? 200.0 : 0)
+                + (configuration.showsInspector ? 240.0 : 0)
+            let expansion = (configuration.showsSidebar ? 100.0 : 0)
+                + (configuration.showsInspector ? 120.0 : 0)
+            let available = configuration.availableWidth - 380
+                - CGFloat(panelCount) * splitView.dividerThickness
+            let fraction = min(1, max(0, (available - minimum) / expansion))
+
+            // 왼쪽을 먼저 줄여 오른쪽을 넓힐 공간을 확보한 뒤 양쪽 너비를 맞춘다.
+            if configuration.showsSidebar && configuration.showsInspector {
+                splitView.setPosition(200, ofDividerAt: 0)
+                splitView.layoutSubtreeIfNeeded()
+            }
+            if configuration.showsInspector {
+                let width = 240 + 120 * fraction
+                splitView.setPosition(
+                    splitView.bounds.width - width - splitView.dividerThickness,
+                    ofDividerAt: panelCount - 1
+                )
+                splitView.layoutSubtreeIfNeeded()
+            }
+            if configuration.showsSidebar {
+                splitView.setPosition(200 + 100 * fraction, ofDividerAt: 0)
+            }
         }
     }
 }

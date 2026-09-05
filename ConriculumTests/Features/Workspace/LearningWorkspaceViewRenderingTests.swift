@@ -215,6 +215,88 @@ struct LearningWorkspaceViewRenderingTests {
         }
     }
 
+    @Test(arguments: [false, true])
+    func panelsUseMaximumWidthsWhenOpenedAndReopened(
+        inspectorInitiallyVisible: Bool
+    ) async throws {
+        var state = try workspaceStateWithInspector()
+        state.sidebarMode = .visible
+        state.isInspectorPresented = inspectorInitiallyVisible
+        let store = Store(initialState: state) { LearningWorkspaceFeature() }
+        let host = NSHostingView(rootView: LearningWorkspaceView(store: store))
+        host.frame = NSRect(x: 0, y: 0, width: 1_440, height: 900)
+        let window = NSWindow(
+            contentRect: host.frame, styleMask: [], backing: .buffered, defer: false
+        )
+        window.contentView = host
+
+        func settleLayout() async throws {
+            for _ in 0..<5 {
+                host.layoutSubtreeIfNeeded()
+                try await Task.sleep(for: .milliseconds(10))
+            }
+        }
+
+        try await settleLayout()
+        let split = try #require(host.descendants.compactMap { $0 as? NSSplitView }.first)
+        let mainScroll = try #require(split.arrangedSubviews[1].descendants.compactMap {
+            $0 as? NSScrollView
+        }.first)
+
+        var checkpoint = 0
+        func expectWidths(sidebar: Bool, inspector: Bool) throws {
+            checkpoint += 1
+            #expect(split.arrangedSubviews.count == 1 + (sidebar ? 1 : 0) + (inspector ? 1 : 0))
+            if sidebar {
+                let width = try #require(split.arrangedSubviews.first).frame.width
+                #expect(abs(width - 300) < 0.5, "단계 \(checkpoint): 사이드바 \(width)pt")
+            }
+            if inspector {
+                let width = try #require(split.arrangedSubviews.last).frame.width
+                #expect(abs(width - 360) < 0.5, "단계 \(checkpoint): 인스펙터 \(width)pt")
+            }
+            let currentScroll = try #require(split.arrangedSubviews[sidebar ? 1 : 0]
+                .descendants.compactMap { $0 as? NSScrollView }.first)
+            #expect(currentScroll === mainScroll)
+        }
+
+        try expectWidths(sidebar: true, inspector: inspectorInitiallyVisible)
+        for _ in 0..<2 {
+            store.send(.sidebarModeChanged(.hidden))
+            try await settleLayout()
+            try expectWidths(sidebar: false, inspector: store.isInspectorPresented)
+            store.send(.sidebarModeChanged(.visible))
+            try await settleLayout()
+            try expectWidths(sidebar: true, inspector: store.isInspectorPresented)
+
+            store.send(.inspectorVisibilityButtonTapped)
+            try await settleLayout()
+            try expectWidths(sidebar: true, inspector: store.isInspectorPresented)
+        }
+
+        store.send(.focusModeButtonTapped)
+        try await settleLayout()
+        try expectWidths(sidebar: false, inspector: false)
+        store.send(.focusModeButtonTapped)
+        try await settleLayout()
+        try expectWidths(sidebar: true, inspector: inspectorInitiallyVisible)
+
+        for width in [680.0, 720.0, 900.0, 720.0] {
+            host.frame.size.width = width
+            try await settleLayout()
+            let mainIndex = inspectorInitiallyVisible && width < 900 ? 0 : 1
+            #expect(split.arrangedSubviews[mainIndex].frame.width >= 379.5)
+        }
+        host.frame.size.width = 1_440
+        try await settleLayout()
+        try expectWidths(sidebar: true, inspector: inspectorInitiallyVisible)
+
+        // 사용자가 직접 옮긴 구분선은 일반적인 레이아웃 갱신에서 되돌리지 않는다.
+        split.setPosition(250, ofDividerAt: 0)
+        try await settleLayout()
+        #expect(abs(try #require(split.arrangedSubviews.first).frame.width - 250) < 0.5)
+    }
+
     private func workspaceStateWithInspector()
         throws -> LearningWorkspaceFeature.State
     {
