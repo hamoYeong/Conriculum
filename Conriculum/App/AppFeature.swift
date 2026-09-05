@@ -64,6 +64,20 @@ struct AppFeature {
                 state.knowledgeSystem = nil
                 return .none
 
+            case let .knowledgeSystem(.delegate(.learningRequested(
+                chapterID,
+                pageID
+            ))):
+                state.knowledgeSystem = nil
+                state.workspace = LearningWorkspaceFeature.State(
+                    chapterID: chapterID,
+                    pageID: pageID,
+                    pendingPersonalizationReviews: state.home
+                        .pendingPersonalizationReviews
+                )
+                state.route = .learningWorkspace(chapterID: chapterID)
+                return .none
+
             case .home, .workspace, .knowledgeSystem:
                 return .none
             }

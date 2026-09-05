@@ -1,6 +1,6 @@
 import Foundation
 
-// MARK: - 18. decode된 세 resource 사이의 의미 계약 검사
+// MARK: - decode된 resource 사이의 의미 계약 검사
 
 /// JSON 형태 검사가 끝난 Domain 값들을 서로 대조하는 validator.
 /// Decoder가 “각 값의 모양”을 책임진다면, 이 타입은 ID·순서·참조·identity의 “관계”를 책임진다.
@@ -467,6 +467,40 @@ struct ContentValidator: Sendable {
         }
         for concept in catalog.concepts {
             requireIdentity(.knowledgeConcept, id: concept.id.rawValue, keys: keys, resource: resource, issues: &issues)
+            var seenRevisitPageIDs = Set<LearningPageID>()
+            for (index, reference) in (concept.revisitPages ?? []).enumerated() {
+                let path = "concept[\(concept.id.rawValue)].revisitPages[\(index)]"
+                if seenRevisitPageIDs.insert(reference.pageID).inserted == false {
+                    issues.append(.init(
+                        resource: resource,
+                        fieldPath: path,
+                        message: "duplicates a learning page in the same revisit section"
+                    ))
+                }
+                requireIdentity(
+                    .chapter,
+                    id: reference.chapterID.rawValue,
+                    keys: keys,
+                    resource: resource,
+                    issues: &issues
+                )
+                requireIdentity(
+                    .page,
+                    id: reference.pageID.rawValue,
+                    keys: keys,
+                    resource: resource,
+                    issues: &issues
+                )
+                if reference.connection
+                    .trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+                {
+                    issues.append(.init(
+                        resource: resource,
+                        fieldPath: "\(path).connection",
+                        message: "must explain why the learning page is connected"
+                    ))
+                }
+            }
         }
     }
 

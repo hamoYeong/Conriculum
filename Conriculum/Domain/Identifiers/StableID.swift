@@ -1,4 +1,4 @@
-// MARK: - 1. 모든 Domain이 공유하는 식별자 규칙
+// MARK: - 모든 Domain이 공유하는 식별자 규칙
 
 /// ID 종류를 구분하기 위한 marker protocol.
 /// 기능을 제공하기보다, `Tag`가 서로 다른 ID namespace를 만들게 한다.

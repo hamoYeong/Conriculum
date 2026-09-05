@@ -3,7 +3,7 @@ import Testing
 
 @testable import Conriculum
 
-// MARK: - 3. 학습 체계 Domain의 핵심 계약을 호출로 확인
+// MARK: - 학습 체계 Domain의 핵심 계약을 호출로 확인
 
 struct CurriculumModelsTests {
     /// StableID가 JSON 객체가 아니라 단일 문자열로 왕복되는지 확인한다.

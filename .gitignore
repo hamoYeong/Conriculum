@@ -3,6 +3,9 @@
 .AppleDouble
 .LSOverride
 
+# Local Obsidian source snapshots
+Documentation/**/Obsidian/
+
 # Xcode user state
 xcuserdata/
 *.xcuserstate

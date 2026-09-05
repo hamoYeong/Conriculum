@@ -1,4 +1,4 @@
-// MARK: - 10. JSON root를 Domain 값으로 감싸는 resource model
+// MARK: - JSON root를 Domain 값으로 감싸는 resource model
 
 /// `values-and-types.json`의 root.
 /// 공용 Collection·Concept·Relation을 하나의 versioned catalog로 묶는다.

@@ -1,6 +1,6 @@
 import Foundation
 
-// MARK: - 5. 공용 지식을 덮어쓰지 않는 사용자 지식 overlay
+// MARK: - 공용 지식을 덮어쓰지 않는 사용자 지식 overlay
 
 /// 공용 `KnowledgeConcept`를 수정하지 않고 별도로 쌓는 사용자의 해석 revision.
 /// 이전 revision과 근거 activity를 연결해 변화 이력을 보존한다.

@@ -33,6 +33,7 @@ struct ConceptInspectorView: View {
                         baseKnowledge
                         personalKnowledgeReadOnly
                     }
+                    revisitKnowledge
                     knowledgeRelations
 
                     if let message = store.validationMessage {
@@ -141,6 +142,14 @@ struct ConceptInspectorView: View {
             usage: store.usage,
             detailLevel: .contextual
         )
+    }
+
+    private var revisitKnowledge: some View {
+        KnowledgeRevisitSection(
+            references: store.concept.revisitPages ?? []
+        ) { reference in
+            store.send(.learningPageTapped(reference))
+        }
     }
 
     private var modeBar: some View {

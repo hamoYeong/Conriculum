@@ -37,7 +37,7 @@ struct KnowledgeContextSnapshotComposerTests {
                     "concept-string",
                     "concept-int",
                 ],
-                ["concept-type-selection"]
+                ["concept-type-selection", "concept-condition-question"]
             ),
             "chapter-02-page-03": (
                 [
@@ -49,11 +49,11 @@ struct KnowledgeContextSnapshotComposerTests {
             ),
             "chapter-02-page-04": (
                 ["concept-identifier-naming"],
-                ["concept-value", "concept-constants-variables"]
+                ["concept-value", "concept-constants-variables", "concept-named-condition"]
             ),
             "chapter-02-page-05": (
                 ["concept-constants-variables", "concept-problem-boundary"],
-                ["concept-identifier-naming"]
+                ["concept-identifier-naming", "concept-named-condition"]
             ),
             "chapter-02-page-06": (
                 [
@@ -61,7 +61,7 @@ struct KnowledgeContextSnapshotComposerTests {
                     "concept-identifier-naming",
                     "concept-literal",
                 ],
-                ["concept-type-selection", "concept-identifier-naming"]
+                ["concept-type-selection", "concept-identifier-naming", "concept-comparison-operator"]
             ),
             "chapter-02-page-07": (
                 [

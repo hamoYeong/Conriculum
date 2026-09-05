@@ -1,6 +1,6 @@
 import Foundation
 
-// MARK: - 11. 앱 Bundle에 포함된 JSON 리소스의 주소
+// MARK: - 앱 Bundle에 포함된 JSON 리소스의 주소
 
 /// 파일명과 하위 경로를 한 값으로 묶어 호출부에 문자열 주소가 흩어지지 않게 한다.
 /// Chapter 리소스는 공용 naming convention으로 만들므로 Chapter별 enum case가 필요 없다.
@@ -81,6 +81,10 @@ extension BundledContentResource {
             chapterID: "chapter-03",
             resource: .chapter(stageNumber: 1, chapterNumber: 3)
         ),
+        BundledChapterRegistration(
+            chapterID: "chapter-04",
+            resource: .chapter(stageNumber: 1, chapterNumber: 4)
+        ),
     ]
 }
 
@@ -97,6 +101,6 @@ enum BundledContentResourceError: Error, Equatable, Sendable, CustomStringConver
 }
 
 // MARK: - 다음 읽기: Resources/KnowledgeCatalog/values-and-types.json
-// MARK: - 그다음: Resources/Curriculum/Stage01/Chapter02/chapter-02.json
+// MARK: - Curriculum JSON 리소스
 // MARK: - 그다음: Resources/ContentManifest/content-identity.json
 // MARK: - JSON 확인 후: ConriculumTests/Content/BundledContentResourceTests.swift

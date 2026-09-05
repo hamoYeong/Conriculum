@@ -1,0 +1,2565 @@
+{
+  "id": "chapter-04",
+  "stageID": "stage-01",
+  "order": 4,
+  "title": "판단 가능한 조건 만들기",
+  "summary": "자연어 규칙을 참·거짓 질문과 Bool 조건으로 바꾸고, 경계·조합·반례와 의미 단위 조각으로 판단 근거를 설명한다.",
+  "overview": {
+    "id": "chapter-04-overview",
+    "kind": "overview",
+    "order": null,
+    "title": "Chapter 4 Overview",
+    "goal": "자연어 규칙을 참·거짓 질문과 Bool 조건으로 바꾸고, 경계·조합·반례와 의미 단위 조각으로 판단 근거를 설명한다.",
+    "sections": [
+      {
+        "id": "section-ch04-overview-compass",
+        "order": 1,
+        "content": {
+          "tag": "learningCompass",
+          "payload": {
+            "previousConnection": "Chapter 3에서 입력값으로 totalCost를 계산했다. Chapter 4에서는 그 결과를 판단의 입력으로 사용한다.",
+            "coreQuestion": "계산한 값으로 판단 가능한 질문을 만들고 그 판단을 어떻게 확인할까?",
+            "firstPredictionPrompt": "totalCost가 75,000원이고 회원이라면 아래 규칙에 어떤 질문이 필요할지 예상한다.",
+            "confidencePrompt": "조건을 설명할 수 있다는 확신과 아직 헷갈리는 기준을 적는다.",
+            "completionEvidence": [
+              "처음 보는 규칙을 조건식으로 만들고 경계·조합 사례로 확인한다.",
+              "떨어진 조건 코드를 역할·흐름·변경 영향으로 설명한다."
+            ]
+          }
+        },
+        "activityID": "activity-ch04-overview-compass",
+        "title": "이번 Chapter의 핵심 질문"
+      },
+      {
+        "id": "section-ch04-overview-situation",
+        "order": 2,
+        "content": {
+          "tag": "situation",
+          "payload": {
+            "title": "계산 결과에서 판단으로",
+            "description": "독서 모임 배송 혜택 대상은 회원이면서 전체 금액 50,000원 이상인 주문이다. 조건이 참인지 확인한 뒤 실제로 어떤 결과를 낼지는 Chapter 5에서 결정한다.",
+            "materials": [
+              {
+                "label": "이전 Chapter의 결과",
+                "text": "let totalCost = 75_000\nlet isMember = true"
+              }
+            ],
+            "firstQuestion": "계산된 숫자만으로 대상 여부를 알 수 있는가? 어떤 기준을 더 읽어야 하는가?"
+          }
+        }
+      },
+      {
+        "id": "section-ch04-overview-process",
+        "order": 3,
+        "content": {
+          "tag": "processGuide",
+          "payload": {
+            "steps": [
+              {
+                "order": 1,
+                "title": "질문과 값 · 1~3",
+                "question": "규칙을 어떻게 Bool 질문과 비교식으로 바꾸는가?"
+              },
+              {
+                "order": 2,
+                "title": "경계와 조합 · 4~6",
+                "question": "같음·모두·하나 이상을 구분하고 의미 있는 이름을 붙이는가?"
+              },
+              {
+                "order": 3,
+                "title": "반례와 전이 · 7~8",
+                "question": "틀린 조건을 드러내고 새 문제에 같은 기준을 쓰는가?"
+              },
+              {
+                "order": 4,
+                "title": "의미 단위로 읽기 · 9",
+                "question": "비연속 요소를 판단 책임과 결과 흐름으로 묶는가?"
+              }
+            ],
+            "completionDescription": "자연어 규칙을 참·거짓 질문과 Bool 조건으로 바꾸고, 경계·조합·반례와 의미 단위 조각으로 판단 근거를 설명한다."
+          }
+        }
+      },
+      {
+        "id": "section-ch04-overview-knowledge",
+        "order": 4,
+        "content": {
+          "tag": "knowledgeLink",
+          "payload": {
+            "links": [
+              {
+                "conceptID": "concept-condition-question",
+                "role": "primary",
+                "usage": "비교할 정보와 기준을 정하고 질문의 답을 Bool로 연결한다.",
+                "displayTiming": "판단 기준을 확인할 때"
+              },
+              {
+                "conceptID": "concept-bool",
+                "role": "supporting",
+                "usage": "이 정보는 지금 참인가 거짓인가라는 두 경우로 충분히 표현되는가?",
+                "displayTiming": "판단 기준을 확인할 때"
+              },
+              {
+                "conceptID": "concept-semantic-chunk-reading",
+                "role": "supporting",
+                "usage": "이 요소들은 붙어 있거나 문법이 같아서가 아니라, 함께 무엇을 설명하고 만드는가?",
+                "displayTiming": "판단 기준을 확인할 때"
+              }
+            ]
+          }
+        }
+      },
+      {
+        "id": "section-ch04-overview-focus",
+        "order": 5,
+        "content": {
+          "tag": "choiceWithReason",
+          "payload": {
+            "questions": [
+              {
+                "id": "judgment",
+                "prompt": "지금 조건을 읽을 때 가장 확인하고 싶은 기준은?",
+                "options": [
+                  {
+                    "id": "option-1",
+                    "text": "명확한 질문 만들기"
+                  },
+                  {
+                    "id": "option-2",
+                    "text": "비교와 경계"
+                  },
+                  {
+                    "id": "option-3",
+                    "text": "모두와 하나 이상"
+                  },
+                  {
+                    "id": "option-4",
+                    "text": "조건의 반례"
+                  },
+                  {
+                    "id": "option-5",
+                    "text": "전체 판단 흐름"
+                  }
+                ]
+              }
+            ],
+            "reasonPrompt": "자신의 첫 예상에서 막힌 부분과 연결해 이유를 적는다.",
+            "feedbackCriteria": [
+              "정답을 고르는 질문이 아니다. 다음 활동에서 확인할 기준을 남긴다."
+            ]
+          }
+        },
+        "activityID": "activity-ch04-overview-focus"
+      }
+    ],
+    "activities": [
+      {
+        "id": "activity-ch04-overview-compass",
+        "sectionID": "section-ch04-overview-compass",
+        "isRequired": true
+      },
+      {
+        "id": "activity-ch04-overview-focus",
+        "sectionID": "section-ch04-overview-focus",
+        "isRequired": true
+      }
+    ],
+    "knowledgeLinks": [
+      {
+        "conceptID": "concept-condition-question",
+        "role": "primary",
+        "usage": "비교할 정보와 기준을 정하고 질문의 답을 Bool로 연결한다.",
+        "displayTiming": "판단 기준을 확인할 때"
+      },
+      {
+        "conceptID": "concept-bool",
+        "role": "supporting",
+        "usage": "이 정보는 지금 참인가 거짓인가라는 두 경우로 충분히 표현되는가?",
+        "displayTiming": "판단 기준을 확인할 때"
+      },
+      {
+        "conceptID": "concept-semantic-chunk-reading",
+        "role": "supporting",
+        "usage": "이 요소들은 붙어 있거나 문법이 같아서가 아니라, 함께 무엇을 설명하고 만드는가?",
+        "displayTiming": "판단 기준을 확인할 때"
+      }
+    ],
+    "knowledgeContext": {
+      "currentlyUsedConceptIDs": [
+        "concept-condition-question",
+        "concept-bool",
+        "concept-semantic-chunk-reading"
+      ],
+      "currentlyUsedSummary": "비교할 정보와 기준을 정하고 질문의 답을 Bool로 연결한다.",
+      "changedKnowledgeSummary": "이 Chapter에서 확인해 저장한 나의 표현과 연결만 보여 준다.",
+      "nearbyKnowledge": [
+        {
+          "conceptID": "concept-execution-flow",
+          "reason": "만든 조건은 Chapter 5에서 경우에 따라 결과를 결정하는 입력이 된다."
+        },
+        {
+          "conceptID": "concept-expression",
+          "reason": "Chapter 3의 표현식이 만든 totalCost를 가져와 이번에는 Bool 결과를 만드는 질문으로 연결한다."
+        }
+      ],
+      "refreshTriggers": [
+        "개인 표현 저장 성공",
+        "개인 관계 저장 성공"
+      ],
+      "emptyStateMessage": "아직 확인해 반영한 나의 조건 설명이나 연결이 없다.",
+      "focusModeSummary": "계산한 값으로 판단 가능한 질문을 만들고 그 판단을 어떻게 확인할까?"
+    },
+    "navigation": {
+      "previous": {
+        "pageID": "chapter-03-page-09",
+        "label": "Chapter 3 · 계산 흐름을 의미 단위 조각으로 읽기"
+      },
+      "next": {
+        "pageID": "chapter-04-page-01",
+        "label": "자연어 조건을 질문으로 바꾸기"
+      }
+    }
+  },
+  "pages": [
+    {
+      "id": "chapter-04-page-01",
+      "kind": "lesson",
+      "order": 1,
+      "title": "자연어 조건을 질문으로 바꾸기",
+      "goal": "모호한 자연어를 필요한 정보와 기준이 드러나는 참·거짓 질문으로 바꾼다.",
+      "sections": [
+        {
+          "id": "section-ch04-page01-compass",
+          "order": 1,
+          "content": {
+            "tag": "learningCompass",
+            "payload": {
+              "previousConnection": "Chapter 3에서 계산한 totalCost를 이번에는 기준 금액과 비교할 재료로 사용한다.",
+              "coreQuestion": "“충분히 샀다”는 말을 누구나 같은 답을 내는 질문으로 바꾸려면 무엇이 필요할까?",
+              "firstPredictionPrompt": "합계가 75,000원인 주문이 “충분한 주문”인지 예상하고 지금 빠진 기준을 적는다.",
+              "confidencePrompt": "낮음 | 중간 | 높음과 지금 그렇게 예상한 이유를 남긴다.",
+              "completionEvidence": [
+                "비교할 입력",
+                "명확한 기준",
+                "경계에서의 답"
+              ]
+            }
+          },
+          "activityID": "activity-ch04-page01-compass",
+          "title": "이번 판단의 나침반"
+        },
+        {
+          "id": "section-ch04-page01-situation",
+          "order": 2,
+          "content": {
+            "tag": "situation",
+            "payload": {
+              "title": "자연어 조건을 질문으로 바꾸기",
+              "description": "독서 모임 배송 혜택 안내에 “충분히 주문하면 대상”이라고만 적혀 있다. 담당자에게 확인하니 책값과 배송비를 합친 totalCost가 50,000원 이상이라는 뜻이었다.",
+              "materials": [
+                {
+                  "label": "계산 결과",
+                  "text": "let totalCost = 75_000"
+                },
+                {
+                  "label": "확인한 규칙",
+                  "text": "전체 금액이 50,000원 이상이면 금액 기준을 충족한다. 지금은 실제 배송비를 바꾸지 않는다."
+                }
+              ],
+              "firstQuestion": "“충분히 샀다”는 말을 누구나 같은 답을 내는 질문으로 바꾸려면 무엇이 필요할까?"
+            }
+          }
+        },
+        {
+          "id": "section-ch04-page01-criteria",
+          "order": 3,
+          "content": {
+            "tag": "decisionCriteria",
+            "payload": {
+              "questions": [
+                "무엇을 비교하는가?",
+                "판단 기준은 얼마인가?",
+                "같은 값도 포함하는가?"
+              ],
+              "sequence": [
+                "첫 예상을 확인한다.",
+                "자료를 기준 질문으로 살펴본다.",
+                "새 사례에 같은 기준을 적용하고 이유를 설명한다."
+              ],
+              "caution": "“충분히”, “많이”의 기준을 추측하지 않는다. 빠진 정보는 확인할 질문으로 남긴다."
+            }
+          }
+        },
+        {
+          "id": "section-ch04-page01-work",
+          "order": 4,
+          "content": {
+            "tag": "choiceWithReason",
+            "payload": {
+              "questions": [
+                {
+                  "id": "judgment",
+                  "prompt": "확인한 규칙을 빠짐없이 표현한 질문은?",
+                  "options": [
+                    {
+                      "id": "option-1",
+                      "text": "주문이 많은가?"
+                    },
+                    {
+                      "id": "option-2",
+                      "text": "전체 금액이 50,000원보다 큰가?"
+                    },
+                    {
+                      "id": "option-3",
+                      "text": "전체 금액이 50,000원 이상인가?"
+                    }
+                  ]
+                }
+              ],
+              "reasonPrompt": "선택한 질문에 들어간 입력·기준·경계 포함 여부를 적고, 50,000원일 때도 답한다.",
+              "feedbackCriteria": [
+                "50,000원인 주문이 포함되는지 다시 묻는다.",
+                "문구 길이보다 같은 입력에서 답이 하나로 정해지는지 확인한다."
+              ]
+            }
+          },
+          "activityID": "activity-ch04-page01-work",
+          "title": "하나의 판단을 끝까지 설명하기"
+        },
+        {
+          "id": "section-ch04-page01-knowledge",
+          "order": 5,
+          "content": {
+            "tag": "knowledgeLink",
+            "payload": {
+              "links": [
+                {
+                  "conceptID": "concept-condition-question",
+                  "role": "primary",
+                  "usage": "조건을 쓰기 전에 비교할 정보, 기준, 기준과 같은 경우의 답부터 정한다.",
+                  "displayTiming": "판단 기준을 확인할 때"
+                },
+                {
+                  "conceptID": "concept-input-rule-output",
+                  "role": "supporting",
+                  "usage": "문제의 정보와 해결 방법, 결과는 어떻게 연결되는가?",
+                  "displayTiming": "판단 기준을 확인할 때"
+                },
+                {
+                  "conceptID": "concept-bool",
+                  "role": "supporting",
+                  "usage": "이 정보는 지금 참인가 거짓인가라는 두 경우로 충분히 표현되는가?",
+                  "displayTiming": "판단 기준을 확인할 때"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "id": "section-ch04-page01-closure",
+          "order": 6,
+          "content": {
+            "tag": "learningClosure",
+            "payload": {
+              "firstPredictionReference": "합계가 75,000원인 주문이 “충분한 주문”인지 예상하고 지금 빠진 기준을 적는다.",
+              "finalExplanationPrompt": "모호한 자연어를 필요한 정보와 기준이 드러나는 참·거짓 질문으로 바꾼다.",
+              "confidenceChangePrompt": "처음의 확신과 지금의 확신을 비교하고 바뀐 근거를 적는다.",
+              "changedCriterionPrompt": "이번 활동으로 새로 확인하거나 수정한 판단 기준을 자신의 말로 적는다.",
+              "nextUsePrompt": "같은 질문의 답을 Bool 값과 비교식으로 표현한다.",
+              "completionQuestion": "“충분히 샀다”는 말을 누구나 같은 답을 내는 질문으로 바꾸려면 무엇이 필요할까?",
+              "requiredEvidence": [
+                "비교할 입력",
+                "명확한 기준",
+                "경계에서의 답"
+              ],
+              "retryCondition": "설명에서 빠진 증거 하나를 고르고 그 차이를 드러내는 입력으로 다시 시도한다."
+            }
+          },
+          "activityID": "activity-ch04-page01-closure",
+          "title": "처음의 예상과 지금의 판단 비교하기"
+        },
+        {
+          "id": "section-ch04-page01-promotion",
+          "order": 7,
+          "content": {
+            "tag": "personalKnowledgePromotion",
+            "payload": {
+              "evidenceActivityIDs": [
+                "activity-ch04-page01-work",
+                "activity-ch04-page01-closure"
+              ],
+              "conceptIDs": [
+                "concept-condition-question"
+              ],
+              "candidateKind": "conceptRevision",
+              "editableDraft": "조건을 쓰기 전에 비교할 정보, 기준, 기준과 같은 경우의 답부터 정한다.",
+              "confirmationQuestion": "활동에서 확인한 이 기준을 나의 개념 표현으로 남길까? 내용을 확인하고 수정한 뒤 반영한다.",
+              "savedFields": [
+                "나의 설명",
+                "판단 예시",
+                "근거 활동",
+                "수정 시각"
+              ],
+              "cancellationResult": "학습 응답은 유지하고 개인 지식은 변경하지 않는다."
+            }
+          },
+          "activityID": "activity-ch04-page01-promotion"
+        }
+      ],
+      "activities": [
+        {
+          "id": "activity-ch04-page01-compass",
+          "sectionID": "section-ch04-page01-compass",
+          "isRequired": true
+        },
+        {
+          "id": "activity-ch04-page01-work",
+          "sectionID": "section-ch04-page01-work",
+          "isRequired": true
+        },
+        {
+          "id": "activity-ch04-page01-closure",
+          "sectionID": "section-ch04-page01-closure",
+          "isRequired": true
+        },
+        {
+          "id": "activity-ch04-page01-promotion",
+          "sectionID": "section-ch04-page01-promotion",
+          "isRequired": false
+        }
+      ],
+      "knowledgeLinks": [
+        {
+          "conceptID": "concept-condition-question",
+          "role": "primary",
+          "usage": "조건을 쓰기 전에 비교할 정보, 기준, 기준과 같은 경우의 답부터 정한다.",
+          "displayTiming": "판단 기준을 확인할 때"
+        },
+        {
+          "conceptID": "concept-input-rule-output",
+          "role": "supporting",
+          "usage": "문제의 정보와 해결 방법, 결과는 어떻게 연결되는가?",
+          "displayTiming": "판단 기준을 확인할 때"
+        },
+        {
+          "conceptID": "concept-bool",
+          "role": "supporting",
+          "usage": "이 정보는 지금 참인가 거짓인가라는 두 경우로 충분히 표현되는가?",
+          "displayTiming": "판단 기준을 확인할 때"
+        }
+      ],
+      "knowledgeContext": {
+        "currentlyUsedConceptIDs": [
+          "concept-condition-question",
+          "concept-input-rule-output",
+          "concept-bool"
+        ],
+        "currentlyUsedSummary": "조건을 쓰기 전에 비교할 정보, 기준, 기준과 같은 경우의 답부터 정한다.",
+        "changedKnowledgeSummary": "이 Chapter에서 확인해 저장한 나의 표현과 연결만 보여 준다.",
+        "nearbyKnowledge": [
+          {
+            "conceptID": "concept-comparison-operator",
+            "reason": "같은 질문의 답을 Bool 값과 비교식으로 표현한다."
+          }
+        ],
+        "refreshTriggers": [
+          "개인 표현 저장 성공",
+          "개인 관계 저장 성공"
+        ],
+        "emptyStateMessage": "아직 확인해 반영한 나의 조건 설명이나 연결이 없다.",
+        "focusModeSummary": "“충분히 샀다”는 말을 누구나 같은 답을 내는 질문으로 바꾸려면 무엇이 필요할까?"
+      },
+      "navigation": {
+        "previous": {
+          "pageID": "chapter-04-overview",
+          "label": "Chapter 4 Overview"
+        },
+        "next": {
+          "pageID": "chapter-04-page-02",
+          "label": "참과 거짓을 값으로 바라보기"
+        }
+      }
+    },
+    {
+      "id": "chapter-04-page-02",
+      "kind": "lesson",
+      "order": 2,
+      "title": "참과 거짓을 값으로 바라보기",
+      "goal": "판단의 답을 Bool 값으로 표현하고 질문·결과값·텍스트를 구분한다.",
+      "sections": [
+        {
+          "id": "section-ch04-page02-compass",
+          "order": 1,
+          "content": {
+            "tag": "learningCompass",
+            "payload": {
+              "previousConnection": "앞에서 “전체 금액이 50,000원 이상인가?”라는 질문을 만들었다. 이제 그 답도 하나의 값으로 읽는다.",
+              "coreQuestion": "참이라는 답과 그 답을 만드는 질문은 어떻게 다를까?",
+              "firstPredictionPrompt": "true, \"true\", totalCost >= 50_000 중 각각 값의 타입과 역할을 먼저 예상한다.",
+              "confidencePrompt": "낮음 | 중간 | 높음과 지금 그렇게 예상한 이유를 남긴다.",
+              "completionEvidence": [
+                "Bool 결과와 타입",
+                "String과의 차이",
+                "입력이 달라진 질문의 답"
+              ]
+            }
+          },
+          "activityID": "activity-ch04-page02-compass",
+          "title": "이번 판단의 나침반"
+        },
+        {
+          "id": "section-ch04-page02-situation",
+          "order": 2,
+          "content": {
+            "tag": "situation",
+            "payload": {
+              "title": "참과 거짓을 값으로 바라보기",
+              "description": "전체 금액 75,000원은 기준을 충족한다. 이 사실을 화면 문구와 계산 가능한 판단값으로 각각 기록해 본다.",
+              "materials": [
+                {
+                  "label": "비교할 코드",
+                  "text": "let totalCost = 75_000\nlet meetsMinimum = totalCost >= 50_000\nlet message = \"true\""
+                }
+              ],
+              "firstQuestion": "참이라는 답과 그 답을 만드는 질문은 어떻게 다를까?"
+            }
+          }
+        },
+        {
+          "id": "section-ch04-page02-criteria",
+          "order": 3,
+          "content": {
+            "tag": "decisionCriteria",
+            "payload": {
+              "questions": [
+                "질문을 평가하기 전 식인가, 평가한 결과인가?",
+                "따옴표가 있는 텍스트인가?",
+                "false는 확인 결과 거짓인가, 아직 모르는가?"
+              ],
+              "sequence": [
+                "첫 예상을 확인한다.",
+                "자료를 기준 질문으로 살펴본다.",
+                "새 사례에 같은 기준을 적용하고 이유를 설명한다."
+              ],
+              "caution": "Swift의 조건에는 Bool을 사용한다. \"true\"나 숫자 1을 Bool 대신 쓰지 않는다. 미확인을 false로 숨기지 않는다."
+            }
+          }
+        },
+        {
+          "id": "section-ch04-page02-work",
+          "order": 4,
+          "content": {
+            "tag": "choiceWithReason",
+            "payload": {
+              "questions": [
+                {
+                  "id": "judgment",
+                  "prompt": "meetsMinimum과 message를 올바르게 구분한 것은?",
+                  "options": [
+                    {
+                      "id": "option-1",
+                      "text": "둘 다 Bool이며 값은 true다."
+                    },
+                    {
+                      "id": "option-2",
+                      "text": "meetsMinimum은 Bool의 true, message는 String의 \"true\"다."
+                    },
+                    {
+                      "id": "option-3",
+                      "text": "meetsMinimum은 Int의 75_000이다."
+                    }
+                  ]
+                }
+              ],
+              "reasonPrompt": "totalCost가 40,000원인 코드로 다시 평가할 때 두 값이 어떻게 되는지 설명한다.",
+              "feedbackCriteria": [
+                "따옴표와 비교 연산 결과의 타입을 확인한다.",
+                "비교에 사용한 숫자와 비교 결과를 구분한다."
+              ]
+            }
+          },
+          "activityID": "activity-ch04-page02-work",
+          "title": "하나의 판단을 끝까지 설명하기"
+        },
+        {
+          "id": "section-ch04-page02-knowledge",
+          "order": 5,
+          "content": {
+            "tag": "knowledgeLink",
+            "payload": {
+              "links": [
+                {
+                  "conceptID": "concept-bool",
+                  "role": "primary",
+                  "usage": "비교식은 질문이고 Bool은 그 답이다. 따옴표가 붙은 \"true\"는 질문의 답으로 사용할 Bool이 아니라 텍스트다.",
+                  "displayTiming": "판단 기준을 확인할 때"
+                },
+                {
+                  "conceptID": "concept-condition-question",
+                  "role": "supporting",
+                  "usage": "누가 판단해도 같은 입력에서 같은 답을 얻을 수 있는가?",
+                  "displayTiming": "판단 기준을 확인할 때"
+                },
+                {
+                  "conceptID": "concept-expression",
+                  "role": "supporting",
+                  "usage": "이 코드 조각을 평가했을 때 하나의 값으로 읽을 수 있는가?",
+                  "displayTiming": "판단 기준을 확인할 때"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "id": "section-ch04-page02-closure",
+          "order": 6,
+          "content": {
+            "tag": "learningClosure",
+            "payload": {
+              "firstPredictionReference": "true, \"true\", totalCost >= 50_000 중 각각 값의 타입과 역할을 먼저 예상한다.",
+              "finalExplanationPrompt": "판단의 답을 Bool 값으로 표현하고 질문·결과값·텍스트를 구분한다.",
+              "confidenceChangePrompt": "처음의 확신과 지금의 확신을 비교하고 바뀐 근거를 적는다.",
+              "changedCriterionPrompt": "이번 활동으로 새로 확인하거나 수정한 판단 기준을 자신의 말로 적는다.",
+              "nextUsePrompt": "참과 거짓을 만드는 비교 관계를 직접 코드로 고른다.",
+              "completionQuestion": "참이라는 답과 그 답을 만드는 질문은 어떻게 다를까?",
+              "requiredEvidence": [
+                "Bool 결과와 타입",
+                "String과의 차이",
+                "입력이 달라진 질문의 답"
+              ],
+              "retryCondition": "설명에서 빠진 증거 하나를 고르고 그 차이를 드러내는 입력으로 다시 시도한다."
+            }
+          },
+          "activityID": "activity-ch04-page02-closure",
+          "title": "처음의 예상과 지금의 판단 비교하기"
+        },
+        {
+          "id": "section-ch04-page02-promotion",
+          "order": 7,
+          "content": {
+            "tag": "personalKnowledgePromotion",
+            "payload": {
+              "evidenceActivityIDs": [
+                "activity-ch04-page02-work",
+                "activity-ch04-page02-closure"
+              ],
+              "conceptIDs": [
+                "concept-bool"
+              ],
+              "candidateKind": "conceptRevision",
+              "editableDraft": "비교식은 질문이고 Bool은 그 답이다. 따옴표가 붙은 \"true\"는 질문의 답으로 사용할 Bool이 아니라 텍스트다.",
+              "confirmationQuestion": "활동에서 확인한 이 기준을 나의 개념 표현으로 남길까? 내용을 확인하고 수정한 뒤 반영한다.",
+              "savedFields": [
+                "나의 설명",
+                "판단 예시",
+                "근거 활동",
+                "수정 시각"
+              ],
+              "cancellationResult": "학습 응답은 유지하고 개인 지식은 변경하지 않는다."
+            }
+          },
+          "activityID": "activity-ch04-page02-promotion"
+        }
+      ],
+      "activities": [
+        {
+          "id": "activity-ch04-page02-compass",
+          "sectionID": "section-ch04-page02-compass",
+          "isRequired": true
+        },
+        {
+          "id": "activity-ch04-page02-work",
+          "sectionID": "section-ch04-page02-work",
+          "isRequired": true
+        },
+        {
+          "id": "activity-ch04-page02-closure",
+          "sectionID": "section-ch04-page02-closure",
+          "isRequired": true
+        },
+        {
+          "id": "activity-ch04-page02-promotion",
+          "sectionID": "section-ch04-page02-promotion",
+          "isRequired": false
+        }
+      ],
+      "knowledgeLinks": [
+        {
+          "conceptID": "concept-bool",
+          "role": "primary",
+          "usage": "비교식은 질문이고 Bool은 그 답이다. 따옴표가 붙은 \"true\"는 질문의 답으로 사용할 Bool이 아니라 텍스트다.",
+          "displayTiming": "판단 기준을 확인할 때"
+        },
+        {
+          "conceptID": "concept-condition-question",
+          "role": "supporting",
+          "usage": "누가 판단해도 같은 입력에서 같은 답을 얻을 수 있는가?",
+          "displayTiming": "판단 기준을 확인할 때"
+        },
+        {
+          "conceptID": "concept-expression",
+          "role": "supporting",
+          "usage": "이 코드 조각을 평가했을 때 하나의 값으로 읽을 수 있는가?",
+          "displayTiming": "판단 기준을 확인할 때"
+        }
+      ],
+      "knowledgeContext": {
+        "currentlyUsedConceptIDs": [
+          "concept-bool",
+          "concept-condition-question",
+          "concept-expression"
+        ],
+        "currentlyUsedSummary": "비교식은 질문이고 Bool은 그 답이다. 따옴표가 붙은 \"true\"는 질문의 답으로 사용할 Bool이 아니라 텍스트다.",
+        "changedKnowledgeSummary": "이 Chapter에서 확인해 저장한 나의 표현과 연결만 보여 준다.",
+        "nearbyKnowledge": [
+          {
+            "conceptID": "concept-comparison-operator",
+            "reason": "참과 거짓을 만드는 비교 관계를 직접 코드로 고른다."
+          }
+        ],
+        "refreshTriggers": [
+          "개인 표현 저장 성공",
+          "개인 관계 저장 성공"
+        ],
+        "emptyStateMessage": "아직 확인해 반영한 나의 조건 설명이나 연결이 없다.",
+        "focusModeSummary": "참이라는 답과 그 답을 만드는 질문은 어떻게 다를까?"
+      },
+      "navigation": {
+        "previous": {
+          "pageID": "chapter-04-page-01",
+          "label": "자연어 조건을 질문으로 바꾸기"
+        },
+        "next": {
+          "pageID": "chapter-04-page-03",
+          "label": "비교 연산자로 조건 만들기"
+        }
+      }
+    },
+    {
+      "id": "chapter-04-page-03",
+      "kind": "lesson",
+      "order": 3,
+      "title": "비교 연산자로 조건 만들기",
+      "goal": "같음·다름·크기 관계를 Swift 비교 연산자로 옮기고 Bool 결과를 설명한다.",
+      "sections": [
+        {
+          "id": "section-ch04-page03-compass",
+          "order": 1,
+          "content": {
+            "tag": "learningCompass",
+            "payload": {
+              "previousConnection": "비교식이 Bool을 만든다는 것을 확인했다. 이제 입력 사이의 관계에 맞는 기호를 고른다.",
+              "coreQuestion": "자연어가 묻는 관계를 어떤 비교 연산자로 표현할까?",
+              "firstPredictionPrompt": "참여자가 정확히 4명인지 확인할 때 =와 == 중 무엇을 쓸지 이유와 함께 예상한다.",
+              "confidencePrompt": "낮음 | 중간 | 높음과 지금 그렇게 예상한 이유를 남긴다.",
+              "completionEvidence": [
+                "관계에 맞는 비교식",
+                "평가한 Bool",
+                "연산자 선택 근거"
+              ]
+            }
+          },
+          "activityID": "activity-ch04-page03-compass",
+          "title": "이번 판단의 나침반"
+        },
+        {
+          "id": "section-ch04-page03-situation",
+          "order": 2,
+          "content": {
+            "tag": "situation",
+            "payload": {
+              "title": "비교 연산자로 조건 만들기",
+              "description": "독서 모임은 정확히 4명이 한 묶음을 신청한다. 현재 참여자는 4명이고 정원은 6명이다.",
+              "materials": [
+                {
+                  "label": "입력",
+                  "text": "let participantCount = 4\nlet capacity = 6"
+                },
+                {
+                  "label": "관계 후보",
+                  "text": "== 같음 · != 다름 · < 미만 · > 초과 · <= 이하 · >= 이상"
+                }
+              ],
+              "firstQuestion": "자연어가 묻는 관계를 어떤 비교 연산자로 표현할까?"
+            }
+          }
+        },
+        {
+          "id": "section-ch04-page03-criteria",
+          "order": 3,
+          "content": {
+            "tag": "decisionCriteria",
+            "payload": {
+              "questions": [
+                "비교할 양쪽 값은 무엇인가?",
+                "같음·다름·크기 중 어느 관계인가?",
+                "표현식의 결과를 true 또는 false로 말할 수 있는가?"
+              ],
+              "sequence": [
+                "첫 예상을 확인한다.",
+                "자료를 기준 질문으로 살펴본다.",
+                "새 사례에 같은 기준을 적용하고 이유를 설명한다."
+              ],
+              "caution": "let count = 4에서 =는 초기값을 설정한다. count == 4는 같음을 비교한다. 서로 다른 단위의 값은 같은 숫자처럼 비교하지 않는다."
+            }
+          }
+        },
+        {
+          "id": "section-ch04-page03-work",
+          "order": 4,
+          "content": {
+            "tag": "freeResponse",
+            "payload": {
+              "prompt": "정확히 4명, 4명이 아님, 정원보다 적음, 정원을 넘음이라는 네 질문을 코드로 쓰고 현재 입력의 결과를 설명한다.",
+              "inputFormat": "질문 → 비교식 → Bool 결과 → 이유",
+              "requiredEvidence": [
+                "네 비교식",
+                "true·false 결과",
+                "=와 ==의 차이"
+              ],
+              "exampleAfterSubmission": "participantCount == 4 → true\nparticipantCount != 4 → false\nparticipantCount < capacity → true\nparticipantCount > capacity → false\n=는 선언의 초기값을 정하고 ==는 두 값이 같은지 판단한다."
+            }
+          },
+          "activityID": "activity-ch04-page03-work",
+          "title": "하나의 판단을 끝까지 설명하기"
+        },
+        {
+          "id": "section-ch04-page03-knowledge",
+          "order": 5,
+          "content": {
+            "tag": "knowledgeLink",
+            "payload": {
+              "links": [
+                {
+                  "conceptID": "concept-comparison-operator",
+                  "role": "primary",
+                  "usage": "비교식을 읽을 때 양쪽 값과 관계를 먼저 말한 뒤 Bool 결과를 예상한다.",
+                  "displayTiming": "판단 기준을 확인할 때"
+                },
+                {
+                  "conceptID": "concept-bool",
+                  "role": "supporting",
+                  "usage": "이 정보는 지금 참인가 거짓인가라는 두 경우로 충분히 표현되는가?",
+                  "displayTiming": "판단 기준을 확인할 때"
+                },
+                {
+                  "conceptID": "concept-expression",
+                  "role": "supporting",
+                  "usage": "이 코드 조각을 평가했을 때 하나의 값으로 읽을 수 있는가?",
+                  "displayTiming": "판단 기준을 확인할 때"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "id": "section-ch04-page03-closure",
+          "order": 6,
+          "content": {
+            "tag": "learningClosure",
+            "payload": {
+              "firstPredictionReference": "참여자가 정확히 4명인지 확인할 때 =와 == 중 무엇을 쓸지 이유와 함께 예상한다.",
+              "finalExplanationPrompt": "같음·다름·크기 관계를 Swift 비교 연산자로 옮기고 Bool 결과를 설명한다.",
+              "confidenceChangePrompt": "처음의 확신과 지금의 확신을 비교하고 바뀐 근거를 적는다.",
+              "changedCriterionPrompt": "이번 활동으로 새로 확인하거나 수정한 판단 기준을 자신의 말로 적는다.",
+              "nextUsePrompt": "기준값과 같은 경우를 따로 대입해 포함 여부를 확인한다.",
+              "completionQuestion": "자연어가 묻는 관계를 어떤 비교 연산자로 표현할까?",
+              "requiredEvidence": [
+                "관계에 맞는 비교식",
+                "평가한 Bool",
+                "연산자 선택 근거"
+              ],
+              "retryCondition": "설명에서 빠진 증거 하나를 고르고 그 차이를 드러내는 입력으로 다시 시도한다."
+            }
+          },
+          "activityID": "activity-ch04-page03-closure",
+          "title": "처음의 예상과 지금의 판단 비교하기"
+        },
+        {
+          "id": "section-ch04-page03-promotion",
+          "order": 7,
+          "content": {
+            "tag": "personalKnowledgePromotion",
+            "payload": {
+              "evidenceActivityIDs": [
+                "activity-ch04-page03-work",
+                "activity-ch04-page03-closure"
+              ],
+              "conceptIDs": [
+                "concept-comparison-operator"
+              ],
+              "candidateKind": "conceptRevision",
+              "editableDraft": "비교식을 읽을 때 양쪽 값과 관계를 먼저 말한 뒤 Bool 결과를 예상한다.",
+              "confirmationQuestion": "활동에서 확인한 이 기준을 나의 개념 표현으로 남길까? 내용을 확인하고 수정한 뒤 반영한다.",
+              "savedFields": [
+                "나의 설명",
+                "판단 예시",
+                "근거 활동",
+                "수정 시각"
+              ],
+              "cancellationResult": "학습 응답은 유지하고 개인 지식은 변경하지 않는다."
+            }
+          },
+          "activityID": "activity-ch04-page03-promotion"
+        }
+      ],
+      "activities": [
+        {
+          "id": "activity-ch04-page03-compass",
+          "sectionID": "section-ch04-page03-compass",
+          "isRequired": true
+        },
+        {
+          "id": "activity-ch04-page03-work",
+          "sectionID": "section-ch04-page03-work",
+          "isRequired": true
+        },
+        {
+          "id": "activity-ch04-page03-closure",
+          "sectionID": "section-ch04-page03-closure",
+          "isRequired": true
+        },
+        {
+          "id": "activity-ch04-page03-promotion",
+          "sectionID": "section-ch04-page03-promotion",
+          "isRequired": false
+        }
+      ],
+      "knowledgeLinks": [
+        {
+          "conceptID": "concept-comparison-operator",
+          "role": "primary",
+          "usage": "비교식을 읽을 때 양쪽 값과 관계를 먼저 말한 뒤 Bool 결과를 예상한다.",
+          "displayTiming": "판단 기준을 확인할 때"
+        },
+        {
+          "conceptID": "concept-bool",
+          "role": "supporting",
+          "usage": "이 정보는 지금 참인가 거짓인가라는 두 경우로 충분히 표현되는가?",
+          "displayTiming": "판단 기준을 확인할 때"
+        },
+        {
+          "conceptID": "concept-expression",
+          "role": "supporting",
+          "usage": "이 코드 조각을 평가했을 때 하나의 값으로 읽을 수 있는가?",
+          "displayTiming": "판단 기준을 확인할 때"
+        }
+      ],
+      "knowledgeContext": {
+        "currentlyUsedConceptIDs": [
+          "concept-comparison-operator",
+          "concept-bool",
+          "concept-expression"
+        ],
+        "currentlyUsedSummary": "비교식을 읽을 때 양쪽 값과 관계를 먼저 말한 뒤 Bool 결과를 예상한다.",
+        "changedKnowledgeSummary": "이 Chapter에서 확인해 저장한 나의 표현과 연결만 보여 준다.",
+        "nearbyKnowledge": [
+          {
+            "conceptID": "concept-condition-boundary",
+            "reason": "기준값과 같은 경우를 따로 대입해 포함 여부를 확인한다."
+          },
+          {
+            "conceptID": "concept-arithmetic-operation",
+            "reason": "Chapter 3의 산술식은 새 수를 만들었다. 같은 입력을 비교하는 식은 관계에 대한 Bool을 만든다."
+          },
+          {
+            "conceptID": "concept-type-inference-annotation",
+            "reason": "Chapter 2의 타입 추론 기준으로 let isFull = participantCount == capacity의 결과 타입을 Bool로 읽는다."
+          }
+        ],
+        "refreshTriggers": [
+          "개인 표현 저장 성공",
+          "개인 관계 저장 성공"
+        ],
+        "emptyStateMessage": "아직 확인해 반영한 나의 조건 설명이나 연결이 없다.",
+        "focusModeSummary": "자연어가 묻는 관계를 어떤 비교 연산자로 표현할까?"
+      },
+      "navigation": {
+        "previous": {
+          "pageID": "chapter-04-page-02",
+          "label": "참과 거짓을 값으로 바라보기"
+        },
+        "next": {
+          "pageID": "chapter-04-page-04",
+          "label": "경계가 포함되는지 판단하기"
+        }
+      }
+    },
+    {
+      "id": "chapter-04-page-04",
+      "kind": "lesson",
+      "order": 4,
+      "title": "경계가 포함되는지 판단하기",
+      "goal": "이상·이하·초과·미만을 구분하고 경계 전후의 사례로 비교식을 확인한다.",
+      "sections": [
+        {
+          "id": "section-ch04-page04-compass",
+          "order": 1,
+          "content": {
+            "tag": "learningCompass",
+            "payload": {
+              "previousConnection": "비교 관계를 기호로 옮겼다. 이번에는 일반적인 값으로 잘 드러나지 않는 =의 역할을 확인한다.",
+              "coreQuestion": "기준과 정확히 같은 값은 참일까 거짓일까?",
+              "firstPredictionPrompt": "수량 10개 이상 규칙에 count > 10을 썼을 때 9·10·11의 결과를 예상한다.",
+              "confidencePrompt": "낮음 | 중간 | 높음과 지금 그렇게 예상한 이유를 남긴다.",
+              "completionEvidence": [
+                "경계 아래·같음·위 사례",
+                "이상·이하의 비교식",
+                "포함 여부 설명"
+              ]
+            }
+          },
+          "activityID": "activity-ch04-page04-compass",
+          "title": "이번 판단의 나침반"
+        },
+        {
+          "id": "section-ch04-page04-situation",
+          "order": 2,
+          "content": {
+            "tag": "situation",
+            "payload": {
+              "title": "경계가 포함되는지 판단하기",
+              "description": "정수 수량 10개 이상이면 단체 주문이다. 다른 행사는 10개 이하의 소량 주문을 대상으로 한다.",
+              "materials": [
+                {
+                  "label": "두 후보",
+                  "text": "count > 10\ncount >= 10"
+                },
+                {
+                  "label": "확인할 입력",
+                  "text": "count = 9, 10, 11"
+                }
+              ],
+              "firstQuestion": "기준과 정확히 같은 값은 참일까 거짓일까?"
+            }
+          }
+        },
+        {
+          "id": "section-ch04-page04-criteria",
+          "order": 3,
+          "content": {
+            "tag": "decisionCriteria",
+            "payload": {
+              "questions": [
+                "규칙에 기준값 자체가 들어가는가?",
+                "정수 경계 바로 아래·경계·바로 위의 기대값은 무엇인가?",
+                "반대쪽 경계도 같은 방법으로 확인했는가?"
+              ],
+              "sequence": [
+                "첫 예상을 확인한다.",
+                "자료를 기준 질문으로 살펴본다.",
+                "새 사례에 같은 기준을 적용하고 이유를 설명한다."
+              ],
+              "caution": "일반적인 큰 값 하나는 >와 >=의 차이를 드러내지 못한다. 정수 수량의 간격 1을 모든 실수 문제의 최소 간격으로 일반화하지 않는다."
+            }
+          }
+        },
+        {
+          "id": "section-ch04-page04-work",
+          "order": 4,
+          "content": {
+            "tag": "freeResponse",
+            "payload": {
+              "prompt": "10개 이상과 10개 이하의 조건을 각각 쓰고 9·10·11의 기대값과 실제 비교 결과를 표로 기록한다. 10개 초과·미만은 어디가 다른지도 설명한다.",
+              "inputFormat": "규칙 | 비교식 | 9의 결과 | 10의 결과 | 11의 결과",
+              "requiredEvidence": [
+                "두 경계 비교식",
+                "경계 전후 결과",
+                "포함·제외 이유"
+              ],
+              "exampleAfterSubmission": "10개 이상: count >= 10 → false, true, true\n10개 이하: count <= 10 → true, true, false\n초과는 >, 미만은 <여서 10을 포함하지 않는다."
+            }
+          },
+          "activityID": "activity-ch04-page04-work",
+          "title": "하나의 판단을 끝까지 설명하기"
+        },
+        {
+          "id": "section-ch04-page04-knowledge",
+          "order": 5,
+          "content": {
+            "tag": "knowledgeLink",
+            "payload": {
+              "links": [
+                {
+                  "conceptID": "concept-condition-boundary",
+                  "role": "primary",
+                  "usage": "경계 연산자를 고를 때 기준값과 정확히 같은 사례를 먼저 자연어 규칙으로 판단한다.",
+                  "displayTiming": "판단 기준을 확인할 때"
+                },
+                {
+                  "conceptID": "concept-comparison-operator",
+                  "role": "supporting",
+                  "usage": "어떤 관계를 확인하며 결과는 어떤 타입인가?",
+                  "displayTiming": "판단 기준을 확인할 때"
+                },
+                {
+                  "conceptID": "concept-condition-question",
+                  "role": "supporting",
+                  "usage": "누가 판단해도 같은 입력에서 같은 답을 얻을 수 있는가?",
+                  "displayTiming": "판단 기준을 확인할 때"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "id": "section-ch04-page04-closure",
+          "order": 6,
+          "content": {
+            "tag": "learningClosure",
+            "payload": {
+              "firstPredictionReference": "수량 10개 이상 규칙에 count > 10을 썼을 때 9·10·11의 결과를 예상한다.",
+              "finalExplanationPrompt": "이상·이하·초과·미만을 구분하고 경계 전후의 사례로 비교식을 확인한다.",
+              "confidenceChangePrompt": "처음의 확신과 지금의 확신을 비교하고 바뀐 근거를 적는다.",
+              "changedCriterionPrompt": "이번 활동으로 새로 확인하거나 수정한 판단 기준을 자신의 말로 적는다.",
+              "nextUsePrompt": "서로 다른 기준을 모두 만족해야 하는지 하나만 만족해도 되는지 판단한다.",
+              "completionQuestion": "기준과 정확히 같은 값은 참일까 거짓일까?",
+              "requiredEvidence": [
+                "경계 아래·같음·위 사례",
+                "이상·이하의 비교식",
+                "포함 여부 설명"
+              ],
+              "retryCondition": "설명에서 빠진 증거 하나를 고르고 그 차이를 드러내는 입력으로 다시 시도한다."
+            }
+          },
+          "activityID": "activity-ch04-page04-closure",
+          "title": "처음의 예상과 지금의 판단 비교하기"
+        },
+        {
+          "id": "section-ch04-page04-enrichment",
+          "order": 7,
+          "content": {
+            "tag": "enrichmentTask",
+            "payload": {
+              "title": "더 깊게 가기",
+              "guidance": "핵심 활동을 마친 뒤 원할 때만 펼친다.",
+              "materials": [
+                {
+                  "label": "바꿀 조건",
+                  "text": "수량 10개 이상 20개 미만"
+                }
+              ],
+              "prompt": "바뀐 규칙의 질문과 조건식을 만들고 이전 식과 결과가 달라지는 입력을 설명한다.",
+              "conceptIDs": [
+                "concept-condition-boundary"
+              ]
+            }
+          }
+        },
+        {
+          "id": "section-ch04-page04-promotion",
+          "order": 8,
+          "content": {
+            "tag": "personalKnowledgePromotion",
+            "payload": {
+              "evidenceActivityIDs": [
+                "activity-ch04-page04-work",
+                "activity-ch04-page04-closure"
+              ],
+              "conceptIDs": [
+                "concept-condition-boundary"
+              ],
+              "candidateKind": "conceptRevision",
+              "editableDraft": "경계 연산자를 고를 때 기준값과 정확히 같은 사례를 먼저 자연어 규칙으로 판단한다.",
+              "confirmationQuestion": "활동에서 확인한 이 기준을 나의 개념 표현으로 남길까? 내용을 확인하고 수정한 뒤 반영한다.",
+              "savedFields": [
+                "나의 설명",
+                "판단 예시",
+                "근거 활동",
+                "수정 시각"
+              ],
+              "cancellationResult": "학습 응답은 유지하고 개인 지식은 변경하지 않는다."
+            }
+          },
+          "activityID": "activity-ch04-page04-promotion"
+        }
+      ],
+      "activities": [
+        {
+          "id": "activity-ch04-page04-compass",
+          "sectionID": "section-ch04-page04-compass",
+          "isRequired": true
+        },
+        {
+          "id": "activity-ch04-page04-work",
+          "sectionID": "section-ch04-page04-work",
+          "isRequired": true
+        },
+        {
+          "id": "activity-ch04-page04-closure",
+          "sectionID": "section-ch04-page04-closure",
+          "isRequired": true
+        },
+        {
+          "id": "activity-ch04-page04-promotion",
+          "sectionID": "section-ch04-page04-promotion",
+          "isRequired": false
+        }
+      ],
+      "knowledgeLinks": [
+        {
+          "conceptID": "concept-condition-boundary",
+          "role": "primary",
+          "usage": "경계 연산자를 고를 때 기준값과 정확히 같은 사례를 먼저 자연어 규칙으로 판단한다.",
+          "displayTiming": "판단 기준을 확인할 때"
+        },
+        {
+          "conceptID": "concept-comparison-operator",
+          "role": "supporting",
+          "usage": "어떤 관계를 확인하며 결과는 어떤 타입인가?",
+          "displayTiming": "판단 기준을 확인할 때"
+        },
+        {
+          "conceptID": "concept-condition-question",
+          "role": "supporting",
+          "usage": "누가 판단해도 같은 입력에서 같은 답을 얻을 수 있는가?",
+          "displayTiming": "판단 기준을 확인할 때"
+        }
+      ],
+      "knowledgeContext": {
+        "currentlyUsedConceptIDs": [
+          "concept-condition-boundary",
+          "concept-comparison-operator",
+          "concept-condition-question"
+        ],
+        "currentlyUsedSummary": "경계 연산자를 고를 때 기준값과 정확히 같은 사례를 먼저 자연어 규칙으로 판단한다.",
+        "changedKnowledgeSummary": "이 Chapter에서 확인해 저장한 나의 표현과 연결만 보여 준다.",
+        "nearbyKnowledge": [
+          {
+            "conceptID": "concept-condition-counterexample",
+            "reason": "경계값을 포함하는 규칙에 >를 쓰면 기준과 같은 입력이 반례가 된다. 경계 사례로 조건이 어긋나는지 확인한다."
+          },
+          {
+            "conceptID": "concept-problem-boundary",
+            "reason": "Chapter 2의 변경 책임을 정한 문제의 경계와 지금의 기준값 포함 여부를 구분한다."
+          }
+        ],
+        "refreshTriggers": [
+          "개인 표현 저장 성공",
+          "개인 관계 저장 성공"
+        ],
+        "emptyStateMessage": "아직 확인해 반영한 나의 조건 설명이나 연결이 없다.",
+        "focusModeSummary": "기준과 정확히 같은 값은 참일까 거짓일까?"
+      },
+      "navigation": {
+        "previous": {
+          "pageID": "chapter-04-page-03",
+          "label": "비교 연산자로 조건 만들기"
+        },
+        "next": {
+          "pageID": "chapter-04-page-05",
+          "label": "여러 조건을 조합하기"
+        }
+      }
+    },
+    {
+      "id": "chapter-04-page-05",
+      "kind": "lesson",
+      "order": 5,
+      "title": "여러 조건을 조합하기",
+      "goal": "모두·하나 이상·부정의 의미를 &&·||·!로 표현하고 조합 사례를 설명한다.",
+      "sections": [
+        {
+          "id": "section-ch04-page05-compass",
+          "order": 1,
+          "content": {
+            "tag": "learningCompass",
+            "payload": {
+              "previousConnection": "각 비교 질문의 경계를 확인했다. 이제 작은 Bool 질문을 연결해 전체 조건을 만든다.",
+              "coreQuestion": "두 기준은 모두 필요한가, 하나라도 충분한가?",
+              "firstPredictionPrompt": "회원이지만 금액 기준을 못 채웠을 때 “회원이면서 금액 기준 이상”과 “회원이거나 금액 기준 이상”의 답을 예상한다.",
+              "confidencePrompt": "낮음 | 중간 | 높음과 지금 그렇게 예상한 이유를 남긴다.",
+              "completionEvidence": [
+                "네 경우의 판단",
+                "조합 연산자 선택 이유",
+                "부정 범위 설명"
+              ]
+            }
+          },
+          "activityID": "activity-ch04-page05-compass",
+          "title": "이번 판단의 나침반"
+        },
+        {
+          "id": "section-ch04-page05-situation",
+          "order": 2,
+          "content": {
+            "tag": "situation",
+            "payload": {
+              "title": "여러 조건을 조합하기",
+              "description": "배송 혜택 대상은 회원이면서 금액 기준을 충족해야 한다. 별도 안내 대상은 회원이거나 쿠폰을 가진 사람으로, 둘 다인 사람도 포함한다.",
+              "materials": [
+                {
+                  "label": "작은 질문",
+                  "text": "let isMember = true\nlet meetsMinimum = false\nlet hasCoupon = true"
+                },
+                {
+                  "label": "조합 후보",
+                  "text": "isMember && meetsMinimum\nisMember || hasCoupon\n!(isMember || hasCoupon)"
+                }
+              ],
+              "firstQuestion": "두 기준은 모두 필요한가, 하나라도 충분한가?"
+            }
+          }
+        },
+        {
+          "id": "section-ch04-page05-criteria",
+          "order": 3,
+          "content": {
+            "tag": "decisionCriteria",
+            "payload": {
+              "questions": [
+                "규칙이 모두를 요구하는가 하나 이상을 요구하는가?",
+                "둘 다 참일 때도 포함하는가?",
+                "부정이 한 조건을 뒤집는가 괄호 전체를 뒤집는가?"
+              ],
+              "sequence": [
+                "첫 예상을 확인한다.",
+                "자료를 기준 질문으로 살펴본다.",
+                "새 사례에 같은 기준을 적용하고 이유를 설명한다."
+              ],
+              "caution": "||는 둘 다 참인 경우도 참이다. 복합 질문을 부정할 때 괄호로 범위를 보인다. 이번에는 부작용 없는 Bool 값의 의미만 다룬다."
+            }
+          }
+        },
+        {
+          "id": "section-ch04-page05-work",
+          "order": 4,
+          "content": {
+            "tag": "freeResponse",
+            "payload": {
+              "prompt": "a와 b를 false/false, false/true, true/false, true/true로 바꾸며 a && b, a || b, !(a || b)의 결과를 적고 두 안내 규칙에 연결한다.",
+              "inputFormat": "a | b | 모두 | 하나 이상 | 둘 다 아님, 이어서 안내 규칙의 코드와 이유",
+              "requiredEvidence": [
+                "네 입력 조합",
+                "&&·||·! 결과",
+                "둘 다 참인 사례",
+                "부정 범위"
+              ],
+              "exampleAfterSubmission": "false/false → false, false, true\nfalse/true → false, true, false\ntrue/false → false, true, false\ntrue/true → true, true, false\n배송 혜택: isMember && meetsMinimum\n안내 대상: isMember || hasCoupon\n!(a || b)는 두 조건 모두 거짓일 때만 참이다."
+            }
+          },
+          "activityID": "activity-ch04-page05-work",
+          "title": "하나의 판단을 끝까지 설명하기"
+        },
+        {
+          "id": "section-ch04-page05-knowledge",
+          "order": 5,
+          "content": {
+            "tag": "knowledgeLink",
+            "payload": {
+              "links": [
+                {
+                  "conceptID": "concept-logical-composition",
+                  "role": "primary",
+                  "usage": "모두 필요하면 &&, 하나 이상이면 ||를 고르고 둘 다 참과 일부만 참인 사례로 뜻을 확인한다.",
+                  "displayTiming": "판단 기준을 확인할 때"
+                },
+                {
+                  "conceptID": "concept-bool",
+                  "role": "supporting",
+                  "usage": "이 정보는 지금 참인가 거짓인가라는 두 경우로 충분히 표현되는가?",
+                  "displayTiming": "판단 기준을 확인할 때"
+                },
+                {
+                  "conceptID": "concept-condition-question",
+                  "role": "supporting",
+                  "usage": "누가 판단해도 같은 입력에서 같은 답을 얻을 수 있는가?",
+                  "displayTiming": "판단 기준을 확인할 때"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "id": "section-ch04-page05-closure",
+          "order": 6,
+          "content": {
+            "tag": "learningClosure",
+            "payload": {
+              "firstPredictionReference": "회원이지만 금액 기준을 못 채웠을 때 “회원이면서 금액 기준 이상”과 “회원이거나 금액 기준 이상”의 답을 예상한다.",
+              "finalExplanationPrompt": "모두·하나 이상·부정의 의미를 &&·||·!로 표현하고 조합 사례를 설명한다.",
+              "confidenceChangePrompt": "처음의 확신과 지금의 확신을 비교하고 바뀐 근거를 적는다.",
+              "changedCriterionPrompt": "이번 활동으로 새로 확인하거나 수정한 판단 기준을 자신의 말로 적는다.",
+              "nextUsePrompt": "각 작은 질문과 전체 질문에 의미가 드러나는 이름을 붙인다.",
+              "completionQuestion": "두 기준은 모두 필요한가, 하나라도 충분한가?",
+              "requiredEvidence": [
+                "네 경우의 판단",
+                "조합 연산자 선택 이유",
+                "부정 범위 설명"
+              ],
+              "retryCondition": "설명에서 빠진 증거 하나를 고르고 그 차이를 드러내는 입력으로 다시 시도한다."
+            }
+          },
+          "activityID": "activity-ch04-page05-closure",
+          "title": "처음의 예상과 지금의 판단 비교하기"
+        },
+        {
+          "id": "section-ch04-page05-enrichment",
+          "order": 7,
+          "content": {
+            "tag": "enrichmentTask",
+            "payload": {
+              "title": "더 깊게 가기",
+              "guidance": "핵심 활동을 마친 뒤 원할 때만 펼친다.",
+              "materials": [
+                {
+                  "label": "바꿀 조건",
+                  "text": "회원 또는 쿠폰이 있는 사람을 제외한 대상"
+                }
+              ],
+              "prompt": "바뀐 규칙의 질문과 조건식을 만들고 이전 식과 결과가 달라지는 입력을 설명한다.",
+              "conceptIDs": [
+                "concept-logical-composition"
+              ]
+            }
+          }
+        },
+        {
+          "id": "section-ch04-page05-promotion",
+          "order": 8,
+          "content": {
+            "tag": "personalKnowledgePromotion",
+            "payload": {
+              "evidenceActivityIDs": [
+                "activity-ch04-page05-work",
+                "activity-ch04-page05-closure"
+              ],
+              "conceptIDs": [
+                "concept-logical-composition"
+              ],
+              "candidateKind": "conceptRevision",
+              "editableDraft": "모두 필요하면 &&, 하나 이상이면 ||를 고르고 둘 다 참과 일부만 참인 사례로 뜻을 확인한다.",
+              "confirmationQuestion": "활동에서 확인한 이 기준을 나의 개념 표현으로 남길까? 내용을 확인하고 수정한 뒤 반영한다.",
+              "savedFields": [
+                "나의 설명",
+                "판단 예시",
+                "근거 활동",
+                "수정 시각"
+              ],
+              "cancellationResult": "학습 응답은 유지하고 개인 지식은 변경하지 않는다."
+            }
+          },
+          "activityID": "activity-ch04-page05-promotion"
+        }
+      ],
+      "activities": [
+        {
+          "id": "activity-ch04-page05-compass",
+          "sectionID": "section-ch04-page05-compass",
+          "isRequired": true
+        },
+        {
+          "id": "activity-ch04-page05-work",
+          "sectionID": "section-ch04-page05-work",
+          "isRequired": true
+        },
+        {
+          "id": "activity-ch04-page05-closure",
+          "sectionID": "section-ch04-page05-closure",
+          "isRequired": true
+        },
+        {
+          "id": "activity-ch04-page05-promotion",
+          "sectionID": "section-ch04-page05-promotion",
+          "isRequired": false
+        }
+      ],
+      "knowledgeLinks": [
+        {
+          "conceptID": "concept-logical-composition",
+          "role": "primary",
+          "usage": "모두 필요하면 &&, 하나 이상이면 ||를 고르고 둘 다 참과 일부만 참인 사례로 뜻을 확인한다.",
+          "displayTiming": "판단 기준을 확인할 때"
+        },
+        {
+          "conceptID": "concept-bool",
+          "role": "supporting",
+          "usage": "이 정보는 지금 참인가 거짓인가라는 두 경우로 충분히 표현되는가?",
+          "displayTiming": "판단 기준을 확인할 때"
+        },
+        {
+          "conceptID": "concept-condition-question",
+          "role": "supporting",
+          "usage": "누가 판단해도 같은 입력에서 같은 답을 얻을 수 있는가?",
+          "displayTiming": "판단 기준을 확인할 때"
+        }
+      ],
+      "knowledgeContext": {
+        "currentlyUsedConceptIDs": [
+          "concept-logical-composition",
+          "concept-bool",
+          "concept-condition-question"
+        ],
+        "currentlyUsedSummary": "모두 필요하면 &&, 하나 이상이면 ||를 고르고 둘 다 참과 일부만 참인 사례로 뜻을 확인한다.",
+        "changedKnowledgeSummary": "이 Chapter에서 확인해 저장한 나의 표현과 연결만 보여 준다.",
+        "nearbyKnowledge": [
+          {
+            "conceptID": "concept-named-condition",
+            "reason": "각 작은 질문과 전체 질문에 의미가 드러나는 이름을 붙인다."
+          },
+          {
+            "conceptID": "concept-evaluation-order",
+            "reason": "Chapter 3에서 괄호로 계산 범위를 명시한 기준을 !(a || b)의 부정 범위에 다시 적용한다."
+          }
+        ],
+        "refreshTriggers": [
+          "개인 표현 저장 성공",
+          "개인 관계 저장 성공"
+        ],
+        "emptyStateMessage": "아직 확인해 반영한 나의 조건 설명이나 연결이 없다.",
+        "focusModeSummary": "두 기준은 모두 필요한가, 하나라도 충분한가?"
+      },
+      "navigation": {
+        "previous": {
+          "pageID": "chapter-04-page-04",
+          "label": "경계가 포함되는지 판단하기"
+        },
+        "next": {
+          "pageID": "chapter-04-page-06",
+          "label": "조건에 의미 있는 이름 붙이기"
+        }
+      }
+    },
+    {
+      "id": "chapter-04-page-06",
+      "kind": "lesson",
+      "order": 6,
+      "title": "조건에 의미 있는 이름 붙이기",
+      "goal": "작은 판단과 전체 판단에 의미 있는 Bool 이름을 붙이고 저장된 결과와 규칙을 구분한다.",
+      "sections": [
+        {
+          "id": "section-ch04-page06-compass",
+          "order": 1,
+          "content": {
+            "tag": "learningCompass",
+            "payload": {
+              "previousConnection": "작은 질문들을 조합했다. 이제 그 질문의 책임이 코드에서 드러나도록 이름을 붙인다.",
+              "coreQuestion": "조건이 참일 때 어떤 사실인지 이름만으로 읽을 수 있을까?",
+              "firstPredictionPrompt": "let check = totalCost >= 50_000과 let meetsMinimum = totalCost >= 50_000 중 판단을 더 잘 설명하는 이름을 고르고 이유를 적는다.",
+              "confidencePrompt": "낮음 | 중간 | 높음과 지금 그렇게 예상한 이유를 남긴다.",
+              "completionEvidence": [
+                "이름과 판단 의미",
+                "작은 판단과 전체 판단의 흐름",
+                "저장값과 재평가의 차이"
+              ]
+            }
+          },
+          "activityID": "activity-ch04-page06-compass",
+          "title": "이번 판단의 나침반"
+        },
+        {
+          "id": "section-ch04-page06-situation",
+          "order": 2,
+          "content": {
+            "tag": "situation",
+            "payload": {
+              "title": "조건에 의미 있는 이름 붙이기",
+              "description": "배송 혜택 대상 여부를 isMember && (totalCost >= 50_000)으로 표현했다. 금액 조건을 따로 읽고 다른 곳에서도 사용하려 한다.",
+              "materials": [
+                {
+                  "label": "입력",
+                  "text": "let totalCost = 75_000\nlet isMember = true"
+                },
+                {
+                  "label": "다듬을 코드",
+                  "text": "let check = totalCost >= 50_000\nlet flag = check && isMember"
+                }
+              ],
+              "firstQuestion": "조건이 참일 때 어떤 사실인지 이름만으로 읽을 수 있을까?"
+            }
+          }
+        },
+        {
+          "id": "section-ch04-page06-criteria",
+          "order": 3,
+          "content": {
+            "tag": "decisionCriteria",
+            "payload": {
+              "questions": [
+                "참일 때 성립하는 사실이 이름에 있는가?",
+                "한 이름이 하나의 작은 책임을 맡는가?",
+                "저장한 값은 언제 계산되었는가?"
+              ],
+              "sequence": [
+                "첫 예상을 확인한다.",
+                "자료를 기준 질문으로 살펴본다.",
+                "새 사례에 같은 기준을 적용하고 이유를 설명한다."
+              ],
+              "caution": "let에 저장된 Bool은 선언 시 평가한 값이다. 원래 입력이 바뀌면 조건식도 다시 평가해야 하며 이름 자체가 자동 갱신 규칙은 아니다."
+            }
+          }
+        },
+        {
+          "id": "section-ch04-page06-work",
+          "order": 4,
+          "content": {
+            "tag": "freeResponse",
+            "payload": {
+              "prompt": "check와 flag를 의미 있는 이름으로 바꾸고 금액 판단 → 회원과 조합 → 전체 판단 흐름을 설명한다. 새 주문 40,000원에 같은 코드를 다시 적용했을 때의 결과도 적는다.",
+              "inputFormat": "이름 붙인 선언 두 줄 → 역할 → 새 입력의 결과",
+              "requiredEvidence": [
+                "작은 판단 이름",
+                "전체 판단 이름",
+                "평가 시점",
+                "새 입력 결과"
+              ],
+              "exampleAfterSubmission": "let meetsMinimum = totalCost >= 50_000\nlet isEligible = meetsMinimum && isMember\n75,000원·회원이면 두 값 모두 true다. 새 주문 40,000원으로 다시 평가하면 둘 다 false다. 이전에 저장한 Bool이 자동으로 바뀌는 것은 아니다."
+            }
+          },
+          "activityID": "activity-ch04-page06-work",
+          "title": "하나의 판단을 끝까지 설명하기"
+        },
+        {
+          "id": "section-ch04-page06-knowledge",
+          "order": 5,
+          "content": {
+            "tag": "knowledgeLink",
+            "payload": {
+              "links": [
+                {
+                  "conceptID": "concept-named-condition",
+                  "role": "primary",
+                  "usage": "Bool 이름은 참일 때 성립하는 사실로 읽고, 그 값을 만든 식과 평가 시점도 함께 확인한다.",
+                  "displayTiming": "판단 기준을 확인할 때"
+                },
+                {
+                  "conceptID": "concept-identifier-naming",
+                  "role": "supporting",
+                  "usage": "이 이름만 보고도 값이 무엇이며 어디에 쓰이는지 구분할 수 있는가?",
+                  "displayTiming": "판단 기준을 확인할 때"
+                },
+                {
+                  "conceptID": "concept-logical-composition",
+                  "role": "supporting",
+                  "usage": "모두 필요한가, 하나라도 충분한가, 반대로 묻는가?",
+                  "displayTiming": "판단 기준을 확인할 때"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "id": "section-ch04-page06-closure",
+          "order": 6,
+          "content": {
+            "tag": "learningClosure",
+            "payload": {
+              "firstPredictionReference": "let check = totalCost >= 50_000과 let meetsMinimum = totalCost >= 50_000 중 판단을 더 잘 설명하는 이름을 고르고 이유를 적는다.",
+              "finalExplanationPrompt": "작은 판단과 전체 판단에 의미 있는 Bool 이름을 붙이고 저장된 결과와 규칙을 구분한다.",
+              "confidenceChangePrompt": "처음의 확신과 지금의 확신을 비교하고 바뀐 근거를 적는다.",
+              "changedCriterionPrompt": "이번 활동으로 새로 확인하거나 수정한 판단 기준을 자신의 말로 적는다.",
+              "nextUsePrompt": "이름만 그럴듯한 조건에 반례를 넣어 실제 기준과 일치하는지 확인한다.",
+              "completionQuestion": "조건이 참일 때 어떤 사실인지 이름만으로 읽을 수 있을까?",
+              "requiredEvidence": [
+                "이름과 판단 의미",
+                "작은 판단과 전체 판단의 흐름",
+                "저장값과 재평가의 차이"
+              ],
+              "retryCondition": "설명에서 빠진 증거 하나를 고르고 그 차이를 드러내는 입력으로 다시 시도한다."
+            }
+          },
+          "activityID": "activity-ch04-page06-closure",
+          "title": "처음의 예상과 지금의 판단 비교하기"
+        },
+        {
+          "id": "section-ch04-page06-promotion",
+          "order": 7,
+          "content": {
+            "tag": "personalKnowledgePromotion",
+            "payload": {
+              "evidenceActivityIDs": [
+                "activity-ch04-page06-work",
+                "activity-ch04-page06-closure"
+              ],
+              "conceptIDs": [
+                "concept-named-condition"
+              ],
+              "candidateKind": "conceptRevision",
+              "editableDraft": "Bool 이름은 참일 때 성립하는 사실로 읽고, 그 값을 만든 식과 평가 시점도 함께 확인한다.",
+              "confirmationQuestion": "활동에서 확인한 이 기준을 나의 개념 표현으로 남길까? 내용을 확인하고 수정한 뒤 반영한다.",
+              "savedFields": [
+                "나의 설명",
+                "판단 예시",
+                "근거 활동",
+                "수정 시각"
+              ],
+              "cancellationResult": "학습 응답은 유지하고 개인 지식은 변경하지 않는다."
+            }
+          },
+          "activityID": "activity-ch04-page06-promotion"
+        }
+      ],
+      "activities": [
+        {
+          "id": "activity-ch04-page06-compass",
+          "sectionID": "section-ch04-page06-compass",
+          "isRequired": true
+        },
+        {
+          "id": "activity-ch04-page06-work",
+          "sectionID": "section-ch04-page06-work",
+          "isRequired": true
+        },
+        {
+          "id": "activity-ch04-page06-closure",
+          "sectionID": "section-ch04-page06-closure",
+          "isRequired": true
+        },
+        {
+          "id": "activity-ch04-page06-promotion",
+          "sectionID": "section-ch04-page06-promotion",
+          "isRequired": false
+        }
+      ],
+      "knowledgeLinks": [
+        {
+          "conceptID": "concept-named-condition",
+          "role": "primary",
+          "usage": "Bool 이름은 참일 때 성립하는 사실로 읽고, 그 값을 만든 식과 평가 시점도 함께 확인한다.",
+          "displayTiming": "판단 기준을 확인할 때"
+        },
+        {
+          "conceptID": "concept-identifier-naming",
+          "role": "supporting",
+          "usage": "이 이름만 보고도 값이 무엇이며 어디에 쓰이는지 구분할 수 있는가?",
+          "displayTiming": "판단 기준을 확인할 때"
+        },
+        {
+          "conceptID": "concept-logical-composition",
+          "role": "supporting",
+          "usage": "모두 필요한가, 하나라도 충분한가, 반대로 묻는가?",
+          "displayTiming": "판단 기준을 확인할 때"
+        }
+      ],
+      "knowledgeContext": {
+        "currentlyUsedConceptIDs": [
+          "concept-named-condition",
+          "concept-identifier-naming",
+          "concept-logical-composition"
+        ],
+        "currentlyUsedSummary": "Bool 이름은 참일 때 성립하는 사실로 읽고, 그 값을 만든 식과 평가 시점도 함께 확인한다.",
+        "changedKnowledgeSummary": "이 Chapter에서 확인해 저장한 나의 표현과 연결만 보여 준다.",
+        "nearbyKnowledge": [
+          {
+            "conceptID": "concept-condition-counterexample",
+            "reason": "이름만 그럴듯한 조건에 반례를 넣어 실제 기준과 일치하는지 확인한다."
+          },
+          {
+            "conceptID": "concept-intermediate-value",
+            "reason": "Chapter 3에서 중간값을 다음 계산의 입력으로 썼듯 meetsMinimum을 전체 조건의 입력으로 사용한다."
+          },
+          {
+            "conceptID": "concept-constants-variables",
+            "reason": "Chapter 2의 let은 한 번 저장한 값을 유지한다. 이름 붙인 Bool과 입력 변경 뒤 다시 평가할 조건식을 구분한다."
+          }
+        ],
+        "refreshTriggers": [
+          "개인 표현 저장 성공",
+          "개인 관계 저장 성공"
+        ],
+        "emptyStateMessage": "아직 확인해 반영한 나의 조건 설명이나 연결이 없다.",
+        "focusModeSummary": "조건이 참일 때 어떤 사실인지 이름만으로 읽을 수 있을까?"
+      },
+      "navigation": {
+        "previous": {
+          "pageID": "chapter-04-page-05",
+          "label": "여러 조건을 조합하기"
+        },
+        "next": {
+          "pageID": "chapter-04-page-07",
+          "label": "반례로 조건 확인하기"
+        }
+      }
+    },
+    {
+      "id": "chapter-04-page-07",
+      "kind": "lesson",
+      "order": 7,
+      "title": "반례로 조건 확인하기",
+      "goal": "자연어 규칙과 조건식이 다르게 답하는 입력을 찾아 조건을 수정하고 재확인한다.",
+      "sections": [
+        {
+          "id": "section-ch04-page07-compass",
+          "order": 1,
+          "content": {
+            "tag": "learningCompass",
+            "payload": {
+              "previousConnection": "조건에 책임 이름을 붙였다. 이번에는 그 이름이 약속한 규칙을 코드가 정말 지키는지 확인한다.",
+              "coreQuestion": "그럴듯한 조건이 틀렸음을 드러낼 입력은 무엇일까?",
+              "firstPredictionPrompt": "회원이면서 50,000원 이상이라는 규칙에 isMember || totalCost > 50_000을 썼을 때 빠질 사례를 예상한다.",
+              "confidencePrompt": "낮음 | 중간 | 높음과 지금 그렇게 예상한 이유를 남긴다.",
+              "completionEvidence": [
+                "기대값과 실제값의 차이",
+                "두 오류를 드러내는 반례",
+                "수정과 재확인"
+              ]
+            }
+          },
+          "activityID": "activity-ch04-page07-compass",
+          "title": "이번 판단의 나침반"
+        },
+        {
+          "id": "section-ch04-page07-situation",
+          "order": 2,
+          "content": {
+            "tag": "situation",
+            "payload": {
+              "title": "반례로 조건 확인하기",
+              "description": "조건식의 작성자는 회원이며 75,000원을 주문한 사례 하나만 확인했다. 이 입력에서는 잘못된 식도 true가 나온다.",
+              "materials": [
+                {
+                  "label": "규칙",
+                  "text": "회원이면서 전체 금액 50,000원 이상"
+                },
+                {
+                  "label": "검토할 코드",
+                  "text": "let isEligible = isMember || totalCost > 50_000"
+                }
+              ],
+              "firstQuestion": "그럴듯한 조건이 틀렸음을 드러낼 입력은 무엇일까?"
+            }
+          }
+        },
+        {
+          "id": "section-ch04-page07-criteria",
+          "order": 3,
+          "content": {
+            "tag": "decisionCriteria",
+            "payload": {
+              "questions": [
+                "코드를 보기 전에 규칙만으로 기대값을 정했는가?",
+                "일부 조건만 참인 입력이 있는가?",
+                "경계값을 포함했는가?",
+                "수정 후 기존 성공 사례도 다시 확인했는가?"
+              ],
+              "sequence": [
+                "첫 예상을 확인한다.",
+                "자료를 기준 질문으로 살펴본다.",
+                "새 사례에 같은 기준을 적용하고 이유를 설명한다."
+              ],
+              "caution": "기대값을 잘못된 식에서 복사하면 반례가 사라진다. 반례를 못 찾았다는 사실만으로 모든 입력이 맞다고 결론내리지 않는다."
+            }
+          }
+        },
+        {
+          "id": "section-ch04-page07-work",
+          "order": 4,
+          "content": {
+            "tag": "freeResponse",
+            "payload": {
+              "prompt": "비회원·60,000원과 회원·40,000원의 기대값과 잘못된 식의 결과를 비교한다. ||만 &&로 고친 뒤 회원·50,000원도 확인하고 최종 식을 쓴다.",
+              "inputFormat": "입력 → 규칙의 기대값 → 식의 결과 → 어긋난 기준 → 수정 → 재확인",
+              "requiredEvidence": [
+                "조합 오류의 반례",
+                "경계 오류의 반례",
+                "수정된 식",
+                "기존 성공 사례 재확인"
+              ],
+              "exampleAfterSubmission": "비회원·60,000원: 기대 false, 기존 식 true. 회원·40,000원: 기대 false, 기존 식 true.\n&&만 고친 식은 회원·50,000원에서 false여서 >=도 필요하다.\nlet isEligible = isMember && totalCost >= 50_000\n최종 식은 회원·50,000원과 회원·75,000원에서 true이고 앞의 두 반례에서는 false다."
+            }
+          },
+          "activityID": "activity-ch04-page07-work",
+          "title": "하나의 판단을 끝까지 설명하기"
+        },
+        {
+          "id": "section-ch04-page07-knowledge",
+          "order": 5,
+          "content": {
+            "tag": "knowledgeLink",
+            "payload": {
+              "links": [
+                {
+                  "conceptID": "concept-condition-counterexample",
+                  "role": "primary",
+                  "usage": "기대 결과는 규칙에서 먼저 정하고, 경계와 일부 조건만 참인 입력으로 작성한 식을 시험한다.",
+                  "displayTiming": "판단 기준을 확인할 때"
+                },
+                {
+                  "conceptID": "concept-condition-boundary",
+                  "role": "supporting",
+                  "usage": "기준과 같은 값은 어느 쪽에 속하는가?",
+                  "displayTiming": "판단 기준을 확인할 때"
+                },
+                {
+                  "conceptID": "concept-logical-composition",
+                  "role": "supporting",
+                  "usage": "모두 필요한가, 하나라도 충분한가, 반대로 묻는가?",
+                  "displayTiming": "판단 기준을 확인할 때"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "id": "section-ch04-page07-closure",
+          "order": 6,
+          "content": {
+            "tag": "learningClosure",
+            "payload": {
+              "firstPredictionReference": "회원이면서 50,000원 이상이라는 규칙에 isMember || totalCost > 50_000을 썼을 때 빠질 사례를 예상한다.",
+              "finalExplanationPrompt": "자연어 규칙과 조건식이 다르게 답하는 입력을 찾아 조건을 수정하고 재확인한다.",
+              "confidenceChangePrompt": "처음의 확신과 지금의 확신을 비교하고 바뀐 근거를 적는다.",
+              "changedCriterionPrompt": "이번 활동으로 새로 확인하거나 수정한 판단 기준을 자신의 말로 적는다.",
+              "nextUsePrompt": "도움이 줄어든 새 문제에서 질문·조건·경계·반례를 직접 만든다.",
+              "completionQuestion": "그럴듯한 조건이 틀렸음을 드러낼 입력은 무엇일까?",
+              "requiredEvidence": [
+                "기대값과 실제값의 차이",
+                "두 오류를 드러내는 반례",
+                "수정과 재확인"
+              ],
+              "retryCondition": "설명에서 빠진 증거 하나를 고르고 그 차이를 드러내는 입력으로 다시 시도한다."
+            }
+          },
+          "activityID": "activity-ch04-page07-closure",
+          "title": "처음의 예상과 지금의 판단 비교하기"
+        },
+        {
+          "id": "section-ch04-page07-promotion",
+          "order": 7,
+          "content": {
+            "tag": "personalKnowledgePromotion",
+            "payload": {
+              "evidenceActivityIDs": [
+                "activity-ch04-page07-work",
+                "activity-ch04-page07-closure"
+              ],
+              "conceptIDs": [
+                "concept-condition-counterexample"
+              ],
+              "candidateKind": "conceptRevision",
+              "editableDraft": "기대 결과는 규칙에서 먼저 정하고, 경계와 일부 조건만 참인 입력으로 작성한 식을 시험한다.",
+              "confirmationQuestion": "활동에서 확인한 이 기준을 나의 개념 표현으로 남길까? 내용을 확인하고 수정한 뒤 반영한다.",
+              "savedFields": [
+                "나의 설명",
+                "판단 예시",
+                "근거 활동",
+                "수정 시각"
+              ],
+              "cancellationResult": "학습 응답은 유지하고 개인 지식은 변경하지 않는다."
+            }
+          },
+          "activityID": "activity-ch04-page07-promotion"
+        }
+      ],
+      "activities": [
+        {
+          "id": "activity-ch04-page07-compass",
+          "sectionID": "section-ch04-page07-compass",
+          "isRequired": true
+        },
+        {
+          "id": "activity-ch04-page07-work",
+          "sectionID": "section-ch04-page07-work",
+          "isRequired": true
+        },
+        {
+          "id": "activity-ch04-page07-closure",
+          "sectionID": "section-ch04-page07-closure",
+          "isRequired": true
+        },
+        {
+          "id": "activity-ch04-page07-promotion",
+          "sectionID": "section-ch04-page07-promotion",
+          "isRequired": false
+        }
+      ],
+      "knowledgeLinks": [
+        {
+          "conceptID": "concept-condition-counterexample",
+          "role": "primary",
+          "usage": "기대 결과는 규칙에서 먼저 정하고, 경계와 일부 조건만 참인 입력으로 작성한 식을 시험한다.",
+          "displayTiming": "판단 기준을 확인할 때"
+        },
+        {
+          "conceptID": "concept-condition-boundary",
+          "role": "supporting",
+          "usage": "기준과 같은 값은 어느 쪽에 속하는가?",
+          "displayTiming": "판단 기준을 확인할 때"
+        },
+        {
+          "conceptID": "concept-logical-composition",
+          "role": "supporting",
+          "usage": "모두 필요한가, 하나라도 충분한가, 반대로 묻는가?",
+          "displayTiming": "판단 기준을 확인할 때"
+        }
+      ],
+      "knowledgeContext": {
+        "currentlyUsedConceptIDs": [
+          "concept-condition-counterexample",
+          "concept-condition-boundary",
+          "concept-logical-composition"
+        ],
+        "currentlyUsedSummary": "기대 결과는 규칙에서 먼저 정하고, 경계와 일부 조건만 참인 입력으로 작성한 식을 시험한다.",
+        "changedKnowledgeSummary": "이 Chapter에서 확인해 저장한 나의 표현과 연결만 보여 준다.",
+        "nearbyKnowledge": [
+          {
+            "conceptID": "concept-named-condition",
+            "reason": "작은 조건에 붙인 이름을 읽으며 반례에서 처음 어긋난 질문이 무엇인지 추적한다."
+          },
+          {
+            "conceptID": "concept-example-validation",
+            "reason": "기존 사례 검증처럼 규칙에서 기대 결과를 먼저 정하고, 그 기대와 작성한 조건식이 다르게 답하는 입력을 찾는다."
+          },
+          {
+            "conceptID": "concept-print-observation",
+            "reason": "Chapter 3의 관찰 순서로 작은 Bool과 전체 Bool을 비교하면 어떤 판단이 처음 어긋났는지 찾을 수 있다."
+          }
+        ],
+        "refreshTriggers": [
+          "개인 표현 저장 성공",
+          "개인 관계 저장 성공"
+        ],
+        "emptyStateMessage": "아직 확인해 반영한 나의 조건 설명이나 연결이 없다.",
+        "focusModeSummary": "그럴듯한 조건이 틀렸음을 드러낼 입력은 무엇일까?"
+      },
+      "navigation": {
+        "previous": {
+          "pageID": "chapter-04-page-06",
+          "label": "조건에 의미 있는 이름 붙이기"
+        },
+        "next": {
+          "pageID": "chapter-04-page-08",
+          "label": "새로운 문제에 적용하고 돌아보기"
+        }
+      }
+    },
+    {
+      "id": "chapter-04-page-08",
+      "kind": "lesson",
+      "order": 8,
+      "title": "새로운 문제에 적용하고 돌아보기",
+      "goal": "새 문제에서 질문·비교·조합·이름·경계·반례를 하나의 조건 설계로 적용한다.",
+      "sections": [
+        {
+          "id": "section-ch04-page08-compass",
+          "order": 1,
+          "content": {
+            "tag": "learningCompass",
+            "payload": {
+              "previousConnection": "독서 모임 조건의 오류를 반례로 고쳤다. 이제 예시와 후보 없이 체험 교실의 규칙을 직접 옮긴다.",
+              "coreQuestion": "다른 상황에서도 규칙을 빠짐없이 Bool 조건으로 만들 수 있을까?",
+              "firstPredictionPrompt": "아래 규칙에서 작은 질문을 몇 개로 나눌지와 가장 실수하기 쉬운 경계를 먼저 적는다.",
+              "confidencePrompt": "낮음 | 중간 | 높음과 지금 그렇게 예상한 이유를 남긴다.",
+              "completionEvidence": [
+                "새 문제의 질문과 조건",
+                "양쪽 경계와 조합 사례",
+                "이름과 근거",
+                "반례와 수정"
+              ]
+            }
+          },
+          "activityID": "activity-ch04-page08-compass",
+          "title": "이번 판단의 나침반"
+        },
+        {
+          "id": "section-ch04-page08-situation",
+          "order": 2,
+          "content": {
+            "tag": "situation",
+            "payload": {
+              "title": "새로운 문제에 적용하고 돌아보기",
+              "description": "체험 교실 입장 대상은 나이 12세 이상 18세 이하이면서, 보호자 동의 또는 회원 자격이 있어야 한다. 동의와 회원 자격이 둘 다 있어도 된다. 입력은 모두 확인된 값이다.",
+              "materials": [
+                {
+                  "label": "입력 이름과 타입",
+                  "text": "age: Int, hasConsent: Bool, isMember: Bool"
+                },
+                {
+                  "label": "수행 범위",
+                  "text": "입장 대상 여부를 Bool로 만든다. 입장 문구를 고르는 if와 실제 실행 분기는 다음 Chapter에서 다룬다."
+                }
+              ],
+              "firstQuestion": "다른 상황에서도 규칙을 빠짐없이 Bool 조건으로 만들 수 있을까?"
+            }
+          }
+        },
+        {
+          "id": "section-ch04-page08-work",
+          "order": 3,
+          "content": {
+            "tag": "freeResponse",
+            "payload": {
+              "prompt": "조건에 필요한 질문을 정하고 isAgeEligible, hasPermission, canEnter를 선언한다. 11·12·18·19세와 동의·회원 조합을 골라 기대 결과를 적는다. 그럴듯하지만 틀린 식 하나와 반례도 제시한다.",
+              "inputFormat": "작은 질문 → 이름 붙인 Swift 조건 → 경계·조합 사례 → 잘못된 조건의 반례",
+              "requiredEvidence": [
+                "범위 양쪽 경계",
+                "모두와 하나 이상 구분",
+                "세 이름과 데이터 흐름",
+                "기대 결과",
+                "틀린 식과 반례"
+              ],
+              "exampleAfterSubmission": "let isAgeEligible = age >= 12 && age <= 18\nlet hasPermission = hasConsent || isMember\nlet canEnter = isAgeEligible && hasPermission\n권한이 있으면 11·12·18·19세의 결과는 false·true·true·false다. 12세라도 동의와 회원이 모두 false면 입장 대상이 아니다. 둘 다 true면 권한이 있다.\nage > 12로 쓰면 권한이 있는 12세가 반례가 된다."
+            }
+          },
+          "activityID": "activity-ch04-page08-work",
+          "title": "하나의 판단을 끝까지 설명하기"
+        },
+        {
+          "id": "section-ch04-page08-knowledge",
+          "order": 4,
+          "content": {
+            "tag": "knowledgeLink",
+            "payload": {
+              "links": [
+                {
+                  "conceptID": "concept-condition-question",
+                  "role": "primary",
+                  "usage": "새 조건 문제에서도 질문을 작게 나누고 경계와 조합을 검증한 뒤 전체 판단으로 묶는다.",
+                  "displayTiming": "판단 기준을 확인할 때"
+                },
+                {
+                  "conceptID": "concept-logical-composition",
+                  "role": "supporting",
+                  "usage": "모두 필요한가, 하나라도 충분한가, 반대로 묻는가?",
+                  "displayTiming": "판단 기준을 확인할 때"
+                },
+                {
+                  "conceptID": "concept-condition-counterexample",
+                  "role": "supporting",
+                  "usage": "이 조건이 틀렸음을 드러낼 입력은 무엇인가?",
+                  "displayTiming": "판단 기준을 확인할 때"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "id": "section-ch04-page08-closure",
+          "order": 5,
+          "content": {
+            "tag": "learningClosure",
+            "payload": {
+              "firstPredictionReference": "아래 규칙에서 작은 질문을 몇 개로 나눌지와 가장 실수하기 쉬운 경계를 먼저 적는다.",
+              "finalExplanationPrompt": "새 문제에서 질문·비교·조합·이름·경계·반례를 하나의 조건 설계로 적용한다.",
+              "confidenceChangePrompt": "처음의 확신과 지금의 확신을 비교하고 바뀐 근거를 적는다.",
+              "changedCriterionPrompt": "이번 활동으로 새로 확인하거나 수정한 판단 기준을 자신의 말로 적는다.",
+              "nextUsePrompt": "완성된 조건 코드를 떨어진 입력과 판단의 의미 단위 조각으로 다시 읽는다.",
+              "completionQuestion": "다른 상황에서도 규칙을 빠짐없이 Bool 조건으로 만들 수 있을까?",
+              "requiredEvidence": [
+                "새 문제의 질문과 조건",
+                "양쪽 경계와 조합 사례",
+                "이름과 근거",
+                "반례와 수정"
+              ],
+              "retryCondition": "설명에서 빠진 증거 하나를 고르고 그 차이를 드러내는 입력으로 다시 시도한다."
+            }
+          },
+          "activityID": "activity-ch04-page08-closure",
+          "title": "처음의 예상과 지금의 판단 비교하기"
+        },
+        {
+          "id": "section-ch04-page08-enrichment",
+          "order": 6,
+          "content": {
+            "tag": "enrichmentTask",
+            "payload": {
+              "title": "더 깊게 가기",
+              "guidance": "핵심 활동을 마친 뒤 원할 때만 펼친다.",
+              "materials": [
+                {
+                  "label": "바꿀 조건",
+                  "text": "나이 기준에 맞고 권한은 정확히 하나만 있어야 하는 새 규칙"
+                }
+              ],
+              "prompt": "바뀐 규칙의 질문과 조건식을 만들고 이전 식과 결과가 달라지는 입력을 설명한다.",
+              "conceptIDs": [
+                "concept-condition-question"
+              ]
+            }
+          }
+        },
+        {
+          "id": "section-ch04-page08-promotion",
+          "order": 7,
+          "content": {
+            "tag": "personalKnowledgePromotion",
+            "payload": {
+              "evidenceActivityIDs": [
+                "activity-ch04-page08-work",
+                "activity-ch04-page08-closure"
+              ],
+              "conceptIDs": [
+                "concept-condition-question"
+              ],
+              "candidateKind": "conceptRevision",
+              "editableDraft": "새 조건 문제에서도 질문을 작게 나누고 경계와 조합을 검증한 뒤 전체 판단으로 묶는다.",
+              "confirmationQuestion": "활동에서 확인한 이 기준을 나의 개념 표현으로 남길까? 내용을 확인하고 수정한 뒤 반영한다.",
+              "savedFields": [
+                "나의 설명",
+                "판단 예시",
+                "근거 활동",
+                "수정 시각"
+              ],
+              "cancellationResult": "학습 응답은 유지하고 개인 지식은 변경하지 않는다."
+            }
+          },
+          "activityID": "activity-ch04-page08-promotion"
+        }
+      ],
+      "activities": [
+        {
+          "id": "activity-ch04-page08-compass",
+          "sectionID": "section-ch04-page08-compass",
+          "isRequired": true
+        },
+        {
+          "id": "activity-ch04-page08-work",
+          "sectionID": "section-ch04-page08-work",
+          "isRequired": true
+        },
+        {
+          "id": "activity-ch04-page08-closure",
+          "sectionID": "section-ch04-page08-closure",
+          "isRequired": true
+        },
+        {
+          "id": "activity-ch04-page08-promotion",
+          "sectionID": "section-ch04-page08-promotion",
+          "isRequired": false
+        }
+      ],
+      "knowledgeLinks": [
+        {
+          "conceptID": "concept-condition-question",
+          "role": "primary",
+          "usage": "새 조건 문제에서도 질문을 작게 나누고 경계와 조합을 검증한 뒤 전체 판단으로 묶는다.",
+          "displayTiming": "판단 기준을 확인할 때"
+        },
+        {
+          "conceptID": "concept-logical-composition",
+          "role": "supporting",
+          "usage": "모두 필요한가, 하나라도 충분한가, 반대로 묻는가?",
+          "displayTiming": "판단 기준을 확인할 때"
+        },
+        {
+          "conceptID": "concept-condition-counterexample",
+          "role": "supporting",
+          "usage": "이 조건이 틀렸음을 드러낼 입력은 무엇인가?",
+          "displayTiming": "판단 기준을 확인할 때"
+        }
+      ],
+      "knowledgeContext": {
+        "currentlyUsedConceptIDs": [
+          "concept-condition-question",
+          "concept-logical-composition",
+          "concept-condition-counterexample"
+        ],
+        "currentlyUsedSummary": "새 조건 문제에서도 질문을 작게 나누고 경계와 조합을 검증한 뒤 전체 판단으로 묶는다.",
+        "changedKnowledgeSummary": "이 Chapter에서 확인해 저장한 나의 표현과 연결만 보여 준다.",
+        "nearbyKnowledge": [
+          {
+            "conceptID": "concept-semantic-chunk-reading",
+            "reason": "완성된 조건 코드를 떨어진 입력과 판단의 의미 단위 조각으로 다시 읽는다."
+          }
+        ],
+        "refreshTriggers": [
+          "개인 표현 저장 성공",
+          "개인 관계 저장 성공"
+        ],
+        "emptyStateMessage": "아직 확인해 반영한 나의 조건 설명이나 연결이 없다.",
+        "focusModeSummary": "다른 상황에서도 규칙을 빠짐없이 Bool 조건으로 만들 수 있을까?"
+      },
+      "navigation": {
+        "previous": {
+          "pageID": "chapter-04-page-07",
+          "label": "반례로 조건 확인하기"
+        },
+        "next": {
+          "pageID": "chapter-04-page-09",
+          "label": "조건 흐름을 의미 단위 조각으로 읽기"
+        }
+      }
+    },
+    {
+      "id": "chapter-04-page-09",
+      "kind": "lesson",
+      "order": 9,
+      "title": "조건 흐름을 의미 단위 조각으로 읽기",
+      "goal": "떨어진 입력·비교·논리 조합·관찰을 판단 책임의 의미 단위 조각으로 묶고 변경 영향을 설명한다.",
+      "sections": [
+        {
+          "id": "section-ch04-page09-compass",
+          "order": 1,
+          "content": {
+            "tag": "learningCompass",
+            "payload": {
+              "previousConnection": "새 문제를 조건으로 완성했다. 이제 같은 결과에 기여하는 비연속 요소를 책임과 흐름으로 묶는다.",
+              "coreQuestion": "서로 떨어진 코드가 함께 어떤 판단을 만들고 다음 판단에 무엇을 넘길까?",
+              "firstPredictionPrompt": "전체 코드의 상황과 canEnter의 결과를 먼저 예상하고 결과와 무관한 요소 하나를 고른다.",
+              "confidencePrompt": "낮음 | 중간 | 높음과 지금 그렇게 예상한 이유를 남긴다.",
+              "completionEvidence": [
+                "문제 상황과 예상 결과",
+                "비연속 요소 연결",
+                "조각 이름과 경계",
+                "조각 사이 흐름",
+                "변경 영향"
+              ]
+            }
+          },
+          "activityID": "activity-ch04-page09-compass",
+          "title": "이번 판단의 나침반"
+        },
+        {
+          "id": "section-ch04-page09-situation",
+          "order": 2,
+          "content": {
+            "tag": "situation",
+            "payload": {
+              "title": "조건 흐름을 의미 단위 조각으로 읽기",
+              "description": "체험 교실의 조건 코드에는 안내 문구와 서로 다른 판단의 입력이 섞여 있다. 코드를 역할에 따라 의미 단위 조각으로 나누어 읽는다. 한 조각에 떨어진 줄을 함께 넣어도 된다.",
+              "materials": [
+                {
+                  "label": "이번 코드의 재료",
+                  "text": "나이 12세, 보호자 동의 없음, 회원 자격 있음. 전체 코드는 아래 의미 단위 조각 읽기에서 한 번에 살펴본다."
+                }
+              ],
+              "firstQuestion": "서로 떨어진 코드가 함께 어떤 판단을 만들고 다음 판단에 무엇을 넘길까?"
+            }
+          }
+        },
+        {
+          "id": "section-ch04-page09-criteria",
+          "order": 3,
+          "content": {
+            "tag": "decisionCriteria",
+            "payload": {
+              "questions": [
+                "함께 어떤 질문에 답하는 요소들인가?",
+                "어느 조각의 Bool 결과가 다음 조각의 입력인가?",
+                "조건 만들기와 결과 관찰은 어떤 책임이 다른가?"
+              ],
+              "sequence": [
+                "첫 예상을 확인한다.",
+                "자료를 기준 질문으로 살펴본다.",
+                "새 사례에 같은 기준을 적용하고 이유를 설명한다."
+              ],
+              "caution": "조각은 연속된 줄이나 선언 종류로만 정하지 않는다. 하나의 정답 이름이나 조각 수로 이해를 평가하지 않는다."
+            }
+          }
+        },
+        {
+          "id": "section-ch04-page09-work",
+          "order": 4,
+          "content": {
+            "tag": "semanticChunkReading",
+            "payload": {
+              "code": "let age = 12\nlet bannerText = \"토요일 체험 교실\"\nlet hasConsent = false\nlet isAgeEligible = age >= 12 && age <= 18\nlet isMember = true\nlet hasPermission = hasConsent || isMember\nlet canEnter = isAgeEligible && hasPermission\nprint(canEnter)",
+              "language": "swift",
+              "lensQuestions": [
+                "함께 어떤 질문에 답하는 요소들인가?",
+                "어느 조각의 Bool 결과가 다음 조각의 입력인가?",
+                "조건 만들기와 결과 관찰은 어떤 책임이 다른가?"
+              ],
+              "elements": [
+                {
+                  "id": "p09-element-1",
+                  "text": "let age = 12"
+                },
+                {
+                  "id": "p09-element-2",
+                  "text": "let bannerText = \"토요일 체험 교실\""
+                },
+                {
+                  "id": "p09-element-3",
+                  "text": "let hasConsent = false"
+                },
+                {
+                  "id": "p09-element-4",
+                  "text": "let isAgeEligible = age >= 12 && age <= 18"
+                },
+                {
+                  "id": "p09-element-5",
+                  "text": "let isMember = true"
+                },
+                {
+                  "id": "p09-element-6",
+                  "text": "let hasPermission = hasConsent || isMember"
+                },
+                {
+                  "id": "p09-element-7",
+                  "text": "let canEnter = isAgeEligible && hasPermission"
+                },
+                {
+                  "id": "p09-element-8",
+                  "text": "print(canEnter)"
+                }
+              ],
+              "selectionPrompt": "떨어진 요소를 복수 선택해 같은 판단 책임의 조각으로 묶는다. 선택한 요소가 함께 답하는 질문을 설명한다.",
+              "chunkNamePrompt": "문법 이름 대신 무엇을 판단하는지 드러나는 조각 이름을 쓴다.",
+              "flowPrompt": "나이·권한 판단의 결과가 canEnter와 print로 이어지는 흐름을 자신의 조각 사이에 표시한다.",
+              "boundaryPrompt": "bannerText를 포함하거나 제외한 이유와 판단·관찰 책임의 경계를 설명한다.",
+              "changePrompt": "isMember를 false로 바꾸면 어떤 조각과 결과가 달라지는가? age를 11로 바꾼 경우와 비교하고, Chapter 5에서 이 결과로 무엇을 결정할 수 있는지 적는다.",
+              "completionEvidence": [
+                "문제 상황과 예상 결과",
+                "비연속 요소 연결",
+                "조각 이름과 경계",
+                "조각 사이 흐름",
+                "변경 영향"
+              ]
+            }
+          },
+          "activityID": "activity-ch04-page09-work",
+          "title": "하나의 판단을 끝까지 설명하기"
+        },
+        {
+          "id": "section-ch04-page09-knowledge",
+          "order": 5,
+          "content": {
+            "tag": "knowledgeLink",
+            "payload": {
+              "links": [
+                {
+                  "conceptID": "concept-semantic-chunk-reading",
+                  "role": "primary",
+                  "usage": "조건 조각은 같은 질문을 만드는 입력과 비교를 함께 묶고, Bool 결과가 다음 판단으로 흐르는 연결로 설명한다.",
+                  "displayTiming": "판단 기준을 확인할 때"
+                },
+                {
+                  "conceptID": "concept-named-condition",
+                  "role": "supporting",
+                  "usage": "참일 때 어떤 사실이 성립하는지 이름만으로 읽히는가?",
+                  "displayTiming": "판단 기준을 확인할 때"
+                },
+                {
+                  "conceptID": "concept-logical-composition",
+                  "role": "supporting",
+                  "usage": "모두 필요한가, 하나라도 충분한가, 반대로 묻는가?",
+                  "displayTiming": "판단 기준을 확인할 때"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "id": "section-ch04-page09-closure",
+          "order": 6,
+          "content": {
+            "tag": "learningClosure",
+            "payload": {
+              "firstPredictionReference": "전체 코드의 상황과 canEnter의 결과를 먼저 예상하고 결과와 무관한 요소 하나를 고른다.",
+              "finalExplanationPrompt": "떨어진 입력·비교·논리 조합·관찰을 판단 책임의 의미 단위 조각으로 묶고 변경 영향을 설명한다.",
+              "confidenceChangePrompt": "처음의 확신과 지금의 확신을 비교하고 바뀐 근거를 적는다.",
+              "changedCriterionPrompt": "이번 활동으로 새로 확인하거나 수정한 판단 기준을 자신의 말로 적는다.",
+              "nextUsePrompt": "Chapter 5에서 canEnter 같은 Bool을 입력으로 받아 경우에 따라 다른 결과를 결정한다.",
+              "completionQuestion": "서로 떨어진 코드가 함께 어떤 판단을 만들고 다음 판단에 무엇을 넘길까?",
+              "requiredEvidence": [
+                "문제 상황과 예상 결과",
+                "비연속 요소 연결",
+                "조각 이름과 경계",
+                "조각 사이 흐름",
+                "변경 영향"
+              ],
+              "retryCondition": "설명에서 빠진 증거 하나를 고르고 그 차이를 드러내는 입력으로 다시 시도한다."
+            }
+          },
+          "activityID": "activity-ch04-page09-closure",
+          "title": "처음의 예상과 지금의 판단 비교하기"
+        },
+        {
+          "id": "section-ch04-page09-promotion",
+          "order": 7,
+          "content": {
+            "tag": "personalKnowledgePromotion",
+            "payload": {
+              "evidenceActivityIDs": [
+                "activity-ch04-page09-work",
+                "activity-ch04-page09-closure"
+              ],
+              "conceptIDs": [
+                "concept-semantic-chunk-reading"
+              ],
+              "candidateKind": "conceptRevision",
+              "editableDraft": "조건 조각은 같은 질문을 만드는 입력과 비교를 함께 묶고, Bool 결과가 다음 판단으로 흐르는 연결로 설명한다.",
+              "confirmationQuestion": "활동에서 확인한 이 기준을 나의 개념 표현으로 남길까? 내용을 확인하고 수정한 뒤 반영한다.",
+              "savedFields": [
+                "나의 설명",
+                "판단 예시",
+                "근거 활동",
+                "수정 시각"
+              ],
+              "cancellationResult": "학습 응답은 유지하고 개인 지식은 변경하지 않는다."
+            }
+          },
+          "activityID": "activity-ch04-page09-promotion"
+        }
+      ],
+      "activities": [
+        {
+          "id": "activity-ch04-page09-compass",
+          "sectionID": "section-ch04-page09-compass",
+          "isRequired": true
+        },
+        {
+          "id": "activity-ch04-page09-work",
+          "sectionID": "section-ch04-page09-work",
+          "isRequired": true
+        },
+        {
+          "id": "activity-ch04-page09-closure",
+          "sectionID": "section-ch04-page09-closure",
+          "isRequired": true
+        },
+        {
+          "id": "activity-ch04-page09-promotion",
+          "sectionID": "section-ch04-page09-promotion",
+          "isRequired": false
+        }
+      ],
+      "knowledgeLinks": [
+        {
+          "conceptID": "concept-semantic-chunk-reading",
+          "role": "primary",
+          "usage": "조건 조각은 같은 질문을 만드는 입력과 비교를 함께 묶고, Bool 결과가 다음 판단으로 흐르는 연결로 설명한다.",
+          "displayTiming": "판단 기준을 확인할 때"
+        },
+        {
+          "conceptID": "concept-named-condition",
+          "role": "supporting",
+          "usage": "참일 때 어떤 사실이 성립하는지 이름만으로 읽히는가?",
+          "displayTiming": "판단 기준을 확인할 때"
+        },
+        {
+          "conceptID": "concept-logical-composition",
+          "role": "supporting",
+          "usage": "모두 필요한가, 하나라도 충분한가, 반대로 묻는가?",
+          "displayTiming": "판단 기준을 확인할 때"
+        }
+      ],
+      "knowledgeContext": {
+        "currentlyUsedConceptIDs": [
+          "concept-semantic-chunk-reading",
+          "concept-named-condition",
+          "concept-logical-composition"
+        ],
+        "currentlyUsedSummary": "조건 조각은 같은 질문을 만드는 입력과 비교를 함께 묶고, Bool 결과가 다음 판단으로 흐르는 연결로 설명한다.",
+        "changedKnowledgeSummary": "이 Chapter에서 확인해 저장한 나의 표현과 연결만 보여 준다.",
+        "nearbyKnowledge": [
+          {
+            "conceptID": "concept-execution-flow",
+            "reason": "Chapter 5에서 canEnter 같은 Bool을 입력으로 받아 경우에 따라 다른 결과를 결정한다."
+          },
+          {
+            "conceptID": "concept-intermediate-value",
+            "reason": "Chapter 3의 계산 조각과 비교해 각 조각의 결과가 다음 조각의 입력이 되는 공통 흐름을 설명한다."
+          }
+        ],
+        "refreshTriggers": [
+          "개인 표현 저장 성공",
+          "개인 관계 저장 성공"
+        ],
+        "emptyStateMessage": "아직 확인해 반영한 나의 조건 설명이나 연결이 없다.",
+        "focusModeSummary": "서로 떨어진 코드가 함께 어떤 판단을 만들고 다음 판단에 무엇을 넘길까?"
+      },
+      "navigation": {
+        "previous": {
+          "pageID": "chapter-04-page-08",
+          "label": "새로운 문제에 적용하고 돌아보기"
+        },
+        "next": {
+          "pageID": "chapter-05-page-01",
+          "label": "Chapter 5 · 조건에 따라 결과 결정하기"
+        }
+      }
+    }
+  ]
+}

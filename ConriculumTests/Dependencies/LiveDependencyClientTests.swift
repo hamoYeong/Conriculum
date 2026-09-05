@@ -27,7 +27,7 @@ struct LiveDependencyClientTests {
         let loadedConcept = try await knowledgeClient.loadConcept(firstConcept.id)
         let relations = try await knowledgeClient.loadRelations(firstConcept.id)
 
-        #expect(chapters.map(\.id) == ["chapter-02", "chapter-03"])
+        #expect(chapters.map(\.id) == ["chapter-02", "chapter-03", "chapter-04"])
         #expect(chapter.progressDenominator == chapter.progressPages.count)
         #expect(overview.kind == .overview)
         #expect(loadedLesson == firstLesson)

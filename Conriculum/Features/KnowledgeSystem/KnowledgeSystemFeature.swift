@@ -37,6 +37,9 @@ struct KnowledgeSystemFeature {
                     item.concept.judgmentQuestions.joined(separator: " "),
                     item.concept.examples.joined(separator: " "),
                     item.concept.misconceptions.joined(separator: " "),
+                    (item.concept.revisitPages ?? []).map {
+                        "\($0.chapterTitle) \($0.pageTitle) \($0.connection)"
+                    }.joined(separator: " "),
                     item.latestRevision?.personalTitle ?? "",
                     item.latestRevision?.explanation ?? "",
                 ]
@@ -69,6 +72,7 @@ struct KnowledgeSystemFeature {
         case conceptClosed(KnowledgeConceptID)
         case selectionCleared
         case homeButtonTapped
+        case learningPageTapped(KnowledgeLearningReference)
         case delegate(Delegate)
     }
 
@@ -79,6 +83,7 @@ struct KnowledgeSystemFeature {
 
     enum Delegate: Equatable {
         case homeRequested
+        case learningRequested(ChapterID, LearningPageID)
     }
 
     @Dependency(\.knowledgeCatalogClient) var knowledgeCatalogClient
@@ -205,6 +210,12 @@ struct KnowledgeSystemFeature {
 
             case .homeButtonTapped:
                 return .send(.delegate(.homeRequested))
+
+            case let .learningPageTapped(reference):
+                return .send(.delegate(.learningRequested(
+                    reference.chapterID,
+                    reference.pageID
+                )))
 
             case .delegate:
                 return .none

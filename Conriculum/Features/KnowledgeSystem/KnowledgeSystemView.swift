@@ -331,6 +331,9 @@ struct KnowledgeSystemView: View {
             ),
             onClose: {
                 store.send(.conceptClosed(item.id))
+            },
+            onRevisit: {
+                store.send(.learningPageTapped($0))
             }
         )
     }
@@ -358,6 +361,7 @@ private struct KnowledgeSystemDetailPane: View {
     let personalRelations: [PersonalKnowledgeRelation]
     let conceptIndex: KnowledgeConceptIndex
     let onClose: () -> Void
+    let onRevisit: (KnowledgeLearningReference) -> Void
 
     var body: some View {
         ScrollView {
@@ -385,6 +389,11 @@ private struct KnowledgeSystemDetailPane: View {
                 BaseKnowledgeSection(
                     concept: item.concept,
                     detailLevel: .complete
+                )
+
+                KnowledgeRevisitSection(
+                    references: item.concept.revisitPages ?? [],
+                    onSelect: onRevisit
                 )
 
                 PersonalKnowledgeSection(revision: item.latestRevision)

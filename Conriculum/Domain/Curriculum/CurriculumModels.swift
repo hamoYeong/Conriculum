@@ -1,4 +1,4 @@
-// MARK: - 2. 학습 체계: Path → Stage → Chapter → Page → Section
+// MARK: - 학습 체계: Path → Stage → Chapter → Page → Section
 
 /// 전체 학습 경로. 여러 학습 단계를 소유하는 최상위 containment 값이다.
 struct LearningPath: Codable, Equatable, Sendable {

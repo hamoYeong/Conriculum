@@ -3,10 +3,10 @@ import Testing
 
 @testable import Conriculum
 
-// MARK: - 15. 실제 Bundle 리소스가 root model로 조립되는지 확인
+// MARK: - 실제 Bundle 리소스가 root model로 조립되는지 확인
 
 struct BundledContentResourceTests {
-    /// Chapter JSON이 hierarchy 전체와 9개 진도 page, 역할이 겹치지 않는 section vocabulary를 포함하는지 확인한다.
+    /// Chapter JSON이 전체 hierarchy와 진도 page, 역할이 겹치지 않는 section vocabulary를 포함하는지 확인한다.
     @Test
     func chapterTwoResourceDecodesFromTheApplicationBundle() throws {
         let chapter = try decode(Chapter.self, from: .chapter02)
@@ -21,7 +21,7 @@ struct BundledContentResourceTests {
         #expect(Set(chapter.pages.flatMap(\.sections).map(\.content.tag)) == Set(LearningSectionTag.allCases))
     }
 
-    /// 공용 Chapter resource 규칙으로 Chapter 3의 overview와 9개 lesson을 찾고 decode하는지 확인한다.
+    /// 공용 Chapter resource 규칙으로 Chapter의 overview와 lesson을 찾아 decode하는지 확인한다.
     @Test
     func chapterThreeResourceDecodesFromTheApplicationBundle() throws {
         let resource = BundledContentResource.chapter(
@@ -123,14 +123,14 @@ struct BundledContentResourceTests {
             "SwiftUI와 사용자 인터페이스",
         ])
         #expect(hasCompletePresentationMetadata)
-        #expect(catalog.concepts.count == 29)
+        #expect(catalog.concepts.count == 36)
         #expect(catalog.concepts.contains { $0.id == "concept-semantic-chunk-reading" })
         #expect(membershipIDs.count == catalog.concepts.count)
         #expect(Set(membershipIDs) == Set(catalog.concepts.map(\.id)))
         #expect(catalog.relations.isEmpty == false)
     }
 
-    /// identity manifest가 두 Chapter와 각 overview 포함 20개 Page의 stable ID를 추적하는지 확인한다.
+    /// identity manifest가 모든 Chapter와 Page의 stable ID를 추적하는지 확인한다.
     @Test
     func identityManifestResourceDecodesFromTheApplicationBundle() throws {
         let manifest = try decode(ContentIdentityManifest.self, from: .contentIdentity)
@@ -139,8 +139,8 @@ struct BundledContentResourceTests {
         #expect(manifest.identities.contains {
             $0.kind == .chapter && $0.stableID == "chapter-02"
         })
-        #expect(manifest.identities.filter { $0.kind == .chapter }.count == 2)
-        #expect(manifest.identities.filter { $0.kind == .page }.count == 20)
+        #expect(manifest.identities.filter { $0.kind == .chapter }.count == 3)
+        #expect(manifest.identities.filter { $0.kind == .page }.count == 30)
     }
 
     /// 이 테스트의 관심사인 Bundle URL과 기본 JSON decode만 수행하는 최소 호출 helper.

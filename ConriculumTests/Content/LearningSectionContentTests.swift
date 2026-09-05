@@ -3,7 +3,7 @@ import Testing
 
 @testable import Conriculum
 
-// MARK: - 9. 역할이 겹치지 않는 21개 tag와 payload의 실제 최소 호출 예제
+// MARK: - 역할이 겹치지 않는 tag와 payload의 실제 최소 호출 예제
 
 struct LearningSectionContentTests {
     /// 모든 지원 case가 `tag + payload` JSON으로 encode/decode되며 tag 목록과 정확히 일치하는지 확인한다.
@@ -59,7 +59,7 @@ struct LearningSectionContentTests {
         }
     }
 
-    /// 통합된 21개 associated payload의 최소 유효값 모음.
+    /// 모든 associated payload의 최소 유효값 모음.
     /// 각 구조체의 field 의미를 실제 생성 호출로 훑고 싶을 때 이 배열을 위에서 아래로 읽는다.
     private func makeFixtures() -> [LearningSectionContent] {
         let item = LearningContentItem(id: "item", text: "내용")

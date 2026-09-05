@@ -1,6 +1,6 @@
 import Foundation
 
-// MARK: - 6. 학습 과정에서 생성되는 사용자 기록
+// MARK: - 학습 과정에서 생성되는 사용자 기록
 
 /// Chapter에서 현재 위치와 완료 상태를 stable page ID로 저장한다.
 struct LearningProgress: Codable, Equatable, Sendable {

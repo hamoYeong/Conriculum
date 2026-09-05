@@ -1211,6 +1211,10 @@
           {
             "conceptID": "concept-type-selection",
             "reason": "종류 비교가 실제 정보의 타입을 고르는 판단으로 이어진다."
+          },
+          {
+            "conceptID": "concept-condition-question",
+            "reason": "Bool로 구분한 참·거짓 값을 Chapter 4에서는 명확한 질문을 평가한 답으로 다시 사용한다."
           }
         ],
         "refreshTriggers": [
@@ -2169,6 +2173,10 @@
           {
             "conceptID": "concept-constants-variables",
             "reason": "다음 페이지에서 이름의 변경 약속을 선언한다."
+          },
+          {
+            "conceptID": "concept-named-condition",
+            "reason": "대상과 역할을 드러내는 이름 짓기는 Chapter 4에서 참일 때 성립하는 사실을 이름 붙이는 기준이 된다."
           }
         ],
         "refreshTriggers": [
@@ -2601,6 +2609,10 @@
           {
             "conceptID": "concept-identifier-naming",
             "reason": "어떤 책임에서 바뀌는 값인지 이름으로 드러내는 판단과 이어진다."
+          },
+          {
+            "conceptID": "concept-named-condition",
+            "reason": "let에 저장한 Bool도 선언 시 평가한 값이다. Chapter 4에서 입력이 달라진 뒤 다시 평가할 식과 저장값을 구분한다."
           }
         ],
         "refreshTriggers": [
@@ -3063,6 +3075,10 @@
           {
             "conceptID": "concept-identifier-naming",
             "reason": "타입 표기와 이름이 전달하는 의도를 함께 판단한다."
+          },
+          {
+            "conceptID": "concept-comparison-operator",
+            "reason": "리터럴뿐 아니라 표현식의 결과도 타입 추론의 단서다. Chapter 4에서는 Int를 비교한 결과가 Bool임을 확인한다."
           }
         ],
         "refreshTriggers": [

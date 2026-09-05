@@ -342,9 +342,12 @@ struct ChapterLearningFeature {
                             await send(.nextChapterFailed("다음 챕터의 콘텐츠가 아직 준비되지 않았습니다."))
                             return
                         }
-                        // A new chapter starts with its learning map, not its first exercise.
+                        // 첫 진입은 Overview, 이미 진행한 Chapter는 유효한 저장 위치에서 이어간다.
                         let saved = try await learningRecordClient.loadProgress(next.id)
-                        let pageID = next.overview.id
+                        let pageID = await MainActor.run {
+                            saved.flatMap { next.page(id: $0.currentPageID)?.id }
+                                ?? next.overview.id
+                        }
                         try await learningRecordClient.saveProgress(LearningProgress(
                             chapterID: next.id, currentPageID: pageID,
                             completedPageIDs: saved?.completedPageIDs ?? [], updatedAt: now

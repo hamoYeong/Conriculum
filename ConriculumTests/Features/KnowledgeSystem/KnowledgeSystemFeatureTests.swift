@@ -74,7 +74,7 @@ struct KnowledgeSystemFeatureTests {
             KnowledgeSystemFeature()
         }
 
-        #expect(store.state.visibleConcepts.count == 29)
+        #expect(store.state.visibleConcepts.count == snapshot.concepts.count)
         await store.send(.collectionSelected(valuesCollectionID)) {
             $0.selectedCollectionID = valuesCollectionID
         }
