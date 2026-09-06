@@ -184,7 +184,7 @@ struct LearningWorkspaceView: View {
 
 // HSplitView의 idealWidth는 동적으로 추가되는 패널의 너비를 보장하지 않는다.
 // 본문 뷰를 유지한 채 패널 표시 상태나 창 너비가 바뀔 때 분할선을 맞춘다.
-private struct LearningWorkspacePanelSizing: NSViewRepresentable {
+struct LearningWorkspacePanelSizing: NSViewRepresentable {
     struct Configuration: Equatable {
         var showsSidebar: Bool
         var showsInspector: Bool

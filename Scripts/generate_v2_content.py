@@ -61,6 +61,191 @@ def concept_id(title: str) -> str:
     return f"v2.concept.{digest}"
 
 
+def load_knowledge_titles(root: Path | None) -> list[str]:
+    if root is None:
+        return []
+    titles = []
+    for path in root.rglob("*.md"):
+        text = strip_frontmatter(path.read_text(encoding="utf-8"))
+        if "## 다음 연결" not in text:
+            continue
+        match = re.search(r"(?m)^# (.+)$", text)
+        if match:
+            titles.append(match.group(1).strip())
+    return titles
+
+
+def linked_knowledge_ids(markdown: str, titles: list[str]) -> list[str]:
+    common = {"읽기", "코드", "하기", "흐름", "패턴", "값", "상태"}
+    scored = []
+    for title in titles:
+        score = markdown.count(title) * 20
+        tokens = [
+            token for token in re.findall(r"[A-Za-z@]+|[가-힣]+", title)
+            if len(token) > 1 and token not in common
+        ]
+        score += sum(markdown.lower().count(token.lower()) for token in tokens)
+        if score:
+            scored.append((score, title))
+    scored.sort(key=lambda item: (-item[0], item[1]))
+    return [concept_id(title) for _, title in scored[:4]]
+
+
+def extract_feedback(markdown: str) -> str:
+    matches = list(re.finditer(
+        r"(?m)^> \[!(?!game)[^\]]+\]-?[^\n]*\n((?:>.*(?:\n|$))*)",
+        markdown,
+    ))
+    if not matches:
+        return ""
+    return clean_inline("\n".join(
+        line.removeprefix(">").strip()
+        for line in matches[-1].group(1).splitlines()
+    ).strip())
+
+
+def remove_activity_annotations(markdown: str) -> str:
+    markdown = re.sub(
+        r"(?m)^> \[!game\]-?[^\n]*\n(?:>.*(?:\n|$))*",
+        "",
+        markdown,
+    )
+    markdown = re.sub(
+        r"(?m)^> \[!(?!game)[^\]]+\]-?[^\n]*\n(?:>.*(?:\n|$))*",
+        "",
+        markdown,
+    )
+    markdown = re.sub(r"(?m)^<!-- conriculum-activity:.*?-->\s*$", "", markdown)
+    markdown = re.sub(r"(?m)^\*\*선택 카드.*?:\*\*\s*$", "", markdown)
+    return re.sub(r"\n{3,}", "\n\n", markdown).strip()
+
+
+def normalized_choice(value: str) -> str:
+    return re.sub(r"[^0-9a-zA-Z가-힣]+", "", clean_inline(value)).lower()
+
+
+def infer_correct_option(options: list[str], feedback: str) -> int:
+    ordinal_markers = (
+        (("첫 선택지", "첫번째", "첫째"), 0),
+        (("두 번째", "두번째", "둘째"), 1),
+        (("세 번째", "세번째", "셋째"), 2),
+        (("네 번째", "네번째", "넷째"), 3),
+    )
+    for markers, index in ordinal_markers:
+        if any(marker in feedback for marker in markers) and index < len(options):
+            return index
+
+    normalized_feedback = normalized_choice(feedback)
+    scores = []
+    for option in options:
+        normalized = normalized_choice(option)
+        score = len(normalized) if normalized and normalized in normalized_feedback else 0
+        if score == 0:
+            tokens = re.findall(r"[0-9a-zA-Z가-힣]+", clean_inline(option))
+            score = sum(len(token) for token in tokens if token.lower() in feedback.lower())
+        scores.append(score)
+    best = max(range(len(options)), key=lambda index: scores[index])
+    return best if scores[best] > 0 else 0
+
+
+def activity_contract(markdown: str) -> tuple[str, dict[str, str]]:
+    match = re.search(r"<!-- conriculum-activity:\s*([^;]+);\s*(.*?)\s*-->", markdown)
+    if not match:
+        raise ValueError("Stage 1 activity is missing a conriculum-activity contract")
+    fields = {}
+    for item in match.group(2).split(";"):
+        if ":" in item:
+            key, value = item.split(":", 1)
+            fields[key.strip()] = value.strip()
+    return match.group(1).strip(), fields
+
+
+def build_game_activity(activity_id: str, title: str, markdown: str) -> dict:
+    contract_kind, fields = activity_contract(markdown)
+    feedback = extract_feedback(markdown)
+    cleaned = remove_activity_annotations(markdown)
+    numbered = re.findall(r"(?m)^\d+\.\s+(.+?)\s*$", cleaned)
+    options = []
+    pairs = []
+    correct_ids = []
+
+    if contract_kind == "matching":
+        table_match = re.search(
+            r"(?m)(^\|[^\n]+\|\n^\|[-: |]+\|\n(?:^\|[^\n]+\|\n?)+)",
+            cleaned,
+        )
+        if not table_match:
+            raise ValueError(f"Matching activity has no table: {activity_id}")
+        table_lines = table_match.group(1).splitlines()
+        headers = [clean_inline(cell) for cell in table_lines[0].strip().strip("|").split("|")]
+        rows = parse_markdown_table(table_match.group(1))
+        source_index = headers.index(fields["source"])
+        target_index = headers.index(fields["target"])
+        pairs = [
+            {
+                "id": f"{activity_id}.pair-{index}",
+                "left": row[source_index],
+                "right": row[target_index],
+            }
+            for index, row in enumerate(rows, start=1)
+        ]
+        prompt = (cleaned[: table_match.start()] + cleaned[table_match.end() :]).strip() or title
+        kind = "matching"
+    else:
+        if len(numbered) < 2:
+            raise ValueError(f"Choice activity needs at least two cards: {activity_id}")
+        first_option = re.search(r"(?m)^1\.\s+", cleaned)
+        prompt = cleaned[: first_option.start()].strip() or title
+        options = [
+            {"id": f"{activity_id}.option-{index}", "title": clean_inline(option)}
+            for index, option in enumerate(numbered, start=1)
+        ]
+        correct_indexes = [int(value) for value in fields["correct"].split(",")]
+        correct_ids = [options[index - 1]["id"] for index in correct_indexes]
+        kind = "singleChoice" if contract_kind == "choice" and len(correct_ids) == 1 else "multipleChoice"
+
+    return {
+        "id": activity_id,
+        "kind": kind,
+        "promptMarkdown": prompt,
+        "options": options,
+        "pairs": pairs,
+        "correctOptionIDs": correct_ids,
+        "correctFeedback": feedback or "모든 카드가 원문의 역할 관계와 일치한다.",
+        "incorrectFeedback": (
+            "아직 맞지 않는 연결이나 빠진 단서가 있습니다. 코드의 모양·자리·주변 단어를 다시 비교해 보세요."
+        ),
+    }
+
+
+def build_game_activities(block_id: str, title: str, markdown: str) -> list[dict]:
+    if title.startswith("게임 3"):
+        sources = [
+            source.strip()
+            for source in re.split(r"(?m)(?=^### 수상한 카드\s*$)", markdown)
+            if MARKER_TEXT in source
+        ]
+    elif title.startswith("게임 4"):
+        sources = [
+            source.strip()
+            for source in re.split(r"(?m)(?=^### \d+\s*$)", markdown)
+            if MARKER_TEXT in source
+        ]
+    else:
+        sources = [markdown]
+    return [
+        build_game_activity(
+            f"{block_id}.activity-{index}",
+            title,
+            source,
+        )
+        for index, source in enumerate(sources, start=1)
+    ]
+
+
+MARKER_TEXT = "conriculum-activity:"
+
+
 def chapter_order(path: Path) -> int:
     match = re.match(r"Chapter (\d+)", path.name)
     return int(match.group(1)) if match else 99
@@ -99,7 +284,13 @@ def block_kind(stage: int, title: str) -> str:
     return "support"
 
 
-def parse_page(source_root: Path, stage: int, chapter_id: str, page_path: Path) -> dict:
+def parse_page(
+    source_root: Path,
+    stage: int,
+    chapter_id: str,
+    page_path: Path,
+    knowledge_titles: list[str],
+) -> dict:
     text = strip_frontmatter(page_path.read_text(encoding="utf-8"))
     title_match = re.search(r"^# (.+)$", text, flags=re.MULTILINE)
     if not title_match:
@@ -111,13 +302,20 @@ def parse_page(source_root: Path, stage: int, chapter_id: str, page_path: Path) 
         end = matches[index].start() if index < len(matches) else len(text)
         body = text[match.end() : end].strip()
         body = re.sub(r"\n*\[\[학습 체계 ver\.2/.+?\]\].*$", "", body, flags=re.DOTALL).strip()
+        block_id = f"{page_path.stem.lower().replace(' ', '-')}.block-{index}"
+        kind = block_kind(stage, match.group(1).strip())
         blocks.append(
             {
-                "id": f"{page_path.stem.lower().replace(' ', '-')}.block-{index}",
+                "id": block_id,
                 "order": index,
-                "kind": block_kind(stage, match.group(1).strip()),
+                "kind": kind,
                 "title": match.group(1).strip(),
                 "markdown": body,
+                "activities": build_game_activities(
+                    block_id,
+                    match.group(1).strip(),
+                    body,
+                ) if stage == 1 and kind in ("game", "boss") else [],
             }
         )
     page_number = int(page_path.stem.split()[0])
@@ -158,7 +356,8 @@ def parse_page(source_root: Path, stage: int, chapter_id: str, page_path: Path) 
         "sourcePath": str(page_path.relative_to(source_root)),
         "blocks": blocks,
         "termRefs": [],
-        "knowledgeConceptIDs": [seed["id"] for seed in knowledge_seeds],
+        "knowledgeConceptIDs": linked_knowledge_ids(text, knowledge_titles)
+            or [concept_id("값")],
         "_knowledgeSeeds": knowledge_seeds,
     }
 
@@ -242,7 +441,9 @@ def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("source_root", type=Path)
     parser.add_argument("output_root", type=Path)
+    parser.add_argument("--knowledge-root", type=Path)
     args = parser.parse_args()
+    knowledge_titles = load_knowledge_titles(args.knowledge_root)
 
     stages = []
     parsed_pages = []
@@ -269,7 +470,13 @@ def main() -> None:
             )
             references = []
             for page_path in page_paths:
-                page = parse_page(args.source_root, stage_number, chapter_key, page_path)
+                page = parse_page(
+                    args.source_root,
+                    stage_number,
+                    chapter_key,
+                    page_path,
+                    knowledge_titles,
+                )
                 parsed_pages.append(page)
                 resource_dir = args.output_root / "learning" / f"Stage{stage_number:02d}" / f"Chapter{chapter_index:02d}"
                 resource_dir.mkdir(parents=True, exist_ok=True)
@@ -317,16 +524,6 @@ def main() -> None:
     args.output_root.mkdir(parents=True, exist_ok=True)
     (args.output_root / "manifest.json").write_text(
         json.dumps(manifest, ensure_ascii=False, indent=2) + "\n",
-        encoding="utf-8",
-    )
-    knowledge_dir = args.output_root / "knowledge"
-    knowledge_dir.mkdir(parents=True, exist_ok=True)
-    (knowledge_dir / "catalog.json").write_text(
-        json.dumps(
-            build_knowledge_catalog(stages, parsed_pages),
-            ensure_ascii=False,
-            indent=2,
-        ) + "\n",
         encoding="utf-8",
     )
 

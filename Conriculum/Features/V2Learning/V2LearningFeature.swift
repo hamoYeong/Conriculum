@@ -1,6 +1,11 @@
 import ComposableArchitecture
 import Foundation
 
+struct V2GameDraft: Equatable, Sendable {
+    var selectedOptionIDs: Set<String> = []
+    var matches: [String: String] = [:]
+}
+
 @Reducer
 struct V2LearningFeature {
     @ObservableState
@@ -10,6 +15,7 @@ struct V2LearningFeature {
         var knowledgeCatalog: KnowledgeCatalog?
         var page: V2LearningPage?
         var progress: V2Progress = .empty
+        var gameDrafts: [String: V2GameDraft] = [:]
         var sidebarMode: WorkspaceSidebarMode = .automatic
         var isFocusModeEnabled = false
         var isInspectorPresented = false
@@ -74,6 +80,10 @@ struct V2LearningFeature {
         case focusModeButtonTapped
         case knowledgeConceptSelected(KnowledgeConceptID)
         case inspectorDismissed
+        case gameOptionTapped(activityID: String, optionID: String)
+        case gameMatchChanged(activityID: String, pairID: String, rightPairID: String)
+        case gameSubmitTapped(activityID: String)
+        case gameResponseSaveFinished(String?)
         case homeButtonTapped
         case delegate(Delegate)
     }
@@ -100,6 +110,7 @@ struct V2LearningFeature {
 
     @Dependency(\.v2ContentClient) var contentClient
     @Dependency(\.v2ProgressClient) var progressClient
+    @Dependency(\.date.now) var now
 
     var body: some Reducer<State, Action> {
         Reduce { state, action in
@@ -267,6 +278,77 @@ struct V2LearningFeature {
                 state.wasInspectorPresentedBeforeFocus = false
                 return .none
 
+            case let .gameOptionTapped(activityID, optionID):
+                guard let activity = state.page?.blocks
+                    .flatMap(\.activities)
+                    .first(where: { $0.id == activityID }),
+                    activity.options.contains(where: { $0.id == optionID })
+                else { return .none }
+
+                if activity.kind == .singleChoice {
+                    return saveResponse(
+                        state: &state,
+                        activity: activity,
+                        selectedOptionIDs: [optionID],
+                        matches: [:]
+                    )
+                }
+
+                var draft = state.gameDrafts[activityID]
+                    ?? V2GameDraft(
+                        selectedOptionIDs: state.progress.activityResponses[activityID]?.selectedOptionIDs ?? []
+                    )
+                if draft.selectedOptionIDs.contains(optionID) {
+                    draft.selectedOptionIDs.remove(optionID)
+                } else {
+                    draft.selectedOptionIDs.insert(optionID)
+                }
+                state.gameDrafts[activityID] = draft
+                return .none
+
+            case let .gameMatchChanged(activityID, pairID, rightPairID):
+                guard let activity = state.page?.blocks
+                    .flatMap(\.activities)
+                    .first(where: { $0.id == activityID }),
+                    activity.kind == .matching,
+                    activity.pairs.contains(where: { $0.id == pairID }),
+                    activity.pairs.contains(where: { $0.id == rightPairID })
+                else { return .none }
+                var draft = state.gameDrafts[activityID]
+                    ?? V2GameDraft(matches: state.progress.activityResponses[activityID]?.matches ?? [:])
+                for (leftID, assignedRightID) in draft.matches where assignedRightID == rightPairID {
+                    draft.matches.removeValue(forKey: leftID)
+                }
+                draft.matches[pairID] = rightPairID
+                state.gameDrafts[activityID] = draft
+                guard draft.matches.count == activity.pairs.count else { return .none }
+                return saveResponse(
+                    state: &state,
+                    activity: activity,
+                    selectedOptionIDs: [],
+                    matches: draft.matches
+                )
+
+            case let .gameSubmitTapped(activityID):
+                guard let activity = state.page?.blocks
+                    .flatMap(\.activities)
+                    .first(where: { $0.id == activityID }),
+                    activity.kind == .multipleChoice,
+                    let draft = state.gameDrafts[activityID],
+                    !draft.selectedOptionIDs.isEmpty
+                else { return .none }
+                return saveResponse(
+                    state: &state,
+                    activity: activity,
+                    selectedOptionIDs: draft.selectedOptionIDs,
+                    matches: [:]
+                )
+
+            case let .gameResponseSaveFinished(message):
+                state.isSaving = false
+                state.saveErrorMessage = message
+                return .none
+
             case .homeButtonTapped:
                 return .send(.delegate(.homeRequested))
 
@@ -279,6 +361,42 @@ struct V2LearningFeature {
     private func currentIndex(_ state: State) -> Int? {
         guard let page = state.page else { return nil }
         return state.orderedPages.firstIndex { $0.id == page.id }
+    }
+
+    private func saveResponse(
+        state: inout State,
+        activity: V2GameActivity,
+        selectedOptionIDs: Set<String>,
+        matches: [String: String]
+    ) -> Effect<Action> {
+        let attempts = state.progress.activityResponses[activity.id]
+            .map { $0.attempts + 1 } ?? 1
+        let isCorrect: Bool
+        if activity.kind == .matching {
+            isCorrect = activity.pairs.allSatisfy { matches[$0.id] == $0.id }
+        } else {
+            isCorrect = selectedOptionIDs == activity.correctOptionIDs
+        }
+        state.progress.activityResponses[activity.id] = V2GameResponse(
+            activityID: activity.id,
+            selectedOptionIDs: selectedOptionIDs,
+            matches: matches,
+            isCorrect: isCorrect,
+            attempts: attempts,
+            answeredAt: now
+        )
+        state.gameDrafts.removeValue(forKey: activity.id)
+        state.isSaving = true
+        state.saveErrorMessage = nil
+        let progress = state.progress
+        return .run { send in
+            do {
+                try await progressClient.save(progress)
+                await send(.gameResponseSaveFinished(nil))
+            } catch {
+                await send(.gameResponseSaveFinished(error.localizedDescription))
+            }
+        }
     }
 
     private func navigate(

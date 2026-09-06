@@ -1,3 +1,4 @@
+import AppKit
 import ComposableArchitecture
 import SwiftUI
 
@@ -5,36 +6,48 @@ struct V2LearningView: View {
     let store: StoreOf<V2LearningFeature>
 
     var body: some View {
-        ZStack {
-            Color(nsColor: .windowBackgroundColor).ignoresSafeArea()
-            content
-        }
-        .frame(minWidth: 720, minHeight: 600)
-        .toolbar {
+        GeometryReader { geometry in
+            let layout = LearningWorkspacePanelLayout.resolve(
+                availableWidth: geometry.size.width,
+                inspectorIsVisible: inspectorIsVisible,
+                sidebarIsHidden: sidebarIsHidden
+            )
+            let showsSidebar = !sidebarIsHidden && layout != .learningAndInspector
+
+            ZStack {
+                Color(nsColor: .windowBackgroundColor).ignoresSafeArea()
+                content(showsSidebar: showsSidebar, availableWidth: geometry.size.width)
+            }
+            .toolbar(removing: .sidebarToggle)
+            .toolbar {
             ToolbarItemGroup(placement: .navigation) {
                 Button {
                     store.send(.homeButtonTapped)
                 } label: {
                     Label("학습 홈", systemImage: "house")
                 }
-                .help("현재 ver.2 학습 위치를 저장하고 홈으로 돌아갑니다.")
+                .help("학습 홈으로 돌아가기")
+                .accessibilityHint("현재 학습 위치를 저장한 채 학습 홈으로 돌아갑니다.")
 
                 Button {
-                    store.send(.sidebarVisibilityButtonTapped)
+                    toggleSidebar(
+                        isVisible: showsSidebar,
+                        availableWidth: geometry.size.width
+                    )
                 } label: {
                     Label(
-                        store.sidebarMode == .hidden
-                            ? "학습 문맥 보기"
-                            : "학습 문맥 숨기기",
+                        showsSidebar ? "학습 문맥 숨기기" : "학습 문맥 보기",
                         systemImage: "sidebar.left"
                     )
                 }
-                .help("챕터 페이지와 현재 지식 단서를 보여 주는 사이드바를 전환합니다.")
+                .help(showsSidebar
+                    ? "왼쪽 학습 문맥을 숨깁니다."
+                    : "학습 문맥을 표시합니다. 좁은 창에서는 개념 상세와 번갈아 봅니다.")
             }
 
             ToolbarItemGroup(placement: .primaryAction) {
                 Button {
-                    store.send(.focusModeButtonTapped)
+                    toggleFocusModePreservingFirstResponder()
                 } label: {
                     Label(
                         store.isFocusModeEnabled ? "집중 모드 끄기" : "집중 모드 켜기",
@@ -43,21 +56,34 @@ struct V2LearningView: View {
                             : "viewfinder"
                     )
                 }
-                .help("집중 모드는 학습 문맥과 지식 단서를 잠시 숨깁니다.")
+                .help(
+                    store.isFocusModeEnabled
+                        ? "집중 모드를 끝내고 이전 패널 표시 상태를 복원합니다."
+                        : "지식 문맥과 개념 상세를 숨기고 학습 내용에 집중합니다."
+                )
                 .accessibilityValue(store.isFocusModeEnabled ? "켜짐" : "꺼짐")
+                .focusable(false)
 
                 Button {
                     store.send(.inspectorVisibilityButtonTapped)
                 } label: {
                     Label(
-                        store.isInspectorPresented ? "지식 단서 숨기기" : "지식 단서 보기",
+                        inspectorIsVisible ? "개념 상세 숨기기" : "개념 상세 보기",
                         systemImage: "sidebar.right"
                     )
                 }
                 .disabled(store.selectedKnowledgeConcept == nil)
-                .help("선택한 개념의 정의와 판단 질문을 오른쪽에서 확인합니다.")
+                .help(
+                    store.selectedKnowledgeConcept == nil
+                        ? "지식 문맥에서 개념을 먼저 선택해 주세요."
+                        : inspectorIsVisible
+                            ? "오른쪽 개념 상세를 숨깁니다."
+                            : "선택한 개념의 상세 내용을 표시합니다."
+                )
+            }
             }
         }
+        .frame(minWidth: 680, minHeight: 560)
         .task {
             guard store.page == nil else { return }
             await store.send(.task).finish()
@@ -65,7 +91,7 @@ struct V2LearningView: View {
     }
 
     @ViewBuilder
-    private var content: some View {
+    private func content(showsSidebar: Bool, availableWidth: CGFloat) -> some View {
         if store.isLoading, store.page == nil {
             ProgressView("ver.2 학습 페이지를 불러오는 중…")
         } else if let message = store.loadErrorMessage, store.page == nil {
@@ -78,24 +104,23 @@ struct V2LearningView: View {
                 Button("홈으로") { store.send(.homeButtonTapped) }
             }
         } else if let page = store.page, let stage = store.stage {
-            learningWorkspace(page, stage: stage)
+            learningWorkspace(
+                page,
+                stage: stage,
+                showsSidebar: showsSidebar,
+                availableWidth: availableWidth
+            )
         }
     }
 
     private func learningWorkspace(
         _ page: V2LearningPage,
-        stage: V2Stage
+        stage: V2Stage,
+        showsSidebar: Bool,
+        availableWidth: CGFloat
     ) -> some View {
-        GeometryReader { geometry in
-            let inspectorIsVisible = !store.isFocusModeEnabled
-                && store.isInspectorPresented
-                && store.selectedKnowledgeConcept != nil
-            let sidebarIsVisible = !store.isFocusModeEnabled
-                && store.sidebarMode != .hidden
-                && (!inspectorIsVisible || geometry.size.width >= 920)
-
-            HSplitView {
-                if sidebarIsVisible, let chapter = store.chapter {
+        HSplitView {
+                if showsSidebar, let chapter = store.chapter {
                     V2LearningSidebar(
                         stage: stage,
                         chapter: chapter,
@@ -112,17 +137,27 @@ struct V2LearningView: View {
                 }
 
                 learningPage(page, stage: stage)
-                    .frame(minWidth: 400, maxWidth: .infinity)
+                    .frame(minWidth: 380, maxWidth: .infinity)
+                    .background {
+                        LearningWorkspacePanelSizing(
+                            configuration: .init(
+                                showsSidebar: showsSidebar,
+                                showsInspector: inspectorIsVisible,
+                                availableWidth: availableWidth
+                            )
+                        )
+                    }
 
                 if inspectorIsVisible,
                    let concept = store.selectedKnowledgeConcept {
                     V2KnowledgeInspector(
                         concept: concept,
+                        relations: store.knowledgeCatalog?.relations ?? [],
+                        concepts: store.knowledgeCatalog?.concepts ?? [],
                         onDismiss: { store.send(.inspectorDismissed) }
                     )
                     .frame(minWidth: 250, idealWidth: 330, maxWidth: 360)
                 }
-            }
         }
     }
 
@@ -132,15 +167,10 @@ struct V2LearningView: View {
                 VStack(alignment: .leading, spacing: 24) {
                     VStack(alignment: .leading, spacing: 10) {
                         HStack {
-                            Text("STAGE \(stage.order) · CHAPTER \(store.chapter?.order ?? 0)")
+                            Text("Chapter \(store.chapter?.order ?? 0) · \(page.order) / \(store.chapter?.pages.count ?? 0)")
                                 .font(.caption.weight(.semibold))
                                 .foregroundStyle(.secondary)
-                            Spacer()
-                            if let position = store.position {
-                                Text("전체 \(position) / \(store.orderedPages.count)")
-                                    .font(.callout.monospacedDigit())
-                                    .foregroundStyle(.secondary)
-                            }
+                                .textCase(.uppercase)
                         }
                         Text(page.title)
                             .font(.largeTitle.bold())
@@ -150,14 +180,35 @@ struct V2LearningView: View {
                             .foregroundStyle(.secondary)
                     }
 
+                    Divider()
+
                     if stage.kind == .game {
-                        V2StageOneGameComponent(page: page)
+                        V2StageOneGameComponent(
+                            page: page,
+                            responses: store.progress.activityResponses,
+                            drafts: store.gameDrafts,
+                            onOptionTapped: { activityID, optionID in
+                                store.send(.gameOptionTapped(
+                                    activityID: activityID,
+                                    optionID: optionID
+                                ))
+                            },
+                            onMatchChanged: { activityID, pairID, rightPairID in
+                                store.send(.gameMatchChanged(
+                                    activityID: activityID,
+                                    pairID: pairID,
+                                    rightPairID: rightPairID
+                                ))
+                            },
+                            onSubmit: { store.send(.gameSubmitTapped(activityID: $0)) }
+                        )
                     } else {
                         V2StageTwoLearningComponent(page: page)
                     }
                 }
-                .frame(maxWidth: 820, alignment: .leading)
-                .padding(32)
+                .frame(maxWidth: 760, alignment: .leading)
+                .padding(.horizontal, 24)
+                .padding(.vertical, 32)
                 .frame(maxWidth: .infinity)
             }
 
@@ -177,13 +228,15 @@ struct V2LearningView: View {
                     }
                     .disabled(!store.canGoPrevious || store.isSaving)
                     Spacer()
-                    if store.progress.completedPageIDs.contains(page.id) {
-                        Label("완료", systemImage: "checkmark.circle.fill")
-                            .foregroundStyle(.green)
+                    if let position = store.position {
+                        Text("\(position) / \(store.orderedPages.count)")
+                            .font(.callout.monospacedDigit())
+                            .foregroundStyle(.secondary)
+                            .accessibilityLabel("학습 페이지 \(store.orderedPages.count)개 중 \(position)번째")
                     }
                     Spacer()
                     Button(
-                        store.isLastPage ? "학습 완료" : "완료하고 다음",
+                        store.isLastPage ? "완료 요약" : "다음",
                         systemImage: store.isLastPage ? "checkmark" : "chevron.right"
                     ) {
                         store.send(.nextButtonTapped)
@@ -195,6 +248,40 @@ struct V2LearningView: View {
                 .padding(.vertical, 14)
             }
             .background(.bar)
+        }
+    }
+
+    private var sidebarIsHidden: Bool {
+        store.isFocusModeEnabled || store.sidebarMode == .hidden
+    }
+
+    private var inspectorIsVisible: Bool {
+        !store.isFocusModeEnabled
+            && store.isInspectorPresented
+            && store.selectedKnowledgeConcept != nil
+    }
+
+    private func toggleSidebar(isVisible: Bool, availableWidth: CGFloat) {
+        if isVisible {
+            store.send(.sidebarModeChanged(.hidden))
+        } else {
+            store.send(.sidebarModeChanged(.visible))
+            if availableWidth < LearningWorkspacePanelLayout.threePanelMinimumWidth,
+               inspectorIsVisible {
+                store.send(.inspectorVisibilityButtonTapped)
+            }
+        }
+    }
+
+    private func toggleFocusModePreservingFirstResponder() {
+        let window = NSApp.keyWindow
+        let firstResponder = window?.firstResponder
+        store.send(.focusModeButtonTapped)
+
+        guard let window, let firstResponder else { return }
+        Task { @MainActor in
+            await Task.yield()
+            window.makeFirstResponder(firstResponder)
         }
     }
 }

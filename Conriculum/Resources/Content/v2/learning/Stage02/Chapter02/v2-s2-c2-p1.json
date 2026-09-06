@@ -14,25 +14,28 @@
       "order": 1,
       "kind": "mission",
       "title": "읽기 미션",
-      "markdown": "검색 화면의 세 선언을 `역할 이름 / 가능한 값 / 현재 값 / 변경 주체`로 읽는다. **완료 증거:** 선언마다 네 칸을 채운 표.\n\n```swift\n@State private var query = \"\"\n@State private var selectedMemo: Memo?\nlet allMemos: [Memo]\n```"
+      "markdown": "검색 화면의 세 선언을 `역할 이름 / 가능한 값 / 현재 값 / 변경 주체`로 읽는다. **완료 증거:** 선언마다 네 칸을 채운 표.\n\n```swift\n@State private var query = \"\"\n@State private var selectedMemo: Memo?\nlet allMemos: [Memo]\n```",
+      "activities": []
     },
     {
       "id": "01-선언에서-이름-타입-값-구분하기.block-2",
       "order": 2,
       "kind": "support",
       "title": "기본 흐름",
-      "markdown": "`query`는 String이며 화면이 바꾼다. `selectedMemo`는 Memo 또는 값 없음이다. `allMemos`는 Memo 여러 개이며 이 View 안에서 다른 배열로 재할당하지 않는다.\n\n> [!question] 막히면 · 초보자 연결\n> `let/var`, `:`, `?`, `[]`를 한꺼번에 외우지 말고 [[지식 체계 ver.2/02 값과 상태/선언 읽기|선언 읽기]]의 네 질문을 왼쪽부터 적용한다."
+      "markdown": "`query`는 String이며 화면이 바꾼다. `selectedMemo`는 Memo 또는 값 없음이다. `allMemos`는 Memo 여러 개이며 이 View 안에서 다른 배열로 재할당하지 않는다.\n\n> [!question] 막히면 · 초보자 연결\n> `let/var`, `:`, `?`, `[]`를 한꺼번에 외우지 말고 [[지식 체계 ver.2/02 값과 상태/선언 읽기|선언 읽기]]의 네 질문을 왼쪽부터 적용한다.",
+      "activities": []
     },
     {
       "id": "01-선언에서-이름-타입-값-구분하기.block-3",
       "order": 3,
       "kind": "support",
       "title": "중심 활동",
-      "markdown": "`query = \"책\"`, `selectedMemo = nil`, `allMemos = []`가 각각 가능한지 고르고 타입과 변경 가능성을 근거로 말한다.\n\n> [!tip]- 이미 안다면 · 타입이 말하지 않는 의미\n> `[Memo]`는 정렬 기준과 데이터 출처를 말하지 않는다. `allMemos`의 사용처에서 실제로 전체인지, 이미 필터된 값인지 확인한다."
+      "markdown": "`query = \"책\"`, `selectedMemo = nil`, `allMemos = []`가 각각 가능한지 고르고 타입과 변경 가능성을 근거로 말한다.\n\n> [!tip]- 이미 안다면 · 타입이 말하지 않는 의미\n> `[Memo]`는 정렬 기준과 데이터 출처를 말하지 않는다. `allMemos`의 사용처에서 실제로 전체인지, 이미 필터된 값인지 확인한다.",
+      "activities": []
     }
   ],
   "termRefs": [],
   "knowledgeConceptIDs": [
-    "v2.concept.905074b77c01"
+    "v2.concept.50d055d31163"
   ]
 }

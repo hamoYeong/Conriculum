@@ -20,7 +20,16 @@ struct V2DependencyClientTests {
         let client = V2ProgressClient.live(store: suite)
         let progress = V2Progress(
             lastVisitedPageID: "v2.s2.c3.p4",
-            completedPageIDs: ["v2.s1.c1.p1", "v2.s1.c1.p2"]
+            completedPageIDs: ["v2.s1.c1.p1", "v2.s1.c1.p2"],
+            activityResponses: [
+                "activity-1": V2GameResponse(
+                    activityID: "activity-1",
+                    selectedOptionIDs: ["option-2"],
+                    isCorrect: true,
+                    attempts: 2,
+                    answeredAt: Date(timeIntervalSince1970: 1_800_000_000)
+                )
+            ]
         )
 
         try await client.save(progress)

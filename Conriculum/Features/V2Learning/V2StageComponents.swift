@@ -3,11 +3,39 @@ import SwiftUI
 /// Stage 1은 알아보기·대조·보스 전이를 게임 라운드로 보여 준다.
 struct V2StageOneGameComponent: View {
     let page: V2LearningPage
+    let responses: [String: V2GameResponse]
+    let drafts: [String: V2GameDraft]
+    let onOptionTapped: (String, String) -> Void
+    let onMatchChanged: (String, String, String) -> Void
+    let onSubmit: (String) -> Void
+
+    init(
+        page: V2LearningPage,
+        responses: [String: V2GameResponse] = [:],
+        drafts: [String: V2GameDraft] = [:],
+        onOptionTapped: @escaping (String, String) -> Void = { _, _ in },
+        onMatchChanged: @escaping (String, String, String) -> Void = { _, _, _ in },
+        onSubmit: @escaping (String) -> Void = { _ in }
+    ) {
+        self.page = page
+        self.responses = responses
+        self.drafts = drafts
+        self.onOptionTapped = onOptionTapped
+        self.onMatchChanged = onMatchChanged
+        self.onSubmit = onSubmit
+    }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 18) {
             ForEach(page.blocks.sorted(by: { $0.order < $1.order })) { block in
-                V2GameBlock(block: block)
+                V2GameBlock(
+                    block: block,
+                    responses: responses,
+                    drafts: drafts,
+                    onOptionTapped: onOptionTapped,
+                    onMatchChanged: onMatchChanged,
+                    onSubmit: onSubmit
+                )
             }
         }
     }
@@ -15,7 +43,11 @@ struct V2StageOneGameComponent: View {
 
 private struct V2GameBlock: View {
     let block: V2ContentBlock
-    @State private var showsFeedback = false
+    let responses: [String: V2GameResponse]
+    let drafts: [String: V2GameDraft]
+    let onOptionTapped: (String, String) -> Void
+    let onMatchChanged: (String, String, String) -> Void
+    let onSubmit: (String) -> Void
 
     private var accent: Color {
         switch block.kind {
@@ -34,21 +66,28 @@ private struct V2GameBlock: View {
                 .foregroundStyle(accent)
                 .accessibilityHeading(.h2)
 
-            let parts = V2MarkdownParts(block.markdown)
-            V2MarkdownContent(markdown: parts.prompt)
-
-            if let feedback = parts.feedback {
-                DisclosureGroup("피드백 확인", isExpanded: $showsFeedback) {
-                    V2MarkdownContent(markdown: feedback)
-                        .padding(.top, 8)
+            if block.activities.isEmpty {
+                V2MarkdownContent(markdown: block.markdown)
+            } else {
+                ForEach(block.activities) { activity in
+                    V2GameActivityView(
+                        activity: activity,
+                        response: responses[activity.id],
+                        draft: drafts[activity.id],
+                        onOptionTapped: { onOptionTapped(activity.id, $0) },
+                        onMatchChanged: { pairID, rightPairID in
+                            onMatchChanged(activity.id, pairID, rightPairID)
+                        },
+                        onSubmit: { onSubmit(activity.id) }
+                    )
+                    if activity.id != block.activities.last?.id {
+                        Divider()
+                    }
                 }
-                .accessibilityHint("선택한 뒤 근거와 해설을 확인합니다.")
             }
         }
-        .padding(20)
+        .padding(.vertical, 8)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(accent.opacity(0.08), in: RoundedRectangle(cornerRadius: 16))
-        .overlay { RoundedRectangle(cornerRadius: 16).stroke(accent.opacity(0.22)) }
     }
 
     private var symbol: String {
@@ -61,6 +100,256 @@ private struct V2GameBlock: View {
         case .unlock: "lock.open"
         default: "lightbulb"
         }
+    }
+}
+
+private struct V2GameActivityView: View {
+    let activity: V2GameActivity
+    let response: V2GameResponse?
+    let draft: V2GameDraft?
+    let onOptionTapped: (String) -> Void
+    let onMatchChanged: (String, String) -> Void
+    let onSubmit: () -> Void
+    @State private var selectedRightPairID: String?
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 14) {
+            V2MarkdownContent(markdown: activity.promptMarkdown)
+
+            if activity.kind == .matching {
+                matchingActivity
+            } else {
+                LazyVGrid(
+                    columns: [GridItem(.adaptive(minimum: 210), spacing: 10)],
+                    alignment: .leading,
+                    spacing: 10
+                ) {
+                    ForEach(activity.options) { option in
+                        optionCard(option)
+                    }
+                }
+
+                if activity.kind == .multipleChoice {
+                    HStack {
+                        Text("여러 카드를 고를 수 있습니다.")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                        Spacer()
+                        Button("선택 완료", action: onSubmit)
+                            .buttonStyle(.borderedProminent)
+                            .disabled(selectedOptionIDs.isEmpty)
+                    }
+                }
+            }
+
+            if let response, draft == nil {
+                feedback(response)
+            } else {
+                Label(instruction, systemImage: "hand.tap")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+        }
+        .padding(.vertical, 4)
+    }
+
+    private func optionCard(_ option: V2GameActivity.Option) -> some View {
+        let isSelected = selectedOptionIDs.contains(option.id)
+        let showsJudgment = response != nil && draft == nil
+        let selectedIsCorrect = showsJudgment && isSelected && activity.correctOptionIDs.contains(option.id)
+        let selectedIsIncorrect = showsJudgment && isSelected && !activity.correctOptionIDs.contains(option.id)
+
+        return Button {
+            onOptionTapped(option.id)
+        } label: {
+            HStack(alignment: .top, spacing: 10) {
+                Image(systemName: cardSymbol(
+                    selectedIsCorrect: selectedIsCorrect,
+                    selectedIsIncorrect: selectedIsIncorrect
+                ))
+                .foregroundStyle(cardAccent(
+                    selectedIsCorrect: selectedIsCorrect,
+                    selectedIsIncorrect: selectedIsIncorrect
+                ))
+                .accessibilityHidden(true)
+                Text(attributed(option.title))
+                    .foregroundStyle(.primary)
+                    .multilineTextAlignment(.leading)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+            }
+            .padding(14)
+            .frame(maxWidth: .infinity, minHeight: 64, alignment: .topLeading)
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .background(
+            cardAccent(
+                selectedIsCorrect: selectedIsCorrect,
+                selectedIsIncorrect: selectedIsIncorrect
+            ).opacity(isSelected ? 0.13 : 0.04),
+            in: RoundedRectangle(cornerRadius: 12)
+        )
+        .overlay {
+            RoundedRectangle(cornerRadius: 12)
+                .stroke(
+                    cardAccent(
+                        selectedIsCorrect: selectedIsCorrect,
+                        selectedIsIncorrect: selectedIsIncorrect
+                    ).opacity(isSelected ? 0.75 : 0.13),
+                    lineWidth: isSelected ? 2 : 1
+                )
+        }
+        .accessibilityValue(
+            selectedIsCorrect ? "선택됨, 정답"
+                : selectedIsIncorrect ? "선택됨, 다시 생각해 보기" : ""
+        )
+        .accessibilityHint(
+            activity.kind == .singleChoice
+                ? "선택하면 정오답 근거가 바로 표시됩니다."
+                : "복수 선택에 포함하거나 제외합니다. 선택 완료 뒤 한 번에 채점합니다."
+        )
+    }
+
+    private var matchingActivity: some View {
+        VStack(alignment: .leading, spacing: 14) {
+            Text("연결할 카드")
+                .font(.caption.weight(.semibold))
+                .foregroundStyle(.secondary)
+            LazyVGrid(
+                columns: [GridItem(.adaptive(minimum: 150), spacing: 8)],
+                alignment: .leading,
+                spacing: 8
+            ) {
+                ForEach(Array(activity.pairs.reversed())) { pair in
+                    Button {
+                        selectedRightPairID = pair.id
+                    } label: {
+                        Label {
+                            Text(attributed(pair.right))
+                        } icon: {
+                            Image(systemName: selectedRightPairID == pair.id
+                                ? "hand.point.up.left.fill"
+                                : "circle")
+                        }
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .padding(10)
+                    }
+                    .buttonStyle(.plain)
+                    .background(
+                        Color.accentColor.opacity(selectedRightPairID == pair.id ? 0.12 : 0.04),
+                        in: RoundedRectangle(cornerRadius: 9)
+                    )
+                    .draggable(pair.id)
+                }
+            }
+
+            VStack(spacing: 8) {
+                ForEach(activity.pairs) { pair in
+                    matchingTarget(pair)
+                }
+            }
+
+            Text("오른쪽 카드를 끌어 놓거나, 카드를 고른 뒤 연결할 왼쪽 항목을 누르세요. 모든 연결이 채워지면 한 번에 확인합니다.")
+                .font(.caption)
+                .foregroundStyle(.secondary)
+        }
+    }
+
+    private func matchingTarget(_ pair: V2GameActivity.Pair) -> some View {
+        let assignedID = currentMatches[pair.id]
+        let assigned = activity.pairs.first { $0.id == assignedID }
+        return Button {
+            guard let selectedRightPairID else { return }
+            onMatchChanged(pair.id, selectedRightPairID)
+            self.selectedRightPairID = nil
+        } label: {
+            HStack(spacing: 10) {
+                Text(attributed(pair.left))
+                    .fontWeight(.semibold)
+                Spacer()
+                Image(systemName: "arrow.right")
+                    .foregroundStyle(.secondary)
+                Text(assigned.map { attributed($0.right) } ?? AttributedString("여기에 연결"))
+                    .foregroundStyle(assigned == nil ? .secondary : .primary)
+            }
+            .padding(.vertical, 10)
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .dropDestination(for: String.self) { items, _ in
+            guard let rightPairID = items.first else { return false }
+            onMatchChanged(pair.id, rightPairID)
+            return true
+        }
+        .overlay(alignment: .bottom) { Divider() }
+        .accessibilityHint("연결할 오른쪽 카드를 선택하거나 끌어 놓습니다.")
+    }
+
+    private var selectedOptionIDs: Set<String> {
+        draft?.selectedOptionIDs ?? response?.selectedOptionIDs ?? []
+    }
+
+    private var currentMatches: [String: String] {
+        draft?.matches ?? response?.matches ?? [:]
+    }
+
+    private var instruction: String {
+        switch activity.kind {
+        case .singleChoice:
+            "카드를 선택하면 바로 근거를 확인할 수 있습니다."
+        case .multipleChoice:
+            "필요한 카드를 모두 고른 뒤 선택 완료를 누르세요."
+        case .matching:
+            "모든 연결을 완성하면 한 번에 근거를 확인합니다."
+        }
+    }
+
+    private func feedback(_ response: V2GameResponse) -> some View {
+        let isCorrect = response.isCorrect
+        return VStack(alignment: .leading, spacing: 8) {
+            Label(
+                isCorrect ? "정답 · 근거 확인" : "다시 생각해 보기",
+                systemImage: isCorrect
+                    ? "checkmark.circle.fill"
+                    : "arrow.counterclockwise.circle.fill"
+            )
+            .font(.headline)
+            .foregroundStyle(isCorrect ? Color.green : Color.orange)
+            Text(isCorrect ? activity.correctFeedback : activity.incorrectFeedback)
+                .fixedSize(horizontal: false, vertical: true)
+            Text("시도 \(response.attempts)회 · 답을 바꾸어 다시 확인할 수 있습니다.")
+                .font(.caption)
+                .foregroundStyle(.secondary)
+        }
+        .padding(14)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(
+            (isCorrect ? Color.green : Color.orange).opacity(0.09),
+            in: RoundedRectangle(cornerRadius: 12)
+        )
+        .accessibilityElement(children: .combine)
+    }
+
+    private func cardSymbol(
+        selectedIsCorrect: Bool,
+        selectedIsIncorrect: Bool
+    ) -> String {
+        if selectedIsCorrect { return "checkmark.circle.fill" }
+        if selectedIsIncorrect { return "xmark.circle.fill" }
+        return "circle"
+    }
+
+    private func cardAccent(
+        selectedIsCorrect: Bool,
+        selectedIsIncorrect: Bool
+    ) -> Color {
+        if selectedIsCorrect { return .green }
+        if selectedIsIncorrect { return .orange }
+        return .accentColor
+    }
+
+    private func attributed(_ markdown: String) -> AttributedString {
+        (try? AttributedString(markdown: markdown)) ?? AttributedString(markdown)
     }
 }
 
@@ -100,12 +389,8 @@ private struct V2ReadingBlock: View {
             }
             V2MarkdownContent(markdown: block.markdown)
         }
-        .padding(18)
+        .padding(.vertical, 6)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(Color.primary.opacity(0.035), in: RoundedRectangle(cornerRadius: 14))
-        .overlay(alignment: .leading) {
-            Capsule().fill(accent).frame(width: 4).padding(.vertical, 12)
-        }
     }
 
     private var symbol: String {
@@ -122,21 +407,6 @@ private struct V2ReadingBlock: View {
         case .closure: "checkmark.circle"
         default: "lightbulb"
         }
-    }
-}
-
-private struct V2MarkdownParts {
-    let prompt: String
-    let feedback: String?
-
-    init(_ markdown: String) {
-        guard let range = markdown.range(of: "\n> [!") else {
-            prompt = markdown
-            feedback = nil
-            return
-        }
-        prompt = String(markdown[..<range.lowerBound]).trimmingCharacters(in: .whitespacesAndNewlines)
-        feedback = String(markdown[range.lowerBound...]).trimmingCharacters(in: .whitespacesAndNewlines)
     }
 }
 

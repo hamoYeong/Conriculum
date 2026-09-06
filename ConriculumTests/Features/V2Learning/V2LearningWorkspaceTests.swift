@@ -1,10 +1,158 @@
 import ComposableArchitecture
+import Foundation
 import Testing
 
 @testable import Conriculum
 
 @MainActor
 struct V2LearningWorkspaceTests {
+    @Test
+    func singleChoiceStoresAttemptsAndShowsImmediateJudgment() async throws {
+        let page = try V2BundledContentStore().loadPage(id: .init(
+            version: .v2,
+            rawValue: "v2.s1.c1.p1"
+        ))
+        let activity = try #require(page.blocks.flatMap(\.activities).first)
+        let wrongOption = try #require(activity.options.first(where: {
+            !activity.correctOptionIDs.contains($0.id)
+        }))
+        let correctOptionID = try #require(activity.correctOptionIDs.first)
+        let timestamp = Date(timeIntervalSince1970: 1_800_000_000)
+        var state = V2LearningFeature.State(pageID: page.id)
+        state.page = page
+        let store = TestStore(initialState: state) {
+            V2LearningFeature()
+        } withDependencies: {
+            $0.date.now = timestamp
+            $0.v2ProgressClient.save = { _ in }
+        }
+
+        await store.send(.gameOptionTapped(
+            activityID: activity.id,
+            optionID: wrongOption.id
+        )) {
+            $0.isSaving = true
+            $0.progress.activityResponses[activity.id] = V2GameResponse(
+                activityID: activity.id,
+                selectedOptionIDs: [wrongOption.id],
+                isCorrect: false,
+                attempts: 1,
+                answeredAt: timestamp
+            )
+        }
+        await store.receive(.gameResponseSaveFinished(nil)) {
+            $0.isSaving = false
+        }
+
+        await store.send(.gameOptionTapped(
+            activityID: activity.id,
+            optionID: correctOptionID
+        )) {
+            $0.isSaving = true
+            $0.progress.activityResponses[activity.id] = V2GameResponse(
+                activityID: activity.id,
+                selectedOptionIDs: [correctOptionID],
+                isCorrect: true,
+                attempts: 2,
+                answeredAt: timestamp
+            )
+        }
+        await store.receive(.gameResponseSaveFinished(nil)) {
+            $0.isSaving = false
+        }
+    }
+
+    @Test
+    func multipleChoiceWaitsForSubmitBeforeShowingFeedback() async throws {
+        let page = try V2BundledContentStore().loadPage(id: .init(
+            version: .v2,
+            rawValue: "v2.s1.c1.p1"
+        ))
+        let activity = try #require(page.blocks.flatMap(\.activities).first {
+            $0.kind == .multipleChoice
+        })
+        let optionIDs = activity.correctOptionIDs
+        let timestamp = Date(timeIntervalSince1970: 1_800_000_000)
+        var state = V2LearningFeature.State(pageID: page.id)
+        state.page = page
+        let store = TestStore(initialState: state) { V2LearningFeature() } withDependencies: {
+            $0.date.now = timestamp
+            $0.v2ProgressClient.save = { _ in }
+        }
+
+        for optionID in optionIDs.sorted() {
+            await store.send(.gameOptionTapped(activityID: activity.id, optionID: optionID)) {
+                $0.gameDrafts[activity.id, default: V2GameDraft()].selectedOptionIDs.insert(optionID)
+            }
+        }
+        #expect(store.state.progress.activityResponses[activity.id] == nil)
+
+        await store.send(.gameSubmitTapped(activityID: activity.id)) {
+            $0.gameDrafts.removeValue(forKey: activity.id)
+            $0.isSaving = true
+            $0.progress.activityResponses[activity.id] = V2GameResponse(
+                activityID: activity.id,
+                selectedOptionIDs: optionIDs,
+                isCorrect: true,
+                attempts: 1,
+                answeredAt: timestamp
+            )
+        }
+        await store.receive(.gameResponseSaveFinished(nil)) {
+            $0.isSaving = false
+        }
+    }
+
+    @Test
+    func matchingShowsFeedbackOnlyAfterEveryPairIsConnected() async throws {
+        let page = try V2BundledContentStore().loadPage(id: .init(
+            version: .v2,
+            rawValue: "v2.s1.c1.p1"
+        ))
+        let activity = try #require(page.blocks.flatMap(\.activities).first {
+            $0.kind == .matching
+        })
+        let timestamp = Date(timeIntervalSince1970: 1_800_000_000)
+        var state = V2LearningFeature.State(pageID: page.id)
+        state.page = page
+        let store = TestStore(initialState: state) { V2LearningFeature() } withDependencies: {
+            $0.date.now = timestamp
+            $0.v2ProgressClient.save = { _ in }
+        }
+
+        for pair in activity.pairs.dropLast() {
+            await store.send(.gameMatchChanged(
+                activityID: activity.id,
+                pairID: pair.id,
+                rightPairID: pair.id
+            )) {
+                $0.gameDrafts[activity.id, default: V2GameDraft()].matches[pair.id] = pair.id
+            }
+        }
+        #expect(store.state.progress.activityResponses[activity.id] == nil)
+
+        let last = try #require(activity.pairs.last)
+        let expectedMatches = Dictionary(uniqueKeysWithValues: activity.pairs.map { ($0.id, $0.id) })
+        await store.send(.gameMatchChanged(
+            activityID: activity.id,
+            pairID: last.id,
+            rightPairID: last.id
+        )) {
+            $0.gameDrafts.removeValue(forKey: activity.id)
+            $0.isSaving = true
+            $0.progress.activityResponses[activity.id] = V2GameResponse(
+                activityID: activity.id,
+                matches: expectedMatches,
+                isCorrect: true,
+                attempts: 1,
+                answeredAt: timestamp
+            )
+        }
+        await store.receive(.gameResponseSaveFinished(nil)) {
+            $0.isSaving = false
+        }
+    }
+
     @Test
     func sidebarConceptSelectionInspectorAndFocusModeFormOneWorkspace() async throws {
         let content = V2BundledContentStore()

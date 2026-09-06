@@ -11,29 +11,56 @@ struct V2LearningSidebar: View {
     let onConceptSelected: (KnowledgeConceptID) -> Void
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 0) {
-            VStack(alignment: .leading, spacing: 6) {
-                Label("학습 문맥", systemImage: "sidebar.left")
-                    .font(.title2.bold())
+        ScrollView {
+            VStack(alignment: .leading, spacing: 18) {
+                Label("학습 문맥", systemImage: "scope")
+                    .font(.headline)
                     .accessibilityHeading(.h1)
-                Text("Stage \(stage.order) · Chapter \(chapter.order)")
-                    .font(.caption.weight(.semibold))
-                    .foregroundStyle(.tint)
-                Text(chapter.title)
-                    .font(.callout)
-                    .foregroundStyle(.secondary)
-            }
-            .padding(16)
 
-            Divider()
+                if let current = chapter.pages.first(where: { $0.id == currentPageID }) {
+                    VStack(alignment: .leading, spacing: 7) {
+                        Label("지금의 질문", systemImage: "questionmark.bubble.fill")
+                            .font(.caption.weight(.semibold))
+                            .foregroundStyle(.blue)
+                        Text(current.goal)
+                            .font(.callout.weight(.semibold))
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
+                    .padding(13)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .background(Color.blue.opacity(0.09), in: RoundedRectangle(cornerRadius: 12))
+                    .overlay { RoundedRectangle(cornerRadius: 12).stroke(Color.blue.opacity(0.18)) }
+                }
 
-            List {
-                Section("이 챕터의 페이지") {
+                if let core = concepts.first {
+                    VStack(alignment: .leading, spacing: 8) {
+                        Label("지금 쓰는 기준", systemImage: "target")
+                            .font(.caption.weight(.semibold))
+                            .foregroundStyle(.blue)
+                        conceptButton(core, isCore: true)
+                    }
+                }
+
+                if concepts.count > 1 {
+                    VStack(alignment: .leading, spacing: 8) {
+                        Label("함께 쓰는 개념", systemImage: "link")
+                            .font(.caption.weight(.semibold))
+                            .foregroundStyle(.teal)
+                        ForEach(concepts.dropFirst(), id: \.id) { concept in
+                            conceptButton(concept, isCore: false)
+                        }
+                    }
+                }
+
+                VStack(alignment: .leading, spacing: 8) {
+                    Label("이 챕터의 페이지", systemImage: "list.bullet.rectangle")
+                        .font(.caption.weight(.semibold))
+                        .foregroundStyle(.secondary)
                     ForEach(chapter.pages.sorted(by: { $0.order < $1.order })) { page in
                         Button {
                             onPageSelected(page.id)
                         } label: {
-                            HStack(spacing: 8) {
+                            HStack(alignment: .top, spacing: 8) {
                                 Image(systemName: pageSymbol(page.id))
                                     .foregroundStyle(
                                         page.id == currentPageID
@@ -42,7 +69,7 @@ struct V2LearningSidebar: View {
                                     )
                                     .accessibilityHidden(true)
                                 VStack(alignment: .leading, spacing: 2) {
-                                    Text("\(page.order). \(page.title)")
+                                    Text(page.title)
                                         .lineLimit(2)
                                     if page.id == currentPageID {
                                         Text("현재 페이지")
@@ -58,41 +85,51 @@ struct V2LearningSidebar: View {
                         .accessibilityValue(page.id == currentPageID ? "현재 페이지" : "")
                     }
                 }
+            }
+            .padding(16)
+        }
+        .background(Color(nsColor: .windowBackgroundColor))
+        .accessibilityLabel("현재 학습의 지식 문맥")
+    }
 
-                Section("이 페이지의 지식 단서") {
-                    if concepts.isEmpty {
-                        Text("연결된 지식 단서가 없습니다.")
+    private func conceptButton(_ concept: KnowledgeConcept, isCore: Bool) -> some View {
+        Button {
+            onConceptSelected(concept.id)
+        } label: {
+            HStack(alignment: .top, spacing: 9) {
+                Image(systemName: isCore ? "target" : "circle.fill")
+                    .font(isCore ? .caption : .system(size: 6))
+                    .foregroundStyle(isCore ? .blue : .teal)
+                    .padding(.top, 3)
+                VStack(alignment: .leading, spacing: 3) {
+                    Text(concept.title).font(.callout.weight(.semibold))
+                    if isCore {
+                        Text(concept.definition)
                             .font(.caption)
                             .foregroundStyle(.secondary)
-                    } else {
-                        ForEach(concepts, id: \.id) { concept in
-                            Button {
-                                onConceptSelected(concept.id)
-                            } label: {
-                                HStack(spacing: 8) {
-                                    Image(systemName: "lightbulb")
-                                        .foregroundStyle(
-                                            concept.id == selectedConceptID
-                                                ? Color.accentColor
-                                                : Color.secondary
-                                        )
-                                    Text(concept.title)
-                                        .frame(maxWidth: .infinity, alignment: .leading)
-                                    Image(systemName: "chevron.right")
-                                        .font(.caption)
-                                        .foregroundStyle(.tertiary)
-                                }
-                                .contentShape(Rectangle())
-                            }
-                            .buttonStyle(.plain)
-                            .help("오른쪽 인스펙터에서 판단 단서를 확인합니다.")
-                        }
+                            .lineLimit(3)
                     }
                 }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                Image(systemName: "chevron.right")
+                    .font(.caption2)
+                    .foregroundStyle(.tertiary)
             }
-            .listStyle(.sidebar)
+            .padding(isCore ? 12 : 5)
+            .contentShape(Rectangle())
+            .background(
+                isCore ? Color(nsColor: .controlBackgroundColor) : .clear,
+                in: RoundedRectangle(cornerRadius: 11)
+            )
+            .overlay {
+                if isCore {
+                    RoundedRectangle(cornerRadius: 11).stroke(Color.blue.opacity(0.18))
+                }
+            }
         }
-        .background(Color(nsColor: .controlBackgroundColor))
+        .buttonStyle(.plain)
+        .accessibilityAddTraits(concept.id == selectedConceptID ? .isSelected : [])
+        .accessibilityHint("개념의 기본 지식과 다음 연결을 봅니다.")
     }
 
     private func pageSymbol(_ pageID: String) -> String {
@@ -104,73 +141,35 @@ struct V2LearningSidebar: View {
 
 struct V2KnowledgeInspector: View {
     let concept: KnowledgeConcept
+    let relations: [KnowledgeRelation]
+    let concepts: [KnowledgeConcept]
     let onDismiss: () -> Void
 
     var body: some View {
-        VStack(spacing: 0) {
-            HStack {
-                Label("지식 단서", systemImage: "sidebar.right")
-                    .font(.headline)
-                Spacer()
-                Button(action: onDismiss) {
-                    Image(systemName: "xmark")
+        ScrollView {
+            VStack(alignment: .leading, spacing: 18) {
+                HStack(alignment: .top, spacing: 12) {
+                    KnowledgeConceptHeader(concept: concept)
+                    Spacer(minLength: 8)
+                    Button(action: onDismiss) { Image(systemName: "xmark") }
+                        .buttonStyle(.borderless)
+                        .help("이 상세 닫기")
+                        .accessibilityLabel("\(concept.title) 상세 닫기")
                 }
-                .buttonStyle(.plain)
-                .accessibilityLabel("인스펙터 닫기")
+
+                BaseKnowledgeSection(concept: concept, detailLevel: .complete)
+
+                KnowledgeRelationsSection(
+                    baseRelations: relations.filter {
+                        $0.sourceConceptID == concept.id || $0.targetConceptID == concept.id
+                    },
+                    personalRelations: [],
+                    conceptIndex: KnowledgeConceptIndex(concepts: concepts),
+                    focusConceptID: concept.id
+                )
             }
-            .padding(16)
-
-            Divider()
-
-            ScrollView {
-                VStack(alignment: .leading, spacing: 20) {
-                    VStack(alignment: .leading, spacing: 7) {
-                        Text(concept.title)
-                            .font(.title2.bold())
-                            .accessibilityHeading(.h1)
-                        Text(concept.definition)
-                            .foregroundStyle(.secondary)
-                            .fixedSize(horizontal: false, vertical: true)
-                    }
-
-                    inspectorSection(
-                        title: "읽을 때 던질 질문",
-                        systemImage: "questionmark.bubble",
-                        values: [concept.essentialQuestion] + concept.judgmentQuestions
-                    )
-                    inspectorSection(
-                        title: "다시 볼 학습 장면",
-                        systemImage: "arrow.uturn.backward.circle",
-                        values: concept.examples
-                    )
-                    inspectorSection(
-                        title: "피할 오해",
-                        systemImage: "exclamationmark.triangle",
-                        values: concept.misconceptions
-                    )
-                }
-                .padding(18)
-            }
+            .padding(20)
         }
-        .background(.regularMaterial)
-    }
-
-    @ViewBuilder
-    private func inspectorSection(
-        title: String,
-        systemImage: String,
-        values: [String]
-    ) -> some View {
-        if !values.isEmpty {
-            VStack(alignment: .leading, spacing: 10) {
-                Label(title, systemImage: systemImage)
-                    .font(.headline)
-                ForEach(Array(values.enumerated()), id: \.offset) { _, value in
-                    Text("• \(value)")
-                        .font(.callout)
-                        .fixedSize(horizontal: false, vertical: true)
-                }
-            }
-        }
+        .background(Color(nsColor: .windowBackgroundColor))
     }
 }

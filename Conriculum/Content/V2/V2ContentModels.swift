@@ -104,6 +104,35 @@ struct V2ContentBlock: Codable, Equatable, Identifiable, Sendable {
     let kind: Kind
     let title: String
     let markdown: String
+    let activities: [V2GameActivity]
+}
+
+struct V2GameActivity: Codable, Equatable, Identifiable, Sendable {
+    enum Kind: String, Codable, Equatable, Sendable {
+        case singleChoice
+        case multipleChoice
+        case matching
+    }
+
+    struct Option: Codable, Equatable, Identifiable, Sendable {
+        let id: String
+        let title: String
+    }
+
+    struct Pair: Codable, Equatable, Identifiable, Sendable {
+        let id: String
+        let left: String
+        let right: String
+    }
+
+    let id: String
+    let kind: Kind
+    let promptMarkdown: String
+    let options: [Option]
+    let pairs: [Pair]
+    let correctOptionIDs: Set<String>
+    let correctFeedback: String
+    let incorrectFeedback: String
 }
 
 struct V2TermReference: Codable, Equatable, Identifiable, Sendable {

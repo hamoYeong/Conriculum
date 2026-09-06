@@ -53,6 +53,44 @@ struct V2ContentValidator: Sendable {
         for termRef in page.termRefs where !blockIDs.contains(termRef.anchor.blockID) {
             throw V2ContentError.invalidReference("\(termRef.id).anchor.blockID")
         }
+        var activityIDs = Set<String>()
+        var optionIDs = Set<String>()
+        for block in page.blocks {
+            if page.stageID == "v2.s1",
+               block.kind == .game || block.kind == .boss,
+               block.activities.isEmpty {
+                throw V2ContentError.invalidReference("\(block.id).activities")
+            }
+            for activity in block.activities {
+                try register(activity.id, in: &activityIDs)
+                if activity.kind == .matching {
+                    guard activity.options.isEmpty,
+                          activity.correctOptionIDs.isEmpty,
+                          activity.pairs.count >= 2,
+                          Set(activity.pairs.map(\.id)).count == activity.pairs.count
+                    else {
+                        throw V2ContentError.invalidReference("\(activity.id).pairs")
+                    }
+                } else {
+                    guard activity.pairs.isEmpty, activity.options.count >= 2 else {
+                        throw V2ContentError.invalidReference("\(activity.id).options")
+                    }
+                    let localOptionIDs = Set(activity.options.map(\.id))
+                    guard localOptionIDs.count == activity.options.count,
+                          !activity.correctOptionIDs.isEmpty,
+                          activity.correctOptionIDs.isSubset(of: localOptionIDs),
+                          activity.kind != .singleChoice || activity.correctOptionIDs.count == 1
+                    else {
+                        throw V2ContentError.invalidReference(
+                            "\(activity.id).correctOptionIDs"
+                        )
+                    }
+                    for optionID in localOptionIDs {
+                        try register(optionID, in: &optionIDs)
+                    }
+                }
+            }
+        }
     }
 
     private func register(_ id: String, in ids: inout Set<String>) throws {

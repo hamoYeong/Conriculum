@@ -406,7 +406,8 @@ private struct KnowledgeSystemDetailPane: View {
                 KnowledgeRelationsSection(
                     baseRelations: baseRelations,
                     personalRelations: personalRelations,
-                    conceptIndex: conceptIndex
+                    conceptIndex: conceptIndex,
+                    focusConceptID: item.id
                 )
             }
             .padding(20)

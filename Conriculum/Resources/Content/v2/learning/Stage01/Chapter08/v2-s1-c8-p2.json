@@ -14,70 +14,314 @@
       "order": 1,
       "kind": "mission",
       "title": "클리어 목표",
-      "markdown": "`@`가 선언에 특별한 동작을 붙이는 표식이고 `$`가 문맥에 따라 연결용 값이나 짧은 매개변수를 나타냄을 구별한다."
+      "markdown": "`@`가 선언에 특별한 동작을 붙이는 표식이고 `$`가 문맥에 따라 연결용 값이나 짧은 매개변수를 나타냄을 구별한다.",
+      "activities": []
     },
     {
       "id": "02-골뱅이와-달러-표식-알아보기.block-2",
       "order": 2,
       "kind": "wordSystem",
       "title": "단어 체계",
-      "markdown": "| 단어·기호 | 더 큰 체계 | 이 구절에서의 역할 | 보자마자 할 첫 생각 |\n| --- | --- | --- | --- |\n| @이름 | 속성·래퍼 표식 | 뒤 선언에 추가 규칙을 붙임 | 어느 선언을 꾸미나? |\n| 프로퍼티 | 대상이 가진 정보 | 타입이나 값이 이름을 붙여 보관·계산하는 항목 | 누구의 어떤 정보인가? |\n| $이름 | 투영 값 | 원래 프로퍼티와 연결된 다른 값을 꺼냄 | 원래 이름과 어떤 관계인가? |\n| $0 | 축약 매개변수 | 클로저의 첫 입력을 짧게 가리킴 | 이번 원소 하나인가? |"
+      "markdown": "| 단어·기호 | 더 큰 체계 | 이 구절에서의 역할 | 보자마자 할 첫 생각 |\n| --- | --- | --- | --- |\n| @이름 | 속성·래퍼 표식 | 뒤 선언에 추가 규칙을 붙임 | 어느 선언을 꾸미나? |\n| 프로퍼티 | 대상이 가진 정보 | 타입이나 값이 이름을 붙여 보관·계산하는 항목 | 누구의 어떤 정보인가? |\n| $이름 | 투영 값 | 원래 프로퍼티와 연결된 다른 값을 꺼냄 | 원래 이름과 어떤 관계인가? |\n| $0 | 축약 매개변수 | 클로저의 첫 입력을 짧게 가리킴 | 이번 원소 하나인가? |",
+      "activities": []
     },
     {
       "id": "02-골뱅이와-달러-표식-알아보기.block-3",
       "order": 3,
       "kind": "scene",
       "title": "장면 카드",
-      "markdown": "텍스트 입력이 상태와 양방향으로 연결된다.\n\n```swift\n@State private var name = \"\"\nTextField(\"이름\", text: $name)\n```"
+      "markdown": "텍스트 입력이 상태와 양방향으로 연결된다.\n\n```swift\n@State private var name = \"\"\nTextField(\"이름\", text: $name)\n```",
+      "activities": []
     },
     {
       "id": "02-골뱅이와-달러-표식-알아보기.block-4",
       "order": 4,
       "kind": "game",
       "title": "게임 1 · 첫 생각 카드",
-      "markdown": "`name`과 `$name`의 차이는?\n\n1. 완전히 무관한 이름\n2. 현재 값과 연결용 값\n3. 둘 다 문자열 리터럴\n\n> [!check]- 정답과 근거\n> `name`은 현재 문자열 값, `$name`은 TextField가 읽고 바꾸도록 건네는 연결용 값이다."
+      "markdown": "`name`과 `$name`의 차이는?\n\n> [!game]- 활동 방식 · 판단 카드 고르기\n> 근거가 되는 카드를 모두 고른 뒤 답을 확인한다.\n\n<!-- conriculum-activity: choice; correct: 2 -->\n\n1. 완전히 무관한 이름\n2. 현재 값과 연결용 값\n3. 둘 다 문자열 리터럴\n\n> [!check]- 정답과 근거\n> `name`은 현재 문자열 값, `$name`은 TextField가 읽고 바꾸도록 건네는 연결용 값이다.",
+      "activities": [
+        {
+          "id": "02-골뱅이와-달러-표식-알아보기.block-4.activity-1",
+          "kind": "singleChoice",
+          "promptMarkdown": "`name`과 `$name`의 차이는?",
+          "options": [
+            {
+              "id": "02-골뱅이와-달러-표식-알아보기.block-4.activity-1.option-1",
+              "title": "완전히 무관한 이름"
+            },
+            {
+              "id": "02-골뱅이와-달러-표식-알아보기.block-4.activity-1.option-2",
+              "title": "현재 값과 연결용 값"
+            },
+            {
+              "id": "02-골뱅이와-달러-표식-알아보기.block-4.activity-1.option-3",
+              "title": "둘 다 문자열 리터럴"
+            }
+          ],
+          "pairs": [],
+          "correctOptionIDs": [
+            "02-골뱅이와-달러-표식-알아보기.block-4.activity-1.option-2"
+          ],
+          "correctFeedback": "`name`은 현재 문자열 값, `$name`은 TextField가 읽고 바꾸도록 건네는 연결용 값이다.",
+          "incorrectFeedback": "아직 맞지 않는 연결이나 빠진 단서가 있습니다. 코드의 모양·자리·주변 단어를 다시 비교해 보세요."
+        }
+      ]
     },
     {
       "id": "02-골뱅이와-달러-표식-알아보기.block-5",
       "order": 5,
       "kind": "game",
       "title": "게임 2 · 구절 역할 지도",
-      "markdown": "| 코드 구절 | 맡은 역할 | 붙일 역할 카드 |\n| --- | --- | --- |\n| @State | 선언 표식 | SwiftUI 상태 관리 규칙 |\n| `name` | 원래 프로퍼티 | 현재 문자열 |\n| `$name` | 투영된 연결 | TextField와 양방향 연결 |\n| `$0` | 다른 문맥 표식 | 클로저 첫 입력 |"
+      "markdown": "> [!game]- 활동 방식 · 구절과 역할 연결하기\n> 왼쪽 카드와 오른쪽 카드를 직접 연결하고, 모든 연결을 마친 뒤 한 번에 확인한다.\n\n<!-- conriculum-activity: matching; source: 코드 구절; target: 붙일 역할 카드 -->\n\n| 코드 구절 | 맡은 역할 | 붙일 역할 카드 |\n| --- | --- | --- |\n| @State | 선언 표식 | SwiftUI 상태 관리 규칙 |\n| `name` | 원래 프로퍼티 | 현재 문자열 |\n| `$name` | 투영된 연결 | TextField와 양방향 연결 |\n| `$0` | 다른 문맥 표식 | 클로저 첫 입력 |",
+      "activities": [
+        {
+          "id": "02-골뱅이와-달러-표식-알아보기.block-5.activity-1",
+          "kind": "matching",
+          "promptMarkdown": "게임 2 · 구절 역할 지도",
+          "options": [],
+          "pairs": [
+            {
+              "id": "02-골뱅이와-달러-표식-알아보기.block-5.activity-1.pair-1",
+              "left": "@State",
+              "right": "SwiftUI 상태 관리 규칙"
+            },
+            {
+              "id": "02-골뱅이와-달러-표식-알아보기.block-5.activity-1.pair-2",
+              "left": "`name`",
+              "right": "현재 문자열"
+            },
+            {
+              "id": "02-골뱅이와-달러-표식-알아보기.block-5.activity-1.pair-3",
+              "left": "`$name`",
+              "right": "TextField와 양방향 연결"
+            },
+            {
+              "id": "02-골뱅이와-달러-표식-알아보기.block-5.activity-1.pair-4",
+              "left": "`$0`",
+              "right": "클로저 첫 입력"
+            }
+          ],
+          "correctOptionIDs": [],
+          "correctFeedback": "모든 카드가 원문의 역할 관계와 일치한다.",
+          "incorrectFeedback": "아직 맞지 않는 연결이나 빠진 단서가 있습니다. 코드의 모양·자리·주변 단어를 다시 비교해 보세요."
+        }
+      ]
     },
     {
       "id": "02-골뱅이와-달러-표식-알아보기.block-6",
       "order": 6,
       "kind": "game",
       "title": "게임 3 · 헷갈리는 카드 대조",
-      "markdown": "| 후보 | 결정적인 차이 | 판별 단서 |\n| --- | --- | --- |\n| `name` | 현재 값 접근 | 문자열 |\n| `$name` | 프로퍼티 래퍼의 투영 값 | 여기서는 Binding |\n| `$0` | 클로저 축약 입력 | 현재 원소 |\n\n### 수상한 카드\n\n“달러 기호는 언제나 돈을 뜻하거나 같은 기능을 한다.”\n\n> [!check]- 판정\n> 아니다. `$name`과 `$0`은 모양은 비슷하지만 문맥과 역할이 다르다."
+      "markdown": "> [!game]- 활동 방식 · 대조 카드 연결하기\n> 왼쪽 카드와 오른쪽 카드를 직접 연결하고, 모든 연결을 마친 뒤 한 번에 확인한다.\n\n<!-- conriculum-activity: matching; source: 후보; target: 판별 단서 -->\n\n| 후보 | 결정적인 차이 | 판별 단서 |\n| --- | --- | --- |\n| `name` | 현재 값 접근 | 문자열 |\n| `$name` | 프로퍼티 래퍼의 투영 값 | 여기서는 Binding |\n| `$0` | 클로저 축약 입력 | 현재 원소 |\n\n### 수상한 카드\n\n“달러 기호는 언제나 돈을 뜻하거나 같은 기능을 한다.”\n\n> [!game]- 활동 방식 · 주장 판정하기\n> 주장이 앞의 대조 근거와 맞는지 판단한 뒤 확인한다.\n\n<!-- conriculum-activity: choice; correct: 2 -->\n\n1. 근거가 있다\n2. 근거가 없다\n\n> [!check]- 판정\n> 아니다. `$name`과 `$0`은 모양은 비슷하지만 문맥과 역할이 다르다.",
+      "activities": [
+        {
+          "id": "02-골뱅이와-달러-표식-알아보기.block-6.activity-1",
+          "kind": "matching",
+          "promptMarkdown": "게임 3 · 헷갈리는 카드 대조",
+          "options": [],
+          "pairs": [
+            {
+              "id": "02-골뱅이와-달러-표식-알아보기.block-6.activity-1.pair-1",
+              "left": "`name`",
+              "right": "문자열"
+            },
+            {
+              "id": "02-골뱅이와-달러-표식-알아보기.block-6.activity-1.pair-2",
+              "left": "`$name`",
+              "right": "여기서는 Binding"
+            },
+            {
+              "id": "02-골뱅이와-달러-표식-알아보기.block-6.activity-1.pair-3",
+              "left": "`$0`",
+              "right": "현재 원소"
+            }
+          ],
+          "correctOptionIDs": [],
+          "correctFeedback": "모든 카드가 원문의 역할 관계와 일치한다.",
+          "incorrectFeedback": "아직 맞지 않는 연결이나 빠진 단서가 있습니다. 코드의 모양·자리·주변 단어를 다시 비교해 보세요."
+        },
+        {
+          "id": "02-골뱅이와-달러-표식-알아보기.block-6.activity-2",
+          "kind": "singleChoice",
+          "promptMarkdown": "### 수상한 카드\n\n“달러 기호는 언제나 돈을 뜻하거나 같은 기능을 한다.”",
+          "options": [
+            {
+              "id": "02-골뱅이와-달러-표식-알아보기.block-6.activity-2.option-1",
+              "title": "근거가 있다"
+            },
+            {
+              "id": "02-골뱅이와-달러-표식-알아보기.block-6.activity-2.option-2",
+              "title": "근거가 없다"
+            }
+          ],
+          "pairs": [],
+          "correctOptionIDs": [
+            "02-골뱅이와-달러-표식-알아보기.block-6.activity-2.option-2"
+          ],
+          "correctFeedback": "아니다. `$name`과 `$0`은 모양은 비슷하지만 문맥과 역할이 다르다.",
+          "incorrectFeedback": "아직 맞지 않는 연결이나 빠진 단서가 있습니다. 코드의 모양·자리·주변 단어를 다시 비교해 보세요."
+        }
+      ]
     },
     {
       "id": "02-골뱅이와-달러-표식-알아보기.block-7",
       "order": 7,
       "kind": "game",
       "title": "게임 4 · 다른 옷을 입은 코드",
-      "markdown": "### 1\n\n```swift\nlet done = tasks.filter { $0.isDone }\n```\n\n**질문:** 달러 역할은?\n\n> [!check]- 확인\n> 현재 task를 가리키는 첫 축약 매개변수.\n\n### 2\n\n```swift\n@Query private var notes: [Note]\n```\n\n**질문:** 골뱅이는 무엇을 꾸미나?\n\n> [!check]- 확인\n> 뒤의 notes 선언."
+      "markdown": "### 1\n\n```swift\nlet done = tasks.filter { $0.isDone }\n```\n\n**질문:** 달러 역할은?\n\n> [!game]- 활동 방식 · 코드 단서 고르기\n> 답이 되는 코드 단서 카드 하나를 고르면 바로 확인한다.\n\n<!-- conriculum-activity: choice; correct: 1 -->\n\n**선택 카드:**\n\n1. `0`\n2. `done`\n3. `tasks`\n4. `.`\n5. `filter`\n6. `{`\n7. `isDone`\n8. `}`\n\n> [!check]- 확인\n> 현재 task를 가리키는 첫 축약 매개변수.\n\n### 2\n\n```swift\n@Query private var notes: [Note]\n```\n\n**질문:** 골뱅이는 무엇을 꾸미나?\n\n> [!game]- 활동 방식 · 코드 단서 고르기\n> 질문에 답이 되는 코드 단서를 모두 고른 뒤 한 번에 확인한다.\n\n<!-- conriculum-activity: multiple-choice; correct: 1,2 -->\n\n**선택 카드 (복수 선택 가능):**\n\n1. `notes`\n2. `Note`\n3. `@Query`\n4. `:`\n5. `[`\n6. `]`\n\n> [!check]- 확인\n> 뒤의 notes 선언.",
+      "activities": [
+        {
+          "id": "02-골뱅이와-달러-표식-알아보기.block-7.activity-1",
+          "kind": "singleChoice",
+          "promptMarkdown": "### 1\n\n```swift\nlet done = tasks.filter { $0.isDone }\n```\n\n**질문:** 달러 역할은?",
+          "options": [
+            {
+              "id": "02-골뱅이와-달러-표식-알아보기.block-7.activity-1.option-1",
+              "title": "`0`"
+            },
+            {
+              "id": "02-골뱅이와-달러-표식-알아보기.block-7.activity-1.option-2",
+              "title": "`done`"
+            },
+            {
+              "id": "02-골뱅이와-달러-표식-알아보기.block-7.activity-1.option-3",
+              "title": "`tasks`"
+            },
+            {
+              "id": "02-골뱅이와-달러-표식-알아보기.block-7.activity-1.option-4",
+              "title": "`.`"
+            },
+            {
+              "id": "02-골뱅이와-달러-표식-알아보기.block-7.activity-1.option-5",
+              "title": "`filter`"
+            },
+            {
+              "id": "02-골뱅이와-달러-표식-알아보기.block-7.activity-1.option-6",
+              "title": "`{`"
+            },
+            {
+              "id": "02-골뱅이와-달러-표식-알아보기.block-7.activity-1.option-7",
+              "title": "`isDone`"
+            },
+            {
+              "id": "02-골뱅이와-달러-표식-알아보기.block-7.activity-1.option-8",
+              "title": "`}`"
+            }
+          ],
+          "pairs": [],
+          "correctOptionIDs": [
+            "02-골뱅이와-달러-표식-알아보기.block-7.activity-1.option-1"
+          ],
+          "correctFeedback": "현재 task를 가리키는 첫 축약 매개변수.",
+          "incorrectFeedback": "아직 맞지 않는 연결이나 빠진 단서가 있습니다. 코드의 모양·자리·주변 단어를 다시 비교해 보세요."
+        },
+        {
+          "id": "02-골뱅이와-달러-표식-알아보기.block-7.activity-2",
+          "kind": "multipleChoice",
+          "promptMarkdown": "### 2\n\n```swift\n@Query private var notes: [Note]\n```\n\n**질문:** 골뱅이는 무엇을 꾸미나?",
+          "options": [
+            {
+              "id": "02-골뱅이와-달러-표식-알아보기.block-7.activity-2.option-1",
+              "title": "`notes`"
+            },
+            {
+              "id": "02-골뱅이와-달러-표식-알아보기.block-7.activity-2.option-2",
+              "title": "`Note`"
+            },
+            {
+              "id": "02-골뱅이와-달러-표식-알아보기.block-7.activity-2.option-3",
+              "title": "`@Query`"
+            },
+            {
+              "id": "02-골뱅이와-달러-표식-알아보기.block-7.activity-2.option-4",
+              "title": "`:`"
+            },
+            {
+              "id": "02-골뱅이와-달러-표식-알아보기.block-7.activity-2.option-5",
+              "title": "`[`"
+            },
+            {
+              "id": "02-골뱅이와-달러-표식-알아보기.block-7.activity-2.option-6",
+              "title": "`]`"
+            }
+          ],
+          "pairs": [],
+          "correctOptionIDs": [
+            "02-골뱅이와-달러-표식-알아보기.block-7.activity-2.option-1",
+            "02-골뱅이와-달러-표식-알아보기.block-7.activity-2.option-2"
+          ],
+          "correctFeedback": "뒤의 notes 선언.",
+          "incorrectFeedback": "아직 맞지 않는 연결이나 빠진 단서가 있습니다. 코드의 모양·자리·주변 단어를 다시 비교해 보세요."
+        }
+      ]
     },
     {
       "id": "02-골뱅이와-달러-표식-알아보기.block-8",
       "order": 8,
       "kind": "boss",
       "title": "보스 코드",
-      "markdown": "```swift\n@State private var isOn = false\nToggle(\"알림\", isOn: $isOn)\nText(isOn ? \"켜짐\" : \"꺼짐\")\n```\n\n**클리어 과제:** 선언 표식·현재 값·연결용 값을 각각 찾는다.\n\n> [!check]- 보스 해설\n> `@State`, `isOn`, `$isOn`. 마지막 Text는 현재 값에 따라 문자열을 고른다."
+      "markdown": "```swift\n@State private var isOn = false\nToggle(\"알림\", isOn: $isOn)\nText(isOn ? \"켜짐\" : \"꺼짐\")\n```\n\n**클리어 과제:** 선언 표식·현재 값·연결용 값을 각각 찾는다.\n\n> [!game]- 활동 방식 · 보스 단서 모두 찾기\n> 질문에 답이 되는 코드 단서를 모두 고른 뒤 한 번에 확인한다.\n\n<!-- conriculum-activity: multiple-choice; correct: 1,2,3 -->\n\n**선택 카드 (복수 선택 가능):**\n\n1. `@State`\n2. `isOn`\n3. `Text`\n4. `false`\n5. `Toggle`\n6. `(`\n7. `\"알림\"`\n8. `,`\n\n> [!check]- 보스 해설\n> `@State`, `isOn`, `$isOn`. 마지막 Text는 현재 값에 따라 문자열을 고른다.",
+      "activities": [
+        {
+          "id": "02-골뱅이와-달러-표식-알아보기.block-8.activity-1",
+          "kind": "multipleChoice",
+          "promptMarkdown": "```swift\n@State private var isOn = false\nToggle(\"알림\", isOn: $isOn)\nText(isOn ? \"켜짐\" : \"꺼짐\")\n```\n\n**클리어 과제:** 선언 표식·현재 값·연결용 값을 각각 찾는다.",
+          "options": [
+            {
+              "id": "02-골뱅이와-달러-표식-알아보기.block-8.activity-1.option-1",
+              "title": "`@State`"
+            },
+            {
+              "id": "02-골뱅이와-달러-표식-알아보기.block-8.activity-1.option-2",
+              "title": "`isOn`"
+            },
+            {
+              "id": "02-골뱅이와-달러-표식-알아보기.block-8.activity-1.option-3",
+              "title": "`Text`"
+            },
+            {
+              "id": "02-골뱅이와-달러-표식-알아보기.block-8.activity-1.option-4",
+              "title": "`false`"
+            },
+            {
+              "id": "02-골뱅이와-달러-표식-알아보기.block-8.activity-1.option-5",
+              "title": "`Toggle`"
+            },
+            {
+              "id": "02-골뱅이와-달러-표식-알아보기.block-8.activity-1.option-6",
+              "title": "`(`"
+            },
+            {
+              "id": "02-골뱅이와-달러-표식-알아보기.block-8.activity-1.option-7",
+              "title": "`\"알림\"`"
+            },
+            {
+              "id": "02-골뱅이와-달러-표식-알아보기.block-8.activity-1.option-8",
+              "title": "`,`"
+            }
+          ],
+          "pairs": [],
+          "correctOptionIDs": [
+            "02-골뱅이와-달러-표식-알아보기.block-8.activity-1.option-1",
+            "02-골뱅이와-달러-표식-알아보기.block-8.activity-1.option-2",
+            "02-골뱅이와-달러-표식-알아보기.block-8.activity-1.option-3"
+          ],
+          "correctFeedback": "`@State`, `isOn`, `$isOn`. 마지막 Text는 현재 값에 따라 문자열을 고른다.",
+          "incorrectFeedback": "아직 맞지 않는 연결이나 빠진 단서가 있습니다. 코드의 모양·자리·주변 단어를 다시 비교해 보세요."
+        }
+      ]
     },
     {
       "id": "02-골뱅이와-달러-표식-알아보기.block-9",
       "order": 9,
       "kind": "unlock",
       "title": "지식 카드 해금",
-      "markdown": "| 해금 카드 | 내 코드 사전에 남길 한 문장 |\n| --- | --- |\n| @ 표식 | 뒤 선언에 특별한 규칙이나 정보를 붙임 |\n| 프로퍼티 | 타입이나 값이 이름을 붙여 가진 정보 |\n| 투영 값 | 원래 프로퍼티와 연결된 `$name` 형태 |\n| $0 | 클로저의 첫 입력을 가리키는 축약 이름 |\n\n다른 맥락에서의 구별, 헷갈리는 개념과의 대조, 처음 보는 보스 코드에 적용하는 과정을 모두 통과하면 클리어한다. 도움 사용 여부는 `많은 안내와 함께 / 단서와 함께 / 독립적으로` 중 하나로 남긴다.\n\n> [!question] 막히면 · 초보자 연결\n> 기호만 외우지 말고 `$` 뒤가 이름인지 숫자인지 먼저 확인한다.\n\n> [!tip]- 이미 안다면\n> 모든 프로퍼티 래퍼의 projectedValue가 Binding인 것은 아니다. `$name`의 구체 타입은 래퍼 정의에 달린다."
+      "markdown": "| 해금 카드 | 내 코드 사전에 남길 한 문장 |\n| --- | --- |\n| @ 표식 | 뒤 선언에 특별한 규칙이나 정보를 붙임 |\n| 프로퍼티 | 타입이나 값이 이름을 붙여 가진 정보 |\n| 투영 값 | 원래 프로퍼티와 연결된 `$name` 형태 |\n| $0 | 클로저의 첫 입력을 가리키는 축약 이름 |\n\n다른 맥락에서의 구별, 헷갈리는 개념과의 대조, 처음 보는 보스 코드에 적용하는 과정을 모두 통과하면 클리어한다. 도움 사용 여부는 `많은 안내와 함께 / 단서와 함께 / 독립적으로` 중 하나로 남긴다.\n\n> [!question] 막히면 · 초보자 연결\n> 기호만 외우지 말고 `$` 뒤가 이름인지 숫자인지 먼저 확인한다.\n\n> [!tip]- 이미 안다면\n> 모든 프로퍼티 래퍼의 projectedValue가 Binding인 것은 아니다. `$name`의 구체 타입은 래퍼 정의에 달린다.",
+      "activities": []
     }
   ],
   "termRefs": [],
   "knowledgeConceptIDs": [
-    "v2.concept.e8b664e08a04",
-    "v2.concept.2e5aa1c8e8c3",
-    "v2.concept.fa43e517bc4a",
-    "v2.concept.67fcfaddec41"
+    "v2.concept.50d055d31163"
   ]
 }

@@ -6,6 +6,7 @@ struct KnowledgeRelationsSection: View {
     let baseRelations: [KnowledgeRelation]
     let personalRelations: [PersonalKnowledgeRelation]
     let conceptIndex: KnowledgeConceptIndex
+    let focusConceptID: KnowledgeConceptID?
     let canCreateRelation: Bool
     let relationCreationUnavailableMessage: String?
     var onAddRelation: (() -> Void)?
@@ -17,6 +18,7 @@ struct KnowledgeRelationsSection: View {
         baseRelations: [KnowledgeRelation],
         personalRelations: [PersonalKnowledgeRelation],
         conceptIndex: KnowledgeConceptIndex,
+        focusConceptID: KnowledgeConceptID? = nil,
         canCreateRelation: Bool = false,
         relationCreationUnavailableMessage: String? = nil,
         onAddRelation: (() -> Void)? = nil,
@@ -27,6 +29,7 @@ struct KnowledgeRelationsSection: View {
         self.baseRelations = baseRelations
         self.personalRelations = personalRelations
         self.conceptIndex = conceptIndex
+        self.focusConceptID = focusConceptID
         self.canCreateRelation = canCreateRelation
         self.relationCreationUnavailableMessage = relationCreationUnavailableMessage
         self.onAddRelation = onAddRelation
@@ -42,16 +45,17 @@ struct KnowledgeRelationsSection: View {
             accent: .teal
         ) {
             VStack(alignment: .leading, spacing: 14) {
-                relationGroupTitle(
-                    "기본 지식 연결",
-                    systemImage: "books.vertical"
-                )
-
-                if baseRelations.isEmpty {
+                if let focusConceptID {
+                    directedBaseRelations(focusConceptID)
+                } else if baseRelations.isEmpty {
                     Text("이 개념에 직접 연결된 기본 지식 관계가 없습니다.")
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 } else {
+                    relationGroupTitle(
+                        "기본 지식 연결",
+                        systemImage: "books.vertical"
+                    )
                     baseRelationRows
                 }
 
@@ -100,16 +104,45 @@ struct KnowledgeRelationsSection: View {
         }
     }
 
+    @ViewBuilder
+    private func directedBaseRelations(_ conceptID: KnowledgeConceptID) -> some View {
+        let prerequisites = baseRelations.filter { $0.targetConceptID == conceptID }
+        let next = baseRelations.filter { $0.sourceConceptID == conceptID }
+
+        relationGroupTitle("선행 지식", systemImage: "arrow.left.circle")
+        if prerequisites.isEmpty {
+            Text("이 지식 경로의 출발점입니다.")
+                .font(.caption)
+                .foregroundStyle(.secondary)
+        } else {
+            baseRelationRows(prerequisites)
+        }
+
+        relationGroupTitle("다음 연결", systemImage: "arrow.right.circle")
+            .padding(.top, 4)
+        if next.isEmpty {
+            Text("이 지식 경로의 마지막 확인 지점입니다.")
+                .font(.caption)
+                .foregroundStyle(.secondary)
+        } else {
+            baseRelationRows(next)
+        }
+    }
+
     private var baseRelationRows: some View {
+        baseRelationRows(baseRelations)
+    }
+
+    private func baseRelationRows(_ relations: [KnowledgeRelation]) -> some View {
         VStack(alignment: .leading, spacing: 0) {
-            ForEach(baseRelations.indices, id: \.self) { index in
-                if index > baseRelations.startIndex {
+            ForEach(relations.indices, id: \.self) { index in
+                if index > relations.startIndex {
                     Divider()
                         .padding(.leading, 18)
                 }
 
                 KnowledgeBaseRelationRow(
-                    relation: baseRelations[index],
+                    relation: relations[index],
                     conceptIndex: conceptIndex,
                     onConceptSelected: onConceptSelected,
                     onCompareRequested: onCompareRequested

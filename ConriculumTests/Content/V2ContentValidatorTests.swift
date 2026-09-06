@@ -18,6 +18,7 @@ struct V2ContentValidatorTests {
         #expect(knowledgeCatalog.id == "learning-system-v2-knowledge.ko-KR")
         #expect(knowledgeCatalog.collections.count == 17)
         #expect(knowledgeCatalog.concepts.isEmpty == false)
+        var interactiveActivityCount = 0
 
         for reference in manifest.chapters.flatMap(\.pages) {
             let page = try store.loadPage(id: VersionedContentID(
@@ -29,7 +30,9 @@ struct V2ContentValidatorTests {
             #expect(page.sourcePath.hasSuffix(".md"))
             #expect(page.knowledgeConceptIDs.isEmpty == false)
             #expect(page.knowledgeConceptIDs.allSatisfy(conceptIDs.contains))
+            interactiveActivityCount += page.blocks.flatMap(\.activities).count
         }
+        #expect(interactiveActivityCount == 252)
     }
 
     @Test
