@@ -23,6 +23,18 @@ struct AppView: View {
                     .frame(minWidth: 720, minHeight: 560)
             }
 
+        case let .v2Learning(pageID):
+            if let v2LearningStore = store.scope(
+                state: \.v2Learning,
+                action: \.v2Learning
+            ) {
+                V2LearningView(store: v2LearningStore)
+                    .id(pageID)
+            } else {
+                ProgressView("ver.2 학습 화면을 준비하는 중입니다.")
+                    .frame(minWidth: 720, minHeight: 560)
+            }
+
         case .knowledgeSystem:
             if let knowledgeSystemStore = store.scope(
                 state: \.knowledgeSystem,

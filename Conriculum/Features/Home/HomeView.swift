@@ -11,24 +11,14 @@ struct HomeView: View {
 
             ScrollView {
                 VStack(alignment: .leading, spacing: 24) {
-                    if let snapshot = store.snapshot {
-                        stageHeader(snapshot.stage)
-                        previewDisclosure(for: snapshot.source)
-                        chapterCard(snapshot.chapter)
-                        chapterLibrary(snapshot.availableChapters)
+                    contentVersionPicker
 
-                        if let loadErrorMessage = store.loadErrorMessage {
-                            loadErrorBanner(message: loadErrorMessage)
-                        }
-
-                        learningSummary(snapshot)
-                    } else if let loadErrorMessage = store.loadErrorMessage {
-                        unavailableState(message: loadErrorMessage)
+                    if store.selectedContentVersion == .v2 {
+                        v2Home
                     } else {
-                        loadingState
+                        v1Home
+                        knowledgeSystemCard
                     }
-
-                    knowledgeSystemCard
                 }
                 .frame(maxWidth: 1_080, alignment: .leading)
                 .padding(.horizontal, 32)
@@ -40,6 +30,160 @@ struct HomeView: View {
         .task {
             guard store.snapshot == nil else { return }
             await store.send(.task).finish()
+            await store.send(.v2ReloadRequested).finish()
+        }
+    }
+
+    private var contentVersionPicker: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Text("학습 콘텐츠")
+                .font(.caption.weight(.semibold))
+                .foregroundStyle(.secondary)
+            Picker(
+                "학습 콘텐츠 버전",
+                selection: Binding(
+                    get: { store.selectedContentVersion },
+                    set: { store.send(.contentVersionSelected($0)) }
+                )
+            ) {
+                ForEach(ContentVersion.allCases, id: \.self) { version in
+                    Text(version.title).tag(version)
+                }
+            }
+            .pickerStyle(.segmented)
+            .labelsHidden()
+        }
+        .accessibilityElement(children: .contain)
+    }
+
+    @ViewBuilder
+    private var v1Home: some View {
+        if let snapshot = store.snapshot {
+            stageHeader(snapshot.stage)
+            previewDisclosure(for: snapshot.source)
+            chapterCard(snapshot.chapter)
+            chapterLibrary(snapshot.availableChapters)
+
+            if let loadErrorMessage = store.loadErrorMessage {
+                loadErrorBanner(message: loadErrorMessage)
+            }
+
+            learningSummary(snapshot)
+        } else if let loadErrorMessage = store.loadErrorMessage {
+            unavailableState(message: loadErrorMessage)
+        } else {
+            loadingState
+        }
+    }
+
+    @ViewBuilder
+    private var v2Home: some View {
+        if let manifest = store.v2Manifest {
+            VStack(alignment: .leading, spacing: 10) {
+                Text("CONRICULUM · VER.2")
+                    .font(.caption.weight(.semibold))
+                    .tracking(1.4)
+                    .foregroundStyle(.secondary)
+                Text(manifest.title)
+                    .font(.largeTitle.bold())
+                    .accessibilityHeading(.h1)
+                Text("코드를 게임처럼 알아보고, 의미 단위와 실행 흐름으로 읽는 독립형 과정입니다.")
+                    .font(.title3)
+                    .foregroundStyle(.secondary)
+            }
+
+            if let resumeChapter = v2ResumeChapter(in: manifest) {
+                v2ResumeCard(resumeChapter, manifest: manifest)
+            }
+
+            V2HomeStagePager(
+                manifest: manifest,
+                progress: store.v2Progress,
+                selectedStageID: store.selectedV2StageID,
+                onStageSelected: { store.send(.v2StageSelected($0)) },
+                onChapterSelected: { store.send(.v2ChapterSelected($0)) }
+            )
+        } else if let message = store.v2LoadErrorMessage {
+            ContentUnavailableView {
+                Label("ver.2 콘텐츠를 불러오지 못했습니다", systemImage: "exclamationmark.triangle")
+            } description: {
+                Text(message)
+            } actions: {
+                Button("다시 불러오기") { store.send(.v2ReloadRequested) }
+                    .buttonStyle(.borderedProminent)
+                Button("ver.1 기존 과정 보기") {
+                    store.send(.contentVersionSelected(.v1))
+                }
+            }
+            .frame(maxWidth: .infinity, minHeight: 360)
+        } else {
+            VStack(spacing: 12) {
+                ProgressView()
+                Text("ver.2 학습 지도를 불러오는 중입니다.")
+                    .foregroundStyle(.secondary)
+            }
+            .frame(maxWidth: .infinity, minHeight: 360)
+        }
+    }
+
+    private func v2ResumeChapter(in manifest: V2ContentManifest) -> V2Chapter? {
+        if let pageID = store.v2Progress.lastVisitedPageID,
+           let chapter = manifest.chapters.first(where: {
+               $0.pages.contains { $0.id == pageID }
+           }) {
+            return chapter
+        }
+        return manifest.stages
+            .sorted { $0.order < $1.order }
+            .first?.chapters
+            .sorted { $0.order < $1.order }
+            .first
+    }
+
+    private func v2ResumeCard(
+        _ chapter: V2Chapter,
+        manifest: V2ContentManifest
+    ) -> some View {
+        let pageID = store.v2Progress.lastVisitedPageID.flatMap { pageID in
+            chapter.pages.contains { $0.id == pageID } ? pageID : nil
+        } ?? chapter.firstPageID
+        let page = pageID.flatMap { manifest.pageReference(id: $0) }
+
+        return VStack(alignment: .leading, spacing: 16) {
+            Label(
+                store.v2Progress.lastVisitedPageID == nil ? "여기서 시작해 보세요" : "이어서 학습하기",
+                systemImage: "play.circle.fill"
+            )
+            .font(.headline)
+            .foregroundStyle(.tint)
+
+            Text(chapter.title)
+                .font(.title2.bold())
+            if let page {
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(page.title).font(.headline)
+                    Text(page.goal)
+                        .font(.callout)
+                        .foregroundStyle(.secondary)
+                }
+            }
+
+            Button(store.v2Progress.lastVisitedPageID == nil ? "학습 시작" : "이어보기") {
+                store.send(.v2ChapterSelected(chapter.id))
+            }
+            .buttonStyle(.borderedProminent)
+            .controlSize(.large)
+            .keyboardShortcut(.defaultAction)
+        }
+        .padding(24)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(
+            Color.accentColor.opacity(0.10),
+            in: RoundedRectangle(cornerRadius: 18, style: .continuous)
+        )
+        .overlay {
+            RoundedRectangle(cornerRadius: 18, style: .continuous)
+                .stroke(Color.accentColor.opacity(0.24), lineWidth: 1)
         }
     }
 

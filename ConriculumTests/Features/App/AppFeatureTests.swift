@@ -12,6 +12,19 @@ struct AppFeatureTests {
     }
 
     @Test
+    func v2PageRequestOpensIndependentLearningRoute() async {
+        let pageID = "v2.s1.c1.p1"
+        let store = TestStore(initialState: AppFeature.State()) {
+            AppFeature()
+        }
+
+        await store.send(.home(.delegate(.v2PageRequested(pageID)))) {
+            $0.v2Learning = V2LearningFeature.State(pageID: pageID)
+            $0.route = .v2Learning(pageID: pageID)
+        }
+    }
+
+    @Test
     func anyAvailableChapterCanStartAtItsOverviewRoute() async {
         let entry = HomeFeature.ChapterEntry(
             chapterID: "chapter-03",

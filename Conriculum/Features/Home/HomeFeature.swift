@@ -11,11 +11,16 @@ struct HomeFeature {
 
     @ObservableState
     struct State: Equatable {
+        var selectedContentVersion: ContentVersion = .v1
         var isLoading = false
         var chapterEntry: ChapterEntry?
         var snapshot: HomeSnapshot?
         var placeholderSnapshot: HomeSnapshot?
         var loadErrorMessage: String?
+        var v2Manifest: V2ContentManifest?
+        var v2Progress: V2Progress = .empty
+        var selectedV2StageID = "v2.s1"
+        var v2LoadErrorMessage: String?
         var pendingPersonalizationReviews: [
             KnowledgePersonalizationReview
         ]
@@ -43,8 +48,14 @@ struct HomeFeature {
     enum Action: Equatable {
         case task
         case reloadRequested
+        case v2ReloadRequested
         case workspaceReturned([KnowledgePersonalizationReview])
+        case v2WorkspaceReturned
         case loadResponse(LoadResponse)
+        case v2LoadResponse(V2LoadResponse)
+        case contentVersionSelected(ContentVersion)
+        case v2StageSelected(String)
+        case v2ChapterSelected(String)
         case startButtonTapped
         case resumeButtonTapped
         case chapterSelected(ChapterID)
@@ -58,6 +69,7 @@ struct HomeFeature {
             pageID: LearningPageID
         )
         case knowledgeSystemRequested
+        case v2PageRequested(String)
     }
 
     enum LoadResponse: Equatable {
@@ -65,10 +77,18 @@ struct HomeFeature {
         case failed(message: String)
     }
 
+    enum V2LoadResponse: Equatable {
+        case loaded(ContentVersion, V2ContentManifest, V2Progress)
+        case failed(ContentVersion, String)
+    }
+
     @Dependency(\.curriculumClient) var curriculumClient
     @Dependency(\.knowledgeCatalogClient) var knowledgeCatalogClient
     @Dependency(\.learningRecordClient) var learningRecordClient
     @Dependency(\.personalKnowledgeClient) var personalKnowledgeClient
+    @Dependency(\.contentSettingsClient) var contentSettingsClient
+    @Dependency(\.v2ContentClient) var v2ContentClient
+    @Dependency(\.v2ProgressClient) var v2ProgressClient
 
     var body: some Reducer<State, Action> {
         Reduce { state, action in
@@ -84,7 +104,7 @@ struct HomeFeature {
                 let preferredChapterID = state.chapterEntry?.chapterID
                 let pendingReviews = state.pendingPersonalizationReviews
 
-                return .run { send in
+                let v1Load: Effect<Action> = .run { send in
                     do {
                         let chapters = try await curriculumClient.loadChapters()
                         var progressByChapter: [ChapterID: LearningProgress] = [:]
@@ -164,6 +184,29 @@ struct HomeFeature {
                 }
                 .cancellable(id: "HomeFeature.load", cancelInFlight: true)
 
+                return v1Load
+
+            case .v2ReloadRequested:
+                state.v2LoadErrorMessage = nil
+                return .run { send in
+                    let selectedVersion = await contentSettingsClient.loadSelectedVersion()
+                    do {
+                        async let manifestRequest = v2ContentClient.loadManifest()
+                        async let progressRequest = v2ProgressClient.load()
+                        await send(.v2LoadResponse(.loaded(
+                            selectedVersion,
+                            try await manifestRequest,
+                            try await progressRequest
+                        )))
+                    } catch {
+                        await send(.v2LoadResponse(.failed(
+                            selectedVersion,
+                            error.localizedDescription
+                        )))
+                    }
+                }
+                .cancellable(id: "HomeFeature.v2Load", cancelInFlight: true)
+
             case let .loadResponse(.loaded(snapshot)):
                 state.isLoading = false
                 state.snapshot = snapshot
@@ -178,6 +221,54 @@ struct HomeFeature {
                 state.isLoading = false
                 state.loadErrorMessage = message
                 return .none
+
+            case let .v2LoadResponse(.loaded(version, manifest, progress)):
+                state.selectedContentVersion = version
+                state.v2Manifest = manifest
+                state.v2Progress = progress
+                state.v2LoadErrorMessage = nil
+                let currentChapterID = V2ChapterStatusResolver(
+                    manifest: manifest,
+                    progress: progress
+                ).currentChapterID
+                if let stage = manifest.stages.first(where: { stage in
+                    stage.chapters.contains { $0.id == currentChapterID }
+                }) {
+                    state.selectedV2StageID = stage.id
+                }
+                return .none
+
+            case let .v2LoadResponse(.failed(version, message)):
+                state.selectedContentVersion = version
+                state.v2LoadErrorMessage = message
+                return .none
+
+            case let .contentVersionSelected(version):
+                state.selectedContentVersion = version
+                let reload: Effect<Action> = version == .v2 && state.v2Manifest == nil
+                    ? .send(.v2ReloadRequested)
+                    : .none
+                return .merge(
+                    .run { _ in await contentSettingsClient.saveSelectedVersion(version) },
+                    reload
+                )
+
+            case let .v2StageSelected(stageID):
+                guard state.v2Manifest?.stage(id: stageID) != nil else { return .none }
+                state.selectedV2StageID = stageID
+                return .none
+
+            case let .v2ChapterSelected(chapterID):
+                guard let chapter = state.v2Manifest?.chapter(id: chapterID),
+                      let firstPageID = chapter.firstPageID
+                else { return .none }
+                let resumePageID = state.v2Progress.lastVisitedPageID.flatMap { pageID in
+                    chapter.pages.contains { $0.id == pageID } ? pageID : nil
+                }
+                return .send(.delegate(.v2PageRequested(resumePageID ?? firstPageID)))
+
+            case .v2WorkspaceReturned:
+                return .send(.v2ReloadRequested)
 
             case .startButtonTapped:
                 guard let entry = state.chapterEntry else { return .none }
