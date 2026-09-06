@@ -24,5 +24,8 @@
       "markdown": "TextField 입력 → TitleField의 Binding → EditorView의 draft → 글자 수 Text. 자식 View가 사라져도 draft의 소유자는 바뀌지 않는다.\n\n> [!tip]- 이미 안다면 · 저장 데이터가 아님\n> `@State`는 View 생명주기의 임시 편집 상태다. 앱 재실행 뒤 남겨야 할 데이터는 저장 경계로 보내야 한다."
     }
   ],
-  "termRefs": []
+  "termRefs": [],
+  "knowledgeConceptIDs": [
+    "v2.concept.96379c6ecc0c"
+  ]
 }

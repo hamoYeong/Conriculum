@@ -24,5 +24,8 @@
       "markdown": "LoadView는 상태 표시 뼈대를 고정하고 실제 Value 화면은 content 클로저에 맡긴다. extension은 LoadState의 로딩 질문을 가까이 둔다.\n\n> [!tip]- 이미 안다면 · 공통화하지 않을 신호\n> 두 화면의 오류 행동·빈 상태·접근성이 곧 달라질 예정이면 시각 중복만 보고 generic 컴포넌트를 만들지 않는다."
     }
   ],
-  "termRefs": []
+  "termRefs": [],
+  "knowledgeConceptIDs": [
+    "v2.concept.83467230b784"
+  ]
 }

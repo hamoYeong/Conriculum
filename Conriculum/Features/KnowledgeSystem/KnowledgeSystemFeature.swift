@@ -5,6 +5,7 @@ import Foundation
 struct KnowledgeSystemFeature {
     @ObservableState
     struct State: Equatable {
+        var contentVersion: ContentVersion = .v1
         var snapshot: KnowledgeSystemSnapshot?
         var isLoading = false
         var loadErrorMessage: String?
@@ -84,12 +85,15 @@ struct KnowledgeSystemFeature {
     enum Delegate: Equatable {
         case homeRequested
         case learningRequested(ChapterID, LearningPageID)
+        case v2LearningRequested(String)
     }
 
     @Dependency(\.knowledgeCatalogClient) var knowledgeCatalogClient
     @Dependency(\.personalKnowledgeClient) var personalKnowledgeClient
     @Dependency(\.curriculumClient) var curriculumClient
     @Dependency(\.learningRecordClient) var learningRecordClient
+    @Dependency(\.v2ContentClient) var v2ContentClient
+    @Dependency(\.v2ProgressClient) var v2ProgressClient
 
     var body: some Reducer<State, Action> {
         Reduce { state, action in
@@ -103,6 +107,43 @@ struct KnowledgeSystemFeature {
             case .retryButtonTapped:
                 state.isLoading = true
                 state.loadErrorMessage = nil
+                if state.contentVersion == .v2 {
+                    return .run { send in
+                        do {
+                            async let catalogRequest = v2ContentClient
+                                .loadKnowledgeCatalog()
+                            async let progressRequest = v2ProgressClient.load()
+                            let catalog = try await catalogRequest
+                            let progress = try await progressRequest
+                            let learnedPageIDs = progress.completedPageIDs
+                            let learnedConceptIDs = Set(
+                                catalog.concepts.compactMap { concept in
+                                    let wasLearned = concept.revisitPages?.contains {
+                                        learnedPageIDs.contains($0.pageID.rawValue)
+                                    } == true
+                                    return wasLearned ? concept.id : nil
+                                }
+                            )
+                            let snapshot = await MainActor.run {
+                                KnowledgeSystemSnapshotComposer().compose(
+                                    catalog: catalog,
+                                    revisions: [],
+                                    personalRelations: [],
+                                    learnedConceptIDs: learnedConceptIDs
+                                )
+                            }
+                            await send(.loadResponse(.loaded(snapshot)))
+                        } catch {
+                            await send(.loadResponse(.failed(
+                                message: error.localizedDescription
+                            )))
+                        }
+                    }
+                    .cancellable(
+                        id: "KnowledgeSystemFeature.v2Load",
+                        cancelInFlight: true
+                    )
+                }
                 return .run { send in
                     do {
                         async let catalog = knowledgeCatalogClient.loadCatalog()
@@ -212,6 +253,11 @@ struct KnowledgeSystemFeature {
                 return .send(.delegate(.homeRequested))
 
             case let .learningPageTapped(reference):
+                if state.contentVersion == .v2 {
+                    return .send(.delegate(.v2LearningRequested(
+                        reference.pageID.rawValue
+                    )))
+                }
                 return .send(.delegate(.learningRequested(
                     reference.chapterID,
                     reference.pageID

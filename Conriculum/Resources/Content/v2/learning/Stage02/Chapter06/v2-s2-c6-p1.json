@@ -24,5 +24,8 @@
       "markdown": "`데이터 받기 / HTTP 성공 확인 / JSON을 DTO로 해석 / 내부 Memo로 변환`으로 묶고, 각 조각의 실패가 사용자에게 같은 메시지여야 하는지 질문한다.\n\n> [!question] 막히면 · 초보자 연결\n> data와 response가 같은 결과처럼 보이면 [[지식 체계 ver.2/06 외부 세계와 부작용/Codable과 요청 응답|Codable과 요청·응답]]의 경계를 확인한다.\n\n> [!tip]- 이미 안다면 · 경계 모델\n> `MemoDTO → Memo` 변환은 서버 필드 변경이 화면까지 직접 번지는 것을 막을 수 있다. 중복 비용과 독립 변화 가능성을 함께 본다."
     }
   ],
-  "termRefs": []
+  "termRefs": [],
+  "knowledgeConceptIDs": [
+    "v2.concept.91b981f31f23"
+  ]
 }

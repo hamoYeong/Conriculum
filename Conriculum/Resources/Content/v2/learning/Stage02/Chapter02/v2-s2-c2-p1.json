@@ -31,5 +31,8 @@
       "markdown": "`query = \"책\"`, `selectedMemo = nil`, `allMemos = []`가 각각 가능한지 고르고 타입과 변경 가능성을 근거로 말한다.\n\n> [!tip]- 이미 안다면 · 타입이 말하지 않는 의미\n> `[Memo]`는 정렬 기준과 데이터 출처를 말하지 않는다. `allMemos`의 사용처에서 실제로 전체인지, 이미 필터된 값인지 확인한다."
     }
   ],
-  "termRefs": []
+  "termRefs": [],
+  "knowledgeConceptIDs": [
+    "v2.concept.905074b77c01"
+  ]
 }

@@ -24,5 +24,8 @@
       "markdown": "바깥 조립자 → MemoStore·Clock 전달 → Feature가 보관 → add가 두 협력자를 사용한다. 테스트에서 시간을 고정하려면 어디를 바꾸면 되는가?\n\n> [!tip]- 이미 안다면 · 작은 계약\n> 전체 Clock 객체보다 `now` 능력만 필요하다면 현재 기능의 의존성 표면을 더 작게 만들 수 있다. [[지식 체계 ver.2/04 책임과 경계/의존성과 주입|의존성과 주입]]"
     }
   ],
-  "termRefs": []
+  "termRefs": [],
+  "knowledgeConceptIDs": [
+    "v2.concept.edd707af0d7e"
+  ]
 }

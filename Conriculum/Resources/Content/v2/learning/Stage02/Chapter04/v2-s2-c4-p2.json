@@ -31,5 +31,8 @@
       "markdown": "저장 버튼을 누르기 전에 `title`이 바뀌면 어떤 값을 사용할지 예상하고, 코드만으로 확정하기 어려운 부분을 질문으로 남긴다.\n\n> [!tip]- 이미 안다면 · escaping과 생명주기\n> 클로저가 호출 뒤에도 보관되면 캡처한 참조의 생명주기와 취소 경로를 함께 확인한다."
     }
   ],
-  "termRefs": []
+  "termRefs": [],
+  "knowledgeConceptIDs": [
+    "v2.concept.4cbb597b5817"
+  ]
 }

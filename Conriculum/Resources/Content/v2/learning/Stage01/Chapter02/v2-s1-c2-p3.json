@@ -73,5 +73,11 @@
       "markdown": "| 해금 카드 | 내 코드 사전에 남길 한 문장 |\n| --- | --- |\n| Bool | 참과 거짓 중 하나 |\n| true·false | Bool의 두 값 |\n| nil | Optional 값이 현재 없음 |\n\n다른 맥락에서의 구별, 헷갈리는 개념과의 대조, 처음 보는 보스 코드에 적용하는 과정을 모두 통과하면 클리어한다. 도움 사용 여부는 `많은 안내와 함께 / 단서와 함께 / 독립적으로` 중 하나로 남긴다.\n\n> [!question] 막히면 · 초보자 연결\n> `false`를 나쁨, `true`를 좋음으로 읽지 말고 이름의 질문을 본다.\n\n> [!tip]- 이미 안다면\n> `nil`은 모든 타입(값의 종류와 사용할 수 있는 행동을 정하는 분류)의 만능 값이 아니라 Optional의 부재다."
     }
   ],
-  "termRefs": []
+  "termRefs": [],
+  "knowledgeConceptIDs": [
+    "v2.concept.daf760a167a8",
+    "v2.concept.fa30b8c60dbb",
+    "v2.concept.23d2c69d7b53",
+    "v2.concept.f8f7f8de088b"
+  ]
 }

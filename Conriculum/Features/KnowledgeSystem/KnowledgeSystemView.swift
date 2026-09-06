@@ -233,7 +233,7 @@ struct KnowledgeSystemView: View {
                 .font(.title.weight(.bold))
                 .accessibilityHeading(.h1)
             Text(
-                "\(snapshot.title) · "
+                "\(store.contentVersion.title) · \(snapshot.title) · "
                     + "\(store.visibleConcepts.count)개 개념 · "
                     + "\(store.visibleBaseRelations.count)개 기본 연결"
             )

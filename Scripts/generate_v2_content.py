@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import re
 from pathlib import Path
@@ -41,6 +42,23 @@ def clean_inline(value: str) -> str:
     value = re.sub(r"\[\[([^\]|]+)\|([^\]]+)\]\]", r"\2", value)
     value = re.sub(r"\[\[([^\]]+)\]\]", r"\1", value)
     return value.replace("**", "").strip()
+
+
+def parse_markdown_table(markdown: str) -> list[list[str]]:
+    rows = []
+    for line in markdown.splitlines():
+        if not line.strip().startswith("|"):
+            continue
+        cells = [clean_inline(cell) for cell in line.strip().strip("|").split("|")]
+        if cells and all(re.fullmatch(r"[-: ]+", cell) for cell in cells):
+            continue
+        rows.append(cells)
+    return rows[1:] if len(rows) > 1 else []
+
+
+def concept_id(title: str) -> str:
+    digest = hashlib.sha1(title.encode("utf-8")).hexdigest()[:12]
+    return f"v2.concept.{digest}"
 
 
 def chapter_order(path: Path) -> int:
@@ -108,6 +126,26 @@ def parse_page(source_root: Path, stage: int, chapter_id: str, page_path: Path) 
     goal = clean_inline(first_section(text, goal_heading))
     if len(goal) > 180:
         goal = goal.split(".")[0].strip() + "."
+    if stage == 1:
+        word_block = next((block for block in blocks if block["kind"] == "wordSystem"), None)
+        knowledge_rows = parse_markdown_table(word_block["markdown"]) if word_block else []
+        knowledge_seeds = [
+            {
+                "id": concept_id(row[0]),
+                "title": row[0],
+                "definition": f"{row[1]} 체계에서 {row[2]}",
+                "essentialQuestion": row[3],
+            }
+            for row in knowledge_rows
+            if len(row) >= 4 and row[0]
+        ]
+    else:
+        knowledge_seeds = [{
+            "id": concept_id(f"Stage 2 · {title}"),
+            "title": title,
+            "definition": goal,
+            "essentialQuestion": "이 코드를 의미 단위로 읽을 때 무엇을 먼저 확인해야 할까?",
+        }]
     return {
         "schemaVersion": 1,
         "contentVersion": "v2",
@@ -120,6 +158,83 @@ def parse_page(source_root: Path, stage: int, chapter_id: str, page_path: Path) 
         "sourcePath": str(page_path.relative_to(source_root)),
         "blocks": blocks,
         "termRefs": [],
+        "knowledgeConceptIDs": [seed["id"] for seed in knowledge_seeds],
+        "_knowledgeSeeds": knowledge_seeds,
+    }
+
+
+def build_knowledge_catalog(stages: list[dict], pages: list[dict]) -> dict:
+    page_by_id = {page["id"]: page for page in pages}
+    concepts = {}
+    collection_owner = {}
+    collections = []
+    relations = []
+
+    for stage in stages:
+        for chapter in stage["chapters"]:
+            collection_id = chapter["id"].replace(".c", ".knowledge.c")
+            concept_ids = []
+            for reference in chapter["pages"]:
+                page = page_by_id[reference["id"]]
+                revisit = {
+                    "chapterID": chapter["id"],
+                    "chapterOrder": chapter["order"],
+                    "chapterTitle": chapter["title"],
+                    "pageID": page["id"],
+                    "pageOrder": page["order"],
+                    "pageTitle": page["title"],
+                    "kind": "direct",
+                    "connection": page["goal"],
+                }
+                for seed in page["_knowledgeSeeds"]:
+                    if seed["id"] not in concepts:
+                        concepts[seed["id"]] = {
+                            **seed,
+                            "judgmentQuestions": [
+                                seed["essentialQuestion"],
+                                "코드의 모양·자리·주변 단어 중 어떤 단서가 판단 근거인가?",
+                            ],
+                            "examples": [page["title"]],
+                            "misconceptions": [
+                                "코드를 처음부터 모두 번역해야만 이 개념을 찾을 수 있다고 생각한다."
+                            ],
+                            "revisitPages": [revisit],
+                        }
+                        collection_owner[seed["id"]] = collection_id
+                    else:
+                        concept = concepts[seed["id"]]
+                        if all(item["pageID"] != page["id"] for item in concept["revisitPages"]):
+                            concept["revisitPages"].append(revisit)
+                        if page["title"] not in concept["examples"]:
+                            concept["examples"].append(page["title"])
+                    if collection_owner[seed["id"]] == collection_id:
+                        concept_ids.append(seed["id"])
+
+            concept_ids = list(dict.fromkeys(concept_ids))
+            collections.append({
+                "id": collection_id,
+                "order": len(collections) + 1,
+                "title": f"Stage {stage['order']} · {chapter['title']}",
+                "summary": chapter["summary"],
+                "systemImage": "rectangle.3.group" if stage["kind"] == "game" else "point.3.connected.trianglepath.dotted",
+                "conceptIDs": concept_ids,
+            })
+            for left, right in zip(concept_ids, concept_ids[1:]):
+                relations.append({
+                    "id": f"v2.relation.{left.rsplit('.', 1)[-1]}.{right.rsplit('.', 1)[-1]}",
+                    "sourceConceptID": left,
+                    "targetConceptID": right,
+                    "kind": "leadsTo",
+                    "summary": "같은 학습 흐름에서 다음 판단 단서로 이어진다.",
+                })
+
+    return {
+        "schemaVersion": 1,
+        "id": "learning-system-v2-knowledge.ko-KR",
+        "title": "ver.2 코드 읽기 지식",
+        "collections": collections,
+        "concepts": list(concepts.values()),
+        "relations": relations,
     }
 
 
@@ -130,6 +245,7 @@ def main() -> None:
     args = parser.parse_args()
 
     stages = []
+    parsed_pages = []
     for stage_number, directory_name, kind in STAGES:
         stage_dir = args.source_root / directory_name
         stage_map = strip_frontmatter((stage_dir / f"00 Stage {stage_number} 지도.md").read_text(encoding="utf-8"))
@@ -154,10 +270,12 @@ def main() -> None:
             references = []
             for page_path in page_paths:
                 page = parse_page(args.source_root, stage_number, chapter_key, page_path)
+                parsed_pages.append(page)
                 resource_dir = args.output_root / "learning" / f"Stage{stage_number:02d}" / f"Chapter{chapter_index:02d}"
                 resource_dir.mkdir(parents=True, exist_ok=True)
                 resource_file = resource_dir / f"{page['id'].replace('.', '-')}.json"
-                resource_file.write_text(json.dumps(page, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+                serializable_page = {key: value for key, value in page.items() if not key.startswith("_")}
+                resource_file.write_text(json.dumps(serializable_page, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
                 references.append(
                     {
                         "id": page["id"],
@@ -199,6 +317,16 @@ def main() -> None:
     args.output_root.mkdir(parents=True, exist_ok=True)
     (args.output_root / "manifest.json").write_text(
         json.dumps(manifest, ensure_ascii=False, indent=2) + "\n",
+        encoding="utf-8",
+    )
+    knowledge_dir = args.output_root / "knowledge"
+    knowledge_dir.mkdir(parents=True, exist_ok=True)
+    (knowledge_dir / "catalog.json").write_text(
+        json.dumps(
+            build_knowledge_catalog(stages, parsed_pages),
+            ensure_ascii=False,
+            indent=2,
+        ) + "\n",
         encoding="utf-8",
     )
 

@@ -24,5 +24,8 @@
       "markdown": "`NavigationStack → VStack → SearchField + (빈 화면 또는 List → MemoRow 반복)`으로 그린다. `.navigationTitle`이 새 자식인지 기존 View를 바꾸는지 고른다.\n\n> [!question] 막히면 · 초보자 연결\n> 들여쓰기와 화면 계층이 혼동되면 [[지식 체계 ver.2/05 화면과 생명주기/View 트리|View 트리]]의 세 신호만 찾는다.\n\n> [!tip]- 이미 안다면 · 하위 View의 경계\n> `MemoRow`는 파일 길이를 줄이는 것뿐 아니라 한 Memo 입력으로 다시 계산되는 화면 경계를 드러낸다."
     }
   ],
-  "termRefs": []
+  "termRefs": [],
+  "knowledgeConceptIDs": [
+    "v2.concept.666f33d284d3"
+  ]
 }

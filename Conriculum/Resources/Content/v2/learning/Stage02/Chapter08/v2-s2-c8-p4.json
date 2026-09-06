@@ -38,5 +38,8 @@
       "markdown": "완료 여부는 해설 없이 만든 조각 지도, 흐름, 변경 예측, 사실·추정 구분으로 판단한다. 도움이 필요했던 카드는 실패 기록이 아니라 다음 Stage에서 다시 만날 읽기 단서다."
     }
   ],
-  "termRefs": []
+  "termRefs": [],
+  "knowledgeConceptIDs": [
+    "v2.concept.8a6cf0d52fd1"
+  ]
 }

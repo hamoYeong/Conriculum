@@ -31,5 +31,8 @@
       "markdown": "`사용자 입력은 query의 원본 상태를 바꾸고, results가 query와 allMemos에서 다시 계산되어 List에 표시된다.`\n\n> [!tip]- 이미 안다면 · 파생 상태를 저장하지 않기\n> 빠르게 다시 계산할 수 있는 값은 원본 둘에서 파생하면 동기화 경로가 줄어든다. 계산 비용이 크면 캐시의 무효화 조건까지 하나의 책임으로 읽는다."
     }
   ],
-  "termRefs": []
+  "termRefs": [],
+  "knowledgeConceptIDs": [
+    "v2.concept.784ea1b18c36"
+  ]
 }

@@ -31,5 +31,8 @@
       "markdown": "메모가 없는 category도 출력되는 이유를 찾고, `counts`만 반복하면 무엇이 달라지는지 예상한다.\n\n> [!tip]- 이미 안다면 · 표현보다 의도\n> `Dictionary(grouping:)`과 `mapValues`로 바꿔도 결과가 같을 수 있다. 어느 표현이 도메인의 “분류 후 개수”를 더 직접 보여 주는지 비교한다."
     }
   ],
-  "termRefs": []
+  "termRefs": [],
+  "knowledgeConceptIDs": [
+    "v2.concept.4b335c7ccb81"
+  ]
 }

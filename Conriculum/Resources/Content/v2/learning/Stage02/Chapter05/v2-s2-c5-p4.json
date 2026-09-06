@@ -31,5 +31,8 @@
       "markdown": "`feature` 공급을 제거하면 어떤 하위 화면이 영향을 받는지는 이 코드만으로 확정할 수 없다. 사실·추정·찾아볼 사용처를 구분한다.\n\n> [!tip]- 이미 안다면 · 숨은 입력 비용\n> 하위 View 하나만 쓰는 핵심 값까지 environment에 넣으면 의존성이 코드 표면에서 사라진다. 명시적 입력과 공유 문맥의 경계를 점검한다."
     }
   ],
-  "termRefs": []
+  "termRefs": [],
+  "knowledgeConceptIDs": [
+    "v2.concept.cc73c07934b4"
+  ]
 }

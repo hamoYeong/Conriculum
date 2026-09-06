@@ -52,7 +52,9 @@ struct AppFeature {
                 return .none
 
             case .home(.delegate(.knowledgeSystemRequested)):
-                state.knowledgeSystem = KnowledgeSystemFeature.State()
+                state.knowledgeSystem = KnowledgeSystemFeature.State(
+                    contentVersion: state.home.selectedContentVersion
+                )
                 state.route = .knowledgeSystem
                 return .none
 
@@ -89,6 +91,12 @@ struct AppFeature {
                         .pendingPersonalizationReviews
                 )
                 state.route = .learningWorkspace(chapterID: chapterID)
+                return .none
+
+            case let .knowledgeSystem(.delegate(.v2LearningRequested(pageID))):
+                state.knowledgeSystem = nil
+                state.v2Learning = V2LearningFeature.State(pageID: pageID)
+                state.route = .v2Learning(pageID: pageID)
                 return .none
 
             case .home, .workspace, .v2Learning, .knowledgeSystem:

@@ -24,5 +24,8 @@
       "markdown": "Button 탭 → 콜백에 ID 전달 → 소유자가 Memo 찾기 → 상태 변경 → 새 memo 입력 → Image 선택 변경.\n\n> [!question] 막히면 · 초보자 연결\n> 버튼이 화면을 직접 바꾼다고 느껴지면 [[지식 체계 ver.2/05 화면과 생명주기/사용자 행동과 다시 그리기|사용자 행동과 다시 그리기]]를 본다.\n\n> [!tip]- 이미 안다면 · 이벤트 이름의 이점\n> 여러 값을 직접 Binding으로 넘기는 대신 `onToggleFavorite`라는 사건을 넘기면 정책 소유자와 테스트 지점이 선명해진다."
     }
   ],
-  "termRefs": []
+  "termRefs": [],
+  "knowledgeConceptIDs": [
+    "v2.concept.5ca9eb8ebf04"
+  ]
 }

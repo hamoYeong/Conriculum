@@ -31,5 +31,8 @@
       "markdown": "analytics가 실패하면 메모 저장도 실패해야 하는가? 현재 코드만으로 보장되는 사실과 제품 정책이 필요한 질문을 분리한다.\n\n> [!tip]- 이미 안다면 · 책임 분리\n> 유효성 검사와 메모 생성은 계산에 가깝고, 배열과 analytics 변경은 부작용이다. 실패 정책이 달라지면 조각을 분리할 이유가 생긴다."
     }
   ],
-  "termRefs": []
+  "termRefs": [],
+  "knowledgeConceptIDs": [
+    "v2.concept.64590abc7150"
+  ]
 }

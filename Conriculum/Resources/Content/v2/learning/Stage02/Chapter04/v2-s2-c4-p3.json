@@ -24,5 +24,8 @@
       "markdown": "Memo는 한 메모의 값, MemoStore는 여러 메모의 공유·변경, SaveResult는 저장 결과의 가능한 경우를 표현한다.\n\n> [!tip]- 이미 안다면 · actor 격리 단서\n> `@MainActor`는 이 Store 접근이 UI와 같은 격리 영역에 묶인다는 단서다. 성능 결론보다 누가 상태를 바꿀 수 있는지 먼저 읽는다."
     }
   ],
-  "termRefs": []
+  "termRefs": [],
+  "knowledgeConceptIDs": [
+    "v2.concept.4d1c6dd18969"
+  ]
 }

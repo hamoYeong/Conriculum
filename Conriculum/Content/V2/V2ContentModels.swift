@@ -48,10 +48,10 @@ struct V2Chapter: Codable, Equatable, Identifiable, Sendable {
     let summary: String
     let pages: [V2PageReference]
 
-    var firstPageID: String? { pages.sorted(by: Self.pageOrder).first?.id }
-
-    private static func pageOrder(_ lhs: V2PageReference, _ rhs: V2PageReference) -> Bool {
-        (lhs.order, lhs.id) < (rhs.order, rhs.id)
+    var firstPageID: String? {
+        pages.sorted {
+            ($0.order, $0.id) < ($1.order, $1.id)
+        }.first?.id
     }
 }
 
@@ -76,6 +76,7 @@ struct V2LearningPage: Codable, Equatable, Identifiable, Sendable {
     let sourcePath: String
     let blocks: [V2ContentBlock]
     let termRefs: [V2TermReference]
+    let knowledgeConceptIDs: [KnowledgeConceptID]
 }
 
 struct V2ContentBlock: Codable, Equatable, Identifiable, Sendable {

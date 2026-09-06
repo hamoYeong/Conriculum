@@ -4,6 +4,7 @@ import ComposableArchitecture
 struct V2ContentClient: Sendable {
     var loadManifest: @Sendable () async throws -> V2ContentManifest
     var loadPage: @Sendable (_ id: VersionedContentID) async throws -> V2LearningPage
+    var loadKnowledgeCatalog: @Sendable () async throws -> KnowledgeCatalog
 }
 
 extension V2ContentClient: DependencyKey {
@@ -19,7 +20,8 @@ extension V2ContentClient {
     static func live(store: V2BundledContentStore) -> Self {
         Self(
             loadManifest: { try await store.loadManifest() },
-            loadPage: { try await store.loadPage(id: $0) }
+            loadPage: { try await store.loadPage(id: $0) },
+            loadKnowledgeCatalog: { try await store.loadKnowledgeCatalog() }
         )
     }
 }

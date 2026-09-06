@@ -31,5 +31,8 @@
       "markdown": "새로고침 중 기존 메모를 유지해야 한다면 현재 enum만으로 충분한가? 필요한 상태 관계를 그림으로 남긴다.\n\n> [!tip]- 이미 안다면 · 오래된 데이터와 요청 상태\n> `loaded(memos)`와 `isRefreshing`이 동시에 필요할 수 있다. 불가능한 조합을 줄이면서 실제로 동시 존재해야 하는 상태는 보존한다."
     }
   ],
-  "termRefs": []
+  "termRefs": [],
+  "knowledgeConceptIDs": [
+    "v2.concept.aae3ec8715b5"
+  ]
 }

@@ -31,5 +31,8 @@
       "markdown": "container 설정이 없다면 어디에서 문제가 드러날지, 삭제 취소 기능을 넣으면 어느 책임 조각이 추가될지 예상한다.\n\n> [!tip]- 이미 안다면 · 자동 저장을 가정하지 않기\n> ModelContext는 변경을 추적하지만 저장 시점과 오류 처리는 앱 계약에 맞춰 확인한다. 중요한 트랜잭션은 명시적 save와 실패 UI가 필요한지 검토한다."
     }
   ],
-  "termRefs": []
+  "termRefs": [],
+  "knowledgeConceptIDs": [
+    "v2.concept.37524c67ebff"
+  ]
 }

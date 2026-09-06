@@ -31,5 +31,8 @@
       "markdown": "`memos`는 바깥에서 들어오는 입력, `hidesCompleted`는 화면이 소유한 상태, `visibleMemos`는 변환, `Text`는 출력이다. 이 설명에서 코드가 직접 증명한 사실과 이름에서 추정한 것을 구분한다.\n\n> [!tip]- 이미 안다면 · 이름을 믿지 않는 읽기\n> `visibleMemos`가 실제로 정렬까지 한다면 이름이 책임을 충분히 말하지 못한다. 이름과 사용처가 어긋나는 지점을 품질 단서로 기록한다. [[지식 체계 ver.2/01 방향과 단서/사실 추정 질문 구분하기|사실·추정·질문]]"
     }
   ],
-  "termRefs": []
+  "termRefs": [],
+  "knowledgeConceptIDs": [
+    "v2.concept.78a6e612fd28"
+  ]
 }

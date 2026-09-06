@@ -31,5 +31,8 @@
       "markdown": "switch는 상태 하나에서 화면 하나를 고른다. associated value는 선택된 case에서 필요한 화면 입력이 된다.\n\n> [!tip]- 이미 안다면 · default를 쓰지 않은 이유\n> 닫힌 상태 enum을 빠짐없이 나열하면 새 case가 생길 때 놓친 화면을 컴파일러가 알려 준다."
     }
   ],
-  "termRefs": []
+  "termRefs": [],
+  "knowledgeConceptIDs": [
+    "v2.concept.0026c02f03ff"
+  ]
 }

@@ -90,6 +90,23 @@ struct AppFeatureTests {
     }
 
     @Test
+    func v2HomeKnowledgeRequestOpensTheV2Bookshelf() async {
+        var state = AppFeature.State()
+        state.home.selectedContentVersion = .v2
+        let store = TestStore(initialState: state) {
+            AppFeature()
+        }
+
+        await store.send(.home(.knowledgeSystemButtonTapped))
+        await store.receive(.home(.delegate(.knowledgeSystemRequested))) {
+            $0.knowledgeSystem = KnowledgeSystemFeature.State(
+                contentVersion: .v2
+            )
+            $0.route = .knowledgeSystem
+        }
+    }
+
+    @Test
     func knowledgeSystemBackReturnsHomeAndReleasesItsState() async {
         var initialState = AppFeature.State()
         initialState.route = .knowledgeSystem

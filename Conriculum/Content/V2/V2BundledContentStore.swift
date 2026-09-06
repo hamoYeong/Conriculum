@@ -9,6 +9,11 @@ struct V2BundledResource: BundledJSONResource, Equatable, Sendable {
         subdirectory: "Content/v2"
     )
 
+    static let knowledgeCatalog = Self(
+        name: "catalog",
+        subdirectory: "Content/v2/knowledge"
+    )
+
     init(relativePath: String) {
         let url = URL(fileURLWithPath: relativePath)
         name = url.deletingPathExtension().lastPathComponent
@@ -45,6 +50,7 @@ final class V2BundledContentStore {
     private let bundle: Bundle
     private let decoder: ContentResourceDecoder
     private var cachedManifest: V2ContentManifest?
+    private var cachedKnowledgeCatalog: KnowledgeCatalog?
     private var cachedPages: [String: V2LearningPage] = [:]
 
     init(
@@ -65,6 +71,17 @@ final class V2BundledContentStore {
         try V2ContentValidator().validate(manifest: manifest)
         cachedManifest = manifest
         return manifest
+    }
+
+    func loadKnowledgeCatalog() throws -> KnowledgeCatalog {
+        if let cachedKnowledgeCatalog { return cachedKnowledgeCatalog }
+        let catalog = try decoder.decodeResource(
+            KnowledgeCatalog.self,
+            from: V2BundledResource.knowledgeCatalog,
+            in: bundle
+        )
+        cachedKnowledgeCatalog = catalog
+        return catalog
     }
 
     func loadPage(id: VersionedContentID) throws -> V2LearningPage {

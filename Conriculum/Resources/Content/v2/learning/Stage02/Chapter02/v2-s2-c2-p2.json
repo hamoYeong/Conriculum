@@ -31,5 +31,8 @@
       "markdown": "`isLoading: Bool`, `memos: [Memo]`, `error: String?` 세 값으로 표현하면 `로딩 중인데 오류도 있고 데이터도 있음`이 가능하다. 이것이 실제 요구인지 모순인지 고른다.\n\n> [!tip]- 이미 안다면 · 직교하는 상태\n> 새로고침 중 이전 데이터를 보여 줘야 한다면 단일 enum보다 `현재 데이터`와 `요청 상태`를 분리하는 편이 정확할 수 있다."
     }
   ],
-  "termRefs": []
+  "termRefs": [],
+  "knowledgeConceptIDs": [
+    "v2.concept.c6fc0967daec"
+  ]
 }
