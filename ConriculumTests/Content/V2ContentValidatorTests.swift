@@ -16,8 +16,17 @@ struct V2ContentValidatorTests {
         #expect(manifest.stages.map { $0.chapters.count } == [9, 8])
         #expect(manifest.chapters.flatMap(\.pages).count == 68)
         #expect(knowledgeCatalog.id == "learning-system-v2-knowledge.ko-KR")
-        #expect(knowledgeCatalog.collections.count == 17)
-        #expect(knowledgeCatalog.concepts.isEmpty == false)
+        #expect(knowledgeCatalog.collections.count == 9)
+        #expect(knowledgeCatalog.concepts.count == 53)
+        #expect(knowledgeCatalog.relations.count == 52)
+        let relationDirections = Set(knowledgeCatalog.relations.map {
+            "\($0.sourceConceptID.rawValue)->\($0.targetConceptID.rawValue)"
+        })
+        #expect(knowledgeCatalog.relations.allSatisfy {
+            !relationDirections.contains(
+                "\($0.targetConceptID.rawValue)->\($0.sourceConceptID.rawValue)"
+            )
+        })
         var interactiveActivityCount = 0
 
         for reference in manifest.chapters.flatMap(\.pages) {
