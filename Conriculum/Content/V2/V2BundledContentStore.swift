@@ -49,10 +49,10 @@ final class V2BundledContentStore {
 
     init(
         bundle: Bundle = .main,
-        decoder: ContentResourceDecoder = ContentResourceDecoder()
+        decoder: ContentResourceDecoder? = nil
     ) {
         self.bundle = bundle
-        self.decoder = decoder
+        self.decoder = decoder ?? ContentResourceDecoder()
     }
 
     func loadManifest() throws -> V2ContentManifest {
