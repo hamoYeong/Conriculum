@@ -6,9 +6,9 @@ import Foundation
 struct ContentResourceDecoder: Sendable {
     /// typed resource를 Bundle에서 찾아 읽고 요청한 Domain 타입으로 decode한다.
     /// 앱의 실제 호출부가 사용하는 `Bundle → Data → Value` 진입점이다.
-    func decode<Value: Decodable>(
+    func decode<Value: Decodable, Resource: BundledJSONResource>(
         _ type: Value.Type,
-        from resource: BundledContentResource,
+        from resource: Resource,
         in bundle: Bundle = .main
     ) throws -> Value {
         let url = try resource.url(in: bundle)

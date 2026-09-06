@@ -2,6 +2,13 @@ import Foundation
 
 // MARK: - 앱 Bundle에 포함된 JSON 리소스의 주소
 
+/// JSON 리소스가 번들 안에서 자신의 위치를 해석하는 최소 계약.
+/// ver.1과 ver.2가 같은 decoder를 사용하되 서로의 리소스 목록에는 의존하지 않게 한다.
+protocol BundledJSONResource: Sendable {
+    var relativePath: String { get }
+    func url(in bundle: Bundle) throws -> URL
+}
+
 /// 파일명과 하위 경로를 한 값으로 묶어 호출부에 문자열 주소가 흩어지지 않게 한다.
 /// Chapter 리소스는 공용 naming convention으로 만들므로 Chapter별 enum case가 필요 없다.
 struct BundledContentResource: Equatable, Sendable {
@@ -63,6 +70,8 @@ struct BundledContentResource: Equatable, Sendable {
         )
     }
 }
+
+extension BundledContentResource: BundledJSONResource {}
 
 /// Chapter stable ID와 실제 번들 리소스의 연결을 콘텐츠 등록 지점 한곳에 모은다.
 struct BundledChapterRegistration: Equatable, Sendable {
