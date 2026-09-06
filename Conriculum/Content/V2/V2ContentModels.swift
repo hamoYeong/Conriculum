@@ -105,6 +105,33 @@ struct V2ContentBlock: Codable, Equatable, Identifiable, Sendable {
     let title: String
     let markdown: String
     let activities: [V2GameActivity]
+    let wordSystem: V2WordSystem?
+    let knowledgeUnlock: V2KnowledgeUnlock?
+}
+
+struct V2WordSystem: Codable, Equatable, Sendable {
+    struct Entry: Codable, Equatable, Identifiable, Sendable {
+        let id: String
+        let term: String
+        let parentSystem: String
+        let role: String
+        let firstThought: String
+    }
+
+    let entries: [Entry]
+}
+
+struct V2KnowledgeUnlock: Codable, Equatable, Sendable {
+    struct Card: Codable, Equatable, Identifiable, Sendable {
+        let id: String
+        let title: String
+        let summary: String
+    }
+
+    let cards: [Card]
+    let completionCriteria: String
+    let beginnerHint: String
+    let advancedTip: String
 }
 
 struct V2GameActivity: Codable, Equatable, Identifiable, Sendable {

@@ -22,8 +22,54 @@
       "order": 2,
       "kind": "wordSystem",
       "title": "단어 체계",
-      "markdown": "| 단어·기호 | 더 큰 체계 | 이 구절에서의 역할 | 보자마자 할 첫 생각 |\n| --- | --- | --- | --- |\n| throws | 함수 선언 | 행동이 오류를 내보낼 수 있음 | 실패가 밖으로 나가나? |\n| try | 호출 | 오류 가능 행동을 시도 | 실패는 어디서 처리하나? |\n| async | 함수 선언 | 행동이 중간에 기다릴 수 있음 | 비동기 함수인가? |\n| await | 호출 | 비동기 결과를 기다리는 지점 | 여기서 중단·재개될 수 있나? |\n| 동시성 | 시간 다루기 | 여러 작업이 겹치는 시간을 안전하게 다룸 | 어떤 작업들이 함께 진행될 수 있나? |\n| 격리 | 접근 범위 | 공유 값을 만질 수 있는 실행 영역을 나눔 | 이 값은 어디에서 안전하게 바꾸나? |",
-      "activities": []
+      "markdown": "",
+      "activities": [],
+      "wordSystem": {
+        "entries": [
+          {
+            "id": "03-try-throws-async-await-알아보기.block-2.word-1",
+            "term": "throws",
+            "parentSystem": "함수 선언",
+            "role": "행동이 오류를 내보낼 수 있음",
+            "firstThought": "실패가 밖으로 나가나?"
+          },
+          {
+            "id": "03-try-throws-async-await-알아보기.block-2.word-2",
+            "term": "try",
+            "parentSystem": "호출",
+            "role": "오류 가능 행동을 시도",
+            "firstThought": "실패는 어디서 처리하나?"
+          },
+          {
+            "id": "03-try-throws-async-await-알아보기.block-2.word-3",
+            "term": "async",
+            "parentSystem": "함수 선언",
+            "role": "행동이 중간에 기다릴 수 있음",
+            "firstThought": "비동기 함수인가?"
+          },
+          {
+            "id": "03-try-throws-async-await-알아보기.block-2.word-4",
+            "term": "await",
+            "parentSystem": "호출",
+            "role": "비동기 결과를 기다리는 지점",
+            "firstThought": "여기서 중단·재개될 수 있나?"
+          },
+          {
+            "id": "03-try-throws-async-await-알아보기.block-2.word-5",
+            "term": "동시성",
+            "parentSystem": "시간 다루기",
+            "role": "여러 작업이 겹치는 시간을 안전하게 다룸",
+            "firstThought": "어떤 작업들이 함께 진행될 수 있나?"
+          },
+          {
+            "id": "03-try-throws-async-await-알아보기.block-2.word-6",
+            "term": "격리",
+            "parentSystem": "접근 범위",
+            "role": "공유 값을 만질 수 있는 실행 영역을 나눔",
+            "firstThought": "이 값은 어디에서 안전하게 바꾸나?"
+          }
+        ]
+      }
     },
     {
       "id": "03-try-throws-async-await-알아보기.block-3",
@@ -314,8 +360,35 @@
       "order": 9,
       "kind": "unlock",
       "title": "지식 카드 해금",
-      "markdown": "| 해금 카드 | 내 코드 사전에 남길 한 문장 |\n| --- | --- |\n| throws·try | 오류를 내보낼 수 있는 선언과 그 호출 |\n| async·await | 중단·재개될 수 있는 선언과 기다림 지점 |\n| do-catch | 오류 가능 작업의 성공·실패 길 |\n| 동시성·격리 | 겹쳐 진행되는 작업과 공유 값의 안전한 접근 범위 |\n\n다른 맥락에서의 구별, 헷갈리는 개념과의 대조, 처음 보는 보스 코드에 적용하는 과정을 모두 통과하면 클리어한다. 도움 사용 여부는 `많은 안내와 함께 / 단서와 함께 / 독립적으로` 중 하나로 남긴다.\n\n> [!question] 막히면 · 초보자 연결\n> 네 단어를 한꺼번에 외우지 말고 ‘선언표–호출표’ 두 쌍으로 맞춘다.\n\n> [!tip]- 이미 안다면\n> `try?`, `try!`, actor 격리, 구조화된 동시성은 안전성에 큰 차이를 만든다. 생성 코드에서는 표식 생략·강제 사용을 검토한다.",
-      "activities": []
+      "markdown": "",
+      "activities": [],
+      "knowledgeUnlock": {
+        "cards": [
+          {
+            "id": "03-try-throws-async-await-알아보기.block-9.card-1",
+            "title": "throws·try",
+            "summary": "오류를 내보낼 수 있는 선언과 그 호출"
+          },
+          {
+            "id": "03-try-throws-async-await-알아보기.block-9.card-2",
+            "title": "async·await",
+            "summary": "중단·재개될 수 있는 선언과 기다림 지점"
+          },
+          {
+            "id": "03-try-throws-async-await-알아보기.block-9.card-3",
+            "title": "do-catch",
+            "summary": "오류 가능 작업의 성공·실패 길"
+          },
+          {
+            "id": "03-try-throws-async-await-알아보기.block-9.card-4",
+            "title": "동시성·격리",
+            "summary": "겹쳐 진행되는 작업과 공유 값의 안전한 접근 범위"
+          }
+        ],
+        "completionCriteria": "다른 맥락에서의 구별, 헷갈리는 개념과의 대조, 처음 보는 보스 코드에 적용하는 과정을 모두 통과하면 클리어한다. 도움 사용 여부는 `많은 안내와 함께 / 단서와 함께 / 독립적으로` 중 하나로 남긴다.",
+        "beginnerHint": "네 단어를 한꺼번에 외우지 말고 ‘선언표–호출표’ 두 쌍으로 맞춘다.",
+        "advancedTip": "`try?`, `try!`, actor 격리, 구조화된 동시성은 안전성에 큰 차이를 만든다. 생성 코드에서는 표식 생략·강제 사용을 검토한다."
+      }
     }
   ],
   "termRefs": [],

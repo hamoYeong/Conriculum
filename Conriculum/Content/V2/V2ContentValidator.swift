@@ -56,6 +56,31 @@ struct V2ContentValidator: Sendable {
         var activityIDs = Set<String>()
         var optionIDs = Set<String>()
         for block in page.blocks {
+            if block.kind == .wordSystem {
+                guard let wordSystem = block.wordSystem,
+                      wordSystem.entries.isEmpty == false,
+                      Set(wordSystem.entries.map(\.id)).count == wordSystem.entries.count,
+                      block.markdown.isEmpty
+                else {
+                    throw V2ContentError.invalidReference("\(block.id).wordSystem")
+                }
+            } else if block.wordSystem != nil {
+                throw V2ContentError.invalidReference("\(block.id).wordSystem")
+            }
+            if block.kind == .unlock {
+                guard let unlock = block.knowledgeUnlock,
+                      unlock.cards.isEmpty == false,
+                      Set(unlock.cards.map(\.id)).count == unlock.cards.count,
+                      unlock.completionCriteria.isEmpty == false,
+                      unlock.beginnerHint.isEmpty == false,
+                      unlock.advancedTip.isEmpty == false,
+                      block.markdown.isEmpty
+                else {
+                    throw V2ContentError.invalidReference("\(block.id).knowledgeUnlock")
+                }
+            } else if block.knowledgeUnlock != nil {
+                throw V2ContentError.invalidReference("\(block.id).knowledgeUnlock")
+            }
             if page.stageID == "v2.s1",
                block.kind == .game || block.kind == .boss,
                block.activities.isEmpty {

@@ -66,7 +66,11 @@ private struct V2GameBlock: View {
                 .foregroundStyle(accent)
                 .accessibilityHeading(.h2)
 
-            if block.activities.isEmpty {
+            if let wordSystem = block.wordSystem {
+                V2WordSystemComponent(content: wordSystem)
+            } else if let knowledgeUnlock = block.knowledgeUnlock {
+                V2KnowledgeUnlockComponent(content: knowledgeUnlock)
+            } else if block.activities.isEmpty {
                 V2MarkdownContent(markdown: block.markdown)
             } else {
                 ForEach(block.activities) { activity in
@@ -100,6 +104,106 @@ private struct V2GameBlock: View {
         case .unlock: "lock.open"
         default: "lightbulb"
         }
+    }
+}
+
+struct V2WordSystemComponent: View {
+    let content: V2WordSystem
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 0) {
+            ForEach(content.entries) { entry in
+                VStack(alignment: .leading, spacing: 8) {
+                    HStack(alignment: .firstTextBaseline, spacing: 10) {
+                        Text(markdown: entry.term)
+                            .font(.headline)
+                        Text(entry.parentSystem)
+                            .font(.caption.weight(.medium))
+                            .foregroundStyle(.secondary)
+                            .padding(.horizontal, 8)
+                            .padding(.vertical, 3)
+                            .background(.quaternary, in: Capsule())
+                    }
+                    Text(markdown: entry.role)
+                        .fixedSize(horizontal: false, vertical: true)
+                    Label {
+                        Text(markdown: entry.firstThought)
+                    } icon: {
+                        Image(systemName: "eye")
+                    }
+                    .font(.callout)
+                    .foregroundStyle(.indigo)
+                }
+                .padding(.vertical, 12)
+                .accessibilityElement(children: .combine)
+
+                if entry.id != content.entries.last?.id {
+                    Divider()
+                }
+            }
+        }
+    }
+}
+
+struct V2KnowledgeUnlockComponent: View {
+    let content: V2KnowledgeUnlock
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 16) {
+            LazyVGrid(
+                columns: [GridItem(.adaptive(minimum: 220), spacing: 12)],
+                alignment: .leading,
+                spacing: 12
+            ) {
+                ForEach(content.cards) { card in
+                    HStack(alignment: .top, spacing: 10) {
+                        Image(systemName: "lock.open.fill")
+                            .foregroundStyle(.green)
+                            .accessibilityHidden(true)
+                        VStack(alignment: .leading, spacing: 5) {
+                            Text(markdown: card.title)
+                                .font(.headline)
+                            Text(markdown: card.summary)
+                                .foregroundStyle(.secondary)
+                                .fixedSize(horizontal: false, vertical: true)
+                        }
+                    }
+                    .padding(14)
+                    .frame(maxWidth: .infinity, alignment: .topLeading)
+                    .background(Color.green.opacity(0.09), in: RoundedRectangle(cornerRadius: 12))
+                    .accessibilityElement(children: .combine)
+                }
+            }
+
+            VStack(alignment: .leading, spacing: 7) {
+                Label("해금 기준", systemImage: "checkmark.seal")
+                    .font(.subheadline.weight(.semibold))
+                Text(markdown: content.completionCriteria)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+
+            DisclosureGroup {
+                Text(markdown: content.beginnerHint)
+                    .padding(.top, 6)
+                    .fixedSize(horizontal: false, vertical: true)
+            } label: {
+                Label("막히면", systemImage: "lifepreserver")
+            }
+
+            DisclosureGroup {
+                Text(markdown: content.advancedTip)
+                    .padding(.top, 6)
+                    .fixedSize(horizontal: false, vertical: true)
+            } label: {
+                Label("이미 안다면", systemImage: "sparkles")
+            }
+        }
+    }
+}
+
+private extension Text {
+    init(markdown: String) {
+        self.init((try? AttributedString(markdown: markdown)) ?? AttributedString(markdown))
     }
 }
 

@@ -28,6 +28,8 @@ struct V2ContentValidatorTests {
             )
         })
         var interactiveActivityCount = 0
+        var wordSystemCount = 0
+        var knowledgeUnlockCount = 0
 
         for reference in manifest.chapters.flatMap(\.pages) {
             let page = try store.loadPage(id: VersionedContentID(
@@ -40,8 +42,15 @@ struct V2ContentValidatorTests {
             #expect(page.knowledgeConceptIDs.isEmpty == false)
             #expect(page.knowledgeConceptIDs.allSatisfy(conceptIDs.contains))
             interactiveActivityCount += page.blocks.flatMap(\.activities).count
+            wordSystemCount += page.blocks.compactMap(\.wordSystem).count
+            knowledgeUnlockCount += page.blocks.compactMap(\.knowledgeUnlock).count
+            for block in page.blocks where block.kind == .wordSystem || block.kind == .unlock {
+                #expect(block.markdown.isEmpty)
+            }
         }
         #expect(interactiveActivityCount == 252)
+        #expect(wordSystemCount == 36)
+        #expect(knowledgeUnlockCount == 36)
     }
 
     @Test

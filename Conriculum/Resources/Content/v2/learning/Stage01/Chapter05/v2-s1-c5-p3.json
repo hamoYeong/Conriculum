@@ -22,8 +22,33 @@
       "order": 2,
       "kind": "wordSystem",
       "title": "단어 체계",
-      "markdown": "| 단어·기호 | 더 큰 체계 | 이 구절에서의 역할 | 보자마자 할 첫 생각 |\n| --- | --- | --- | --- |\n| guard | 분기 키워드 | 계속 진행할 필수 조건 검사 | 통과하려면 무엇이 참이어야 하나? |\n| else | 실패 블록 | guard 조건이 거짓일 때 실행 | 실패하면 무엇을 하나? |\n| return | 종료·반환(일의 결과를 요청한 곳으로 돌려주는 것) | 현재 함수(이름 붙여 다시 실행할 수 있게 묶은 행동) 실행을 끝내고 밖으로 나감 | 여기서 무엇이 더 실행되지 않나? |",
-      "activities": []
+      "markdown": "",
+      "activities": [],
+      "wordSystem": {
+        "entries": [
+          {
+            "id": "03-guard와-return으로-멈추는-길-보기.block-2.word-1",
+            "term": "guard",
+            "parentSystem": "분기 키워드",
+            "role": "계속 진행할 필수 조건 검사",
+            "firstThought": "통과하려면 무엇이 참이어야 하나?"
+          },
+          {
+            "id": "03-guard와-return으로-멈추는-길-보기.block-2.word-2",
+            "term": "else",
+            "parentSystem": "실패 블록",
+            "role": "guard 조건이 거짓일 때 실행",
+            "firstThought": "실패하면 무엇을 하나?"
+          },
+          {
+            "id": "03-guard와-return으로-멈추는-길-보기.block-2.word-3",
+            "term": "return",
+            "parentSystem": "종료·반환(일의 결과를 요청한 곳으로 돌려주는 것)",
+            "role": "현재 함수(이름 붙여 다시 실행할 수 있게 묶은 행동) 실행을 끝내고 밖으로 나감",
+            "firstThought": "여기서 무엇이 더 실행되지 않나?"
+          }
+        ]
+      }
     },
     {
       "id": "03-guard와-return으로-멈추는-길-보기.block-3",
@@ -319,8 +344,30 @@
       "order": 9,
       "kind": "unlock",
       "title": "지식 카드 해금",
-      "markdown": "| 해금 카드 | 내 코드 사전에 남길 한 문장 |\n| --- | --- |\n| guard | 계속 진행할 필수 조건을 확인 |\n| 조기 종료 | 조건 실패 시 현재 행동을 일찍 끝냄 |\n| return | 현재 함수에서 밖으로 나가거나 값을 돌려줌 |\n\n다른 맥락에서의 구별, 헷갈리는 개념과의 대조, 처음 보는 보스 코드에 적용하는 과정을 모두 통과하면 클리어한다. 도움 사용 여부는 `많은 안내와 함께 / 단서와 함께 / 독립적으로` 중 하나로 남긴다.\n\n> [!question] 막히면 · 초보자 연결\n> guard를 보면 먼저 아래 정상 코드를 보며 ‘여기까지 오려면?’이라고 묻는다.\n\n> [!tip]- 이미 안다면\n> `guard let`은 Optional 값을 꺼내고 이후 범위에서 사용할 수 있게 한다. Stage 2에서는 실패 경로와 값 가용 범위를 함께 읽는다.",
-      "activities": []
+      "markdown": "",
+      "activities": [],
+      "knowledgeUnlock": {
+        "cards": [
+          {
+            "id": "03-guard와-return으로-멈추는-길-보기.block-9.card-1",
+            "title": "guard",
+            "summary": "계속 진행할 필수 조건을 확인"
+          },
+          {
+            "id": "03-guard와-return으로-멈추는-길-보기.block-9.card-2",
+            "title": "조기 종료",
+            "summary": "조건 실패 시 현재 행동을 일찍 끝냄"
+          },
+          {
+            "id": "03-guard와-return으로-멈추는-길-보기.block-9.card-3",
+            "title": "return",
+            "summary": "현재 함수에서 밖으로 나가거나 값을 돌려줌"
+          }
+        ],
+        "completionCriteria": "다른 맥락에서의 구별, 헷갈리는 개념과의 대조, 처음 보는 보스 코드에 적용하는 과정을 모두 통과하면 클리어한다. 도움 사용 여부는 `많은 안내와 함께 / 단서와 함께 / 독립적으로` 중 하나로 남긴다.",
+        "beginnerHint": "guard를 보면 먼저 아래 정상 코드를 보며 ‘여기까지 오려면?’이라고 묻는다.",
+        "advancedTip": "`guard let`은 Optional 값을 꺼내고 이후 범위에서 사용할 수 있게 한다. Stage 2에서는 실패 경로와 값 가용 범위를 함께 읽는다."
+      }
     }
   ],
   "termRefs": [],

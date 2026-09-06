@@ -56,6 +56,58 @@ def parse_markdown_table(markdown: str) -> list[list[str]]:
     return rows[1:] if len(rows) > 1 else []
 
 
+def subsection(markdown: str, heading: str) -> str:
+    match = re.search(
+        rf"(?ms)^### {re.escape(heading)}\s*$\n(.*?)(?=^### |\Z)",
+        markdown,
+    )
+    return match.group(1).strip() if match else ""
+
+
+def build_word_system(block_id: str, markdown: str) -> dict:
+    if "conriculum-component: word-system" not in markdown:
+        raise ValueError(f"Word system is missing its component contract: {block_id}")
+    rows = parse_markdown_table(subsection(markdown, "역할 카드"))
+    entries = [
+        {
+            "id": f"{block_id}.word-{index}",
+            "term": row[0],
+            "parentSystem": row[1],
+            "role": row[2],
+            "firstThought": row[3],
+        }
+        for index, row in enumerate(rows, start=1)
+        if len(row) >= 4 and all(row[:4])
+    ]
+    if not entries:
+        raise ValueError(f"Word system has no complete entries: {block_id}")
+    return {"entries": entries}
+
+
+def build_knowledge_unlock(block_id: str, markdown: str) -> dict:
+    if "conriculum-component: knowledge-unlock" not in markdown:
+        raise ValueError(f"Knowledge unlock is missing its component contract: {block_id}")
+    rows = parse_markdown_table(subsection(markdown, "해금 카드"))
+    cards = [
+        {
+            "id": f"{block_id}.card-{index}",
+            "title": row[0],
+            "summary": row[1],
+        }
+        for index, row in enumerate(rows, start=1)
+        if len(row) >= 2 and all(row[:2])
+    ]
+    result = {
+        "cards": cards,
+        "completionCriteria": subsection(markdown, "해금 기준"),
+        "beginnerHint": subsection(markdown, "막히면"),
+        "advancedTip": subsection(markdown, "이미 안다면"),
+    }
+    if not cards or any(not result[key] for key in ("completionCriteria", "beginnerHint", "advancedTip")):
+        raise ValueError(f"Knowledge unlock is incomplete: {block_id}")
+    return result
+
+
 def concept_id(title: str) -> str:
     digest = hashlib.sha1(title.encode("utf-8")).hexdigest()[:12]
     return f"v2.concept.{digest}"
@@ -304,20 +356,25 @@ def parse_page(
         body = re.sub(r"\n*\[\[학습 체계 ver\.2/.+?\]\].*$", "", body, flags=re.DOTALL).strip()
         block_id = f"{page_path.stem.lower().replace(' ', '-')}.block-{index}"
         kind = block_kind(stage, match.group(1).strip())
-        blocks.append(
-            {
-                "id": block_id,
-                "order": index,
-                "kind": kind,
-                "title": match.group(1).strip(),
-                "markdown": body,
-                "activities": build_game_activities(
-                    block_id,
-                    match.group(1).strip(),
-                    body,
-                ) if stage == 1 and kind in ("game", "boss") else [],
-            }
-        )
+        word_system = build_word_system(block_id, body) if kind == "wordSystem" else None
+        knowledge_unlock = build_knowledge_unlock(block_id, body) if kind == "unlock" else None
+        block = {
+            "id": block_id,
+            "order": index,
+            "kind": kind,
+            "title": match.group(1).strip(),
+            "markdown": "" if word_system or knowledge_unlock else body,
+            "activities": build_game_activities(
+                block_id,
+                match.group(1).strip(),
+                body,
+            ) if stage == 1 and kind in ("game", "boss") else [],
+        }
+        if word_system:
+            block["wordSystem"] = word_system
+        if knowledge_unlock:
+            block["knowledgeUnlock"] = knowledge_unlock
+        blocks.append(block)
     page_number = int(page_path.stem.split()[0])
     page_id = f"v2.s{stage}.{chapter_id}.p{page_number}"
     goal_heading = "클리어 목표" if stage == 1 else "읽기 미션"
@@ -326,16 +383,15 @@ def parse_page(
         goal = goal.split(".")[0].strip() + "."
     if stage == 1:
         word_block = next((block for block in blocks if block["kind"] == "wordSystem"), None)
-        knowledge_rows = parse_markdown_table(word_block["markdown"]) if word_block else []
+        knowledge_entries = (word_block.get("wordSystem") or {}).get("entries", []) if word_block else []
         knowledge_seeds = [
             {
-                "id": concept_id(row[0]),
-                "title": row[0],
-                "definition": f"{row[1]} 체계에서 {row[2]}",
-                "essentialQuestion": row[3],
+                "id": concept_id(entry["term"]),
+                "title": entry["term"],
+                "definition": f"{entry['parentSystem']} 체계에서 {entry['role']}",
+                "essentialQuestion": entry["firstThought"],
             }
-            for row in knowledge_rows
-            if len(row) >= 4 and row[0]
+            for entry in knowledge_entries
         ]
     else:
         knowledge_seeds = [{

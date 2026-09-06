@@ -21,6 +21,24 @@ struct V2StageComponentRenderingTests {
         #expect(learningImage.pixelsHigh > 300)
     }
 
+    @Test
+    func wordSystemAndKnowledgeUnlockRenderAsDedicatedComponents() throws {
+        let page = try V2BundledContentStore().loadPage(id: .init(
+            version: .v2,
+            rawValue: "v2.s1.c1.p1"
+        ))
+        let wordSystem = try #require(page.blocks.compactMap(\.wordSystem).first)
+        let knowledgeUnlock = try #require(page.blocks.compactMap(\.knowledgeUnlock).first)
+
+        let wordImage = try render(V2WordSystemComponent(content: wordSystem))
+        let unlockImage = try render(V2KnowledgeUnlockComponent(content: knowledgeUnlock))
+
+        #expect(wordSystem.entries.count == 3)
+        #expect(knowledgeUnlock.cards.count == 2)
+        #expect(wordImage.pixelsHigh > 150)
+        #expect(unlockImage.pixelsHigh > 180)
+    }
+
     private func render<Content: View>(_ view: Content) throws -> NSBitmapImageRep {
         let root = view
             .padding(24)

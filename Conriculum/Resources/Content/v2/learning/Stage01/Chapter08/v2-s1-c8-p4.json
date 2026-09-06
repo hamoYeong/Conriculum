@@ -22,8 +22,33 @@
       "order": 2,
       "kind": "wordSystem",
       "title": "단어 체계",
-      "markdown": "| 단어·기호 | 더 큰 체계 | 이 구절에서의 역할 | 보자마자 할 첫 생각 |\n| --- | --- | --- | --- |\n| View | SwiftUI 계약 | 타입이 화면 내용을 제공함 | 이 타입은 화면 조각인가? |\n| body | 프로퍼티 | 현재 상태에 따른 화면 설명을 제공 | 안에 어떤 화면 트리가 있나? |\n| modifier | 호출 사슬 | 앞 View에서 새 View를 만들어 설정 추가 | 어떤 설정이 차례로 붙나? |",
-      "activities": []
+      "markdown": "",
+      "activities": [],
+      "wordSystem": {
+        "entries": [
+          {
+            "id": "04-view-body-modifier의-첫-역할-알아보기.block-2.word-1",
+            "term": "View",
+            "parentSystem": "SwiftUI 계약",
+            "role": "타입이 화면 내용을 제공함",
+            "firstThought": "이 타입은 화면 조각인가?"
+          },
+          {
+            "id": "04-view-body-modifier의-첫-역할-알아보기.block-2.word-2",
+            "term": "body",
+            "parentSystem": "프로퍼티",
+            "role": "현재 상태에 따른 화면 설명을 제공",
+            "firstThought": "안에 어떤 화면 트리가 있나?"
+          },
+          {
+            "id": "04-view-body-modifier의-첫-역할-알아보기.block-2.word-3",
+            "term": "modifier",
+            "parentSystem": "호출 사슬",
+            "role": "앞 View에서 새 View를 만들어 설정 추가",
+            "firstThought": "어떤 설정이 차례로 붙나?"
+          }
+        ]
+      }
     },
     {
       "id": "04-view-body-modifier의-첫-역할-알아보기.block-3",
@@ -326,8 +351,35 @@
       "order": 9,
       "kind": "unlock",
       "title": "지식 카드 해금",
-      "markdown": "| 해금 카드 | 내 코드 사전에 남길 한 문장 |\n| --- | --- |\n| View | SwiftUI 화면 조각이 따르는 계약 |\n| body | 화면 내용을 돌려주는 프로퍼티 |\n| modifier | 앞 View에 설정을 적용해 새 View를 잇는 호출 |\n| View 트리 | 부모와 자식 화면의 중첩 구조 |\n\n다른 맥락에서의 구별, 헷갈리는 개념과의 대조, 처음 보는 보스 코드에 적용하는 과정을 모두 통과하면 클리어한다. 도움 사용 여부는 `많은 안내와 함께 / 단서와 함께 / 독립적으로` 중 하나로 남긴다.\n\n> [!question] 막히면 · 초보자 연결\n> 가장 안쪽 화면 이름을 찾고 중괄호를 따라 바깥 부모로 올라간 뒤 점 사슬을 읽는다.\n\n> [!tip]- 이미 안다면\n> `some View`는 구체 타입을 숨기는 불투명 반환 타입이다. modifier 순서는 결과 타입과 레이아웃(화면 요소의 크기와 위치를 정하는 방식)·그리기 의미를 바꿀 수 있다.",
-      "activities": []
+      "markdown": "",
+      "activities": [],
+      "knowledgeUnlock": {
+        "cards": [
+          {
+            "id": "04-view-body-modifier의-첫-역할-알아보기.block-9.card-1",
+            "title": "View",
+            "summary": "SwiftUI 화면 조각이 따르는 계약"
+          },
+          {
+            "id": "04-view-body-modifier의-첫-역할-알아보기.block-9.card-2",
+            "title": "body",
+            "summary": "화면 내용을 돌려주는 프로퍼티"
+          },
+          {
+            "id": "04-view-body-modifier의-첫-역할-알아보기.block-9.card-3",
+            "title": "modifier",
+            "summary": "앞 View에 설정을 적용해 새 View를 잇는 호출"
+          },
+          {
+            "id": "04-view-body-modifier의-첫-역할-알아보기.block-9.card-4",
+            "title": "View 트리",
+            "summary": "부모와 자식 화면의 중첩 구조"
+          }
+        ],
+        "completionCriteria": "다른 맥락에서의 구별, 헷갈리는 개념과의 대조, 처음 보는 보스 코드에 적용하는 과정을 모두 통과하면 클리어한다. 도움 사용 여부는 `많은 안내와 함께 / 단서와 함께 / 독립적으로` 중 하나로 남긴다.",
+        "beginnerHint": "가장 안쪽 화면 이름을 찾고 중괄호를 따라 바깥 부모로 올라간 뒤 점 사슬을 읽는다.",
+        "advancedTip": "`some View`는 구체 타입을 숨기는 불투명 반환 타입이다. modifier 순서는 결과 타입과 레이아웃(화면 요소의 크기와 위치를 정하는 방식)·그리기 의미를 바꿀 수 있다."
+      }
     }
   ],
   "termRefs": [],

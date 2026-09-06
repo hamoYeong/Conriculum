@@ -22,8 +22,33 @@
       "order": 2,
       "kind": "wordSystem",
       "title": "단어 체계",
-      "markdown": "| 단어·기호 | 더 큰 체계 | 이 구절에서의 역할 | 보자마자 할 첫 생각 |\n| --- | --- | --- | --- |\n| for | 반복 키워드 | 컬렉션 원소마다 블록 실행 | 무엇을 차례로 꺼내나? |\n| in | 관계 키워드 | 현재 이름과 전체 컬렉션 연결 | 어느 전체 안에서 오나? |\n| ForEach | SwiftUI 반복 | 원소마다 화면 조각 생성 | 반복 결과가 화면인가? |",
-      "activities": []
+      "markdown": "",
+      "activities": [],
+      "wordSystem": {
+        "entries": [
+          {
+            "id": "02-for와-foreach의-반복-찾기.block-2.word-1",
+            "term": "for",
+            "parentSystem": "반복 키워드",
+            "role": "컬렉션 원소마다 블록 실행",
+            "firstThought": "무엇을 차례로 꺼내나?"
+          },
+          {
+            "id": "02-for와-foreach의-반복-찾기.block-2.word-2",
+            "term": "in",
+            "parentSystem": "관계 키워드",
+            "role": "현재 이름과 전체 컬렉션 연결",
+            "firstThought": "어느 전체 안에서 오나?"
+          },
+          {
+            "id": "02-for와-foreach의-반복-찾기.block-2.word-3",
+            "term": "ForEach",
+            "parentSystem": "SwiftUI 반복",
+            "role": "원소마다 화면 조각 생성",
+            "firstThought": "반복 결과가 화면인가?"
+          }
+        ]
+      }
     },
     {
       "id": "02-for와-foreach의-반복-찾기.block-3",
@@ -321,8 +346,30 @@
       "order": 9,
       "kind": "unlock",
       "title": "지식 카드 해금",
-      "markdown": "| 해금 카드 | 내 코드 사전에 남길 한 문장 |\n| --- | --- |\n| for-in | 컬렉션 원소마다 블록을 반복 |\n| 현재 원소 | 이번 반복에서 꺼낸 값 하나 |\n| ForEach | 원소마다 SwiftUI 화면 조각을 만듦 |\n\n다른 맥락에서의 구별, 헷갈리는 개념과의 대조, 처음 보는 보스 코드에 적용하는 과정을 모두 통과하면 클리어한다. 도움 사용 여부는 `많은 안내와 함께 / 단서와 함께 / 독립적으로` 중 하나로 남긴다.\n\n> [!question] 막히면 · 초보자 연결\n> 단수 이름은 하나, 복수 이름은 전체라는 관례를 단서로 쓰되 실제 위치로 확인한다.\n\n> [!tip]- 이미 안다면\n> ForEach는 일반 for문의 단순 화면 표기가 아니다. 식별 가능한 데이터와 View 정체성(복사되어도 같은 대상인지 구별하는 성질) 규칙을 가진다.",
-      "activities": []
+      "markdown": "",
+      "activities": [],
+      "knowledgeUnlock": {
+        "cards": [
+          {
+            "id": "02-for와-foreach의-반복-찾기.block-9.card-1",
+            "title": "for-in",
+            "summary": "컬렉션 원소마다 블록을 반복"
+          },
+          {
+            "id": "02-for와-foreach의-반복-찾기.block-9.card-2",
+            "title": "현재 원소",
+            "summary": "이번 반복에서 꺼낸 값 하나"
+          },
+          {
+            "id": "02-for와-foreach의-반복-찾기.block-9.card-3",
+            "title": "ForEach",
+            "summary": "원소마다 SwiftUI 화면 조각을 만듦"
+          }
+        ],
+        "completionCriteria": "다른 맥락에서의 구별, 헷갈리는 개념과의 대조, 처음 보는 보스 코드에 적용하는 과정을 모두 통과하면 클리어한다. 도움 사용 여부는 `많은 안내와 함께 / 단서와 함께 / 독립적으로` 중 하나로 남긴다.",
+        "beginnerHint": "단수 이름은 하나, 복수 이름은 전체라는 관례를 단서로 쓰되 실제 위치로 확인한다.",
+        "advancedTip": "ForEach는 일반 for문의 단순 화면 표기가 아니다. 식별 가능한 데이터와 View 정체성(복사되어도 같은 대상인지 구별하는 성질) 규칙을 가진다."
+      }
     }
   ],
   "termRefs": [],
@@ -330,6 +377,6 @@
     "v2.concept.50d055d31163",
     "v2.concept.d4ca67109cc0",
     "v2.concept.63c92ed18525",
-    "v2.concept.4399498de565"
+    "v2.concept.ce65ce877ca9"
   ]
 }

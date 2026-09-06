@@ -22,8 +22,33 @@
       "order": 2,
       "kind": "wordSystem",
       "title": "단어 체계",
-      "markdown": "| 단어·기호 | 더 큰 체계 | 이 구절에서의 역할 | 보자마자 할 첫 생각 |\n| --- | --- | --- | --- |\n| filter | 컬렉션 변환 | 조건이 참인 원소만 남김 | 개수가 줄 수 있나? |\n| map | 컬렉션 변환 | 각 원소를 결과 값으로 바꿈 | 원소 모양이 무엇으로 바뀌나? |\n| 클로저(중괄호로 묶어 나중에 쓸 수 있게 건네는 행동) 매개변수(어떤 행동이 입력을 받을 때 안에서 사용할 이름) | 현재 원소 | 중괄호 안에서 하나를 가리킴 | 지금 검사·변환할 하나는? |",
-      "activities": []
+      "markdown": "",
+      "activities": [],
+      "wordSystem": {
+        "entries": [
+          {
+            "id": "03-filter와-map의-전후-값-보기.block-2.word-1",
+            "term": "filter",
+            "parentSystem": "컬렉션 변환",
+            "role": "조건이 참인 원소만 남김",
+            "firstThought": "개수가 줄 수 있나?"
+          },
+          {
+            "id": "03-filter와-map의-전후-값-보기.block-2.word-2",
+            "term": "map",
+            "parentSystem": "컬렉션 변환",
+            "role": "각 원소를 결과 값으로 바꿈",
+            "firstThought": "원소 모양이 무엇으로 바뀌나?"
+          },
+          {
+            "id": "03-filter와-map의-전후-값-보기.block-2.word-3",
+            "term": "클로저(중괄호로 묶어 나중에 쓸 수 있게 건네는 행동) 매개변수(어떤 행동이 입력을 받을 때 안에서 사용할 이름)",
+            "parentSystem": "현재 원소",
+            "role": "중괄호 안에서 하나를 가리킴",
+            "firstThought": "지금 검사·변환할 하나는?"
+          }
+        ]
+      }
     },
     {
       "id": "03-filter와-map의-전후-값-보기.block-3",
@@ -331,8 +356,25 @@
       "order": 9,
       "kind": "unlock",
       "title": "지식 카드 해금",
-      "markdown": "| 해금 카드 | 내 코드 사전에 남길 한 문장 |\n| --- | --- |\n| filter | 조건이 참인 원소만 남기는 변환 |\n| map | 각 원소를 새 결과로 바꾸는 변환 |\n\n다른 맥락에서의 구별, 헷갈리는 개념과의 대조, 처음 보는 보스 코드에 적용하는 과정을 모두 통과하면 클리어한다. 도움 사용 여부는 `많은 안내와 함께 / 단서와 함께 / 독립적으로` 중 하나로 남긴다.\n\n> [!question] 막히면 · 초보자 연결\n> filter에는 통과문, map에는 변신 카드를 붙인다.\n\n> [!tip]- 이미 안다면\n> 변환 사슬에서는 각 단계의 입력·출력 타입과 중간 배열 생성 여부를 본다.",
-      "activities": []
+      "markdown": "",
+      "activities": [],
+      "knowledgeUnlock": {
+        "cards": [
+          {
+            "id": "03-filter와-map의-전후-값-보기.block-9.card-1",
+            "title": "filter",
+            "summary": "조건이 참인 원소만 남기는 변환"
+          },
+          {
+            "id": "03-filter와-map의-전후-값-보기.block-9.card-2",
+            "title": "map",
+            "summary": "각 원소를 새 결과로 바꾸는 변환"
+          }
+        ],
+        "completionCriteria": "다른 맥락에서의 구별, 헷갈리는 개념과의 대조, 처음 보는 보스 코드에 적용하는 과정을 모두 통과하면 클리어한다. 도움 사용 여부는 `많은 안내와 함께 / 단서와 함께 / 독립적으로` 중 하나로 남긴다.",
+        "beginnerHint": "filter에는 통과문, map에는 변신 카드를 붙인다.",
+        "advancedTip": "변환 사슬에서는 각 단계의 입력·출력 타입과 중간 배열 생성 여부를 본다."
+      }
     }
   ],
   "termRefs": [],
