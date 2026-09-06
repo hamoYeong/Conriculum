@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "contentVersion": "v2",
+  "id": "v2.s2.c4.p3",
+  "stageID": "v2.s2",
+  "chapterID": "v2.s2.c4",
+  "order": 3,
+  "title": "struct·class·enum의 책임 경계 읽기",
+  "goal": "세 타입이 각각 데이터, 공유 상태, 가능한 경우 중 무엇을 경계 짓는지 읽는다. 완료 증거: 타입마다 `아는 것/하는 일/변경 이유` 한 줄.",
+  "sourcePath": "Stage 2 - AI 구현을 의미 단위로 읽는 기초/Chapter 4 - 함수와 타입의 책임 읽기/03 struct class enum의 책임 경계 읽기.md",
+  "blocks": [
+    {
+      "id": "03-struct-class-enum의-책임-경계-읽기.block-1",
+      "order": 1,
+      "kind": "mission",
+      "title": "읽기 미션",
+      "markdown": "세 타입이 각각 데이터, 공유 상태, 가능한 경우 중 무엇을 경계 짓는지 읽는다. **완료 증거:** 타입마다 `아는 것/하는 일/변경 이유` 한 줄.\n\n```swift\nstruct Memo { let id: UUID; var title: String }\n\n@MainActor final class MemoStore {\n    private(set) var memos: [Memo] = []\n    func add(_ memo: Memo) { memos.append(memo) }\n}\n\nenum SaveResult { case saved(Memo.ID), rejected(String) }\n```\n\n> [!question] 막히면 · 초보자 연결\n> 값 타입과 참조 타입의 모든 차이를 외우지 말고 [[지식 체계 ver.2/04 책임과 경계/struct class enum의 책임|타입의 책임]] 질문부터 적용한다."
+    },
+    {
+      "id": "03-struct-class-enum의-책임-경계-읽기.block-2",
+      "order": 2,
+      "kind": "chunking",
+      "title": "조각 묶기",
+      "markdown": "Memo는 한 메모의 값, MemoStore는 여러 메모의 공유·변경, SaveResult는 저장 결과의 가능한 경우를 표현한다.\n\n> [!tip]- 이미 안다면 · actor 격리 단서\n> `@MainActor`는 이 Store 접근이 UI와 같은 격리 영역에 묶인다는 단서다. 성능 결론보다 누가 상태를 바꿀 수 있는지 먼저 읽는다."
+    }
+  ],
+  "termRefs": []
+}

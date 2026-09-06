@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "contentVersion": "v2",
+  "id": "v2.s2.c4.p1",
+  "stageID": "v2.s2",
+  "chapterID": "v2.s2.c4",
+  "order": 1,
+  "title": "함수 호출에서 입력과 출력 찾기",
+  "goal": "저장 함수가 밖에 남기는 결과를 반환값만 보지 않고 찾는다. 완료 증거: 입력·반환·오류·상태 변경 표.",
+  "sourcePath": "Stage 2 - AI 구현을 의미 단위로 읽는 기초/Chapter 4 - 함수와 타입의 책임 읽기/01 함수 호출에서 입력과 출력 찾기.md",
+  "blocks": [
+    {
+      "id": "01-함수-호출에서-입력과-출력-찾기.block-1",
+      "order": 1,
+      "kind": "mission",
+      "title": "읽기 미션",
+      "markdown": "저장 함수가 밖에 남기는 결과를 반환값만 보지 않고 찾는다. **완료 증거:** 입력·반환·오류·상태 변경 표.\n\n```swift\nfunc addMemo(title: String) throws -> Memo.ID {\n    let memo = try Memo(validating: title)\n    memos.append(memo)\n    analytics.record(.memoCreated)\n    return memo.id\n}\n```"
+    },
+    {
+      "id": "01-함수-호출에서-입력과-출력-찾기.block-2",
+      "order": 2,
+      "kind": "support",
+      "title": "중심 활동",
+      "markdown": "`title`은 입력, ID는 반환이다. `throws`는 실패 경로, 배열 append와 analytics 호출은 부작용이다. 네 결과를 코드 줄과 연결한다.\n\n> [!question] 막히면 · 초보자 연결\n> 함수의 출력이 `return`뿐이라고 생각했다면 [[지식 체계 ver.2/03 실행과 변환/함수 호출과 반환|함수 호출과 반환]]을 연다."
+    },
+    {
+      "id": "01-함수-호출에서-입력과-출력-찾기.block-3",
+      "order": 3,
+      "kind": "changeExperiment",
+      "title": "변경 실험",
+      "markdown": "analytics가 실패하면 메모 저장도 실패해야 하는가? 현재 코드만으로 보장되는 사실과 제품 정책이 필요한 질문을 분리한다.\n\n> [!tip]- 이미 안다면 · 책임 분리\n> 유효성 검사와 메모 생성은 계산에 가깝고, 배열과 analytics 변경은 부작용이다. 실패 정책이 달라지면 조각을 분리할 이유가 생긴다."
+    }
+  ],
+  "termRefs": []
+}

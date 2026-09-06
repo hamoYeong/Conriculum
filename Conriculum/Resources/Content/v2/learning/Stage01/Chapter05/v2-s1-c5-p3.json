@@ -1,0 +1,77 @@
+{
+  "schemaVersion": 1,
+  "contentVersion": "v2",
+  "id": "v2.s1.c5.p3",
+  "stageID": "v2.s1",
+  "chapterID": "v2.s1.c5",
+  "order": 3,
+  "title": "guard와 return으로 멈추는 길 보기",
+  "goal": "`guard`는 계속하려면 필요한 조건을 확인하고 실패 블록의 `return`이 현재 행동을 일찍 끝냄을 안다.",
+  "sourcePath": "Stage 1 - 코드의 단어와 모양에 익숙해지기/Chapter 5 - 묶음과 갈림길 알아보기/03 guard와 return으로 멈추는 길 보기.md",
+  "blocks": [
+    {
+      "id": "03-guard와-return으로-멈추는-길-보기.block-1",
+      "order": 1,
+      "kind": "mission",
+      "title": "클리어 목표",
+      "markdown": "`guard`는 계속하려면 필요한 조건을 확인하고 실패 블록의 `return`이 현재 행동을 일찍 끝냄을 안다."
+    },
+    {
+      "id": "03-guard와-return으로-멈추는-길-보기.block-2",
+      "order": 2,
+      "kind": "wordSystem",
+      "title": "단어 체계",
+      "markdown": "| 단어·기호 | 더 큰 체계 | 이 구절에서의 역할 | 보자마자 할 첫 생각 |\n| --- | --- | --- | --- |\n| guard | 분기 키워드 | 계속 진행할 필수 조건 검사 | 통과하려면 무엇이 참이어야 하나? |\n| else | 실패 블록 | guard 조건이 거짓일 때 실행 | 실패하면 무엇을 하나? |\n| return | 종료·반환(일의 결과를 요청한 곳으로 돌려주는 것) | 현재 함수(이름 붙여 다시 실행할 수 있게 묶은 행동) 실행을 끝내고 밖으로 나감 | 여기서 무엇이 더 실행되지 않나? |"
+    },
+    {
+      "id": "03-guard와-return으로-멈추는-길-보기.block-3",
+      "order": 3,
+      "kind": "scene",
+      "title": "장면 카드",
+      "markdown": "제목이 비어 있으면 저장을 시작하지 않는다.\n\n```swift\nguard !title.isEmpty else {\n    return\n}\nsave()\n```"
+    },
+    {
+      "id": "03-guard와-return으로-멈추는-길-보기.block-4",
+      "order": 4,
+      "kind": "game",
+      "title": "게임 1 · 첫 생각 카드",
+      "markdown": "제목이 비어 있으면 실행되지 않는 것은?\n\n1. `return`\n2. `save()`\n3. guard의 else 블록\n\n> [!check]- 정답과 근거\n> `save()`. 실패 블록에서 `return`해 현재 행동이 끝난다."
+    },
+    {
+      "id": "03-guard와-return으로-멈추는-길-보기.block-5",
+      "order": 5,
+      "kind": "game",
+      "title": "게임 2 · 구절 역할 지도",
+      "markdown": "| 코드 구절 | 맡은 역할 | 붙일 역할 카드 |\n| --- | --- | --- |\n| `guard` | 필수 조건 검사 | 계속할 자격 확인 |\n| `!title.isEmpty` | 조건 | 제목이 비지 않음 |\n| `else { return }` | 실패 길 | 일찍 종료 |\n| `save()` | 정상 길 | 검사를 통과한 뒤 실행 |"
+    },
+    {
+      "id": "03-guard와-return으로-멈추는-길-보기.block-6",
+      "order": 6,
+      "kind": "game",
+      "title": "게임 3 · 헷갈리는 카드 대조",
+      "markdown": "| 후보 | 결정적인 차이 | 판별 단서 |\n| --- | --- | --- |\n| if | 참일 때 블록 진입 | 선택 행동 |\n| guard | 거짓일 때 else 진입 | 통과 조건 |\n| return | 현재 함수 종료 | 앱 전체 종료 아님 |\n\n### 수상한 카드\n\n“`return`은 언제나 값을 만들어 화면에 보여 준다.”\n\n> [!check]- 판정\n> 아니다. 값 없이 현재 행동을 끝내는 `return`도 있다."
+    },
+    {
+      "id": "03-guard와-return으로-멈추는-길-보기.block-7",
+      "order": 7,
+      "kind": "game",
+      "title": "게임 4 · 다른 옷을 입은 코드",
+      "markdown": "### 1\n\n```swift\nguard isOnline else { return }\nload()\n```\n\n**질문:** 오프라인이면?\n\n> [!check]- 확인\n> `load()`에 도달하지 않는다.\n\n### 2\n\n```swift\nif isEmpty { return }\nshow()\n```\n\n**질문:** 같은 흐름(내용과 실행 순서가 한 곳에서 다음 곳으로 이어지는 방향)인가?\n\n> [!check]- 확인\n> 비어 있으면 종료하고 아니면 `show()`로 계속한다."
+    },
+    {
+      "id": "03-guard와-return으로-멈추는-길-보기.block-8",
+      "order": 8,
+      "kind": "boss",
+      "title": "보스 코드",
+      "markdown": "```swift\nfunc submit() {\n    guard hasName else {\n        showWarning()\n        return\n    }\n    send()\n}\n```\n\n**클리어 과제:** hasName이 false일 때 실행되는 호출과 실행되지 않는 호출을 나눈다.\n\n> [!check]- 보스 해설\n> `showWarning()`은 실행되고 `return` 뒤의 `send()`는 실행되지 않는다."
+    },
+    {
+      "id": "03-guard와-return으로-멈추는-길-보기.block-9",
+      "order": 9,
+      "kind": "unlock",
+      "title": "지식 카드 해금",
+      "markdown": "| 해금 카드 | 내 코드 사전에 남길 한 문장 |\n| --- | --- |\n| guard | 계속 진행할 필수 조건을 확인 |\n| 조기 종료 | 조건 실패 시 현재 행동을 일찍 끝냄 |\n| return | 현재 함수에서 밖으로 나가거나 값을 돌려줌 |\n\n다른 맥락에서의 구별, 헷갈리는 개념과의 대조, 처음 보는 보스 코드에 적용하는 과정을 모두 통과하면 클리어한다. 도움 사용 여부는 `많은 안내와 함께 / 단서와 함께 / 독립적으로` 중 하나로 남긴다.\n\n> [!question] 막히면 · 초보자 연결\n> guard를 보면 먼저 아래 정상 코드를 보며 ‘여기까지 오려면?’이라고 묻는다.\n\n> [!tip]- 이미 안다면\n> `guard let`은 Optional 값을 꺼내고 이후 범위에서 사용할 수 있게 한다. Stage 2에서는 실패 경로와 값 가용 범위를 함께 읽는다."
+    }
+  ],
+  "termRefs": []
+}

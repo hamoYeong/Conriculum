@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "contentVersion": "v2",
+  "id": "v2.s2.c6.p3",
+  "stageID": "v2.s2",
+  "chapterID": "v2.s2.c6",
+  "order": 3,
+  "title": "오류·로딩·빈·성공 상태 구분하기",
+  "goal": "같은 빈 화면처럼 보이는 네 상태를 실제 의미와 다음 행동으로 구분한다. 완료 증거: 상태마다 표시와 가능한 action 하나.",
+  "sourcePath": "Stage 2 - AI 구현을 의미 단위로 읽는 기초/Chapter 6 - 저장과 외부 데이터 경계 읽기/03 오류 로딩 빈 성공 상태 구분하기.md",
+  "blocks": [
+    {
+      "id": "03-오류-로딩-빈-성공-상태-구분하기.block-1",
+      "order": 1,
+      "kind": "mission",
+      "title": "읽기 미션",
+      "markdown": "같은 빈 화면처럼 보이는 네 상태를 실제 의미와 다음 행동으로 구분한다. **완료 증거:** 상태마다 표시와 가능한 action 하나.\n\n```swift\nswitch state {\ncase .idle: StartButton()\ncase .loading: ProgressView(\"불러오는 중\")\ncase .loaded([]): EmptyMemosView()\ncase let .loaded(memos): MemoList(memos: memos)\ncase let .failed(message): RetryView(message: message)\n}\n```"
+    },
+    {
+      "id": "03-오류-로딩-빈-성공-상태-구분하기.block-2",
+      "order": 2,
+      "kind": "support",
+      "title": "중심 활동",
+      "markdown": "로딩 중에는 기다림, 성공한 빈 결과에는 생성, 실패에는 재시도, 성공에는 목록이라는 다음 행동을 연결한다.\n\n> [!question] 막히면 · 초보자 연결\n> 빈 배열과 실패를 같은 상태로 읽었다면 [[지식 체계 ver.2/06 외부 세계와 부작용/로딩 오류 빈 성공 상태|로딩·오류·빈·성공 상태]]를 연다."
+    },
+    {
+      "id": "03-오류-로딩-빈-성공-상태-구분하기.block-3",
+      "order": 3,
+      "kind": "changeExperiment",
+      "title": "변경 실험",
+      "markdown": "새로고침 중 기존 메모를 유지해야 한다면 현재 enum만으로 충분한가? 필요한 상태 관계를 그림으로 남긴다.\n\n> [!tip]- 이미 안다면 · 오래된 데이터와 요청 상태\n> `loaded(memos)`와 `isRefreshing`이 동시에 필요할 수 있다. 불가능한 조합을 줄이면서 실제로 동시 존재해야 하는 상태는 보존한다."
+    }
+  ],
+  "termRefs": []
+}

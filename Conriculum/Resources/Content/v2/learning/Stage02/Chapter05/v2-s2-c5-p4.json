@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "contentVersion": "v2",
+  "id": "v2.s2.c5.p4",
+  "stageID": "v2.s2",
+  "chapterID": "v2.s2.c5",
+  "order": 4,
+  "title": "modifier·환경·navigation의 역할 읽기",
+  "goal": "처음 보는 상세 화면 코드에서 modifier를 모양·행동·의존성·경로로 분류한다. 완료 증거: 각 modifier의 적용 대상과 역할.",
+  "sourcePath": "Stage 2 - AI 구현을 의미 단위로 읽는 기초/Chapter 5 - SwiftUI 화면 흐름 읽기/04 modifier 환경 navigation의 역할 읽기.md",
+  "blocks": [
+    {
+      "id": "04-modifier-환경-navigation의-역할-읽기.block-1",
+      "order": 1,
+      "kind": "mission",
+      "title": "읽기 미션",
+      "markdown": "처음 보는 상세 화면 코드에서 modifier를 모양·행동·의존성·경로로 분류한다. **완료 증거:** 각 modifier의 적용 대상과 역할.\n\n```swift\nMemoList(memos: memos)\n    .padding()\n    .task { await feature.load() }\n    .environment(feature)\n    .navigationDestination(for: Memo.ID.self) { id in\n        MemoDetail(id: id)\n    }\n```"
+    },
+    {
+      "id": "04-modifier-환경-navigation의-역할-읽기.block-2",
+      "order": 2,
+      "kind": "clueScan",
+      "title": "단서 스캔",
+      "markdown": "`.padding`은 모양, `.task`는 생명주기와 비동기 행동, `.environment`는 하위 View 입력, `.navigationDestination`은 경로 값과 화면의 대응이다.\n\n> [!question] 막히면 · 초보자 연결\n> 점으로 이어진 줄이 모두 같은 역할처럼 보이면 [[지식 체계 ver.2/05 화면과 생명주기/modifier 사슬|modifier 사슬]]을 먼저 읽고, 경로가 막히면 [[지식 체계 ver.2/05 화면과 생명주기/Environment와 navigation|환경과 navigation]]을 연다."
+    },
+    {
+      "id": "04-modifier-환경-navigation의-역할-읽기.block-3",
+      "order": 3,
+      "kind": "changeExperiment",
+      "title": "변경 실험",
+      "markdown": "`feature` 공급을 제거하면 어떤 하위 화면이 영향을 받는지는 이 코드만으로 확정할 수 없다. 사실·추정·찾아볼 사용처를 구분한다.\n\n> [!tip]- 이미 안다면 · 숨은 입력 비용\n> 하위 View 하나만 쓰는 핵심 값까지 environment에 넣으면 의존성이 코드 표면에서 사라진다. 명시적 입력과 공유 문맥의 경계를 점검한다."
+    }
+  ],
+  "termRefs": []
+}

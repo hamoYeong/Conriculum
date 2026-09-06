@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "contentVersion": "v2",
+  "id": "v2.s2.c5.p2",
+  "stageID": "v2.s2",
+  "chapterID": "v2.s2.c5",
+  "order": 2,
+  "title": "상태와 Binding이 화면을 바꾸는 흐름 읽기",
+  "goal": "편집 화면에서 상태 원본과 자식의 변경 통로를 찾는다. 완료 증거: 원본·읽기 전용 입력·Binding을 구분한 연결도.",
+  "sourcePath": "Stage 2 - AI 구현을 의미 단위로 읽는 기초/Chapter 5 - SwiftUI 화면 흐름 읽기/02 상태와 Binding이 화면을 바꾸는 흐름 읽기.md",
+  "blocks": [
+    {
+      "id": "02-상태와-binding이-화면을-바꾸는-흐름-읽기.block-1",
+      "order": 1,
+      "kind": "mission",
+      "title": "읽기 미션",
+      "markdown": "편집 화면에서 상태 원본과 자식의 변경 통로를 찾는다. **완료 증거:** 원본·읽기 전용 입력·Binding을 구분한 연결도.\n\n```swift\nstruct EditorView: View {\n    @State private var draft = \"\"\n    var body: some View {\n        VStack {\n            TitleField(text: $draft)\n            Text(\"\\(draft.count)/40\")\n        }\n    }\n}\n\nstruct TitleField: View {\n    @Binding var text: String\n    var body: some View { TextField(\"제목\", text: $text) }\n}\n```\n\n> [!question] 막히면 · 초보자 연결\n> `$draft`가 복사본처럼 보이면 [[지식 체계 ver.2/05 화면과 생명주기/State와 Binding|State와 Binding]]의 원본과 연결을 확인한다."
+    },
+    {
+      "id": "02-상태와-binding이-화면을-바꾸는-흐름-읽기.block-2",
+      "order": 2,
+      "kind": "flow",
+      "title": "흐름 잇기",
+      "markdown": "TextField 입력 → TitleField의 Binding → EditorView의 draft → 글자 수 Text. 자식 View가 사라져도 draft의 소유자는 바뀌지 않는다.\n\n> [!tip]- 이미 안다면 · 저장 데이터가 아님\n> `@State`는 View 생명주기의 임시 편집 상태다. 앱 재실행 뒤 남겨야 할 데이터는 저장 경계로 보내야 한다."
+    }
+  ],
+  "termRefs": []
+}

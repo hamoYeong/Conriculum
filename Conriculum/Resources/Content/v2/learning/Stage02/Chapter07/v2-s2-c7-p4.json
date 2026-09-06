@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "contentVersion": "v2",
+  "id": "v2.s2.c7.p4",
+  "stageID": "v2.s2",
+  "chapterID": "v2.s2.c7",
+  "order": 4,
+  "title": "여러 파일을 가로질러 기능 흐름 추적하기",
+  "goal": "낯선 프로젝트에서 `메모 삭제` 하나만 세로로 잘라 읽는다. 완료 증거: 3~6개 파일을 잇는 기능 지도와 건너뛴 파일의 이유.",
+  "sourcePath": "Stage 2 - AI 구현을 의미 단위로 읽는 기초/Chapter 7 - 계약과 아키텍처를 가로질러 읽기/04 여러 파일을 가로질러 기능 흐름 추적하기.md",
+  "blocks": [
+    {
+      "id": "04-여러-파일을-가로질러-기능-흐름-추적하기.block-1",
+      "order": 1,
+      "kind": "mission",
+      "title": "읽기 미션",
+      "markdown": "낯선 프로젝트에서 `메모 삭제` 하나만 세로로 잘라 읽는다. **완료 증거:** 3~6개 파일을 잇는 기능 지도와 건너뛴 파일의 이유.\n\n```text\nMemoRow.swift        onDelete(id)\nMemoListView.swift   delete 확인과 action 전달\nMemoFeature.swift    deleteRequested → client.delete\nMemoClient.swift     계약\nLiveMemoClient.swift ModelContext.delete\nMemoFeatureTests.swift 삭제 뒤 상태 검증\n```"
+    },
+    {
+      "id": "04-여러-파일을-가로질러-기능-흐름-추적하기.block-2",
+      "order": 2,
+      "kind": "clueScan",
+      "title": "단서 스캔",
+      "markdown": "결과 문구나 `delete`, `remove`, Memo.ID를 검색한다. 각 파일 전체가 아니라 입력·행동·상태·부작용·출력과 맞닿는 선언만 펼친다.\n\n> [!question] 막히면 · 초보자 연결\n> 폴더 순서대로 읽고 있다면 [[지식 체계 ver.2/07 구조와 변경/기능 흐름|기능 흐름]]의 얇은 세로 절단을 적용한다."
+    },
+    {
+      "id": "04-여러-파일을-가로질러-기능-흐름-추적하기.block-3",
+      "order": 3,
+      "kind": "changeExperiment",
+      "title": "변경 실험",
+      "markdown": "삭제 취소를 추가한다면 확인 UI, 상태, 실제 삭제 시점, 테스트 중 무엇이 함께 달라지는지 표시한다.\n\n> [!tip]- 이미 안다면 · 검색 경계 줄이기\n> protocol 요구사항과 테스트 이름은 양쪽 경계를 빠르게 보여 준다. 공통 유틸리티 내부는 현재 계약이 깨질 때만 연다."
+    }
+  ],
+  "termRefs": []
+}

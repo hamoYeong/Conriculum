@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "contentVersion": "v2",
+  "id": "v2.s2.c3.p1",
+  "stageID": "v2.s2",
+  "chapterID": "v2.s2.c3",
+  "order": 1,
+  "title": "if와 guard에서 계속되는 길 찾기",
+  "goal": "빈 제목의 메모가 저장되지 않는 이유와 성공 경로를 찾는다. 완료 증거: 실패 경로와 계속되는 경로를 서로 다른 색으로 표시.",
+  "sourcePath": "Stage 2 - AI 구현을 의미 단위로 읽는 기초/Chapter 3 - 분기와 반복의 실행 흐름 읽기/01 if와 guard에서 계속되는 길 찾기.md",
+  "blocks": [
+    {
+      "id": "01-if와-guard에서-계속되는-길-찾기.block-1",
+      "order": 1,
+      "kind": "mission",
+      "title": "읽기 미션",
+      "markdown": "빈 제목의 메모가 저장되지 않는 이유와 성공 경로를 찾는다. **완료 증거:** 실패 경로와 계속되는 경로를 서로 다른 색으로 표시.\n\n```swift\nfunc saveMemo() {\n    let trimmed = title.trimmingCharacters(in: .whitespaces)\n    guard !trimmed.isEmpty else {\n        message = \"제목을 입력하세요\"\n        return\n    }\n    memos.append(Memo(title: trimmed))\n    title = \"\"\n}\n```"
+    },
+    {
+      "id": "01-if와-guard에서-계속되는-길-찾기.block-2",
+      "order": 2,
+      "kind": "prediction",
+      "title": "결과 먼저",
+      "markdown": "`title`이 공백뿐이면 append와 초기화 중 무엇이 실행되는가? 먼저 고르고 `guard` 아래에서 새로 보장되는 사실을 말한다.\n\n> [!question] 막히면 · 초보자 연결\n> `else`가 주 흐름처럼 보이면 [[지식 체계 ver.2/03 실행과 변환/if와 guard|if와 guard]]에서 `빠른 종료/계속되는 길`만 확인한다."
+    },
+    {
+      "id": "01-if와-guard에서-계속되는-길-찾기.block-3",
+      "order": 3,
+      "kind": "closure",
+      "title": "확인과 마무리",
+      "markdown": "실패는 메시지를 남기고 함수를 끝낸다. 아래에서는 제목이 비지 않았다는 조건이 보장되어 메모를 추가하고 입력을 비운다.\n\n> [!tip]- 이미 안다면 · 정책의 위치\n> 제목 유효성 검사가 여러 저장 경로에 반복되면 타입 초기화나 공통 검증 조각으로 모을지 검토한다. 화면 메시지 결정까지 모델에 넣을 필요는 없다."
+    }
+  ],
+  "termRefs": []
+}

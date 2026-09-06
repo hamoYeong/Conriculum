@@ -1,0 +1,77 @@
+{
+  "schemaVersion": 1,
+  "contentVersion": "v2",
+  "id": "v2.s1.c6.p3",
+  "stageID": "v2.s1",
+  "chapterID": "v2.s1.c6",
+  "order": 3,
+  "title": "filter와 map의 전후 값 보기",
+  "goal": "`filter`는 원소를 골라 남기고 `map`은 각 원소를 새 값으로 바꾼다는 전후 모양을 구별한다.",
+  "sourcePath": "Stage 1 - 코드의 단어와 모양에 익숙해지기/Chapter 6 - 여러 값과 반복 알아보기/03 filter와 map의 전후 값 보기.md",
+  "blocks": [
+    {
+      "id": "03-filter와-map의-전후-값-보기.block-1",
+      "order": 1,
+      "kind": "mission",
+      "title": "클리어 목표",
+      "markdown": "`filter`는 원소를 골라 남기고 `map`은 각 원소를 새 값으로 바꾼다는 전후 모양을 구별한다."
+    },
+    {
+      "id": "03-filter와-map의-전후-값-보기.block-2",
+      "order": 2,
+      "kind": "wordSystem",
+      "title": "단어 체계",
+      "markdown": "| 단어·기호 | 더 큰 체계 | 이 구절에서의 역할 | 보자마자 할 첫 생각 |\n| --- | --- | --- | --- |\n| filter | 컬렉션 변환 | 조건이 참인 원소만 남김 | 개수가 줄 수 있나? |\n| map | 컬렉션 변환 | 각 원소를 결과 값으로 바꿈 | 원소 모양이 무엇으로 바뀌나? |\n| 클로저(중괄호로 묶어 나중에 쓸 수 있게 건네는 행동) 매개변수(어떤 행동이 입력을 받을 때 안에서 사용할 이름) | 현재 원소 | 중괄호 안에서 하나를 가리킴 | 지금 검사·변환할 하나는? |"
+    },
+    {
+      "id": "03-filter와-map의-전후-값-보기.block-3",
+      "order": 3,
+      "kind": "scene",
+      "title": "장면 카드",
+      "markdown": "완료되지 않은 할 일만 골라 제목 배열로 바꾼다.\n\n```swift\nlet open = tasks.filter { !$0.isDone }\nlet titles = open.map { $0.title }\n```"
+    },
+    {
+      "id": "03-filter와-map의-전후-값-보기.block-4",
+      "order": 4,
+      "kind": "game",
+      "title": "게임 1 · 첫 생각 카드",
+      "markdown": "원소를 버리거나 남기는 호출은?\n\n1. filter\n2. map\n3. 둘 다 이름만 바꿈\n\n> [!check]- 정답과 근거\n> `filter`. 조건이 false인 원소를 결과에서 제외한다."
+    },
+    {
+      "id": "03-filter와-map의-전후-값-보기.block-5",
+      "order": 5,
+      "kind": "game",
+      "title": "게임 2 · 구절 역할 지도",
+      "markdown": "| 코드 구절 | 맡은 역할 | 붙일 역할 카드 |\n| --- | --- | --- |\n| `tasks` | 입력 전체 | 원래 할 일 배열 |\n| `filter` | 선택 변환 | 미완료만 남김 |\n| `open` | 중간 전체 | 선택된 할 일 |\n| `map` | 모양 변환 | 할 일을 제목으로 바꿈 |\n| `titles` | 출력 전체 | 문자열 배열 |"
+    },
+    {
+      "id": "03-filter와-map의-전후-값-보기.block-6",
+      "order": 6,
+      "kind": "game",
+      "title": "게임 3 · 헷갈리는 카드 대조",
+      "markdown": "| 후보 | 결정적인 차이 | 판별 단서 |\n| --- | --- | --- |\n| filter | 선택 | 원소 종류는 대개 유지, 수가 달라질 수 있음 |\n| map | 변환 | 결과 원소를 새 값으로 만듦 |\n| for | 명령 반복 | 블록 안 행동을 직접 수행 |\n\n### 수상한 카드\n\n“map은 지도 데이터를 다루는 기능이다.”\n\n> [!check]- 판정\n> 여기서 `map`은 각 원소를 다른 결과 값으로 대응시키는 컬렉션 변환이다."
+    },
+    {
+      "id": "03-filter와-map의-전후-값-보기.block-7",
+      "order": 7,
+      "kind": "game",
+      "title": "게임 4 · 다른 옷을 입은 코드",
+      "markdown": "### 1\n\n```swift\nlet adults = ages.filter { $0 >= 18 }\n```\n\n**질문:** 무엇이 남나?\n\n> [!check]- 확인\n> 18 이상인 나이.\n\n### 2\n\n```swift\nlet lengths = names.map { $0.count }\n```\n\n**질문:** 무엇으로 바뀌나?\n\n> [!check]- 확인\n> 이름 문자열이 글자 수 정수로 바뀐다."
+    },
+    {
+      "id": "03-filter와-map의-전후-값-보기.block-8",
+      "order": 8,
+      "kind": "boss",
+      "title": "보스 코드",
+      "markdown": "```swift\nlet scores = [30, 80, 60]\nlet passed = scores.filter { $0 >= 60 }\nlet labels = passed.map { \"\\($0)점\" }\n```\n\n**클리어 과제:** 각 줄의 입력과 출력, 선택과 변환을 연결한다.\n\n> [!check]- 보스 해설\n> scores에서 80·60을 filter로 남기고, map이 `80점`·`60점` 문자열로 바꾼다."
+    },
+    {
+      "id": "03-filter와-map의-전후-값-보기.block-9",
+      "order": 9,
+      "kind": "unlock",
+      "title": "지식 카드 해금",
+      "markdown": "| 해금 카드 | 내 코드 사전에 남길 한 문장 |\n| --- | --- |\n| filter | 조건이 참인 원소만 남기는 변환 |\n| map | 각 원소를 새 결과로 바꾸는 변환 |\n\n다른 맥락에서의 구별, 헷갈리는 개념과의 대조, 처음 보는 보스 코드에 적용하는 과정을 모두 통과하면 클리어한다. 도움 사용 여부는 `많은 안내와 함께 / 단서와 함께 / 독립적으로` 중 하나로 남긴다.\n\n> [!question] 막히면 · 초보자 연결\n> filter에는 통과문, map에는 변신 카드를 붙인다.\n\n> [!tip]- 이미 안다면\n> 변환 사슬에서는 각 단계의 입력·출력 타입과 중간 배열 생성 여부를 본다."
+    }
+  ],
+  "termRefs": []
+}
