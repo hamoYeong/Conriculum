@@ -17,8 +17,9 @@ struct HomeView: View {
                         v2Home
                     } else {
                         v1Home
-                        knowledgeSystemCard
                     }
+
+                    knowledgeSystemCard
                 }
                 .frame(maxWidth: 1_080, alignment: .leading)
                 .padding(.horizontal, 32)
@@ -308,9 +309,9 @@ struct HomeView: View {
                     )
 
                 VStack(alignment: .leading, spacing: 5) {
-                    Text("지식 체계 둘러보기")
+                    Text("지식 책장 열기")
                         .font(.title3.weight(.semibold))
-                    Text("배운 지식을 다시 읽고, 선택한 지식과 연결되는 개념을 책장에서 확인합니다.")
+                    Text("콘텐츠 버전과 관계없이 배운 지식과 연결된 개념을 다시 확인합니다.")
                         .font(.callout)
                         .foregroundStyle(.secondary)
                         .fixedSize(horizontal: false, vertical: true)
@@ -327,6 +328,7 @@ struct HomeView: View {
             .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
+        .accessibilityIdentifier("home.knowledge-bookshelf")
         .background(
             .regularMaterial,
             in: RoundedRectangle(cornerRadius: 16, style: .continuous)
@@ -335,7 +337,7 @@ struct HomeView: View {
             RoundedRectangle(cornerRadius: 16, style: .continuous)
                 .stroke(Color.primary.opacity(0.08), lineWidth: 1)
         }
-        .accessibilityHint("지식 체계 탐색 화면을 엽니다.")
+        .accessibilityHint("지식 책장 화면을 엽니다.")
     }
 
     @ViewBuilder

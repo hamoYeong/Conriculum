@@ -34,31 +34,63 @@ struct HomeViewRenderingTests {
             )
             .frame(width: 960, height: 900)
 
-            let hostingView = NSHostingView(rootView: view)
-            hostingView.frame = NSRect(x: 0, y: 0, width: 960, height: 900)
-            let window = NSWindow(contentRect: hostingView.frame, styleMask: [], backing: .buffered, defer: false)
-            window.contentView = hostingView
-            window.appearance = NSAppearance(named: .aqua)
-            window.orderFront(nil)
-            defer { window.orderOut(nil) }
-            try await Task.sleep(for: .milliseconds(150))
-            hostingView.layoutSubtreeIfNeeded()
-            let image = try #require(
-                hostingView.bitmapImageRepForCachingDisplay(
-                    in: hostingView.bounds
-                )
-            )
-            hostingView.cacheDisplay(in: hostingView.bounds, to: image)
-
-            #expect(image.size.width == 960)
-            #expect(image.size.height == 900)
-            #expect(sampledColorCount(in: image) > 2)
-
-            try writeCaptureIfRequested(
-                image,
-                name: fixture.name
-            )
+            try await assertRenders(view, name: fixture.name)
         }
+    }
+
+    @Test
+    func v2HomeWithStagePagerAndKnowledgeBookshelfRenders() async throws {
+        let manifest = try V2BundledContentStore().loadManifest()
+        let firstChapter = try #require(manifest.stages.first?.chapters.first)
+        var state = HomeFeature.State(
+            snapshot: HomePreviewFixtures.mock,
+            usesSnapshotAsPlaceholder: true
+        )
+        state.selectedContentVersion = .v2
+        state.v2Manifest = manifest
+        state.v2Progress = V2Progress(
+            lastVisitedPageID: try #require(firstChapter.pages.first).id,
+            completedPageIDs: []
+        )
+
+        let view = HomeView(
+            store: Store(initialState: state) { HomeFeature() }
+        )
+        .frame(width: 960, height: 900)
+
+        try await assertRenders(view, name: "v2-stage-pager-and-bookshelf")
+    }
+
+    private func assertRenders<Content: View>(
+        _ view: Content,
+        name: String
+    ) async throws {
+        let hostingView = NSHostingView(rootView: view)
+        hostingView.frame = NSRect(x: 0, y: 0, width: 960, height: 900)
+        let window = NSWindow(
+            contentRect: hostingView.frame,
+            styleMask: [],
+            backing: .buffered,
+            defer: false
+        )
+        window.contentView = hostingView
+        window.appearance = NSAppearance(named: .aqua)
+        window.orderFront(nil)
+        defer { window.orderOut(nil) }
+        try await Task.sleep(for: .milliseconds(150))
+        hostingView.layoutSubtreeIfNeeded()
+        let image = try #require(
+            hostingView.bitmapImageRepForCachingDisplay(
+                in: hostingView.bounds
+            )
+        )
+        hostingView.cacheDisplay(in: hostingView.bounds, to: image)
+
+        #expect(image.size.width == 960)
+        #expect(image.size.height == 900)
+        #expect(sampledColorCount(in: image) > 2)
+
+        try writeCaptureIfRequested(image, name: name)
     }
 
     private func writeCaptureIfRequested(
