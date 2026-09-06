@@ -7,8 +7,14 @@ struct V2LearningFeature {
     struct State: Equatable {
         var requestedPageID: String
         var manifest: V2ContentManifest?
+        var knowledgeCatalog: KnowledgeCatalog?
         var page: V2LearningPage?
         var progress: V2Progress = .empty
+        var sidebarMode: WorkspaceSidebarMode = .automatic
+        var isFocusModeEnabled = false
+        var isInspectorPresented = false
+        var wasInspectorPresentedBeforeFocus = false
+        var selectedKnowledgeConceptID: KnowledgeConceptID?
         var isLoading = false
         var isSaving = false
         var loadErrorMessage: String?
@@ -41,20 +47,44 @@ struct V2LearningFeature {
 
         var canGoPrevious: Bool { (position ?? 1) > 1 }
         var isLastPage: Bool { position == orderedPages.count }
+
+        var pageKnowledgeConcepts: [KnowledgeConcept] {
+            guard let page, let knowledgeCatalog else { return [] }
+            let ids = Set(page.knowledgeConceptIDs)
+            return knowledgeCatalog.concepts.filter { ids.contains($0.id) }
+        }
+
+        var selectedKnowledgeConcept: KnowledgeConcept? {
+            selectedKnowledgeConceptID.flatMap { selectedID in
+                knowledgeCatalog?.concepts.first { $0.id == selectedID }
+            }
+        }
     }
 
     enum Action: Equatable {
         case task
         case loadResponse(LoadResponse)
+        case pageSelected(String)
         case previousButtonTapped
         case nextButtonTapped
         case navigationResponse(NavigationResponse)
+        case sidebarVisibilityButtonTapped
+        case sidebarModeChanged(WorkspaceSidebarMode)
+        case inspectorVisibilityButtonTapped
+        case focusModeButtonTapped
+        case knowledgeConceptSelected(KnowledgeConceptID)
+        case inspectorDismissed
         case homeButtonTapped
         case delegate(Delegate)
     }
 
     enum LoadResponse: Equatable {
-        case loaded(V2ContentManifest, V2LearningPage, V2Progress)
+        case loaded(
+            V2ContentManifest,
+            KnowledgeCatalog,
+            V2LearningPage,
+            V2Progress
+        )
         case failed(String)
     }
 
@@ -82,6 +112,8 @@ struct V2LearningFeature {
                 return .run { send in
                     do {
                         let manifest = try await contentClient.loadManifest()
+                        async let knowledgeCatalogRequest = contentClient
+                            .loadKnowledgeCatalog()
                         var progress = try await progressClient.load()
                         let savedProgress = progress
                         let resolvedPageID = await MainActor.run {
@@ -101,17 +133,24 @@ struct V2LearningFeature {
                         ))
                         progress.lastVisitedPageID = pageID
                         try await progressClient.save(progress)
-                        await send(.loadResponse(.loaded(manifest, page, progress)))
+                        await send(.loadResponse(.loaded(
+                            manifest,
+                            try await knowledgeCatalogRequest,
+                            page,
+                            progress
+                        )))
                     } catch {
                         await send(.loadResponse(.failed(error.localizedDescription)))
                     }
                 }
 
-            case let .loadResponse(.loaded(manifest, page, progress)):
+            case let .loadResponse(.loaded(manifest, catalog, page, progress)):
                 state.isLoading = false
                 state.manifest = manifest
+                state.knowledgeCatalog = catalog
                 state.page = page
                 state.progress = progress
+                state.selectedKnowledgeConceptID = page.knowledgeConceptIDs.first
                 state.loadErrorMessage = nil
                 return .none
 
@@ -119,6 +158,17 @@ struct V2LearningFeature {
                 state.isLoading = false
                 state.loadErrorMessage = message
                 return .none
+
+            case let .pageSelected(pageID):
+                guard let reference = state.manifest?.pageReference(id: pageID),
+                      reference.id != state.page?.id
+                else { return .none }
+                state.isInspectorPresented = false
+                return navigate(
+                    state: &state,
+                    to: reference,
+                    completingCurrent: false
+                )
 
             case .previousButtonTapped:
                 guard let index = currentIndex(state), index > 0 else { return .none }
@@ -146,6 +196,8 @@ struct V2LearningFeature {
                 state.page = page
                 state.requestedPageID = page.id
                 state.progress = progress
+                state.selectedKnowledgeConceptID = page.knowledgeConceptIDs.first
+                state.isInspectorPresented = false
                 state.saveErrorMessage = nil
                 return .none
 
@@ -158,6 +210,61 @@ struct V2LearningFeature {
             case let .navigationResponse(.failed(message)):
                 state.isSaving = false
                 state.saveErrorMessage = message
+                return .none
+
+            case .sidebarVisibilityButtonTapped:
+                if state.isFocusModeEnabled {
+                    state.isFocusModeEnabled = false
+                    state.sidebarMode = .visible
+                    state.isInspectorPresented = false
+                } else {
+                    state.sidebarMode = state.sidebarMode == .hidden
+                        ? .visible
+                        : .hidden
+                }
+                return .none
+
+            case let .sidebarModeChanged(mode):
+                guard !state.isFocusModeEnabled else { return .none }
+                state.sidebarMode = mode
+                return .none
+
+            case .inspectorVisibilityButtonTapped:
+                guard state.selectedKnowledgeConcept != nil else { return .none }
+                if state.isFocusModeEnabled {
+                    state.isFocusModeEnabled = false
+                    state.isInspectorPresented = true
+                } else {
+                    state.isInspectorPresented.toggle()
+                }
+                return .none
+
+            case .focusModeButtonTapped:
+                if state.isFocusModeEnabled {
+                    state.isFocusModeEnabled = false
+                    state.isInspectorPresented =
+                        state.wasInspectorPresentedBeforeFocus
+                        && state.selectedKnowledgeConcept != nil
+                } else {
+                    state.wasInspectorPresentedBeforeFocus =
+                        state.isInspectorPresented
+                    state.isInspectorPresented = false
+                    state.isFocusModeEnabled = true
+                }
+                return .none
+
+            case let .knowledgeConceptSelected(conceptID):
+                guard state.pageKnowledgeConcepts.contains(where: {
+                    $0.id == conceptID
+                }) else { return .none }
+                state.selectedKnowledgeConceptID = conceptID
+                state.isFocusModeEnabled = false
+                state.isInspectorPresented = true
+                return .none
+
+            case .inspectorDismissed:
+                state.isInspectorPresented = false
+                state.wasInspectorPresentedBeforeFocus = false
                 return .none
 
             case .homeButtonTapped:

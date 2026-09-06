@@ -10,6 +10,54 @@ struct V2LearningView: View {
             content
         }
         .frame(minWidth: 720, minHeight: 600)
+        .toolbar {
+            ToolbarItemGroup(placement: .navigation) {
+                Button {
+                    store.send(.homeButtonTapped)
+                } label: {
+                    Label("학습 홈", systemImage: "house")
+                }
+                .help("현재 ver.2 학습 위치를 저장하고 홈으로 돌아갑니다.")
+
+                Button {
+                    store.send(.sidebarVisibilityButtonTapped)
+                } label: {
+                    Label(
+                        store.sidebarMode == .hidden
+                            ? "학습 문맥 보기"
+                            : "학습 문맥 숨기기",
+                        systemImage: "sidebar.left"
+                    )
+                }
+                .help("챕터 페이지와 현재 지식 단서를 보여 주는 사이드바를 전환합니다.")
+            }
+
+            ToolbarItemGroup(placement: .primaryAction) {
+                Button {
+                    store.send(.focusModeButtonTapped)
+                } label: {
+                    Label(
+                        store.isFocusModeEnabled ? "집중 모드 끄기" : "집중 모드 켜기",
+                        systemImage: store.isFocusModeEnabled
+                            ? "viewfinder.circle.fill"
+                            : "viewfinder"
+                    )
+                }
+                .help("집중 모드는 학습 문맥과 지식 단서를 잠시 숨깁니다.")
+                .accessibilityValue(store.isFocusModeEnabled ? "켜짐" : "꺼짐")
+
+                Button {
+                    store.send(.inspectorVisibilityButtonTapped)
+                } label: {
+                    Label(
+                        store.isInspectorPresented ? "지식 단서 숨기기" : "지식 단서 보기",
+                        systemImage: "sidebar.right"
+                    )
+                }
+                .disabled(store.selectedKnowledgeConcept == nil)
+                .help("선택한 개념의 정의와 판단 질문을 오른쪽에서 확인합니다.")
+            }
+        }
         .task {
             guard store.page == nil else { return }
             await store.send(.task).finish()
@@ -30,35 +78,70 @@ struct V2LearningView: View {
                 Button("홈으로") { store.send(.homeButtonTapped) }
             }
         } else if let page = store.page, let stage = store.stage {
-            learningPage(page, stage: stage)
+            learningWorkspace(page, stage: stage)
+        }
+    }
+
+    private func learningWorkspace(
+        _ page: V2LearningPage,
+        stage: V2Stage
+    ) -> some View {
+        GeometryReader { geometry in
+            let inspectorIsVisible = !store.isFocusModeEnabled
+                && store.isInspectorPresented
+                && store.selectedKnowledgeConcept != nil
+            let sidebarIsVisible = !store.isFocusModeEnabled
+                && store.sidebarMode != .hidden
+                && (!inspectorIsVisible || geometry.size.width >= 920)
+
+            HSplitView {
+                if sidebarIsVisible, let chapter = store.chapter {
+                    V2LearningSidebar(
+                        stage: stage,
+                        chapter: chapter,
+                        currentPageID: page.id,
+                        completedPageIDs: store.progress.completedPageIDs,
+                        concepts: store.pageKnowledgeConcepts,
+                        selectedConceptID: store.selectedKnowledgeConceptID,
+                        onPageSelected: { store.send(.pageSelected($0)) },
+                        onConceptSelected: {
+                            store.send(.knowledgeConceptSelected($0))
+                        }
+                    )
+                    .frame(minWidth: 210, idealWidth: 280, maxWidth: 300)
+                }
+
+                learningPage(page, stage: stage)
+                    .frame(minWidth: 400, maxWidth: .infinity)
+
+                if inspectorIsVisible,
+                   let concept = store.selectedKnowledgeConcept {
+                    V2KnowledgeInspector(
+                        concept: concept,
+                        onDismiss: { store.send(.inspectorDismissed) }
+                    )
+                    .frame(minWidth: 250, idealWidth: 330, maxWidth: 360)
+                }
+            }
         }
     }
 
     private func learningPage(_ page: V2LearningPage, stage: V2Stage) -> some View {
         VStack(spacing: 0) {
-            HStack {
-                Button {
-                    store.send(.homeButtonTapped)
-                } label: {
-                    Label("홈", systemImage: "house")
-                }
-                Spacer()
-                if let position = store.position {
-                    Text("전체 \(position) / \(store.orderedPages.count)")
-                        .font(.callout.monospacedDigit())
-                        .foregroundStyle(.secondary)
-                }
-            }
-            .padding(.horizontal, 24)
-            .padding(.vertical, 12)
-            .background(.bar)
-
             ScrollView {
                 VStack(alignment: .leading, spacing: 24) {
-                    VStack(alignment: .leading, spacing: 8) {
-                        Text("STAGE \(stage.order) · CHAPTER \(store.chapter?.order ?? 0)")
-                            .font(.caption.weight(.semibold))
-                            .foregroundStyle(.secondary)
+                    VStack(alignment: .leading, spacing: 10) {
+                        HStack {
+                            Text("STAGE \(stage.order) · CHAPTER \(store.chapter?.order ?? 0)")
+                                .font(.caption.weight(.semibold))
+                                .foregroundStyle(.secondary)
+                            Spacer()
+                            if let position = store.position {
+                                Text("전체 \(position) / \(store.orderedPages.count)")
+                                    .font(.callout.monospacedDigit())
+                                    .foregroundStyle(.secondary)
+                            }
+                        }
                         Text(page.title)
                             .font(.largeTitle.bold())
                             .accessibilityHeading(.h1)
