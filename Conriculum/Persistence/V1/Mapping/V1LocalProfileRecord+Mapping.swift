@@ -1,6 +1,6 @@
 extension LocalProfileRecord {
     convenience init(domainValue profile: V1LocalProfile) throws {
-        try RecordMappingSupport.validateIdentifier(
+        try V1RecordMappingSupport.validateIdentifier(
             profile.id.rawValue,
             record: Self.recordName,
             fieldPath: "id"
@@ -14,7 +14,7 @@ extension LocalProfileRecord {
     }
 
     func domainValue() throws -> V1LocalProfile {
-        try RecordMappingSupport.validateIdentifier(
+        try V1RecordMappingSupport.validateIdentifier(
             id,
             record: Self.recordName,
             fieldPath: "id"
@@ -29,7 +29,7 @@ extension LocalProfileRecord {
 
     func update(from profile: V1LocalProfile) throws {
         guard id == profile.id.rawValue else {
-            throw RecordMappingSupport.invalid(
+            throw V1RecordMappingSupport.invalid(
                 record: Self.recordName,
                 fieldPath: "id",
                 message: "cannot change an existing local profile identifier"

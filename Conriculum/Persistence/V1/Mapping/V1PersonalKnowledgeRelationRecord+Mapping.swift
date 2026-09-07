@@ -18,27 +18,27 @@ extension PersonalKnowledgeRelationRecord {
     }
 
     func domainValue(profileID expectedProfileID: LocalProfileID) throws -> PersonalKnowledgeRelation {
-        try RecordMappingSupport.validateProfileID(
+        try V1RecordMappingSupport.validateProfileID(
             profileID,
             expected: expectedProfileID,
             record: Self.recordName
         )
-        try RecordMappingSupport.validateIdentifier(
+        try V1RecordMappingSupport.validateIdentifier(
             id,
             record: Self.recordName,
             fieldPath: "id"
         )
-        try RecordMappingSupport.validateIdentifier(
+        try V1RecordMappingSupport.validateIdentifier(
             sourceConceptID,
             record: Self.recordName,
             fieldPath: "sourceConceptID"
         )
-        try RecordMappingSupport.validateIdentifier(
+        try V1RecordMappingSupport.validateIdentifier(
             targetConceptID,
             record: Self.recordName,
             fieldPath: "targetConceptID"
         )
-        try RecordMappingSupport.validateIdentifier(
+        try V1RecordMappingSupport.validateIdentifier(
             evidenceActivityID,
             record: Self.recordName,
             fieldPath: "evidenceActivityID"
@@ -64,13 +64,13 @@ extension PersonalKnowledgeRelationRecord {
         profileID expectedProfileID: LocalProfileID
     ) throws {
         try Self.validate(relation, profileID: expectedProfileID)
-        try RecordMappingSupport.validateProfileID(
+        try V1RecordMappingSupport.validateProfileID(
             profileID,
             expected: expectedProfileID,
             record: Self.recordName
         )
         guard id == relation.id.rawValue else {
-            throw RecordMappingSupport.invalid(
+            throw V1RecordMappingSupport.invalid(
                 record: Self.recordName,
                 fieldPath: "id",
                 message: "cannot change an existing knowledge relation identifier"
@@ -89,27 +89,27 @@ extension PersonalKnowledgeRelationRecord {
         _ relation: PersonalKnowledgeRelation,
         profileID: LocalProfileID
     ) throws {
-        try RecordMappingSupport.validateIdentifier(
+        try V1RecordMappingSupport.validateIdentifier(
             profileID.rawValue,
             record: recordName,
             fieldPath: "profileID"
         )
-        try RecordMappingSupport.validateIdentifier(
+        try V1RecordMappingSupport.validateIdentifier(
             relation.id.rawValue,
             record: recordName,
             fieldPath: "id"
         )
-        try RecordMappingSupport.validateIdentifier(
+        try V1RecordMappingSupport.validateIdentifier(
             relation.sourceConceptID.rawValue,
             record: recordName,
             fieldPath: "sourceConceptID"
         )
-        try RecordMappingSupport.validateIdentifier(
+        try V1RecordMappingSupport.validateIdentifier(
             relation.targetConceptID.rawValue,
             record: recordName,
             fieldPath: "targetConceptID"
         )
-        try RecordMappingSupport.validateIdentifier(
+        try V1RecordMappingSupport.validateIdentifier(
             relation.evidenceActivityID.rawValue,
             record: recordName,
             fieldPath: "evidenceActivityID"
@@ -125,7 +125,7 @@ extension PersonalKnowledgeRelationRecord {
         targetConceptID: String
     ) throws {
         guard sourceConceptID != targetConceptID else {
-            throw RecordMappingSupport.invalid(
+            throw V1RecordMappingSupport.invalid(
                 record: recordName,
                 fieldPath: "targetConceptID",
                 message: "must reference a concept different from sourceConceptID"

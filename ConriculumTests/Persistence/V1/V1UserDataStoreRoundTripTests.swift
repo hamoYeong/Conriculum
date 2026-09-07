@@ -4,7 +4,7 @@ import Testing
 @testable import Conriculum
 
 @MainActor
-struct UserDataStoreRoundTripTests {
+struct V1UserDataStoreRoundTripTests {
     private let firstDate = Date(timeIntervalSince1970: 1_725_782_400)
     private let secondDate = Date(timeIntervalSince1970: 1_725_868_800)
 
@@ -39,7 +39,7 @@ struct UserDataStoreRoundTripTests {
 
     @Test
     func learningRecordsRoundTripAndRecoverInANewClient() async throws {
-        let environment = try PersistenceEnvironmentRegistry.makeInMemoryEnvironment()
+        let environment = try V1PersistenceEnvironmentRegistry.makeInMemoryEnvironment()
         let firstClient = V1LearningRecordClient.live(store: environment.userDataStore)
         let originalProgress = V1LearningProgress(
             chapterID: "chapter-02",
@@ -94,7 +94,7 @@ struct UserDataStoreRoundTripTests {
         try await firstClient.saveProgress(updatedProgress)
         try await firstClient.saveResponse(updatedResponse)
 
-        let relaunchedStore = UserDataStore(
+        let relaunchedStore = V1UserDataStore(
             modelContainer: environment.modelContainer
         )
         let relaunchedClient = V1LearningRecordClient.live(store: relaunchedStore)
@@ -116,7 +116,7 @@ struct UserDataStoreRoundTripTests {
 
     @Test
     func personalKnowledgeCreatesUpdatesAndRecoversInANewClient() async throws {
-        let environment = try PersistenceEnvironmentRegistry.makeInMemoryEnvironment()
+        let environment = try V1PersistenceEnvironmentRegistry.makeInMemoryEnvironment()
         let firstClient = V1PersonalKnowledgeClient.live(store: environment.userDataStore)
         let originalRevision = PersonalConceptRevision(
             id: "revision-01",
@@ -169,7 +169,7 @@ struct UserDataStoreRoundTripTests {
         try await firstClient.saveRevision(updatedRevision)
         try await firstClient.saveRelation(updatedRelation)
 
-        let relaunchedStore = UserDataStore(
+        let relaunchedStore = V1UserDataStore(
             modelContainer: environment.modelContainer
         )
         let relaunchedClient = V1PersonalKnowledgeClient.live(store: relaunchedStore)
@@ -194,9 +194,9 @@ struct UserDataStoreRoundTripTests {
 
     @Test
     func failedRelationSaveRollsBackAndPreservesTheLastSuccess() async throws {
-        let modelContainer = try PersistenceContainerFactory.inMemory()
+        let modelContainer = try V1PersistenceContainerFactory.inMemory()
         let failure = SaveFailureController()
-        let store = UserDataStore(
+        let store = V1UserDataStore(
             modelContainer: modelContainer,
             saveContext: { context in
                 if failure.shouldFail {
@@ -242,7 +242,7 @@ struct UserDataStoreRoundTripTests {
             Issue.record("식별할 수 없는 저장 오류: \(error)")
         }
 
-        let relaunchedStore = UserDataStore(modelContainer: modelContainer)
+        let relaunchedStore = V1UserDataStore(modelContainer: modelContainer)
         let relaunchedClient = V1PersonalKnowledgeClient.live(store: relaunchedStore)
         let recoveredRelations = try await relaunchedClient.loadRelations(
             successfulRelation.sourceConceptID
@@ -253,9 +253,9 @@ struct UserDataStoreRoundTripTests {
 
     @Test
     func failedRevisionSaveRollsBackAndPreservesTheLastSuccess() async throws {
-        let modelContainer = try PersistenceContainerFactory.inMemory()
+        let modelContainer = try V1PersistenceContainerFactory.inMemory()
         let failure = SaveFailureController()
-        let store = UserDataStore(
+        let store = V1UserDataStore(
             modelContainer: modelContainer,
             saveContext: { context in
                 if failure.shouldFail {
@@ -303,7 +303,7 @@ struct UserDataStoreRoundTripTests {
             Issue.record("식별할 수 없는 저장 오류: \(error)")
         }
 
-        let relaunchedStore = UserDataStore(modelContainer: modelContainer)
+        let relaunchedStore = V1UserDataStore(modelContainer: modelContainer)
         let relaunchedClient = V1PersonalKnowledgeClient.live(
             store: relaunchedStore
         )
@@ -320,7 +320,7 @@ struct UserDataStoreRoundTripTests {
         storeURL: URL
     ) async throws -> LocalProfileID {
         let container = try fileBackedContainer(at: storeURL)
-        let store = UserDataStore(modelContainer: container)
+        let store = V1UserDataStore(modelContainer: container)
         let learningClient = V1LearningRecordClient.live(store: store)
         let knowledgeClient = V1PersonalKnowledgeClient.live(store: store)
         let profileID = try store.localProfileID()
@@ -345,7 +345,7 @@ struct UserDataStoreRoundTripTests {
         storeURL: URL
     ) async throws -> LocalProfileID {
         let container = try fileBackedContainer(at: storeURL)
-        let store = UserDataStore(modelContainer: container)
+        let store = V1UserDataStore(modelContainer: container)
         let learningClient = V1LearningRecordClient.live(store: store)
         let knowledgeClient = V1PersonalKnowledgeClient.live(store: store)
         let profileID = try store.localProfileID()
@@ -382,12 +382,12 @@ struct UserDataStoreRoundTripTests {
     private func fileBackedContainer(at storeURL: URL) throws -> ModelContainer {
         let configuration = ModelConfiguration(
             "ConriculumRelaunchTest",
-            schema: ConriculumPersistenceSchema.schema,
+            schema: V1PersistenceSchema.schema,
             url: storeURL,
             cloudKitDatabase: .none
         )
         return try ModelContainer(
-            for: ConriculumPersistenceSchema.schema,
+            for: V1PersistenceSchema.schema,
             configurations: [configuration]
         )
     }

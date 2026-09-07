@@ -1,6 +1,6 @@
 import Foundation
 
-enum RecordMappingSupport {
+enum V1RecordMappingSupport {
     static func validateIdentifier(
         _ value: String,
         record: String,

@@ -15,26 +15,26 @@ struct V1LearningRecordClient: Sendable {
 
 extension V1LearningRecordClient: DependencyKey {
     static let liveValue = Self.live(resolveStore: {
-        try await PersistenceEnvironmentRegistry.live().userDataStore
+        try await V1PersistenceEnvironmentRegistry.live().userDataStore
     })
 }
 
 extension V1LearningRecordClient: TestDependencyKey {
     static let previewValue = Self.live(resolveStore: {
-        try await PersistenceEnvironmentRegistry.preview().userDataStore
+        try await V1PersistenceEnvironmentRegistry.preview().userDataStore
     })
     static let testValue = Self.live(resolveStore: {
-        try await PersistenceEnvironmentRegistry.test().userDataStore
+        try await V1PersistenceEnvironmentRegistry.test().userDataStore
     })
 }
 
 extension V1LearningRecordClient {
-    static func live(store: UserDataStore) -> Self {
+    static func live(store: V1UserDataStore) -> Self {
         live(resolveStore: { store })
     }
 
     private static func live(
-        resolveStore: @escaping @Sendable () async throws -> UserDataStore
+        resolveStore: @escaping @Sendable () async throws -> V1UserDataStore
     ) -> Self {
         Self(
             loadProgress: { chapterID in

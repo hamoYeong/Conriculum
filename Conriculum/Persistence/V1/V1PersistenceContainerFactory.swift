@@ -1,6 +1,6 @@
 import SwiftData
 
-enum ConriculumPersistenceSchema {
+enum V1PersistenceSchema {
     static let modelTypes: [any PersistentModel.Type] = [
         LocalProfileRecord.self,
         LearningProgressRecord.self,
@@ -13,16 +13,16 @@ enum ConriculumPersistenceSchema {
     static let schema = Schema(modelTypes)
 }
 
-enum PersistenceContainerFactory {
+enum V1PersistenceContainerFactory {
     static func live() throws -> ModelContainer {
         let configuration = ModelConfiguration(
             "Conriculum",
-            schema: ConriculumPersistenceSchema.schema,
+            schema: V1PersistenceSchema.schema,
             cloudKitDatabase: .none
         )
 
         return try ModelContainer(
-            for: ConriculumPersistenceSchema.schema,
+            for: V1PersistenceSchema.schema,
             configurations: [configuration]
         )
     }
@@ -30,13 +30,13 @@ enum PersistenceContainerFactory {
     static func inMemory() throws -> ModelContainer {
         let configuration = ModelConfiguration(
             "ConriculumInMemory",
-            schema: ConriculumPersistenceSchema.schema,
+            schema: V1PersistenceSchema.schema,
             isStoredInMemoryOnly: true,
             cloudKitDatabase: .none
         )
 
         return try ModelContainer(
-            for: ConriculumPersistenceSchema.schema,
+            for: V1PersistenceSchema.schema,
             configurations: [configuration]
         )
     }

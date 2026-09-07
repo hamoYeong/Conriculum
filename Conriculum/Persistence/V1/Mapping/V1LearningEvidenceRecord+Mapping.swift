@@ -18,36 +18,36 @@ extension LearningEvidenceRecord {
     }
 
     func domainValue(profileID expectedProfileID: LocalProfileID) throws -> V1LearningEvidence {
-        try RecordMappingSupport.validateProfileID(
+        try V1RecordMappingSupport.validateProfileID(
             profileID,
             expected: expectedProfileID,
             record: Self.recordName
         )
-        try RecordMappingSupport.validateIdentifier(
+        try V1RecordMappingSupport.validateIdentifier(
             id,
             record: Self.recordName,
             fieldPath: "id"
         )
-        try RecordMappingSupport.validateIdentifier(
+        try V1RecordMappingSupport.validateIdentifier(
             pageID,
             record: Self.recordName,
             fieldPath: "pageID"
         )
         if let activityID {
-            try RecordMappingSupport.validateIdentifier(
+            try V1RecordMappingSupport.validateIdentifier(
                 activityID,
                 record: Self.recordName,
                 fieldPath: "activityID"
             )
         }
         if let responseID {
-            try RecordMappingSupport.validateIdentifier(
+            try V1RecordMappingSupport.validateIdentifier(
                 responseID,
                 record: Self.recordName,
                 fieldPath: "responseID"
             )
             guard activityID != nil else {
-                throw RecordMappingSupport.invalid(
+                throw V1RecordMappingSupport.invalid(
                     record: Self.recordName,
                     fieldPath: "responseID",
                     message: "requires an activity reference"
@@ -55,7 +55,7 @@ extension LearningEvidenceRecord {
             }
         }
         guard let kind = V1LearningEvidenceKind(rawValue: kindRawValue) else {
-            throw RecordMappingSupport.invalid(
+            throw V1RecordMappingSupport.invalid(
                 record: Self.recordName,
                 fieldPath: "kindRawValue",
                 message: "is not a supported learning evidence kind"
@@ -78,13 +78,13 @@ extension LearningEvidenceRecord {
         profileID expectedProfileID: LocalProfileID
     ) throws {
         try Self.validate(evidence, profileID: expectedProfileID)
-        try RecordMappingSupport.validateProfileID(
+        try V1RecordMappingSupport.validateProfileID(
             profileID,
             expected: expectedProfileID,
             record: Self.recordName
         )
         guard id == evidence.id.rawValue else {
-            throw RecordMappingSupport.invalid(
+            throw V1RecordMappingSupport.invalid(
                 record: Self.recordName,
                 fieldPath: "id",
                 message: "cannot change an existing learning evidence identifier"
@@ -103,36 +103,36 @@ extension LearningEvidenceRecord {
         _ evidence: V1LearningEvidence,
         profileID: LocalProfileID
     ) throws {
-        try RecordMappingSupport.validateIdentifier(
+        try V1RecordMappingSupport.validateIdentifier(
             profileID.rawValue,
             record: recordName,
             fieldPath: "profileID"
         )
-        try RecordMappingSupport.validateIdentifier(
+        try V1RecordMappingSupport.validateIdentifier(
             evidence.id.rawValue,
             record: recordName,
             fieldPath: "id"
         )
-        try RecordMappingSupport.validateIdentifier(
+        try V1RecordMappingSupport.validateIdentifier(
             evidence.pageID.rawValue,
             record: recordName,
             fieldPath: "pageID"
         )
         if let activityID = evidence.activityID?.rawValue {
-            try RecordMappingSupport.validateIdentifier(
+            try V1RecordMappingSupport.validateIdentifier(
                 activityID,
                 record: recordName,
                 fieldPath: "activityID"
             )
         }
         if let responseID = evidence.responseID?.rawValue {
-            try RecordMappingSupport.validateIdentifier(
+            try V1RecordMappingSupport.validateIdentifier(
                 responseID,
                 record: recordName,
                 fieldPath: "responseID"
             )
             guard evidence.activityID != nil else {
-                throw RecordMappingSupport.invalid(
+                throw V1RecordMappingSupport.invalid(
                     record: recordName,
                     fieldPath: "responseID",
                     message: "requires an activity reference"

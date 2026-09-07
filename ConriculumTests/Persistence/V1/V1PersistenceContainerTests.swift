@@ -4,11 +4,11 @@ import Testing
 @testable import Conriculum
 
 @MainActor
-struct PersistenceContainerTests {
+struct V1PersistenceContainerTests {
     @Test
     func schemaContainsEveryUserOwnedRecord() {
         let modelNames = Set(
-            ConriculumPersistenceSchema.schema.entities.map(\.name)
+            V1PersistenceSchema.schema.entities.map(\.name)
         )
 
         #expect(
@@ -25,7 +25,7 @@ struct PersistenceContainerTests {
 
     @Test
     func inMemoryContainerStoresEveryRecordKind() throws {
-        let container = try PersistenceContainerFactory.inMemory()
+        let container = try V1PersistenceContainerFactory.inMemory()
         let context = ModelContext(container)
         let timestamp = Date(timeIntervalSince1970: 1_725_782_400)
 
@@ -106,7 +106,7 @@ struct PersistenceContainerTests {
 
     @Test
     func inMemoryContainersDoNotShareState() throws {
-        let firstContainer = try PersistenceContainerFactory.inMemory()
+        let firstContainer = try V1PersistenceContainerFactory.inMemory()
         let firstContext = ModelContext(firstContainer)
         let timestamp = Date(timeIntervalSince1970: 1_725_782_400)
 
@@ -119,7 +119,7 @@ struct PersistenceContainerTests {
         )
         try firstContext.save()
 
-        let secondContainer = try PersistenceContainerFactory.inMemory()
+        let secondContainer = try V1PersistenceContainerFactory.inMemory()
         let secondContext = ModelContext(secondContainer)
 
         #expect(try secondContext.fetchCount(FetchDescriptor<LocalProfileRecord>()) == 0)
@@ -127,8 +127,8 @@ struct PersistenceContainerTests {
 
     @Test
     func previewAndTestRegistriesUseDistinctInMemoryContainers() throws {
-        let preview = try PersistenceEnvironmentRegistry.preview()
-        let test = try PersistenceEnvironmentRegistry.test()
+        let preview = try V1PersistenceEnvironmentRegistry.preview()
+        let test = try V1PersistenceEnvironmentRegistry.test()
         let previewIsInMemory = preview.modelContainer.configurations
             .allSatisfy { $0.isStoredInMemoryOnly }
         let testIsInMemory = test.modelContainer.configurations

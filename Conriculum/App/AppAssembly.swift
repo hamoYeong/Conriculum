@@ -8,15 +8,15 @@ struct AppAssembly {
     let v1PersonalKnowledgeClient: V1PersonalKnowledgeClient
 
     static func live() throws -> Self {
-        make(environment: try PersistenceEnvironmentRegistry.live())
+        make(environment: try V1PersistenceEnvironmentRegistry.live())
     }
 
     static func inMemory() throws -> Self {
-        make(environment: try PersistenceEnvironmentRegistry.makeInMemoryEnvironment())
+        make(environment: try V1PersistenceEnvironmentRegistry.makeInMemoryEnvironment())
     }
 
     private static func make(
-        environment: PersistenceEnvironment
+        environment: V1PersistenceEnvironment
     ) -> Self {
         let contentStore = V1BundledContentStore()
         return Self(

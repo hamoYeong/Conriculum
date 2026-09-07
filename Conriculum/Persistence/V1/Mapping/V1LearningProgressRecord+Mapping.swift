@@ -16,30 +16,30 @@ extension LearningProgressRecord {
     }
 
     func domainValue(profileID expectedProfileID: LocalProfileID) throws -> V1LearningProgress {
-        try RecordMappingSupport.validateProfileID(
+        try V1RecordMappingSupport.validateProfileID(
             profileID,
             expected: expectedProfileID,
             record: Self.recordName
         )
-        try RecordMappingSupport.validateIdentifier(
+        try V1RecordMappingSupport.validateIdentifier(
             chapterID,
             record: Self.recordName,
             fieldPath: "chapterID"
         )
-        try RecordMappingSupport.validateIdentifier(
+        try V1RecordMappingSupport.validateIdentifier(
             currentPageID,
             record: Self.recordName,
             fieldPath: "currentPageID"
         )
         for completedPageID in completedPageIDs {
-            try RecordMappingSupport.validateIdentifier(
+            try V1RecordMappingSupport.validateIdentifier(
                 completedPageID,
                 record: Self.recordName,
                 fieldPath: "completedPageIDs"
             )
         }
         guard Set(completedPageIDs).count == completedPageIDs.count else {
-            throw RecordMappingSupport.invalid(
+            throw V1RecordMappingSupport.invalid(
                 record: Self.recordName,
                 fieldPath: "completedPageIDs",
                 message: "must not contain duplicate page identifiers"
@@ -48,7 +48,7 @@ extension LearningProgressRecord {
 
         let chapterID = ChapterID(rawValue: chapterID)
         guard id == Self.storageID(profileID: expectedProfileID, chapterID: chapterID) else {
-            throw RecordMappingSupport.invalid(
+            throw V1RecordMappingSupport.invalid(
                 record: Self.recordName,
                 fieldPath: "id",
                 message: "does not match the profile and chapter identifiers"
@@ -68,7 +68,7 @@ extension LearningProgressRecord {
         profileID expectedProfileID: LocalProfileID
     ) throws {
         try Self.validate(progress, profileID: expectedProfileID)
-        try RecordMappingSupport.validateProfileID(
+        try V1RecordMappingSupport.validateProfileID(
             profileID,
             expected: expectedProfileID,
             record: Self.recordName
@@ -76,7 +76,7 @@ extension LearningProgressRecord {
         guard chapterID == progress.chapterID.rawValue,
               id == Self.storageID(profileID: expectedProfileID, chapterID: progress.chapterID)
         else {
-            throw RecordMappingSupport.invalid(
+            throw V1RecordMappingSupport.invalid(
                 record: Self.recordName,
                 fieldPath: "chapterID",
                 message: "cannot change an existing progress identity"
@@ -100,23 +100,23 @@ extension LearningProgressRecord {
         _ progress: V1LearningProgress,
         profileID: LocalProfileID
     ) throws {
-        try RecordMappingSupport.validateIdentifier(
+        try V1RecordMappingSupport.validateIdentifier(
             profileID.rawValue,
             record: recordName,
             fieldPath: "profileID"
         )
-        try RecordMappingSupport.validateIdentifier(
+        try V1RecordMappingSupport.validateIdentifier(
             progress.chapterID.rawValue,
             record: recordName,
             fieldPath: "chapterID"
         )
-        try RecordMappingSupport.validateIdentifier(
+        try V1RecordMappingSupport.validateIdentifier(
             progress.currentPageID.rawValue,
             record: recordName,
             fieldPath: "currentPageID"
         )
         for completedPageID in progress.completedPageIDs {
-            try RecordMappingSupport.validateIdentifier(
+            try V1RecordMappingSupport.validateIdentifier(
                 completedPageID.rawValue,
                 record: recordName,
                 fieldPath: "completedPageIDs"

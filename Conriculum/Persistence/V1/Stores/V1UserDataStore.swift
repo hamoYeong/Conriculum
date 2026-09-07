@@ -2,7 +2,7 @@ import Foundation
 import SwiftData
 
 @MainActor
-final class UserDataStore {
+final class V1UserDataStore {
     private let modelContext: ModelContext
     private let saveContext: (ModelContext) throws -> Void
     private var cachedProfileID: LocalProfileID?

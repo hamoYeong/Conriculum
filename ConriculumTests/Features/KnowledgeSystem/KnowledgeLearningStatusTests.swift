@@ -48,15 +48,15 @@ struct KnowledgeLearningStatusTests {
     @Test
     func visitsPersistWithoutAnswersDeduplicateAndSurviveReturningToEarlierPages() throws {
         let chapter = try chapter()
-        let container = try PersistenceContainerFactory.inMemory()
-        let store = UserDataStore(modelContainer: container)
+        let container = try V1PersistenceContainerFactory.inMemory()
+        let store = V1UserDataStore(modelContainer: container)
         let pages = chapter.progressPages
         // An existing user's record, with no viewed evidence and no saved answer.
         try store.saveProgress(.init(chapterID: chapter.id, currentPageID: pages[3].id, completedPageIDs: [], updatedAt: .distantPast))
         try store.recordPageVisit(chapter: chapter, pageID: pages[3].id)
         try store.saveProgress(.init(chapterID: chapter.id, currentPageID: pages[0].id, completedPageIDs: [], updatedAt: .now))
         try store.recordPageVisit(chapter: chapter, pageID: pages[0].id)
-        let restored = UserDataStore(modelContainer: container)
+        let restored = V1UserDataStore(modelContainer: container)
         for page in pages.prefix(4) {
             #expect(try restored.loadEvidence(pageID: page.id).filter { $0.kind == .viewed }.count == 1)
             #expect(try restored.loadResponses(pageID: page.id).isEmpty)
@@ -68,7 +68,7 @@ struct KnowledgeLearningStatusTests {
     @Test
     func overviewAloneDoesNotUnlockLessons() throws {
         let chapter = try chapter()
-        let store = UserDataStore(modelContainer: try PersistenceContainerFactory.inMemory())
+        let store = V1UserDataStore(modelContainer: try V1PersistenceContainerFactory.inMemory())
         try store.recordPageVisit(chapter: chapter, pageID: chapter.overview.id)
         for page in chapter.progressPages {
             #expect(try store.loadEvidence(pageID: page.id).isEmpty)
@@ -83,9 +83,9 @@ struct KnowledgeLearningStatusTests {
         try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
         defer { try? FileManager.default.removeItem(at: directory) }
         let url = directory.appendingPathComponent("visits.store")
-        func openStore() throws -> UserDataStore {
-            let config = ModelConfiguration("VisitTest", schema: ConriculumPersistenceSchema.schema, url: url, cloudKitDatabase: .none)
-            return UserDataStore(modelContainer: try ModelContainer(for: ConriculumPersistenceSchema.schema, configurations: [config]))
+        func openStore() throws -> V1UserDataStore {
+            let config = ModelConfiguration("VisitTest", schema: V1PersistenceSchema.schema, url: url, cloudKitDatabase: .none)
+            return V1UserDataStore(modelContainer: try ModelContainer(for: V1PersistenceSchema.schema, configurations: [config]))
         }
         let response = V1ActivityResponse(id: "existing-answer", activityID: try #require(page.activities.first?.id),
             pageID: page.id, fields: [.init(key: "reason", values: ["기존 응답은 유지한다"])], recordedAt: .distantPast)
@@ -127,7 +127,7 @@ struct KnowledgeLearningStatusTests {
         let chapter = try chapter()
         let page = chapter.progressPages[0]
         let catalog = try ContentResourceDecoder().decode(KnowledgeCatalog.self, from: .valuesAndTypes)
-        let dataStore = UserDataStore(modelContainer: try PersistenceContainerFactory.inMemory())
+        let dataStore = V1UserDataStore(modelContainer: try V1PersistenceContainerFactory.inMemory())
         try dataStore.recordPageVisit(chapter: chapter, pageID: page.id)
         let expected = KnowledgeSystemSnapshotComposer().compose(catalog: catalog, revisions: [], personalRelations: [],
             learnedConceptIDs: V1LearningExposure.directConceptIDs(page: page))

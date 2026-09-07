@@ -39,11 +39,11 @@ struct V1LiveDependencyClientTests {
 
     @Test
     func localProfileIDIsCreatedOnceAndReused() async throws {
-        let environment = try PersistenceEnvironmentRegistry.makeInMemoryEnvironment()
+        let environment = try V1PersistenceEnvironmentRegistry.makeInMemoryEnvironment()
         let firstID = try environment.userDataStore.localProfileID()
         let secondID = try environment.userDataStore.localProfileID()
 
-        let relaunchedStore = UserDataStore(
+        let relaunchedStore = V1UserDataStore(
             modelContainer: environment.modelContainer
         )
         let relaunchedID = try relaunchedStore.localProfileID()
@@ -70,7 +70,7 @@ struct V1LiveDependencyClientTests {
 
         try await assembly.v1LearningRecordClient.saveProgress(progress)
 
-        let reassembledStore = UserDataStore(
+        let reassembledStore = V1UserDataStore(
             modelContainer: assembly.modelContainer
         )
         let recoveredProgress = try reassembledStore.loadProgress(

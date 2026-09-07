@@ -110,7 +110,7 @@ struct V1ChapterFourFullContentTests {
         await store.receive(.activitySaveResponse(activityID: activityID, response: .saved(draft: draft, savedAt: timestamp))) {
             $0.activitySaveStates[activityID] = .saved(timestamp)
         }
-        let reopened = UserDataStore(modelContainer: assembly.modelContainer)
+        let reopened = V1UserDataStore(modelContainer: assembly.modelContainer)
         let responses = try reopened.loadResponses(pageID: page.id)
         #expect(responses.count == 1)
         #expect(responses.first?.activityID == activityID)

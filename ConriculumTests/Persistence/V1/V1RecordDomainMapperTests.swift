@@ -3,7 +3,7 @@ import Testing
 @testable import Conriculum
 
 @MainActor
-struct RecordDomainMapperTests {
+struct V1RecordDomainMapperTests {
     private let profileID: LocalProfileID = "profile-local"
     private let firstDate = Date(timeIntervalSince1970: 1_725_782_400)
     private let secondDate = Date(timeIntervalSince1970: 1_725_868_800)
