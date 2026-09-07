@@ -1,178 +1,126 @@
 import Foundation
 
-@MainActor
-final class BundledContentStore {
-    private struct SharedContent: Sendable {
-        let catalog: KnowledgeCatalog
-        let identityManifest: ContentIdentityManifest
+struct BundledContentResource: BundledJSONResource, Equatable, Sendable {
+    let name: String
+    let subdirectory: String
+
+    static let manifest = Self(
+        name: "manifest",
+        subdirectory: "Content"
+    )
+
+    static let knowledgeCatalog = Self(
+        name: "catalog",
+        subdirectory: "Content/knowledge"
+    )
+
+    init(relativePath: String) {
+        let url = URL(fileURLWithPath: relativePath)
+        name = url.deletingPathExtension().lastPathComponent
+        subdirectory = url.deletingLastPathComponent().path
     }
 
+    private init(name: String, subdirectory: String) {
+        self.name = name
+        self.subdirectory = subdirectory
+    }
+
+    var relativePath: String { "\(subdirectory)/\(name).json" }
+
+    func url(in bundle: Bundle) throws -> URL {
+        if let nested = bundle.url(
+            forResource: name,
+            withExtension: "json",
+            subdirectory: subdirectory
+        ) {
+            return nested
+        }
+        if let flattened = bundle.url(forResource: name, withExtension: "json") {
+            return flattened
+        }
+        throw BundledContentResourceError.resourceNotFound(
+            name: relativePath,
+            bundlePath: bundle.bundlePath
+        )
+    }
+}
+
+@MainActor
+final class BundledContentStore {
     private let bundle: Bundle
-    private let chapterRegistrations: [BundledChapterRegistration]
-    private var cachedChapters: [ChapterID: Chapter] = [:]
-    private var cachedSharedContent: SharedContent?
+    private let decoder: ContentResourceDecoder
+    private var cachedManifest: ContentManifest?
+    private var cachedKnowledgeCatalog: KnowledgeCatalog?
+    private var cachedPages: [String: LessonPage] = [:]
 
     init(
         bundle: Bundle = .main,
-        chapterRegistrations: [BundledChapterRegistration]? = nil
+        decoder: ContentResourceDecoder? = nil
     ) {
         self.bundle = bundle
-        self.chapterRegistrations = chapterRegistrations
-            ?? BundledContentResource.chapterRegistrations
+        self.decoder = decoder ?? ContentResourceDecoder()
     }
 
-    func loadChapters() throws -> [Chapter] {
-        guard chapterRegistrations.isEmpty == false else {
-            throw ContentClientError.noChaptersAvailable
-        }
-
-        return try chapterRegistrations
-            .map { try loadChapter($0.chapterID) }
-            .sorted {
-                ($0.stageID.rawValue, $0.order, $0.id.rawValue)
-                    < ($1.stageID.rawValue, $1.order, $1.id.rawValue)
-            }
+    func loadManifest() throws -> ContentManifest {
+        if let cachedManifest { return cachedManifest }
+        let manifest = try decoder.decodeResource(
+            ContentManifest.self,
+            from: BundledContentResource.manifest,
+            in: bundle
+        )
+        try ContentValidator().validate(manifest: manifest)
+        cachedManifest = manifest
+        return manifest
     }
 
-    func loadChapter(_ chapterID: ChapterID) throws -> Chapter {
-        if let cachedChapter = cachedChapters[chapterID] {
-            return cachedChapter
-        }
-
-        guard let registration = chapterRegistrations.first(where: {
-            $0.chapterID == chapterID
-        }) else {
-            throw ContentClientError.chapterNotFound(chapterID)
-        }
-
-        return try mapContentErrors {
-            let decoder = ContentResourceDecoder()
-            let chapter = try decoder.decode(
-                Chapter.self,
-                from: registration.resource,
-                in: bundle
-            )
-            guard chapter.id == registration.chapterID else {
-                throw ContentClientError.invalidBundledContent(
-                    resource: registration.resource.relativePath,
-                    fieldPath: "id",
-                    message: "does not match its registered chapter ID"
-                )
-            }
-
-            let sharedContent = try sharedContent()
-            try ContentValidator().validate(
-                chapter: chapter,
-                catalog: sharedContent.catalog,
-                identityManifest: sharedContent.identityManifest,
-                chapterResource: registration.resource.relativePath,
-                catalogResource: BundledContentResource.valuesAndTypes.relativePath,
-                identityResource: BundledContentResource.contentIdentity.relativePath
-            )
-
-            cachedChapters[chapterID] = chapter
-            return chapter
-        }
+    func loadKnowledgeCatalog() throws -> KnowledgeCatalog {
+        if let cachedKnowledgeCatalog { return cachedKnowledgeCatalog }
+        let catalog = try decoder.decodeResource(
+            KnowledgeCatalog.self,
+            from: BundledContentResource.knowledgeCatalog,
+            in: bundle
+        )
+        cachedKnowledgeCatalog = catalog
+        return catalog
     }
 
-    func loadPage(
-        chapterID: ChapterID,
-        pageID: LearningPageID
-    ) throws -> LearningPage {
-        let chapter = try loadChapter(chapterID)
-        guard let page = chapter.allPages.first(where: { $0.id == pageID }) else {
-            throw ContentClientError.pageNotFound(
-                chapterID: chapterID,
-                pageID: pageID
-            )
+    func loadPage(id: VersionedContentID) throws -> LessonPage {
+        guard id.version == .v2 else {
+            throw ContentError.wrongVersion(id.version)
         }
+        if let cached = cachedPages[id.rawValue] { return cached }
+
+        let manifest = try loadManifest()
+        guard let reference = manifest.pageReference(id: id.rawValue) else {
+            throw ContentError.pageNotFound(id.rawValue)
+        }
+        let page = try decoder.decodeResource(
+            LessonPage.self,
+            from: BundledContentResource(relativePath: reference.resource),
+            in: bundle
+        )
+        try ContentValidator().validate(page: page, reference: reference)
+        cachedPages[id.rawValue] = page
         return page
     }
+}
 
-    func loadCatalog() throws -> KnowledgeCatalog {
-        _ = try loadChapters()
-        return try sharedContent().catalog
-    }
+enum ContentError: Error, Equatable, LocalizedError, Sendable {
+    case wrongVersion(ContentVersion)
+    case unsupportedSchema(Int)
+    case duplicateID(String)
+    case invalidOrder(String)
+    case invalidReference(String)
+    case pageNotFound(String)
 
-    func loadConcept(_ conceptID: KnowledgeConceptID) throws -> KnowledgeConcept {
-        let catalog = try loadCatalog()
-        guard let concept = catalog.concepts.first(where: { $0.id == conceptID }) else {
-            throw ContentClientError.conceptNotFound(conceptID)
-        }
-        return concept
-    }
-
-    func loadRelations(_ conceptID: KnowledgeConceptID) throws -> [KnowledgeRelation] {
-        let catalog = try loadCatalog()
-        guard catalog.concepts.contains(where: { $0.id == conceptID }) else {
-            throw ContentClientError.conceptNotFound(conceptID)
-        }
-
-        return catalog.relations.filter {
-            $0.sourceConceptID == conceptID || $0.targetConceptID == conceptID
-        }
-    }
-
-    private func sharedContent() throws -> SharedContent {
-        if let cachedSharedContent {
-            return cachedSharedContent
-        }
-
-        let decoder = ContentResourceDecoder()
-        let content = try SharedContent(
-            catalog: decoder.decode(
-                KnowledgeCatalog.self,
-                from: .valuesAndTypes,
-                in: bundle
-            ),
-            identityManifest: decoder.decode(
-                ContentIdentityManifest.self,
-                from: .contentIdentity,
-                in: bundle
-            )
-        )
-        cachedSharedContent = content
-        return content
-    }
-
-    private func mapContentErrors<Value>(
-        _ operation: () throws -> Value
-    ) throws -> Value {
-        do {
-            return try operation()
-        } catch let error as ContentClientError {
-            throw error
-        } catch let error as ContentResourceDecodingError {
-            throw ContentClientError.invalidBundledContent(
-                resource: error.resource,
-                fieldPath: error.fieldPath,
-                message: error.message
-            )
-        } catch let error as ContentValidationError {
-            guard let issue = error.issues.first else {
-                throw ContentClientError.invalidBundledContent(
-                    resource: "bundled-content",
-                    fieldPath: "<root>",
-                    message: "validation failed without a reported issue"
-                )
-            }
-            throw ContentClientError.invalidBundledContent(
-                resource: issue.resource,
-                fieldPath: issue.fieldPath,
-                message: issue.message
-            )
-        } catch let error as BundledContentResourceError {
-            throw ContentClientError.invalidBundledContent(
-                resource: String(describing: error),
-                fieldPath: "<root>",
-                message: "required bundled resource is unavailable"
-            )
-        } catch {
-            throw ContentClientError.invalidBundledContent(
-                resource: bundle.bundlePath,
-                fieldPath: "<root>",
-                message: error.localizedDescription
-            )
+    var errorDescription: String? {
+        switch self {
+        case let .wrongVersion(version): "ver.2 제공자에 \(version.rawValue) 요청이 전달되었습니다."
+        case let .unsupportedSchema(version): "지원하지 않는 ver.2 schema \(version)입니다."
+        case let .duplicateID(id): "중복된 ver.2 콘텐츠 ID입니다: \(id)"
+        case let .invalidOrder(path): "ver.2 콘텐츠 순서가 연속적이지 않습니다: \(path)"
+        case let .invalidReference(path): "ver.2 콘텐츠 참조가 유효하지 않습니다: \(path)"
+        case let .pageNotFound(id): "ver.2 페이지를 찾을 수 없습니다: \(id)"
         }
     }
 }

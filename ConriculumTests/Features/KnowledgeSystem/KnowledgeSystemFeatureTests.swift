@@ -38,12 +38,12 @@ struct KnowledgeSystemFeatureTests {
         ) {
             KnowledgeSystemFeature()
         } withDependencies: {
-            $0.knowledgeCatalogClient.loadCatalog = { catalog }
-            $0.learningRecordClient.loadResponses = { _ in [] }
-            $0.learningRecordClient.loadProgress = { _ in nil }
-            $0.learningRecordClient.loadEvidence = { _ in [] }
-            $0.personalKnowledgeClient.loadAllRevisions = { [revision] }
-            $0.personalKnowledgeClient.loadAllRelations = {
+            $0.v1KnowledgeCatalogClient.loadCatalog = { catalog }
+            $0.v1LearningRecordClient.loadResponses = { _ in [] }
+            $0.v1LearningRecordClient.loadProgress = { _ in nil }
+            $0.v1LearningRecordClient.loadEvidence = { _ in [] }
+            $0.v1PersonalKnowledgeClient.loadAllRevisions = { [revision] }
+            $0.v1PersonalKnowledgeClient.loadAllRelations = {
                 [relation, relation]
             }
         }
@@ -140,7 +140,7 @@ struct KnowledgeSystemFeatureTests {
         ) {
             KnowledgeSystemFeature()
         } withDependencies: {
-            $0.knowledgeCatalogClient.loadCatalog = {
+            $0.v1KnowledgeCatalogClient.loadCatalog = {
                 throw NSError(
                     domain: "KnowledgeSystemFeatureTests",
                     code: 1,
@@ -149,8 +149,8 @@ struct KnowledgeSystemFeatureTests {
                     ]
                 )
             }
-            $0.personalKnowledgeClient.loadAllRevisions = { [] }
-            $0.personalKnowledgeClient.loadAllRelations = { [] }
+            $0.v1PersonalKnowledgeClient.loadAllRevisions = { [] }
+            $0.v1PersonalKnowledgeClient.loadAllRelations = { [] }
         }
 
         await store.send(.retryButtonTapped) {

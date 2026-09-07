@@ -1,7 +1,7 @@
 extension LearningEvidenceRecord {
     convenience init(
         profileID: LocalProfileID,
-        domainValue evidence: LearningEvidence
+        domainValue evidence: V1LearningEvidence
     ) throws {
         try Self.validate(evidence, profileID: profileID)
 
@@ -17,7 +17,7 @@ extension LearningEvidenceRecord {
         )
     }
 
-    func domainValue(profileID expectedProfileID: LocalProfileID) throws -> LearningEvidence {
+    func domainValue(profileID expectedProfileID: LocalProfileID) throws -> V1LearningEvidence {
         try RecordMappingSupport.validateProfileID(
             profileID,
             expected: expectedProfileID,
@@ -54,7 +54,7 @@ extension LearningEvidenceRecord {
                 )
             }
         }
-        guard let kind = LearningEvidenceKind(rawValue: kindRawValue) else {
+        guard let kind = V1LearningEvidenceKind(rawValue: kindRawValue) else {
             throw RecordMappingSupport.invalid(
                 record: Self.recordName,
                 fieldPath: "kindRawValue",
@@ -62,7 +62,7 @@ extension LearningEvidenceRecord {
             )
         }
 
-        return LearningEvidence(
+        return V1LearningEvidence(
             id: LearningEvidenceID(rawValue: id),
             kind: kind,
             pageID: LearningPageID(rawValue: pageID),
@@ -74,7 +74,7 @@ extension LearningEvidenceRecord {
     }
 
     func update(
-        from evidence: LearningEvidence,
+        from evidence: V1LearningEvidence,
         profileID expectedProfileID: LocalProfileID
     ) throws {
         try Self.validate(evidence, profileID: expectedProfileID)
@@ -100,7 +100,7 @@ extension LearningEvidenceRecord {
     }
 
     private static func validate(
-        _ evidence: LearningEvidence,
+        _ evidence: V1LearningEvidence,
         profileID: LocalProfileID
     ) throws {
         try RecordMappingSupport.validateIdentifier(

@@ -14,7 +14,7 @@ struct HomeView: View {
                     contentVersionPicker
 
                     if store.selectedContentVersion == .v2 {
-                        v2Home
+                        learningHome
                     } else {
                         v1Home
                     }
@@ -29,9 +29,9 @@ struct HomeView: View {
         }
         .frame(minWidth: 720, minHeight: 600)
         .task {
-            guard store.snapshot == nil else { return }
+            guard store.v1Snapshot == nil else { return }
             await store.send(.task).finish()
-            await store.send(.v2ReloadRequested).finish()
+            await store.send(.contentReloadRequested).finish()
         }
     }
 
@@ -59,27 +59,27 @@ struct HomeView: View {
 
     @ViewBuilder
     private var v1Home: some View {
-        if let snapshot = store.snapshot {
-            stageHeader(snapshot.stage)
-            previewDisclosure(for: snapshot.source)
-            chapterCard(snapshot.chapter)
-            chapterLibrary(snapshot.availableChapters)
+        if let v1Snapshot = store.v1Snapshot {
+            stageHeader(v1Snapshot.stage)
+            previewDisclosure(for: v1Snapshot.source)
+            chapterCard(v1Snapshot.chapter)
+            chapterLibrary(v1Snapshot.availableChapters)
 
-            if let loadErrorMessage = store.loadErrorMessage {
-                loadErrorBanner(message: loadErrorMessage)
+            if let v1LoadErrorMessage = store.v1LoadErrorMessage {
+                loadErrorBanner(message: v1LoadErrorMessage)
             }
 
-            learningSummary(snapshot)
-        } else if let loadErrorMessage = store.loadErrorMessage {
-            unavailableState(message: loadErrorMessage)
+            learningSummary(v1Snapshot)
+        } else if let v1LoadErrorMessage = store.v1LoadErrorMessage {
+            unavailableState(message: v1LoadErrorMessage)
         } else {
             loadingState
         }
     }
 
     @ViewBuilder
-    private var v2Home: some View {
-        if let manifest = store.v2Manifest {
+    private var learningHome: some View {
+        if let manifest = store.manifest {
             VStack(alignment: .leading, spacing: 10) {
                 Text("CONRICULUM · VER.2")
                     .font(.caption.weight(.semibold))
@@ -93,24 +93,24 @@ struct HomeView: View {
                     .foregroundStyle(.secondary)
             }
 
-            if let resumeChapter = v2ResumeChapter(in: manifest) {
-                v2ResumeCard(resumeChapter, manifest: manifest)
+            if let resumeChapter = resumeLearningChapter(in: manifest) {
+                resumeLearningCard(resumeChapter, manifest: manifest)
             }
 
-            V2HomeStagePager(
+            HomeStagePager(
                 manifest: manifest,
-                progress: store.v2Progress,
-                selectedStageID: store.selectedV2StageID,
-                onStageSelected: { store.send(.v2StageSelected($0)) },
-                onChapterSelected: { store.send(.v2ChapterSelected($0)) }
+                progress: store.learningProgress,
+                selectedStageID: store.selectedStageID,
+                onStageSelected: { store.send(.stageSelected($0)) },
+                onChapterSelected: { store.send(.learningChapterSelected($0)) }
             )
-        } else if let message = store.v2LoadErrorMessage {
+        } else if let message = store.contentLoadErrorMessage {
             ContentUnavailableView {
                 Label("ver.2 콘텐츠를 불러오지 못했습니다", systemImage: "exclamationmark.triangle")
             } description: {
                 Text(message)
             } actions: {
-                Button("다시 불러오기") { store.send(.v2ReloadRequested) }
+                Button("다시 불러오기") { store.send(.contentReloadRequested) }
                     .buttonStyle(.borderedProminent)
                 Button("ver.1 기존 과정 보기") {
                     store.send(.contentVersionSelected(.v1))
@@ -127,8 +127,8 @@ struct HomeView: View {
         }
     }
 
-    private func v2ResumeChapter(in manifest: V2ContentManifest) -> V2Chapter? {
-        if let pageID = store.v2Progress.lastVisitedPageID,
+    private func resumeLearningChapter(in manifest: ContentManifest) -> LearningChapter? {
+        if let pageID = store.learningProgress.lastVisitedPageID,
            let chapter = manifest.chapters.first(where: {
                $0.pages.contains { $0.id == pageID }
            }) {
@@ -141,18 +141,18 @@ struct HomeView: View {
             .first
     }
 
-    private func v2ResumeCard(
-        _ chapter: V2Chapter,
-        manifest: V2ContentManifest
+    private func resumeLearningCard(
+        _ chapter: LearningChapter,
+        manifest: ContentManifest
     ) -> some View {
-        let pageID = store.v2Progress.lastVisitedPageID.flatMap { pageID in
+        let pageID = store.learningProgress.lastVisitedPageID.flatMap { pageID in
             chapter.pages.contains { $0.id == pageID } ? pageID : nil
         } ?? chapter.firstPageID
         let page = pageID.flatMap { manifest.pageReference(id: $0) }
 
         return VStack(alignment: .leading, spacing: 16) {
             Label(
-                store.v2Progress.lastVisitedPageID == nil ? "여기서 시작해 보세요" : "이어서 학습하기",
+                store.learningProgress.lastVisitedPageID == nil ? "여기서 시작해 보세요" : "이어서 학습하기",
                 systemImage: "play.circle.fill"
             )
             .font(.headline)
@@ -169,8 +169,8 @@ struct HomeView: View {
                 }
             }
 
-            Button(store.v2Progress.lastVisitedPageID == nil ? "학습 시작" : "이어보기") {
-                store.send(.v2ChapterSelected(chapter.id))
+            Button(store.learningProgress.lastVisitedPageID == nil ? "학습 시작" : "이어보기") {
+                store.send(.learningChapterSelected(chapter.id))
             }
             .buttonStyle(.borderedProminent)
             .controlSize(.large)
@@ -189,7 +189,7 @@ struct HomeView: View {
     }
 
     private func stageHeader(
-        _ stage: HomeSnapshot.StageSummary
+        _ stage: V1HomeSnapshot.StageSummary
     ) -> some View {
         VStack(alignment: .leading, spacing: 10) {
             Text("CONRICULUM")
@@ -210,7 +210,7 @@ struct HomeView: View {
     }
 
     @ViewBuilder
-    private func previewDisclosure(for source: HomeSnapshot.Source) -> some View {
+    private func previewDisclosure(for source: V1HomeSnapshot.Source) -> some View {
         if case let .previewFixture(disclosure) = source {
             Label(disclosure, systemImage: "eye.trianglebadge.exclamationmark")
                 .font(.callout.weight(.medium))
@@ -227,7 +227,7 @@ struct HomeView: View {
     }
 
     private func chapterCard(
-        _ chapter: HomeSnapshot.ChapterCard
+        _ chapter: V1HomeSnapshot.ChapterCard
     ) -> some View {
         VStack(alignment: .leading, spacing: 18) {
             Label(chapter.resumePageID == nil ? "여기서 시작해 보세요" : "이어서 학습하기", systemImage: "play.circle.fill")
@@ -270,8 +270,8 @@ struct HomeView: View {
             Button(chapter.primaryActionTitle) {
                 store.send(
                     chapter.resumePageID == nil
-                        ? .startButtonTapped
-                        : .resumeButtonTapped
+                        ? .v1StartButtonTapped
+                        : .v1ResumeButtonTapped
                 )
             }
             .buttonStyle(.borderedProminent)
@@ -341,29 +341,29 @@ struct HomeView: View {
     }
 
     @ViewBuilder
-    private func learningSummary(_ snapshot: HomeSnapshot) -> some View {
-        if snapshot.lastActivity != nil || !snapshot.knowledgeChanges.confirmed.isEmpty
-            || !snapshot.knowledgeChanges.pending.isEmpty {
+    private func learningSummary(_ v1Snapshot: V1HomeSnapshot) -> some View {
+        if v1Snapshot.lastActivity != nil || !v1Snapshot.knowledgeChanges.confirmed.isEmpty
+            || !v1Snapshot.knowledgeChanges.pending.isEmpty {
             DisclosureGroup("이 챕터에 남긴 학습 기록") {
                 VStack(alignment: .leading, spacing: 18) {
-                    if snapshot.lastActivity != nil {
-                        lastActivityPanel(snapshot.lastActivity)
+                    if v1Snapshot.lastActivity != nil {
+                        lastActivityPanel(v1Snapshot.lastActivity)
                     }
-                    if !snapshot.knowledgeChanges.confirmed.isEmpty || !snapshot.knowledgeChanges.pending.isEmpty {
+                    if !v1Snapshot.knowledgeChanges.confirmed.isEmpty || !v1Snapshot.knowledgeChanges.pending.isEmpty {
                         knowledgeChangePanel(
-                            snapshot.knowledgeChanges,
-                            emptyMessage: snapshot.knowledgeChangesEmptyStateMessage
+                            v1Snapshot.knowledgeChanges,
+                            emptyMessage: v1Snapshot.knowledgeChangesEmptyStateMessage
                         )
                     }
                 }.padding(.top, 12)
             }
         }
-        if snapshot.evidence.contains(where: { $0.count > 0 }) {
-            evidenceSection(snapshot.evidence.filter { $0.count > 0 })
+        if v1Snapshot.evidence.contains(where: { $0.count > 0 }) {
+            evidenceSection(v1Snapshot.evidence.filter { $0.count > 0 })
         }
     }
 
-    private func chapterLibrary(_ chapters: [HomeSnapshot.ChapterCard]) -> some View {
+    private func chapterLibrary(_ chapters: [V1HomeSnapshot.ChapterCard]) -> some View {
         VStack(alignment: .leading, spacing: 12) {
             Text("챕터 선택").font(.title3.weight(.semibold))
                 .accessibilityHeading(.h2)
@@ -371,7 +371,7 @@ struct HomeView: View {
                 .font(.callout).foregroundStyle(.secondary)
             ForEach(chapters, id: \.chapterID) { chapter in
                 Button {
-                    store.send(.chapterSelected(chapter.chapterID))
+                    store.send(.v1ChapterSelected(chapter.chapterID))
                 } label: {
                     HStack(spacing: 16) {
                         VStack(alignment: .leading, spacing: 5) {
@@ -392,7 +392,7 @@ struct HomeView: View {
     }
 
     private func lastActivityPanel(
-        _ activity: HomeSnapshot.ActivitySummary?
+        _ activity: V1HomeSnapshot.ActivitySummary?
     ) -> some View {
         HomePanel(title: "마지막 활동", systemImage: "clock.arrow.circlepath") {
             if let activity {
@@ -439,7 +439,7 @@ struct HomeView: View {
     }
 
     private func evidenceSection(
-        _ evidence: [HomeSnapshot.EvidenceSummary]
+        _ evidence: [V1HomeSnapshot.EvidenceSummary]
     ) -> some View {
         VStack(alignment: .leading, spacing: 14) {
             VStack(alignment: .leading, spacing: 4) {
@@ -512,7 +512,7 @@ struct HomeView: View {
     }
 
     private func lastPageLabel(
-        _ page: HomeSnapshot.PageSummary
+        _ page: V1HomeSnapshot.PageSummary
     ) -> String {
         if let order = page.order {
             return "\(order)페이지 · \(page.title)"
@@ -521,7 +521,7 @@ struct HomeView: View {
     }
 
     private func lastActivityAccessibilityLabel(
-        _ activity: HomeSnapshot.ActivitySummary
+        _ activity: V1HomeSnapshot.ActivitySummary
     ) -> String {
         let section = activity.sectionTitle.map { ", \($0)" } ?? ""
         let date = activity.occurredAt.formatted(
@@ -586,10 +586,10 @@ private struct EmptyDashboardState: View {
 }
 
 private struct EvidenceCard: View {
-    let summary: HomeSnapshot.EvidenceSummary
+    let summary: V1HomeSnapshot.EvidenceSummary
 
-    private var presentation: HomeEvidencePresentation {
-        HomeEvidencePresentation(kind: summary.kind)
+    private var presentation: V1HomeEvidencePresentation {
+        V1HomeEvidencePresentation(kind: summary.kind)
     }
 
     var body: some View {
@@ -635,7 +635,7 @@ private struct EvidenceCard: View {
     HomeView(
         store: Store(
             initialState: HomeFeature.State(
-                snapshot: HomePreviewFixtures.empty,
+                v1Snapshot: V1HomePreviewFixtures.empty,
                 usesSnapshotAsPlaceholder: true
             )
         ) {
@@ -648,7 +648,7 @@ private struct EvidenceCard: View {
     HomeView(
         store: Store(
             initialState: HomeFeature.State(
-                snapshot: HomePreviewFixtures.mock,
+                v1Snapshot: V1HomePreviewFixtures.mock,
                 usesSnapshotAsPlaceholder: true
             )
         ) {

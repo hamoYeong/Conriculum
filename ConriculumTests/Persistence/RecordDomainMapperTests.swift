@@ -10,7 +10,7 @@ struct RecordDomainMapperTests {
 
     @Test
     func localProfileRoundTripsAndUpdates() throws {
-        let profile = LocalProfile(
+        let profile = V1LocalProfile(
             id: profileID,
             createdAt: firstDate,
             lastOpenedAt: firstDate
@@ -19,7 +19,7 @@ struct RecordDomainMapperTests {
 
         #expect(try record.domainValue() == profile)
 
-        let updatedProfile = LocalProfile(
+        let updatedProfile = V1LocalProfile(
             id: profileID,
             createdAt: firstDate,
             lastOpenedAt: secondDate
@@ -31,7 +31,7 @@ struct RecordDomainMapperTests {
 
     @Test
     func learningRecordsRoundTripAndUpdate() throws {
-        let progress = LearningProgress(
+        let progress = V1LearningProgress(
             chapterID: "chapter-02",
             currentPageID: "page-02-01",
             completedPageIDs: ["page-02-00"],
@@ -44,7 +44,7 @@ struct RecordDomainMapperTests {
 
         #expect(try progressRecord.domainValue(profileID: profileID) == progress)
 
-        let updatedProgress = LearningProgress(
+        let updatedProgress = V1LearningProgress(
             chapterID: progress.chapterID,
             currentPageID: "page-02-02",
             completedPageIDs: ["page-02-00", "page-02-01"],
@@ -53,13 +53,13 @@ struct RecordDomainMapperTests {
         try progressRecord.update(from: updatedProgress, profileID: profileID)
         #expect(try progressRecord.domainValue(profileID: profileID) == updatedProgress)
 
-        let response = ActivityResponse(
+        let response = V1ActivityResponse(
             id: "response-01",
             activityID: "activity-01",
             pageID: "page-02-01",
             fields: [
-                ActivityResponseField(key: "selected", values: ["String", "Bool"]),
-                ActivityResponseField(key: "reason", values: ["의미에 맞기 때문이다."]),
+                V1ActivityResponseField(key: "selected", values: ["String", "Bool"]),
+                V1ActivityResponseField(key: "reason", values: ["의미에 맞기 때문이다."]),
             ],
             recordedAt: firstDate
         )
@@ -70,17 +70,17 @@ struct RecordDomainMapperTests {
 
         #expect(try responseRecord.domainValue(profileID: profileID) == response)
 
-        let updatedResponse = ActivityResponse(
+        let updatedResponse = V1ActivityResponse(
             id: response.id,
             activityID: response.activityID,
             pageID: response.pageID,
-            fields: [ActivityResponseField(key: "selected", values: ["String"])],
+            fields: [V1ActivityResponseField(key: "selected", values: ["String"])],
             recordedAt: secondDate
         )
         try responseRecord.update(from: updatedResponse, profileID: profileID)
         #expect(try responseRecord.domainValue(profileID: profileID) == updatedResponse)
 
-        let evidence = LearningEvidence(
+        let evidence = V1LearningEvidence(
             id: "evidence-01",
             kind: .reasoningExplanation,
             pageID: response.pageID,
@@ -96,7 +96,7 @@ struct RecordDomainMapperTests {
 
         #expect(try evidenceRecord.domainValue(profileID: profileID) == evidence)
 
-        let updatedEvidence = LearningEvidence(
+        let updatedEvidence = V1LearningEvidence(
             id: evidence.id,
             kind: .independentSuccess,
             pageID: evidence.pageID,
@@ -251,7 +251,7 @@ struct RecordDomainMapperTests {
         let evidenceRecord = LearningEvidenceRecord(
             id: "evidence-01",
             profileID: profileID.rawValue,
-            kindRawValue: LearningEvidenceKind.activityAttempt.rawValue,
+            kindRawValue: V1LearningEvidenceKind.activityAttempt.rawValue,
             pageID: "page-02-01",
             activityID: nil,
             responseID: "response-01",
@@ -274,7 +274,7 @@ struct RecordDomainMapperTests {
         do {
             try operation()
             Issue.record("잘못된 저장 데이터가 Domain 값으로 변환되었다.")
-        } catch let error as PersistenceClientError {
+        } catch let error as V1PersistenceClientError {
             guard case let .invalidStoredData(record, fieldPath, _) = error else {
                 Issue.record("예상하지 못한 persistence 오류: \(error)")
                 return

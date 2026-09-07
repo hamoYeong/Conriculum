@@ -64,7 +64,7 @@ struct KnowledgeChangeCollectionComposer {
         concepts: [KnowledgeConcept],
         revisions: [PersonalConceptRevision],
         relations: [PersonalKnowledgeRelation],
-        pendingReviews: [KnowledgePersonalizationReview]
+        pendingReviews: [V1KnowledgePersonalizationReview]
     ) -> KnowledgeChangeCollection {
         let titlesByID = Dictionary(
             uniqueKeysWithValues: concepts.map { ($0.id, $0.title) }
@@ -178,8 +178,8 @@ struct KnowledgeChangeCollectionComposer {
     }
 
     private func latestPendingReviews(
-        _ reviews: [KnowledgePersonalizationReview]
-    ) -> [KnowledgeConceptID: KnowledgePersonalizationReview] {
+        _ reviews: [V1KnowledgePersonalizationReview]
+    ) -> [KnowledgeConceptID: V1KnowledgePersonalizationReview] {
         reviews.reduce(into: [:]) { result, review in
             guard let current = result[review.targetConceptID] else {
                 result[review.targetConceptID] = review

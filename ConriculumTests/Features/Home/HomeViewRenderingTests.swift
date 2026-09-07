@@ -10,22 +10,22 @@ struct HomeViewRenderingTests {
     @Test
     func emptyAndPopulatedPreviewsRenderAtAStandardWindowSize() async throws {
         let decoder = ContentResourceDecoder()
-        let chapter = try decoder.decode(Chapter.self, from: .chapter02)
-        let next = try decoder.decode(Chapter.self, from: .chapter(stageNumber: 1, chapterNumber: 3))
-        let liveSnapshot = HomeSnapshotComposer().compose(chapter: chapter,
+        let chapter = try decoder.decode(V1Chapter.self, from: .chapter02)
+        let next = try decoder.decode(V1Chapter.self, from: .chapter(stageNumber: 1, chapterNumber: 3))
+        let liveSnapshot = V1HomeSnapshotComposer().compose(chapter: chapter,
             catalog: try decoder.decode(KnowledgeCatalog.self, from: .valuesAndTypes),
             progress: nil, responses: [], evidence: [], revisions: [], availableChapters: [chapter, next])
-        let fixtures: [(name: String, snapshot: HomeSnapshot)] = [
+        let fixtures: [(name: String, v1Snapshot: V1HomeSnapshot)] = [
             ("available-chapters", liveSnapshot),
-            ("empty", HomePreviewFixtures.empty),
-            ("populated", HomePreviewFixtures.mock),
+            ("empty", V1HomePreviewFixtures.empty),
+            ("populated", V1HomePreviewFixtures.mock),
         ]
 
         for fixture in fixtures {
             let view = HomeView(
                 store: Store(
                     initialState: HomeFeature.State(
-                        snapshot: fixture.snapshot,
+                        v1Snapshot: fixture.v1Snapshot,
                         usesSnapshotAsPlaceholder: true
                     )
                 ) {
@@ -39,16 +39,16 @@ struct HomeViewRenderingTests {
     }
 
     @Test
-    func v2HomeWithStagePagerAndKnowledgeBookshelfRenders() async throws {
-        let manifest = try V2BundledContentStore().loadManifest()
+    func currentHomeWithStagePagerAndKnowledgeBookshelfRenders() async throws {
+        let manifest = try BundledContentStore().loadManifest()
         let firstChapter = try #require(manifest.stages.first?.chapters.first)
         var state = HomeFeature.State(
-            snapshot: HomePreviewFixtures.mock,
+            v1Snapshot: V1HomePreviewFixtures.mock,
             usesSnapshotAsPlaceholder: true
         )
         state.selectedContentVersion = .v2
-        state.v2Manifest = manifest
-        state.v2Progress = V2Progress(
+        state.manifest = manifest
+        state.learningProgress = CourseProgress(
             lastVisitedPageID: try #require(firstChapter.pages.first).id,
             completedPageIDs: []
         )

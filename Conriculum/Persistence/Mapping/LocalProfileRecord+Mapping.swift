@@ -1,5 +1,5 @@
 extension LocalProfileRecord {
-    convenience init(domainValue profile: LocalProfile) throws {
+    convenience init(domainValue profile: V1LocalProfile) throws {
         try RecordMappingSupport.validateIdentifier(
             profile.id.rawValue,
             record: Self.recordName,
@@ -13,21 +13,21 @@ extension LocalProfileRecord {
         )
     }
 
-    func domainValue() throws -> LocalProfile {
+    func domainValue() throws -> V1LocalProfile {
         try RecordMappingSupport.validateIdentifier(
             id,
             record: Self.recordName,
             fieldPath: "id"
         )
 
-        return LocalProfile(
+        return V1LocalProfile(
             id: LocalProfileID(rawValue: id),
             createdAt: createdAt,
             lastOpenedAt: lastOpenedAt
         )
     }
 
-    func update(from profile: LocalProfile) throws {
+    func update(from profile: V1LocalProfile) throws {
         guard id == profile.id.rawValue else {
             throw RecordMappingSupport.invalid(
                 record: Self.recordName,

@@ -41,7 +41,7 @@ final class UserDataStore {
         }
 
         let timestamp = Date()
-        let profile = LocalProfile(
+        let profile = V1LocalProfile(
             id: LocalProfileID(rawValue: UUID().uuidString.lowercased()),
             createdAt: timestamp,
             lastOpenedAt: timestamp
@@ -53,7 +53,7 @@ final class UserDataStore {
         return profile.id
     }
 
-    func loadProgress(chapterID: ChapterID) throws -> LearningProgress? {
+    func loadProgress(chapterID: ChapterID) throws -> V1LearningProgress? {
         let profileID = try localProfileID()
         let profileValue = profileID.rawValue
         let chapterValue = chapterID.rawValue
@@ -70,7 +70,7 @@ final class UserDataStore {
         ).first?.domainValue(profileID: profileID)
     }
 
-    func saveProgress(_ progress: LearningProgress) throws {
+    func saveProgress(_ progress: V1LearningProgress) throws {
         let profileID = try localProfileID()
         let profileValue = profileID.rawValue
         let chapterValue = progress.chapterID.rawValue
@@ -97,7 +97,7 @@ final class UserDataStore {
         try saveChanges(operation: "saveProgress")
     }
 
-    func loadResponses(pageID: LearningPageID) throws -> [ActivityResponse] {
+    func loadResponses(pageID: LearningPageID) throws -> [V1ActivityResponse] {
         let profileID = try localProfileID()
         let profileValue = profileID.rawValue
         let pageValue = pageID.rawValue
@@ -119,7 +119,7 @@ final class UserDataStore {
         }
     }
 
-    func saveResponse(_ response: ActivityResponse) throws {
+    func saveResponse(_ response: V1ActivityResponse) throws {
         let profileID = try localProfileID()
         let responseID = response.id.rawValue
         var descriptor = FetchDescriptor<ActivityResponseRecord>(
@@ -143,7 +143,7 @@ final class UserDataStore {
         try saveChanges(operation: "saveResponse")
     }
 
-    func loadEvidence(pageID: LearningPageID) throws -> [LearningEvidence] {
+    func loadEvidence(pageID: LearningPageID) throws -> [V1LearningEvidence] {
         let profileID = try localProfileID()
         let profileValue = profileID.rawValue
         let pageValue = pageID.rawValue
@@ -165,7 +165,7 @@ final class UserDataStore {
         }
     }
 
-    func saveEvidence(_ evidence: LearningEvidence) throws {
+    func saveEvidence(_ evidence: V1LearningEvidence) throws {
         let profileID = try localProfileID()
         let evidenceID = evidence.id.rawValue
         var descriptor = FetchDescriptor<LearningEvidenceRecord>(
@@ -191,16 +191,16 @@ final class UserDataStore {
 
     /// Append-only exposure: returning to an earlier page must not relock knowledge.
     /// Uses the existing viewed evidence schema, so no store migration is required.
-    func recordPageVisit(chapter: Chapter, pageID: LearningPageID) throws {
+    func recordPageVisit(chapter: V1Chapter, pageID: LearningPageID) throws {
         guard chapter.page(id: pageID) != nil else { return }
         let progress = try loadProgress(chapterID: chapter.id)
-        var pageIDs = LearningExposure.historicalPageIDs(chapter: chapter, progress: progress)
+        var pageIDs = V1LearningExposure.historicalPageIDs(chapter: chapter, progress: progress)
         if chapter.page(id: pageID)?.kind == .lesson { pageIDs.insert(pageID) }
         let profileID = try localProfileID()
         var pending: [LearningEvidenceRecord] = []
         for id in pageIDs.sorted(by: { $0.rawValue < $1.rawValue }) {
             guard try !loadEvidence(pageID: id).contains(where: { $0.kind == .viewed }) else { continue }
-            let evidence = LearningEvidence(
+            let evidence = V1LearningEvidence(
                 id: LearningEvidenceID(rawValue: "viewed:\(profileID.rawValue):\(id.rawValue)"),
                 kind: .viewed, pageID: id, activityID: nil, responseID: nil,
                 note: id == pageID ? nil : "기존 저장 진도에서 복원한 열람 이력",
@@ -353,10 +353,10 @@ final class UserDataStore {
     ) throws -> [Record] {
         do {
             return try modelContext.fetch(descriptor)
-        } catch let error as PersistenceClientError {
+        } catch let error as V1PersistenceClientError {
             throw error
         } catch {
-            throw PersistenceClientError.loadFailed(
+            throw V1PersistenceClientError.loadFailed(
                 operation: operation,
                 message: error.localizedDescription
             )
@@ -368,7 +368,7 @@ final class UserDataStore {
             try saveContext(modelContext)
         } catch {
             modelContext.rollback()
-            throw PersistenceClientError.saveFailed(
+            throw V1PersistenceClientError.saveFailed(
                 operation: operation,
                 message: error.localizedDescription
             )

@@ -6,8 +6,8 @@ import Testing
 struct HomePresentationTests {
     @Test
     func evidenceKindsHaveStableKoreanLabelsAndSymbols() {
-        let presentations = LearningEvidenceKind.allCases.map(
-            HomeEvidencePresentation.init(kind:)
+        let presentations = V1LearningEvidenceKind.allCases.map(
+            V1HomeEvidencePresentation.init(kind:)
         )
 
         #expect(presentations.map(\.title) == [
@@ -24,8 +24,8 @@ struct HomePresentationTests {
 
     @Test
     func chapterActionDistinguishesStartFromResume() {
-        let empty = HomePreviewFixtures.empty.chapter
-        let populated = HomePreviewFixtures.mock.chapter
+        let empty = V1HomePreviewFixtures.empty.chapter
+        let populated = V1HomePreviewFixtures.mock.chapter
 
         #expect(empty.primaryActionTitle == "챕터 시작하기")
         #expect(empty.primaryActionAccessibilityHint.contains("개요"))

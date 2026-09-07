@@ -77,7 +77,7 @@ enum RecordMappingSupport {
         record: String,
         fieldPath: String,
         message: String
-    ) -> PersistenceClientError {
+    ) -> V1PersistenceClientError {
         .invalidStoredData(
             record: record,
             fieldPath: fieldPath,

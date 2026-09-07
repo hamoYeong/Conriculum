@@ -8,7 +8,7 @@ import Testing
 struct KnowledgeRevisitTests {
     @Test
     func everyCatalogConceptHasOneOrderedDeduplicatedRevisitList() throws {
-        let content = BundledContentStore()
+        let content = V1BundledContentStore()
         let chapters = try content.loadChapters()
         let catalog = try content.loadCatalog()
         let pages = Dictionary(uniqueKeysWithValues: chapters.flatMap { chapter in
@@ -35,7 +35,7 @@ struct KnowledgeRevisitTests {
 
     @Test
     func oldAndNewLearningPagesAreConnectedInBothDirections() throws {
-        let catalog = try BundledContentStore().loadCatalog()
+        let catalog = try V1BundledContentStore().loadCatalog()
         let concepts = Dictionary(uniqueKeysWithValues: catalog.concepts.map { ($0.id, $0) })
         func pages(_ conceptID: KnowledgeConceptID) throws -> Set<LearningPageID> {
             Set(try #require(concepts[conceptID]).revisitPages?.map(\.pageID) ?? [])
@@ -55,11 +55,11 @@ struct KnowledgeRevisitTests {
 
     @Test
     func revisitLinksDoNotUnlockKnowledgeWithoutVisitingTheLinkedLesson() throws {
-        let content = BundledContentStore()
+        let content = V1BundledContentStore()
         let chapter = try content.loadChapter("chapter-02")
         let catalog = try content.loadCatalog()
         let visited = try #require(chapter.page(id: "chapter-02-page-04"))
-        let learned = LearningExposure.directConceptIDs(page: visited)
+        let learned = V1LearningExposure.directConceptIDs(page: visited)
         let snapshot = KnowledgeSystemSnapshotComposer().compose(
             catalog: catalog,
             revisions: [],
@@ -72,7 +72,7 @@ struct KnowledgeRevisitTests {
 
     @Test
     func selectingARevisitFromKnowledgeSystemOpensItsLearningPage() async throws {
-        let catalog = try BundledContentStore().loadCatalog()
+        let catalog = try V1BundledContentStore().loadCatalog()
         let concept = try #require(catalog.concepts.first { $0.id == "concept-named-condition" })
         let reference = try #require(concept.revisitPages?.first { $0.pageID == "chapter-02-page-04" })
         var initial = AppFeature.State()
@@ -80,22 +80,22 @@ struct KnowledgeRevisitTests {
         initial.knowledgeSystem = KnowledgeSystemFeature.State()
         let store = TestStore(initialState: initial) { AppFeature() }
         await store.send(.knowledgeSystem(.learningPageTapped(reference)))
-        await store.receive(.knowledgeSystem(.delegate(.learningRequested(
+        await store.receive(.knowledgeSystem(.delegate(.v1LearningRequested(
             reference.chapterID,
             reference.pageID
         )))) {
             $0.knowledgeSystem = nil
-            $0.workspace = LearningWorkspaceFeature.State(
+            $0.v1Workspace = V1LearningWorkspaceFeature.State(
                 chapterID: reference.chapterID,
                 pageID: reference.pageID
             )
-            $0.route = .learningWorkspace(chapterID: reference.chapterID)
+            $0.route = .v1Learning(chapterID: reference.chapterID)
         }
     }
 
     @Test
     func revisitSectionRendersAtNarrowWidth() throws {
-        let catalog = try BundledContentStore().loadCatalog()
+        let catalog = try V1BundledContentStore().loadCatalog()
         let references = try #require(catalog.concepts.first {
             $0.id == "concept-named-condition"
         }?.revisitPages)

@@ -40,19 +40,19 @@ struct UserDataStoreRoundTripTests {
     @Test
     func learningRecordsRoundTripAndRecoverInANewClient() async throws {
         let environment = try PersistenceEnvironmentRegistry.makeInMemoryEnvironment()
-        let firstClient = LearningRecordClient.live(store: environment.userDataStore)
-        let originalProgress = LearningProgress(
+        let firstClient = V1LearningRecordClient.live(store: environment.userDataStore)
+        let originalProgress = V1LearningProgress(
             chapterID: "chapter-02",
             currentPageID: "chapter-02-page-01",
             completedPageIDs: [],
             updatedAt: firstDate
         )
-        let originalResponse = ActivityResponse(
+        let originalResponse = V1ActivityResponse(
             id: "response-01",
             activityID: "activity-page-01-card-sorting",
             pageID: originalProgress.currentPageID,
             fields: [
-                ActivityResponseField(key: "selected", values: ["String", "Int"])
+                V1ActivityResponseField(key: "selected", values: ["String", "Int"])
             ],
             recordedAt: firstDate
         )
@@ -60,9 +60,9 @@ struct UserDataStoreRoundTripTests {
         try await firstClient.saveProgress(originalProgress)
         try await firstClient.saveResponse(originalResponse)
 
-        var evidenceByKind: [LearningEvidenceKind: LearningEvidence] = [:]
-        for (index, kind) in LearningEvidenceKind.allCases.enumerated() {
-            let evidence = LearningEvidence(
+        var evidenceByKind: [V1LearningEvidenceKind: V1LearningEvidence] = [:]
+        for (index, kind) in V1LearningEvidenceKind.allCases.enumerated() {
+            let evidence = V1LearningEvidence(
                 id: LearningEvidenceID(rawValue: "evidence-\(index)"),
                 kind: kind,
                 pageID: originalProgress.currentPageID,
@@ -75,19 +75,19 @@ struct UserDataStoreRoundTripTests {
             try await firstClient.saveEvidence(evidence)
         }
 
-        let updatedProgress = LearningProgress(
+        let updatedProgress = V1LearningProgress(
             chapterID: originalProgress.chapterID,
             currentPageID: "chapter-02-page-02",
             completedPageIDs: [originalProgress.currentPageID],
             updatedAt: secondDate
         )
-        let updatedResponse = ActivityResponse(
+        let updatedResponse = V1ActivityResponse(
             id: originalResponse.id,
             activityID: originalResponse.activityID,
             pageID: originalResponse.pageID,
             fields: [
-                ActivityResponseField(key: "selected", values: ["String"]),
-                ActivityResponseField(key: "reason", values: ["텍스트 의미를 보존한다."]),
+                V1ActivityResponseField(key: "selected", values: ["String"]),
+                V1ActivityResponseField(key: "reason", values: ["텍스트 의미를 보존한다."]),
             ],
             recordedAt: secondDate
         )
@@ -97,7 +97,7 @@ struct UserDataStoreRoundTripTests {
         let relaunchedStore = UserDataStore(
             modelContainer: environment.modelContainer
         )
-        let relaunchedClient = LearningRecordClient.live(store: relaunchedStore)
+        let relaunchedClient = V1LearningRecordClient.live(store: relaunchedStore)
         let recoveredProgress = try await relaunchedClient.loadProgress(
             originalProgress.chapterID
         )
@@ -110,14 +110,14 @@ struct UserDataStoreRoundTripTests {
 
         #expect(recoveredProgress == updatedProgress)
         #expect(recoveredResponses == [updatedResponse])
-        #expect(Set(recoveredEvidence.map(\.kind)) == Set(LearningEvidenceKind.allCases))
+        #expect(Set(recoveredEvidence.map(\.kind)) == Set(V1LearningEvidenceKind.allCases))
         #expect(recoveredEvidence.allSatisfy { evidenceByKind[$0.kind] == $0 })
     }
 
     @Test
     func personalKnowledgeCreatesUpdatesAndRecoversInANewClient() async throws {
         let environment = try PersistenceEnvironmentRegistry.makeInMemoryEnvironment()
-        let firstClient = PersonalKnowledgeClient.live(store: environment.userDataStore)
+        let firstClient = V1PersonalKnowledgeClient.live(store: environment.userDataStore)
         let originalRevision = PersonalConceptRevision(
             id: "revision-01",
             conceptID: "concept-value",
@@ -172,7 +172,7 @@ struct UserDataStoreRoundTripTests {
         let relaunchedStore = UserDataStore(
             modelContainer: environment.modelContainer
         )
-        let relaunchedClient = PersonalKnowledgeClient.live(store: relaunchedStore)
+        let relaunchedClient = V1PersonalKnowledgeClient.live(store: relaunchedStore)
         let recoveredRevisions = try await relaunchedClient.loadRevisions(
             originalRevision.conceptID
         )
@@ -205,7 +205,7 @@ struct UserDataStoreRoundTripTests {
                 try context.save()
             }
         )
-        let client = PersonalKnowledgeClient.live(store: store)
+        let client = V1PersonalKnowledgeClient.live(store: store)
         let successfulRelation = PersonalKnowledgeRelation(
             id: "personal-relation-01",
             sourceConceptID: "concept-value",
@@ -232,7 +232,7 @@ struct UserDataStoreRoundTripTests {
         do {
             try await client.saveRelation(rejectedUpdate)
             Issue.record("강제로 실패시킨 relation 저장이 성공했다.")
-        } catch let error as PersistenceClientError {
+        } catch let error as V1PersistenceClientError {
             guard case let .saveFailed(operation, _) = error else {
                 Issue.record("예상하지 못한 persistence 오류: \(error)")
                 return
@@ -243,7 +243,7 @@ struct UserDataStoreRoundTripTests {
         }
 
         let relaunchedStore = UserDataStore(modelContainer: modelContainer)
-        let relaunchedClient = PersonalKnowledgeClient.live(store: relaunchedStore)
+        let relaunchedClient = V1PersonalKnowledgeClient.live(store: relaunchedStore)
         let recoveredRelations = try await relaunchedClient.loadRelations(
             successfulRelation.sourceConceptID
         )
@@ -264,7 +264,7 @@ struct UserDataStoreRoundTripTests {
                 try context.save()
             }
         )
-        let client = PersonalKnowledgeClient.live(store: store)
+        let client = V1PersonalKnowledgeClient.live(store: store)
         let successfulRevision = PersonalConceptRevision(
             id: "personal-revision-01",
             conceptID: "concept-value",
@@ -293,7 +293,7 @@ struct UserDataStoreRoundTripTests {
         do {
             try await client.saveRevision(rejectedUpdate)
             Issue.record("강제로 실패시킨 revision 저장이 성공했다.")
-        } catch let error as PersistenceClientError {
+        } catch let error as V1PersistenceClientError {
             guard case let .saveFailed(operation, _) = error else {
                 Issue.record("예상하지 못한 persistence 오류: \(error)")
                 return
@@ -304,7 +304,7 @@ struct UserDataStoreRoundTripTests {
         }
 
         let relaunchedStore = UserDataStore(modelContainer: modelContainer)
-        let relaunchedClient = PersonalKnowledgeClient.live(
+        let relaunchedClient = V1PersonalKnowledgeClient.live(
             store: relaunchedStore
         )
         let recoveredRevisions = try await relaunchedClient.loadRevisions(
@@ -321,8 +321,8 @@ struct UserDataStoreRoundTripTests {
     ) async throws -> LocalProfileID {
         let container = try fileBackedContainer(at: storeURL)
         let store = UserDataStore(modelContainer: container)
-        let learningClient = LearningRecordClient.live(store: store)
-        let knowledgeClient = PersonalKnowledgeClient.live(store: store)
+        let learningClient = V1LearningRecordClient.live(store: store)
+        let knowledgeClient = V1PersonalKnowledgeClient.live(store: store)
         let profileID = try store.localProfileID()
 
         try await learningClient.saveProgress(original.progress)
@@ -346,8 +346,8 @@ struct UserDataStoreRoundTripTests {
     ) async throws -> LocalProfileID {
         let container = try fileBackedContainer(at: storeURL)
         let store = UserDataStore(modelContainer: container)
-        let learningClient = LearningRecordClient.live(store: store)
-        let knowledgeClient = PersonalKnowledgeClient.live(store: store)
+        let learningClient = V1LearningRecordClient.live(store: store)
+        let knowledgeClient = V1PersonalKnowledgeClient.live(store: store)
         let profileID = try store.localProfileID()
 
         #expect(
@@ -398,7 +398,7 @@ struct UserDataStoreRoundTripTests {
     ) -> RelaunchFixture {
         let isUpdated = suffix == "updated"
         return RelaunchFixture(
-            progress: LearningProgress(
+            progress: V1LearningProgress(
                 chapterID: "chapter-02",
                 currentPageID: isUpdated
                     ? "chapter-02-page-02"
@@ -408,19 +408,19 @@ struct UserDataStoreRoundTripTests {
                     : [],
                 updatedAt: timestamp
             ),
-            response: ActivityResponse(
+            response: V1ActivityResponse(
                 id: "response-relaunch",
                 activityID: "activity-page01-choice",
                 pageID: "chapter-02-page-01",
                 fields: [
-                    ActivityResponseField(
+                    V1ActivityResponseField(
                         key: "reason",
                         values: ["\(suffix) response"]
                     )
                 ],
                 recordedAt: timestamp
             ),
-            evidence: LearningEvidence(
+            evidence: V1LearningEvidence(
                 id: "evidence-relaunch",
                 kind: .reasoningExplanation,
                 pageID: "chapter-02-page-01",
@@ -455,9 +455,9 @@ struct UserDataStoreRoundTripTests {
 }
 
 private struct RelaunchFixture {
-    let progress: LearningProgress
-    let response: ActivityResponse
-    let evidence: LearningEvidence
+    let progress: V1LearningProgress
+    let response: V1ActivityResponse
+    let evidence: V1LearningEvidence
     let revision: PersonalConceptRevision
     let relation: PersonalKnowledgeRelation
 }

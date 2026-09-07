@@ -6,8 +6,8 @@ import Testing
 
 @MainActor
 struct KnowledgeLearningStatusTests {
-    private func chapter() throws -> Chapter {
-        try ContentResourceDecoder().decode(Chapter.self, from: .chapter02)
+    private func chapter() throws -> V1Chapter {
+        try ContentResourceDecoder().decode(V1Chapter.self, from: .chapter02)
     }
 
     @Test
@@ -33,13 +33,13 @@ struct KnowledgeLearningStatusTests {
         let page = try #require(chapter.progressPages.first)
         let exercise = try #require(page.sections.first { $0.content.tag == .choiceWithReason || $0.content.tag == .cardSorting || $0.content.tag == .matching })
         let id = try #require(exercise.activityID)
-        func response(_ fields: [ActivityResponseField], date: Date = .distantPast) -> ActivityResponse {
+        func response(_ fields: [V1ActivityResponseField], date: Date = .distantPast) -> V1ActivityResponse {
             .init(id: "answer", activityID: id, pageID: page.id, fields: fields, recordedAt: date)
         }
         let choice = response([.init(key: "choice.test", values: ["option-a"])])
         #expect(LearnedKnowledgeResolver.personalConceptIDs(page: page, responses: [choice]).isEmpty)
         let explanation = response([.init(key: "reason", values: ["사용 목적이 달라서 다르게 표현한다"])])
-        #expect(LearnedKnowledgeResolver.personalConceptIDs(page: page, responses: [explanation]) == LearningExposure.directConceptIDs(page: page))
+        #expect(LearnedKnowledgeResolver.personalConceptIDs(page: page, responses: [explanation]) == V1LearningExposure.directConceptIDs(page: page))
         let cleared = response([.init(key: "reason", values: ["  "])], date: .distantFuture)
         #expect(LearnedKnowledgeResolver.personalConceptIDs(page: page, responses: [explanation, cleared]).isEmpty)
         #expect(LearnedKnowledgeResolver.personalConceptIDs(page: chapter.overview, responses: [explanation]).isEmpty)
@@ -87,7 +87,7 @@ struct KnowledgeLearningStatusTests {
             let config = ModelConfiguration("VisitTest", schema: ConriculumPersistenceSchema.schema, url: url, cloudKitDatabase: .none)
             return UserDataStore(modelContainer: try ModelContainer(for: ConriculumPersistenceSchema.schema, configurations: [config]))
         }
-        let response = ActivityResponse(id: "existing-answer", activityID: try #require(page.activities.first?.id),
+        let response = V1ActivityResponse(id: "existing-answer", activityID: try #require(page.activities.first?.id),
             pageID: page.id, fields: [.init(key: "reason", values: ["기존 응답은 유지한다"])], recordedAt: .distantPast)
         do {
             let store = try openStore()
@@ -106,17 +106,17 @@ struct KnowledgeLearningStatusTests {
     @Test
     func exposureFailureIsVisibleAndCanBeRetriedWithoutLosingThePage() async throws {
         let chapter = try chapter()
-        var initial = ChapterLearningFeature.State(chapterID: chapter.id, currentPageID: chapter.progressPageIDs[0])
+        var initial = V1ChapterLearningFeature.State(chapterID: chapter.id, currentPageID: chapter.progressPageIDs[0])
         initial.chapter = chapter
-        let store = TestStore(initialState: initial) { ChapterLearningFeature() } withDependencies: {
-            $0.learningRecordClient.recordPageVisit = { _, _ in
+        let store = TestStore(initialState: initial) { V1ChapterLearningFeature() } withDependencies: {
+            $0.v1LearningRecordClient.recordPageVisit = { _, _ in
                 throw NSError(domain: "visit-test", code: 1, userInfo: [NSLocalizedDescriptionKey: "열람 저장 실패"])
             }
         }
         store.timeout = .seconds(10)
         await store.send(.pagePresented)
         await store.receive(.pageVisitResponse(initial.currentPageID, "열람 저장 실패")) { $0.visitErrorMessage = "열람 저장 실패" }
-        store.dependencies.learningRecordClient.recordPageVisit = { _, _ in }
+        store.dependencies.v1LearningRecordClient.recordPageVisit = { _, _ in }
         await store.send(.pagePresented) { $0.visitErrorMessage = nil }
         await store.receive(.pageVisitResponse(initial.currentPageID, nil))
         #expect(store.state.currentPageID == initial.currentPageID)
@@ -130,13 +130,13 @@ struct KnowledgeLearningStatusTests {
         let dataStore = UserDataStore(modelContainer: try PersistenceContainerFactory.inMemory())
         try dataStore.recordPageVisit(chapter: chapter, pageID: page.id)
         let expected = KnowledgeSystemSnapshotComposer().compose(catalog: catalog, revisions: [], personalRelations: [],
-            learnedConceptIDs: LearningExposure.directConceptIDs(page: page))
+            learnedConceptIDs: V1LearningExposure.directConceptIDs(page: page))
         let store = TestStore(initialState: KnowledgeSystemFeature.State()) { KnowledgeSystemFeature() } withDependencies: {
-            $0.curriculumClient.loadChapters = { [chapter] }
-            $0.knowledgeCatalogClient.loadCatalog = { catalog }
-            $0.learningRecordClient = .live(store: dataStore)
-            $0.personalKnowledgeClient.loadAllRevisions = { [] }
-            $0.personalKnowledgeClient.loadAllRelations = { [] }
+            $0.v1CurriculumClient.loadChapters = { [chapter] }
+            $0.v1KnowledgeCatalogClient.loadCatalog = { catalog }
+            $0.v1LearningRecordClient = .live(store: dataStore)
+            $0.v1PersonalKnowledgeClient.loadAllRevisions = { [] }
+            $0.v1PersonalKnowledgeClient.loadAllRelations = { [] }
         }
         store.timeout = .seconds(10)
         await store.send(.retryButtonTapped) { $0.isLoading = true }

@@ -1,7 +1,7 @@
 extension ActivityResponseRecord {
     convenience init(
         profileID: LocalProfileID,
-        domainValue response: ActivityResponse
+        domainValue response: V1ActivityResponse
     ) throws {
         try Self.validate(response, profileID: profileID)
         let fieldsPayload = try RecordMappingSupport.encode(
@@ -20,7 +20,7 @@ extension ActivityResponseRecord {
         )
     }
 
-    func domainValue(profileID expectedProfileID: LocalProfileID) throws -> ActivityResponse {
+    func domainValue(profileID expectedProfileID: LocalProfileID) throws -> V1ActivityResponse {
         try RecordMappingSupport.validateProfileID(
             profileID,
             expected: expectedProfileID,
@@ -43,14 +43,14 @@ extension ActivityResponseRecord {
         )
 
         let fields = try RecordMappingSupport.decode(
-            [ActivityResponseField].self,
+            [V1ActivityResponseField].self,
             from: fieldsPayload,
             record: Self.recordName,
             fieldPath: "fieldsPayload"
         )
         try Self.validateFields(fields)
 
-        return ActivityResponse(
+        return V1ActivityResponse(
             id: ActivityResponseID(rawValue: id),
             activityID: LearningActivityID(rawValue: activityID),
             pageID: LearningPageID(rawValue: pageID),
@@ -60,7 +60,7 @@ extension ActivityResponseRecord {
     }
 
     func update(
-        from response: ActivityResponse,
+        from response: V1ActivityResponse,
         profileID expectedProfileID: LocalProfileID
     ) throws {
         try Self.validate(response, profileID: expectedProfileID)
@@ -88,7 +88,7 @@ extension ActivityResponseRecord {
     }
 
     private static func validate(
-        _ response: ActivityResponse,
+        _ response: V1ActivityResponse,
         profileID: LocalProfileID
     ) throws {
         try RecordMappingSupport.validateIdentifier(
@@ -114,7 +114,7 @@ extension ActivityResponseRecord {
         try validateFields(response.fields)
     }
 
-    private static func validateFields(_ fields: [ActivityResponseField]) throws {
+    private static func validateFields(_ fields: [V1ActivityResponseField]) throws {
         for field in fields {
             try RecordMappingSupport.validateIdentifier(
                 field.key,

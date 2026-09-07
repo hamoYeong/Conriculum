@@ -2,7 +2,7 @@ import Foundation
 
 /// Derives knowledge exposure and personal expression separately; neither implies mastery.
 enum LearnedKnowledgeResolver {
-    static func personalConceptIDs(page: LearningPage, responses: [ActivityResponse]) -> Set<KnowledgeConceptID> {
+    static func personalConceptIDs(page: V1LearningPage, responses: [V1ActivityResponse]) -> Set<KnowledgeConceptID> {
         guard page.kind == .lesson else { return [] }
         var result = Set<KnowledgeConceptID>()
         for response in latestResponses(page: page, responses: responses) {
@@ -14,30 +14,30 @@ enum LearnedKnowledgeResolver {
             let keys: [String]
             switch section.content {
             case .cardSorting, .matching, .choiceWithReason:
-                keys = [LearningActivityFieldKey.reason]
+                keys = [V1LearningActivityFieldKey.reason]
             case .freeResponse:
-                keys = [LearningActivityFieldKey.response]
+                keys = [V1LearningActivityFieldKey.response]
             case .recallCheck:
                 keys = response.fields.map(\.key).filter { $0.hasPrefix("recall.") }
             case .learningClosure:
-                keys = [LearningActivityFieldKey.reflectionFinalExplanation,
-                        LearningActivityFieldKey.reflectionChangedCriterion,
-                        LearningActivityFieldKey.reflectionNextUse]
+                keys = [V1LearningActivityFieldKey.reflectionFinalExplanation,
+                        V1LearningActivityFieldKey.reflectionChangedCriterion,
+                        V1LearningActivityFieldKey.reflectionNextUse]
             case .semanticChunkReading:
-                keys = [LearningActivityFieldKey.semanticChunkName, LearningActivityFieldKey.semanticChunkFlow,
-                        LearningActivityFieldKey.semanticChunkBoundary, LearningActivityFieldKey.semanticChunkChange]
+                keys = [V1LearningActivityFieldKey.semanticChunkName, V1LearningActivityFieldKey.semanticChunkFlow,
+                        V1LearningActivityFieldKey.semanticChunkBoundary, V1LearningActivityFieldKey.semanticChunkChange]
             case let .personalKnowledgePromotion(content):
-                let expression = value(LearningActivityFieldKey.personalExpression)
-                let target = KnowledgeConceptID(rawValue: value(LearningActivityFieldKey.personalizationTargetConceptID))
+                let expression = value(V1LearningActivityFieldKey.personalExpression)
+                let target = KnowledgeConceptID(rawValue: value(V1LearningActivityFieldKey.personalizationTargetConceptID))
                 if !expression.isEmpty, expression != content.editableDraft.trimmingCharacters(in: .whitespacesAndNewlines),
                    content.conceptIDs.contains(target) { result.insert(target) }
                 continue
             case let .personalKnowledgeRelation(content):
-                let source = KnowledgeConceptID(rawValue: value(LearningActivityFieldKey.relationSourceConceptID))
-                let target = KnowledgeConceptID(rawValue: value(LearningActivityFieldKey.relationTargetConceptID))
-                let statement = value(LearningActivityFieldKey.relationStatement)
+                let source = KnowledgeConceptID(rawValue: value(V1LearningActivityFieldKey.relationSourceConceptID))
+                let target = KnowledgeConceptID(rawValue: value(V1LearningActivityFieldKey.relationTargetConceptID))
+                let statement = value(V1LearningActivityFieldKey.relationStatement)
                 if content.sourceConceptIDs.contains(source), content.targetConceptIDs.contains(target), source != target,
-                   !value(LearningActivityFieldKey.reason).isEmpty
+                   !value(V1LearningActivityFieldKey.reason).isEmpty
                     || (!statement.isEmpty && statement != content.draftStatement.trimmingCharacters(in: .whitespacesAndNewlines)) {
                     result.formUnion([source, target])
                 }
@@ -47,14 +47,14 @@ enum LearnedKnowledgeResolver {
                 continue
             }
             if keys.contains(where: { !value($0).isEmpty }) {
-                result.formUnion(LearningExposure.directConceptIDs(page: page))
+                result.formUnion(V1LearningExposure.directConceptIDs(page: page))
             }
         }
         return result
     }
 
-    private static func latestResponses(page: LearningPage, responses: [ActivityResponse]) -> [ActivityResponse] {
-        Array(responses.filter { $0.pageID == page.id }.reduce(into: [LearningActivityID: ActivityResponse]()) { result, response in
+    private static func latestResponses(page: V1LearningPage, responses: [V1ActivityResponse]) -> [V1ActivityResponse] {
+        Array(responses.filter { $0.pageID == page.id }.reduce(into: [LearningActivityID: V1ActivityResponse]()) { result, response in
             if let current = result[response.activityID],
                (current.recordedAt, current.id.rawValue) > (response.recordedAt, response.id.rawValue) { return }
             result[response.activityID] = response
@@ -62,7 +62,7 @@ enum LearnedKnowledgeResolver {
     }
 
     static func conceptIDs(
-        page: LearningPage, responses: [ActivityResponse]
+        page: V1LearningPage, responses: [V1ActivityResponse]
     ) -> Set<KnowledgeConceptID> {
         guard page.kind == .lesson else { return [] }
         let eligibleActivities = Set(page.activities.compactMap { activity in
@@ -72,7 +72,7 @@ enum LearnedKnowledgeResolver {
         })
         // Use the latest version of each response so clearing an answer does not revive old input.
         let latest = responses.filter { $0.pageID == page.id }.reduce(
-            into: [LearningActivityID: ActivityResponse]()
+            into: [LearningActivityID: V1ActivityResponse]()
         ) { result, response in
             if let existing = result[response.activityID],
                (existing.recordedAt, existing.id.rawValue) > (response.recordedAt, response.id.rawValue) { return }
@@ -84,6 +84,6 @@ enum LearnedKnowledgeResolver {
                     field.values.contains { !$0.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty }
                 }
         }) else { return [] }
-        return LearningExposure.directConceptIDs(page: page)
+        return V1LearningExposure.directConceptIDs(page: page)
     }
 }

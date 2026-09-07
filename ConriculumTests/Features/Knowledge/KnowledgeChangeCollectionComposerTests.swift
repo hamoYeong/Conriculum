@@ -158,8 +158,8 @@ struct KnowledgeChangeCollectionComposerTests {
         targetConceptID: KnowledgeConceptID,
         draft: String,
         createdAt: Date
-    ) -> KnowledgePersonalizationReview {
-        KnowledgePersonalizationReview(
+    ) -> V1KnowledgePersonalizationReview {
+        V1KnowledgePersonalizationReview(
             candidate: KnowledgePersonalizationCandidate(
                 id: id,
                 kind: .conceptRevision,

@@ -3,7 +3,7 @@ import Foundation
 
 @DependencyClient
 struct ContentSettingsClient: Sendable {
-    var loadSelectedVersion: @Sendable () async -> ContentVersion = { .v1 }
+    var loadSelectedVersion: @Sendable () async -> ContentVersion = { .v2 }
     var saveSelectedVersion: @Sendable (_ version: ContentVersion) async -> Void
 }
 
@@ -44,7 +44,7 @@ private final class ContentSettingsStorage: @unchecked Sendable {
 
     func loadSelectedVersion() -> ContentVersion {
         lock.withLock {
-            store.string(forKey: key).flatMap(ContentVersion.init(rawValue:)) ?? .v1
+            store.string(forKey: key).flatMap(ContentVersion.init(rawValue:)) ?? .v2
         }
     }
 

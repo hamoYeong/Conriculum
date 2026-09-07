@@ -6,56 +6,56 @@ import Testing
 struct HomeSnapshotComposerTests {
     @Test
     func emptyFixtureHasNoInventedProgressOrCompletion() {
-        let snapshot = HomePreviewFixtures.empty
+        let v1Snapshot = V1HomePreviewFixtures.empty
 
-        #expect(snapshot.source == .empty)
-        #expect(snapshot.chapter.resumePageID == nil)
-        #expect(snapshot.chapter.lastPage == nil)
-        #expect(snapshot.lastActivity == nil)
-        #expect(snapshot.evidence.count == LearningEvidenceKind.allCases.count)
-        #expect(snapshot.evidence.allSatisfy { $0.count == 0 && $0.latestAt == nil })
-        #expect(snapshot.knowledgeChanges.confirmed.isEmpty)
-        #expect(snapshot.knowledgeChanges.pending.isEmpty)
+        #expect(v1Snapshot.source == .empty)
+        #expect(v1Snapshot.chapter.resumePageID == nil)
+        #expect(v1Snapshot.chapter.lastPage == nil)
+        #expect(v1Snapshot.lastActivity == nil)
+        #expect(v1Snapshot.evidence.count == V1LearningEvidenceKind.allCases.count)
+        #expect(v1Snapshot.evidence.allSatisfy { $0.count == 0 && $0.latestAt == nil })
+        #expect(v1Snapshot.knowledgeChanges.confirmed.isEmpty)
+        #expect(v1Snapshot.knowledgeChanges.pending.isEmpty)
     }
 
     @Test
     func mockFixtureDisclosesThatItIsNotStoredLearningData() {
-        let snapshot = HomePreviewFixtures.mock
+        let v1Snapshot = V1HomePreviewFixtures.mock
 
-        guard case let .previewFixture(disclosure) = snapshot.source else {
+        guard case let .previewFixture(disclosure) = v1Snapshot.source else {
             Issue.record("mock fixture가 preview 출처를 표시하지 않는다.")
             return
         }
         #expect(disclosure.contains("실제 저장 기록이 아닙니다"))
-        #expect(snapshot.chapter.resumePageID == "chapter-02-page-03")
-        #expect(snapshot.evidence.contains {
+        #expect(v1Snapshot.chapter.resumePageID == "chapter-02-page-03")
+        #expect(v1Snapshot.evidence.contains {
             $0.kind == .reasoningExplanation && $0.count == 2
         })
-        guard let firstChange = snapshot.knowledgeChanges.confirmed.first,
+        guard let firstChange = v1Snapshot.knowledgeChanges.confirmed.first,
               case .revision = firstChange
         else {
             Issue.record("populated mock fixture에 최근 개인 지식이 없다.")
             return
         }
-        #expect(snapshot.knowledgeChanges.pending.count == 1)
+        #expect(v1Snapshot.knowledgeChanges.pending.count == 1)
     }
 
     @Test
     func recordedValuesOverrideTheMockPlaceholder() throws {
         let decoder = ContentResourceDecoder()
-        let chapter = try decoder.decode(Chapter.self, from: .chapter02)
+        let chapter = try decoder.decode(V1Chapter.self, from: .chapter02)
         let catalog = try decoder.decode(KnowledgeCatalog.self, from: .valuesAndTypes)
         let page = try #require(chapter.page(id: "chapter-02-page-03"))
         let firstDate = Date(timeIntervalSince1970: 1_725_782_400)
         let secondDate = firstDate.addingTimeInterval(60)
-        let response = ActivityResponse(
+        let response = V1ActivityResponse(
             id: "recorded-response",
             activityID: "activity-page03-choice",
             pageID: page.id,
-            fields: [ActivityResponseField(key: "reason", values: ["실제 응답"])],
+            fields: [V1ActivityResponseField(key: "reason", values: ["실제 응답"])],
             recordedAt: firstDate
         )
-        let evidence = LearningEvidence(
+        let evidence = V1LearningEvidence(
             id: "recorded-evidence",
             kind: .independentSuccess,
             pageID: page.id,
@@ -75,10 +75,10 @@ struct HomeSnapshotComposerTests {
             createdAt: secondDate
         )
 
-        let snapshot = HomeSnapshotComposer().compose(
+        let v1Snapshot = V1HomeSnapshotComposer().compose(
             chapter: chapter,
             catalog: catalog,
-            progress: LearningProgress(
+            progress: V1LearningProgress(
                 chapterID: chapter.id,
                 currentPageID: page.id,
                 completedPageIDs: ["chapter-02-page-01", "chapter-02-page-02"],
@@ -90,21 +90,21 @@ struct HomeSnapshotComposerTests {
             placeholder: .mock
         )
 
-        #expect(snapshot.source == .recorded)
-        #expect(snapshot.chapter.resumePageID == page.id)
-        #expect(snapshot.chapter.lastPage?.title == page.title)
-        #expect(snapshot.lastActivity?.id == response.activityID)
-        #expect(snapshot.lastActivity?.occurredAt == secondDate)
-        #expect(snapshot.evidence.first {
+        #expect(v1Snapshot.source == .recorded)
+        #expect(v1Snapshot.chapter.resumePageID == page.id)
+        #expect(v1Snapshot.chapter.lastPage?.title == page.title)
+        #expect(v1Snapshot.lastActivity?.id == response.activityID)
+        #expect(v1Snapshot.lastActivity?.occurredAt == secondDate)
+        #expect(v1Snapshot.evidence.first {
             $0.kind == .independentSuccess
         }?.count == 1)
-        #expect(snapshot.evidence.first {
+        #expect(v1Snapshot.evidence.first {
             $0.kind == .reasoningExplanation
         }?.count == 0)
-        guard let firstChange = snapshot.knowledgeChanges.confirmed.first,
+        guard let firstChange = v1Snapshot.knowledgeChanges.confirmed.first,
               case let .revision(summary) = firstChange
         else {
-            Issue.record("저장된 revision이 Home snapshot에 반영되지 않았다.")
+            Issue.record("저장된 revision이 Home v1Snapshot에 반영되지 않았다.")
             return
         }
         #expect(summary.id == revision.id)
@@ -115,10 +115,10 @@ struct HomeSnapshotComposerTests {
     @Test
     func mockPlaceholderIsUsedOnlyWhenStoredRecordsAreEmpty() throws {
         let decoder = ContentResourceDecoder()
-        let chapter = try decoder.decode(Chapter.self, from: .chapter02)
+        let chapter = try decoder.decode(V1Chapter.self, from: .chapter02)
         let catalog = try decoder.decode(KnowledgeCatalog.self, from: .valuesAndTypes)
 
-        let snapshot = HomeSnapshotComposer().compose(
+        let v1Snapshot = V1HomeSnapshotComposer().compose(
             chapter: chapter,
             catalog: catalog,
             progress: nil,
@@ -128,16 +128,16 @@ struct HomeSnapshotComposerTests {
             placeholder: .mock
         )
 
-        #expect(snapshot == .mock)
+        #expect(v1Snapshot == .mock)
     }
 
     @Test
     func emptyCompositionUsesContentBackedMessages() throws {
         let decoder = ContentResourceDecoder()
-        let chapter = try decoder.decode(Chapter.self, from: .chapter02)
+        let chapter = try decoder.decode(V1Chapter.self, from: .chapter02)
         let catalog = try decoder.decode(KnowledgeCatalog.self, from: .valuesAndTypes)
 
-        let snapshot = HomeSnapshotComposer().compose(
+        let v1Snapshot = V1HomeSnapshotComposer().compose(
             chapter: chapter,
             catalog: catalog,
             progress: nil,
@@ -146,13 +146,13 @@ struct HomeSnapshotComposerTests {
             revisions: []
         )
 
-        #expect(snapshot.source == .empty)
-        #expect(snapshot.chapter.resumePageID == nil)
-        #expect(snapshot.chapter.accessNote == nil)
-        #expect(snapshot.knowledgeChanges.confirmed.isEmpty)
-        #expect(snapshot.knowledgeChanges.pending.isEmpty)
+        #expect(v1Snapshot.source == .empty)
+        #expect(v1Snapshot.chapter.resumePageID == nil)
+        #expect(v1Snapshot.chapter.accessNote == nil)
+        #expect(v1Snapshot.knowledgeChanges.confirmed.isEmpty)
+        #expect(v1Snapshot.knowledgeChanges.pending.isEmpty)
         #expect(
-            snapshot.knowledgeChangesEmptyStateMessage
+            v1Snapshot.knowledgeChangesEmptyStateMessage
                 == chapter.overview.knowledgeContext.emptyStateMessage
         )
     }
@@ -160,7 +160,7 @@ struct HomeSnapshotComposerTests {
     @Test
     func confirmedRelationsAndPendingCandidatesStayInSeparateSections() throws {
         let decoder = ContentResourceDecoder()
-        let chapter = try decoder.decode(Chapter.self, from: .chapter02)
+        let chapter = try decoder.decode(V1Chapter.self, from: .chapter02)
         let catalog = try decoder.decode(
             KnowledgeCatalog.self,
             from: .valuesAndTypes
@@ -175,7 +175,7 @@ struct HomeSnapshotComposerTests {
             evidenceActivityID: "activity-page02-matching",
             createdAt: timestamp
         )
-        let review = KnowledgePersonalizationReview(
+        let review = V1KnowledgePersonalizationReview(
             candidate: KnowledgePersonalizationCandidate(
                 id: "candidate-home",
                 kind: .conceptRevision,
@@ -190,7 +190,7 @@ struct HomeSnapshotComposerTests {
             savedFields: ["나의 설명", "근거 활동 ID"]
         )
 
-        let snapshot = HomeSnapshotComposer().compose(
+        let v1Snapshot = V1HomeSnapshotComposer().compose(
             chapter: chapter,
             catalog: catalog,
             progress: nil,
@@ -201,20 +201,20 @@ struct HomeSnapshotComposerTests {
             pendingPersonalizationReviews: [review]
         )
 
-        #expect(snapshot.source == .recorded)
-        #expect(snapshot.knowledgeChanges.confirmed.count == 1)
-        #expect(snapshot.knowledgeChanges.pending.count == 1)
-        guard let firstChange = snapshot.knowledgeChanges.confirmed.first,
+        #expect(v1Snapshot.source == .recorded)
+        #expect(v1Snapshot.knowledgeChanges.confirmed.count == 1)
+        #expect(v1Snapshot.knowledgeChanges.pending.count == 1)
+        guard let firstChange = v1Snapshot.knowledgeChanges.confirmed.first,
               case let .relation(summary) = firstChange
         else {
             Issue.record("확인된 연결이 저장 변화 영역에 없다.")
             return
         }
         #expect(summary.id == relation.id)
-        #expect(snapshot.knowledgeChanges.pending.first?.id == review.id)
+        #expect(v1Snapshot.knowledgeChanges.pending.first?.id == review.id)
     }
 }
 
-private extension HomeSnapshot {
-    static var mock: Self { HomePreviewFixtures.mock }
+private extension V1HomeSnapshot {
+    static var mock: Self { V1HomePreviewFixtures.mock }
 }

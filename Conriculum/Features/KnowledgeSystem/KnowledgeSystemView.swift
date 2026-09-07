@@ -420,7 +420,7 @@ private struct KnowledgeSystemDetailPane: View {
 #Preview("지식 체계") {
     let catalog = try! ContentResourceDecoder().decode(
         KnowledgeCatalog.self,
-        from: .valuesAndTypes
+            from: V1BundledContentResource.valuesAndTypes
     )
     let snapshot = KnowledgeSystemSnapshotComposer().compose(
         catalog: catalog,

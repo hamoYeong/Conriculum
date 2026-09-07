@@ -1,7 +1,7 @@
 extension LearningProgressRecord {
     convenience init(
         profileID: LocalProfileID,
-        domainValue progress: LearningProgress
+        domainValue progress: V1LearningProgress
     ) throws {
         try Self.validate(progress, profileID: profileID)
 
@@ -15,7 +15,7 @@ extension LearningProgressRecord {
         )
     }
 
-    func domainValue(profileID expectedProfileID: LocalProfileID) throws -> LearningProgress {
+    func domainValue(profileID expectedProfileID: LocalProfileID) throws -> V1LearningProgress {
         try RecordMappingSupport.validateProfileID(
             profileID,
             expected: expectedProfileID,
@@ -55,7 +55,7 @@ extension LearningProgressRecord {
             )
         }
 
-        return LearningProgress(
+        return V1LearningProgress(
             chapterID: chapterID,
             currentPageID: LearningPageID(rawValue: currentPageID),
             completedPageIDs: Set(completedPageIDs.map { LearningPageID(rawValue: $0) }),
@@ -64,7 +64,7 @@ extension LearningProgressRecord {
     }
 
     func update(
-        from progress: LearningProgress,
+        from progress: V1LearningProgress,
         profileID expectedProfileID: LocalProfileID
     ) throws {
         try Self.validate(progress, profileID: expectedProfileID)
@@ -97,7 +97,7 @@ extension LearningProgressRecord {
     }
 
     private static func validate(
-        _ progress: LearningProgress,
+        _ progress: V1LearningProgress,
         profileID: LocalProfileID
     ) throws {
         try RecordMappingSupport.validateIdentifier(
