@@ -33,6 +33,7 @@ Conriculum/
 │   ├── ProgressClient.swift     # 현재 진행 의존성
 │   └── V1/                      # V1 전용 클라이언트
 ├── Domain/
+│   ├── LearningRecords/         # 현재 진행·응답·도움 수준 도메인 모델
 │   ├── Knowledge/               # 현재와 V1이 함께 쓰는 지식 모델
 │   └── V1/                      # V1 커리큘럼·학습 기록·프로필
 ├── Features/
@@ -42,7 +43,12 @@ Conriculum/
 │   ├── Shared/                  # 양쪽 학습 화면이 실제로 함께 쓰는 UI
 │   └── V1/                      # V1 홈 표현·학습 컴포넌트·워크스페이스
 ├── Persistence/
-│   └── V1/                     # V1 SwiftData 컨테이너·스토어·레코드·매핑
+│   ├── Models/                  # 현재 진행·완료 증거·게임 응답 레코드
+│   ├── Mapping/                 # 현재 도메인 ↔ SwiftData 변환과 검증
+│   ├── Stores/                  # 현재 진행 단위 원자적 저장
+│   ├── PersistenceContainerFactory.swift
+│   ├── PersistenceEnvironmentRegistry.swift
+│   └── V1/                      # V1 SwiftData 컨테이너·스토어·레코드·매핑
 └── Resources/
     ├── Content/                 # 현재 manifest, learning, knowledge
     └── V1/                      # V1 manifest, curriculum, catalog
@@ -65,6 +71,8 @@ Shared ──X─> V1
 `App`은 버전 선택과 두 구현의 조립을 위해 양쪽을 알 수 있다. 공유 레이어는 어느 한 버전의 타입에 의존하지 않아야 한다. 현재 구현이 V1 타입을 필요로 한다면 공유 추출이 덜 되었거나 조립 책임이 `App` 밖으로 새어 나온 것으로 본다.
 
 V1 SwiftData `@Model` 클래스의 Swift 타입 이름은 예외적으로 기존 이름을 유지한다. 클래스 이름 변경이 저장 스키마의 엔티티 정체성을 바꿔 기존 사용자 기록을 잃게 만들 수 있기 때문이다. 대신 파일명과 상위 폴더로 V1 소유권을 표시하며, 컨테이너·환경·스토어처럼 스키마 정체성이 아닌 타입에는 `V1` 접두사를 붙인다.
+
+현재와 V1의 SwiftData는 스키마뿐 아니라 컨테이너도 분리한다. 접두사가 없는 현재 저장소는 `ConriculumCurrent`, V1 저장소는 기존 `Conriculum` 구성을 사용한다. 한쪽 모델이나 마이그레이션 실패가 다른 버전의 기록을 변경하지 않는 것이 경계의 기준이다.
 
 ## V1 제거 준비 기준
 

@@ -1,6 +1,6 @@
-# SwiftData 저장 항목과 화면에서 사용하는 기준
+# V1 SwiftData 저장 항목과 화면에서 사용하는 기준
 
-확인 기준: 2026-09-04, 현재 앱 소스의 모델·저장 호출 경로. 사용자의 DB를 열어 실제 건수를 조사한 문서는 아니다.
+확인 기준: 2026-09-04, V1 앱 소스의 모델·저장 호출 경로. 사용자의 DB를 열어 실제 건수를 조사한 문서는 아니다.
 
 ## 실제로 저장되는 사용자 데이터
 
@@ -50,6 +50,6 @@ Overview를 열거나 주변·선행·확장 링크를 보는 것만으로 챕�
 
 실제 앱은 디스크 기반 SwiftData 컨테이너를 사용한다. `cloudKitDatabase: .none`이므로 iCloud/CloudKit 동기화는 설정돼 있지 않다. Preview와 테스트는 별도의 메모리 컨테이너를 사용한다. 옵시디언 보관함의 iCloud 동기화와 앱의 사용자 학습 기록 저장은 서로 다른 체계다.
 
-모델 등록: `Conriculum/Persistence/PersistenceContainerFactory.swift`.
-저장 구현: `Conriculum/Persistence/Stores/UserDataStore.swift`.
+모델 등록: `Conriculum/Persistence/V1/V1PersistenceContainerFactory.swift`.
+저장 구현: `Conriculum/Persistence/V1/Stores/V1UserDataStore.swift`.
 학습 상태 판정: `Conriculum/Features/KnowledgeSystem/LearnedKnowledgeResolver.swift`.
