@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "id": "s2.c7.p2",
+  "stageID": "s2",
+  "chapterID": "s2.c7",
+  "order": 2,
+  "title": "generic과 extension에서 재사용 경계 읽기",
+  "goal": "서로 다른 상태에서 같은 화면 구조를 재사용하는 코드의 변하는 부분과 고정된 부분을 찾는다. 완료 증거: 타입 매개변수·제약·공통 행동.",
+  "sourcePath": "Stage 2 - AI 구현을 의미 단위로 읽는 기초/Chapter 7 - 계약과 아키텍처를 가로질러 읽기/02 generic과 extension에서 재사용 경계 읽기.md",
+  "blocks": [
+    {
+      "id": "02-generic과-extension에서-재사용-경계-읽기.block-1",
+      "order": 1,
+      "kind": "mission",
+      "title": "읽기 미션",
+      "markdown": "서로 다른 상태에서 같은 화면 구조를 재사용하는 코드의 변하는 부분과 고정된 부분을 찾는다. **완료 증거:** 타입 매개변수·제약·공통 행동.\n\n```swift\nstruct LoadView<Value, Content: View>: View {\n    let state: LoadState<Value>\n    @ViewBuilder let content: (Value) -> Content\n    // loading, failed, loaded를 공통 표시\n}\n\nextension LoadState {\n    var isLoading: Bool {\n        if case .loading = self { true } else { false }\n    }\n}\n```\n\n> [!question] 막히면 · 초보자 연결\n> `<Value, Content: View>`를 구체 타입으로 읽기 어렵다면 [[지식 체계/04 책임과 경계/generic과 extension|generic과 extension]]에서 “호출자가 타입을 채운다”는 역할만 확인한다.",
+      "activities": []
+    },
+    {
+      "id": "02-generic과-extension에서-재사용-경계-읽기.block-2",
+      "order": 2,
+      "kind": "chunking",
+      "title": "조각 묶기",
+      "markdown": "LoadView는 상태 표시 뼈대를 고정하고 실제 Value 화면은 content 클로저에 맡긴다. extension은 LoadState의 로딩 질문을 가까이 둔다.\n\n> [!tip]- 이미 안다면 · 공통화하지 않을 신호\n> 두 화면의 오류 행동·빈 상태·접근성이 곧 달라질 예정이면 시각 중복만 보고 generic 컴포넌트를 만들지 않는다.",
+      "activities": []
+    }
+  ],
+  "termRefs": [],
+  "knowledgeConceptIDs": [
+    "concept.7307d21c693c",
+    "concept.4c72a13ad43c",
+    "concept.daf760a167a8",
+    "concept.ad7c4cc1526f"
+  ]
+}

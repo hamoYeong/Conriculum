@@ -88,15 +88,12 @@ final class BundledContentStore {
         return catalog
     }
 
-    func loadPage(id: VersionedContentID) throws -> LessonPage {
-        guard id.version == .v2 else {
-            throw ContentError.wrongVersion(id.version)
-        }
-        if let cached = cachedPages[id.rawValue] { return cached }
+    func loadPage(id: String) throws -> LessonPage {
+        if let cached = cachedPages[id] { return cached }
 
         let manifest = try loadManifest()
-        guard let reference = manifest.pageReference(id: id.rawValue) else {
-            throw ContentError.pageNotFound(id.rawValue)
+        guard let reference = manifest.pageReference(id: id) else {
+            throw ContentError.pageNotFound(id)
         }
         let page = try decoder.decodeResource(
             LessonPage.self,
@@ -104,13 +101,12 @@ final class BundledContentStore {
             in: bundle
         )
         try ContentValidator().validate(page: page, reference: reference)
-        cachedPages[id.rawValue] = page
+        cachedPages[id] = page
         return page
     }
 }
 
 enum ContentError: Error, Equatable, LocalizedError, Sendable {
-    case wrongVersion(ContentVersion)
     case unsupportedSchema(Int)
     case duplicateID(String)
     case invalidOrder(String)
@@ -119,12 +115,11 @@ enum ContentError: Error, Equatable, LocalizedError, Sendable {
 
     var errorDescription: String? {
         switch self {
-        case let .wrongVersion(version): "ver.2 제공자에 \(version.rawValue) 요청이 전달되었습니다."
-        case let .unsupportedSchema(version): "지원하지 않는 ver.2 schema \(version)입니다."
-        case let .duplicateID(id): "중복된 ver.2 콘텐츠 ID입니다: \(id)"
-        case let .invalidOrder(path): "ver.2 콘텐츠 순서가 연속적이지 않습니다: \(path)"
-        case let .invalidReference(path): "ver.2 콘텐츠 참조가 유효하지 않습니다: \(path)"
-        case let .pageNotFound(id): "ver.2 페이지를 찾을 수 없습니다: \(id)"
+        case let .unsupportedSchema(version): "지원하지 않는 콘텐츠 schema \(version)입니다."
+        case let .duplicateID(id): "중복된 콘텐츠 ID입니다: \(id)"
+        case let .invalidOrder(path): "콘텐츠 순서가 연속적이지 않습니다: \(path)"
+        case let .invalidReference(path): "콘텐츠 참조가 유효하지 않습니다: \(path)"
+        case let .pageNotFound(id): "페이지를 찾을 수 없습니다: \(id)"
         }
     }
 }

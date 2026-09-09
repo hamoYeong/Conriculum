@@ -11,11 +11,10 @@ struct ContentValidatorTests {
         let knowledgeCatalog = try store.loadKnowledgeCatalog()
         let conceptIDs = Set(knowledgeCatalog.concepts.map(\.id))
 
-        #expect(manifest.contentVersion == .v2)
         #expect(manifest.stages.map(\.kind) == [.game, .learning])
         #expect(manifest.stages.map { $0.chapters.count } == [9, 8])
         #expect(manifest.chapters.flatMap(\.pages).count == 68)
-        #expect(knowledgeCatalog.id == "learning-system-v2-knowledge.ko-KR")
+        #expect(knowledgeCatalog.id == "learning-system-knowledge.ko-KR")
         #expect(knowledgeCatalog.collections.count == 9)
         #expect(knowledgeCatalog.concepts.count == 53)
         #expect(knowledgeCatalog.relations.count == 52)
@@ -32,10 +31,7 @@ struct ContentValidatorTests {
         var knowledgeUnlockCount = 0
 
         for reference in manifest.chapters.flatMap(\.pages) {
-            let page = try store.loadPage(id: VersionedContentID(
-                version: .v2,
-                rawValue: reference.id
-            ))
+            let page = try store.loadPage(id: reference.id)
             #expect(page.id == reference.id)
             #expect(page.blocks.isEmpty == false)
             #expect(page.sourcePath.hasSuffix(".md"))
@@ -54,20 +50,20 @@ struct ContentValidatorTests {
     }
 
     @Test
-    func rejectsOverlappingV2Identifiers() throws {
+    func rejectsOverlappingIdentifiers() throws {
         let page = PageReference(
-            id: "v2.s1.c1.p1", order: 1, title: "페이지", goal: "목표",
+            id: "s1.c1.p1", order: 1, title: "페이지", goal: "목표",
             resource: "Content/learning/Stage01/Chapter01/page-01.json"
         )
         let chapter = LearningChapter(
-            id: "v2.s1.c1", stageID: "v2.s1", order: 1,
+            id: "s1.c1", stageID: "s1", order: 1,
             title: "챕터", summary: "요약", pages: [page, page]
         )
         let manifest = ContentManifest(
-            schemaVersion: 1, contentVersion: .v2,
-            id: "learning-system-v2.ko-KR", locale: "ko-KR", title: "과정",
+            schemaVersion: 1,
+            id: "learning-system.ko-KR", locale: "ko-KR", title: "과정",
             stages: [LearningStage(
-                id: "v2.s1", order: 1, title: "스테이지", summary: "요약",
+                id: "s1", order: 1, title: "스테이지", summary: "요약",
                 kind: .game, chapters: [chapter]
             )]
         )
@@ -80,12 +76,12 @@ struct ContentValidatorTests {
     @Test
     func pageReferenceMustMatchDecodedPage() {
         let reference = PageReference(
-            id: "v2.s1.c1.p1", order: 1, title: "페이지", goal: "목표",
+            id: "s1.c1.p1", order: 1, title: "페이지", goal: "목표",
             resource: "Content/learning/Stage01/Chapter01/page-01.json"
         )
         let page = LessonPage(
-            schemaVersion: 1, contentVersion: .v2, id: "v2.s1.c1.p2",
-            stageID: "v2.s1", chapterID: "v2.s1.c1", order: 1,
+            schemaVersion: 1, id: "s1.c1.p2",
+            stageID: "s1", chapterID: "s1.c1", order: 1,
             title: "페이지", goal: "목표", sourcePath: "source.md",
             blocks: [], termRefs: [], knowledgeConceptIDs: []
         )

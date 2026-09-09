@@ -3,7 +3,7 @@ import ComposableArchitecture
 @DependencyClient
 struct ContentClient: Sendable {
     var loadManifest: @Sendable () async throws -> ContentManifest
-    var loadPage: @Sendable (_ id: VersionedContentID) async throws -> LessonPage
+    var loadPage: @Sendable (_ id: String) async throws -> LessonPage
     var loadKnowledgeCatalog: @Sendable () async throws -> KnowledgeCatalog
 }
 

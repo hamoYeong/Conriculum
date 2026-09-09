@@ -1,0 +1,43 @@
+{
+  "schemaVersion": 1,
+  "id": "s2.c3.p4",
+  "stageID": "s2",
+  "chapterID": "s2.c3",
+  "order": 4,
+  "title": "조건과 반복을 결과까지 추적하기",
+  "goal": "처음 보는 알림 후보 코드에서 제외 조건·반복·결과를 한 흐름으로 연결한다. 완료 증거: 4개 책임 조각과 변경 영향.",
+  "sourcePath": "Stage 2 - AI 구현을 의미 단위로 읽는 기초/Chapter 3 - 분기와 반복의 실행 흐름 읽기/04 조건과 반복을 결과까지 추적하기.md",
+  "blocks": [
+    {
+      "id": "04-조건과-반복을-결과까지-추적하기.block-1",
+      "order": 1,
+      "kind": "mission",
+      "title": "읽기 미션",
+      "markdown": "처음 보는 알림 후보 코드에서 제외 조건·반복·결과를 한 흐름으로 연결한다. **완료 증거:** 4개 책임 조각과 변경 영향.\n\n```swift\nfunc reminders(from memos: [Memo], now: Date) -> [Reminder] {\n    memos.compactMap { memo in\n        guard !memo.isCompleted else { return nil }\n        guard let dueDate = memo.dueDate, dueDate <= now else { return nil }\n        return Reminder(memoID: memo.id, dueDate: dueDate)\n    }\n}\n```",
+      "activities": []
+    },
+    {
+      "id": "04-조건과-반복을-결과까지-추적하기.block-2",
+      "order": 2,
+      "kind": "transfer",
+      "title": "전이 활동",
+      "markdown": "`입력 받기 / Memo 하나씩 보기 / 제외하기 / Reminder 만들기`로 묶고 흐름을 연결한다. 완료 메모도 알리도록 바꾸면 어느 조각만 달라져야 하는가?\n\n> [!question] 막히면 · 초보자 연결\n> `compactMap`에서 `nil`이 왜 사라지는지 [[지식 체계/02 값과 상태/Optional과 값 없음|Optional]]과 [[지식 체계/03 실행과 변환/반복과 컬렉션 변환|컬렉션 변환]]을 순서대로 본다.",
+      "activities": []
+    },
+    {
+      "id": "04-조건과-반복을-결과까지-추적하기.block-3",
+      "order": 3,
+      "kind": "closure",
+      "title": "마무리",
+      "markdown": "정답 용어보다 `완료되지 않았고 기한이 지난 메모만 Reminder로 바꾼다`는 한 문장과 이를 지지하는 줄을 남긴다.\n\n> [!tip]- 이미 안다면 · 순수한 규칙\n> `now`를 함수 입력으로 받은 덕분에 시간이라는 외부 의존성을 통제할 수 있다. [[지식 체계/06 외부 세계와 부작용/부작용 경계|부작용 경계]]",
+      "activities": []
+    }
+  ],
+  "termRefs": [],
+  "knowledgeConceptIDs": [
+    "concept.4d57bcac9843",
+    "concept.12f7c7373056",
+    "concept.50d055d31163",
+    "concept.b58dd05a41b8"
+  ]
+}

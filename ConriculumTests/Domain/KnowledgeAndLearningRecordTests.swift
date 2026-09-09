@@ -87,7 +87,7 @@ struct KnowledgeAndLearningRecordTests {
     @Test
     func knowledgeAndLearningRecordValuesAreSendable() {
         let progress = CourseProgress(
-            lastVisitedPageID: "v2.s1.c1.p1",
+            lastVisitedPageID: "s1.c1.p1",
             completedPageIDs: []
         )
 

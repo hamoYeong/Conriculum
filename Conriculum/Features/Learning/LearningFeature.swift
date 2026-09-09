@@ -138,10 +138,7 @@ struct LearningFeature {
                         guard let pageID = resolvedPageID else {
                             throw ContentError.pageNotFound(requestedPageID)
                         }
-                        let page = try await contentClient.loadPage(.init(
-                            version: .v2,
-                            rawValue: pageID
-                        ))
+                        let page = try await contentClient.loadPage(pageID)
                         progress.lastVisitedPageID = pageID
                         try await progressClient.save(progress)
                         await send(.loadResponse(.loaded(
@@ -415,10 +412,7 @@ struct LearningFeature {
         return .run { send in
             do {
                 try await progressClient.save(navigationProgress)
-                let page = try await contentClient.loadPage(.init(
-                    version: .v2,
-                    rawValue: reference.id
-                ))
+                let page = try await contentClient.loadPage(reference.id)
                 await send(.navigationResponse(.loaded(page, navigationProgress)))
             } catch {
                 await send(.navigationResponse(.failed(error.localizedDescription)))

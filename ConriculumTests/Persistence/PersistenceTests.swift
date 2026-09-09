@@ -9,10 +9,10 @@ struct PersistenceTests {
     private let secondDate = Date(timeIntervalSince1970: 1_800_086_400)
 
     @Test
-    func currentSchemaContainsOnlyProgressModels() {
-        let currentNames = Set(PersistenceSchema.schema.entities.map(\.name))
+    func schemaContainsOnlyProgressModels() {
+        let modelNames = Set(PersistenceSchema.schema.entities.map(\.name))
 
-        #expect(currentNames == [
+        #expect(modelNames == [
             "CourseProgressRecord",
             "PageProgressRecord",
             "GameResponseRecord",
@@ -31,12 +31,12 @@ struct PersistenceTests {
         try store.save(original)
         #expect(try store.load() == original)
 
-        let retainedResponse = try #require(original.activityResponses["v2.s1.c1.game.2"])
+        let retainedResponse = try #require(original.activityResponses["s1.c1.game.2"])
         let updated = CourseProgress(
-            lastVisitedPageID: "v2.s1.c1.p3",
-            completedPageIDs: ["v2.s1.c1.p2"],
+            lastVisitedPageID: "s1.c1.p3",
+            completedPageIDs: ["s1.c1.p2"],
             activityResponses: [retainedResponse.activityID: retainedResponse],
-            supportLevelsByPageID: ["v2.s1.c1.p2": .hinted]
+            supportLevelsByPageID: ["s1.c1.p2": .hinted]
         )
         try store.save(updated)
 
@@ -51,7 +51,7 @@ struct PersistenceTests {
     @Test
     func fileBackedProgressRecoversAfterRelaunch() throws {
         let directory = FileManager.default.temporaryDirectory.appending(
-            path: "ConriculumCurrentPersistence-\(UUID().uuidString)",
+            path: "ConriculumPersistence-\(UUID().uuidString)",
             directoryHint: .isDirectory
         )
         try FileManager.default.createDirectory(
@@ -59,7 +59,7 @@ struct PersistenceTests {
             withIntermediateDirectories: true
         )
         defer { try? FileManager.default.removeItem(at: directory) }
-        let url = directory.appending(path: "Current.store")
+        let url = directory.appending(path: "Progress.store")
         let progress = fixture(at: firstDate)
 
         try write(progress, to: url)
@@ -86,7 +86,7 @@ struct PersistenceTests {
         failure.shouldFail = true
         do {
             try store.save(CourseProgress(
-                lastVisitedPageID: "v2.s2.c1.p1",
+                lastVisitedPageID: "s2.c1.p1",
                 completedPageIDs: [],
                 activityResponses: [:]
             ))
@@ -110,17 +110,14 @@ struct PersistenceTests {
         let container = try PersistenceContainerFactory.inMemory()
         let context = ModelContext(container)
         context.insert(try CourseProgressRecord(
-            contentVersion: .v2,
-            lastVisitedPageID: "v2.s1.c1.p1",
+            lastVisitedPageID: "s1.c1.p1",
             updatedAt: firstDate
         ))
         context.insert(GameResponseRecord(
             id: GameResponseRecord.storageID(
-                contentVersion: .v2,
-                activityID: "v2.s1.c1.game.1"
+                activityID: "s1.c1.game.1"
             ),
-            contentVersion: ContentVersion.v2.rawValue,
-            activityID: "v2.s1.c1.game.1",
+            activityID: "s1.c1.game.1",
             selectedOptionIDs: ["option.1"],
             matchesPayload: Data("not-json".utf8),
             isCorrect: true,
@@ -146,18 +143,18 @@ struct PersistenceTests {
 
     private func fixture(at date: Date) -> CourseProgress {
         CourseProgress(
-            lastVisitedPageID: "v2.s1.c1.p2",
-            completedPageIDs: ["v2.s1.c1.p1", "v2.s1.c1.p2"],
+            lastVisitedPageID: "s1.c1.p2",
+            completedPageIDs: ["s1.c1.p1", "s1.c1.p2"],
             activityResponses: [
-                "v2.s1.c1.game.1": GameResponse(
-                    activityID: "v2.s1.c1.game.1",
+                "s1.c1.game.1": GameResponse(
+                    activityID: "s1.c1.game.1",
                     selectedOptionIDs: ["option.2"],
                     isCorrect: true,
                     attempts: 2,
                     answeredAt: date
                 ),
-                "v2.s1.c1.game.2": GameResponse(
-                    activityID: "v2.s1.c1.game.2",
+                "s1.c1.game.2": GameResponse(
+                    activityID: "s1.c1.game.2",
                     matches: ["pair.1": "pair.1", "pair.2": "pair.2"],
                     isCorrect: true,
                     attempts: 1,
@@ -165,8 +162,8 @@ struct PersistenceTests {
                 ),
             ],
             supportLevelsByPageID: [
-                "v2.s1.c1.p1": .guided,
-                "v2.s1.c1.p2": .independent,
+                "s1.c1.p1": .guided,
+                "s1.c1.p2": .independent,
             ]
         )
     }

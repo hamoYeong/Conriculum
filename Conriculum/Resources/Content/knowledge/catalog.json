@@ -1,146 +1,146 @@
 {
   "schemaVersion": 1,
-  "id": "learning-system-v2-knowledge.ko-KR",
-  "title": "ver.2 코드 읽기 지식",
+  "id": "learning-system-knowledge.ko-KR",
+  "title": "코드 읽기 지식",
   "collections": [
     {
-      "id": "v2.knowledge.collection.1",
+      "id": "knowledge.collection.1",
       "order": 1,
       "title": "00 코드 첫 단어",
       "summary": "00 코드 첫 단어에 필요한 코드 읽기 기준",
       "systemImage": "books.vertical",
       "conceptIDs": [
-        "v2.concept.daf760a167a8",
-        "v2.concept.815815970445",
-        "v2.concept.5c89edcac281",
-        "v2.concept.3df63b7acb05",
-        "v2.concept.50d055d31163",
-        "v2.concept.df52c8a8a4db",
-        "v2.concept.c06aff3f3e7d",
-        "v2.concept.c8db3d00af09",
-        "v2.concept.4546bb78ef25",
-        "v2.concept.e6958de38f69",
-        "v2.concept.5a708dc2d306",
-        "v2.concept.b8d0e64f4755",
-        "v2.concept.4c72a13ad43c",
-        "v2.concept.6816e901238c"
+        "concept.daf760a167a8",
+        "concept.815815970445",
+        "concept.5c89edcac281",
+        "concept.3df63b7acb05",
+        "concept.50d055d31163",
+        "concept.df52c8a8a4db",
+        "concept.c06aff3f3e7d",
+        "concept.c8db3d00af09",
+        "concept.4546bb78ef25",
+        "concept.e6958de38f69",
+        "concept.5a708dc2d306",
+        "concept.b8d0e64f4755",
+        "concept.4c72a13ad43c",
+        "concept.6816e901238c"
       ]
     },
     {
-      "id": "v2.knowledge.collection.2",
+      "id": "knowledge.collection.2",
       "order": 2,
       "title": "01 방향과 단서",
       "summary": "01 방향과 단서에 필요한 코드 읽기 기준",
       "systemImage": "books.vertical",
       "conceptIDs": [
-        "v2.concept.24b928f5af76",
-        "v2.concept.7f5b67cb56c3",
-        "v2.concept.fe8294523602",
-        "v2.concept.63c92ed18525",
-        "v2.concept.5e5f60c822eb"
+        "concept.24b928f5af76",
+        "concept.7f5b67cb56c3",
+        "concept.fe8294523602",
+        "concept.63c92ed18525",
+        "concept.5e5f60c822eb"
       ]
     },
     {
-      "id": "v2.knowledge.collection.3",
+      "id": "knowledge.collection.3",
       "order": 3,
       "title": "02 값과 상태",
       "summary": "02 값과 상태에 필요한 코드 읽기 기준",
       "systemImage": "books.vertical",
       "conceptIDs": [
-        "v2.concept.b58dd05a41b8",
-        "v2.concept.28be754d2196",
-        "v2.concept.edd494f442d8",
-        "v2.concept.384945bc2929",
-        "v2.concept.d4ca67109cc0"
+        "concept.b58dd05a41b8",
+        "concept.28be754d2196",
+        "concept.edd494f442d8",
+        "concept.384945bc2929",
+        "concept.d4ca67109cc0"
       ]
     },
     {
-      "id": "v2.knowledge.collection.4",
+      "id": "knowledge.collection.4",
       "order": 4,
       "title": "03 실행과 변환",
       "summary": "03 실행과 변환에 필요한 코드 읽기 기준",
       "systemImage": "books.vertical",
       "conceptIDs": [
-        "v2.concept.534ea64e457f",
-        "v2.concept.80c31ac6b9c2",
-        "v2.concept.4d57bcac9843",
-        "v2.concept.136c9b878c59"
+        "concept.534ea64e457f",
+        "concept.80c31ac6b9c2",
+        "concept.4d57bcac9843",
+        "concept.136c9b878c59"
       ]
     },
     {
-      "id": "v2.knowledge.collection.5",
+      "id": "knowledge.collection.5",
       "order": 5,
       "title": "04 책임과 경계",
       "summary": "04 책임과 경계에 필요한 코드 읽기 기준",
       "systemImage": "books.vertical",
       "conceptIDs": [
-        "v2.concept.7307d21c693c",
-        "v2.concept.893af0d64616",
-        "v2.concept.7b867a56edc9",
-        "v2.concept.6a42d77cc67e",
-        "v2.concept.4399498de565",
-        "v2.concept.daf22bea5078"
+        "concept.7307d21c693c",
+        "concept.893af0d64616",
+        "concept.7b867a56edc9",
+        "concept.6a42d77cc67e",
+        "concept.4399498de565",
+        "concept.daf22bea5078"
       ]
     },
     {
-      "id": "v2.knowledge.collection.6",
+      "id": "knowledge.collection.6",
       "order": 6,
       "title": "05 화면과 생명주기",
       "summary": "05 화면과 생명주기에 필요한 코드 읽기 기준",
       "systemImage": "books.vertical",
       "conceptIDs": [
-        "v2.concept.78a172ca71d7",
-        "v2.concept.8a008c70e4f2",
-        "v2.concept.ad7c4cc1526f",
-        "v2.concept.fa72d7932292",
-        "v2.concept.f5b66ffc6439"
+        "concept.78a172ca71d7",
+        "concept.8a008c70e4f2",
+        "concept.ad7c4cc1526f",
+        "concept.fa72d7932292",
+        "concept.f5b66ffc6439"
       ]
     },
     {
-      "id": "v2.knowledge.collection.7",
+      "id": "knowledge.collection.7",
       "order": 7,
       "title": "06 외부 세계와 부작용",
       "summary": "06 외부 세계와 부작용에 필요한 코드 읽기 기준",
       "systemImage": "books.vertical",
       "conceptIDs": [
-        "v2.concept.1e7165331770",
-        "v2.concept.091255424ade",
-        "v2.concept.ce65ce877ca9",
-        "v2.concept.07958e825aff",
-        "v2.concept.12f7c7373056"
+        "concept.1e7165331770",
+        "concept.091255424ade",
+        "concept.ce65ce877ca9",
+        "concept.07958e825aff",
+        "concept.12f7c7373056"
       ]
     },
     {
-      "id": "v2.knowledge.collection.8",
+      "id": "knowledge.collection.8",
       "order": 8,
       "title": "07 구조와 변경",
       "summary": "07 구조와 변경에 필요한 코드 읽기 기준",
       "systemImage": "books.vertical",
       "conceptIDs": [
-        "v2.concept.50024a4c36c6",
-        "v2.concept.98dadc90a56c",
-        "v2.concept.e361cf592000",
-        "v2.concept.47f024303e8d",
-        "v2.concept.c03639a5c779"
+        "concept.50024a4c36c6",
+        "concept.98dadc90a56c",
+        "concept.e361cf592000",
+        "concept.47f024303e8d",
+        "concept.c03639a5c779"
       ]
     },
     {
-      "id": "v2.knowledge.collection.9",
+      "id": "knowledge.collection.9",
       "order": 9,
       "title": "08 읽기 패턴",
       "summary": "08 읽기 패턴에 필요한 코드 읽기 기준",
       "systemImage": "books.vertical",
       "conceptIDs": [
-        "v2.concept.9130e95e56d9",
-        "v2.concept.f1f3ae68aa47",
-        "v2.concept.e1b6156005b4",
-        "v2.concept.9aaca74daa01"
+        "concept.9130e95e56d9",
+        "concept.f1f3ae68aa47",
+        "concept.e1b6156005b4",
+        "concept.9aaca74daa01"
       ]
     }
   ],
   "concepts": [
     {
-      "id": "v2.concept.daf760a167a8",
+      "id": "concept.daf760a167a8",
       "title": "Bool",
       "definition": "`Bool`은 `true`와 `false` 두 값으로 참·거짓 상태를 표현하는 Swift 타입이다.",
       "essentialQuestion": "이 정보는 지금 참인가 거짓인가라는 두 경우로 충분히 표현되는가?",
@@ -159,80 +159,80 @@
       ],
       "revisitPages": [
         {
-          "chapterID": "v2.s1.c2",
+          "chapterID": "s1.c2",
           "chapterOrder": 2,
           "chapterTitle": "값을 나타내는 말 알아보기",
-          "pageID": "v2.s1.c2.p3",
+          "pageID": "s1.c2.p3",
           "pageOrder": 3,
           "pageTitle": "true·false·nil 알아보기",
           "kind": "direct",
           "connection": "true·false·nil 알아보기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s1.c2",
+          "chapterID": "s1.c2",
           "chapterOrder": 2,
           "chapterTitle": "값을 나타내는 말 알아보기",
-          "pageID": "v2.s1.c2.p4",
+          "pageID": "s1.c2.p4",
           "pageOrder": 4,
           "pageTitle": "다양한 코드에서 값 카드 고르기",
           "kind": "direct",
           "connection": "다양한 코드에서 값 카드 고르기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s1.c4",
+          "chapterID": "s1.c4",
           "chapterOrder": 4,
           "chapterTitle": "계산과 질문의 기호 알아보기",
-          "pageID": "v2.s1.c4.p2",
+          "pageID": "s1.c4.p2",
           "pageOrder": 2,
           "pageTitle": "비교 연산자가 묻는 질문 읽기",
           "kind": "direct",
           "connection": "비교 연산자가 묻는 질문 읽기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s1.c4",
+          "chapterID": "s1.c4",
           "chapterOrder": 4,
           "chapterTitle": "계산과 질문의 기호 알아보기",
-          "pageID": "v2.s1.c4.p3",
+          "pageID": "s1.c4.p3",
           "pageOrder": 3,
           "pageTitle": "논리 연산자가 질문을 잇는 법 보기",
           "kind": "direct",
           "connection": "논리 연산자가 질문을 잇는 법 보기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s1.c5",
+          "chapterID": "s1.c5",
           "chapterOrder": 5,
           "chapterTitle": "묶음과 갈림길 알아보기",
-          "pageID": "v2.s1.c5.p2",
+          "pageID": "s1.c5.p2",
           "pageOrder": 2,
           "pageTitle": "if와 else가 나누는 길 보기",
           "kind": "direct",
           "connection": "if와 else가 나누는 길 보기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s1.c9",
+          "chapterID": "s1.c9",
           "chapterOrder": 9,
           "chapterTitle": "짧은 코드 문장을 처음부터 읽어보기",
-          "pageID": "v2.s1.c9.p3",
+          "pageID": "s1.c9.p3",
           "pageOrder": 3,
           "pageTitle": "한 단어가 바뀐 코드 비교하기",
           "kind": "direct",
           "connection": "한 단어가 바뀐 코드 비교하기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s2.c1",
+          "chapterID": "s2.c1",
           "chapterOrder": 1,
           "chapterTitle": "코드를 의미 단위로 훑어보기",
-          "pageID": "v2.s2.c1.p4",
+          "pageID": "s2.c1.p4",
           "pageOrder": 4,
           "pageTitle": "조각 사이 흐름과 변경 영향 말하기",
           "kind": "direct",
           "connection": "조각 사이 흐름과 변경 영향 말하기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s2.c7",
+          "chapterID": "s2.c7",
           "chapterOrder": 7,
           "chapterTitle": "계약과 아키텍처를 가로질러 읽기",
-          "pageID": "v2.s2.c7.p2",
+          "pageID": "s2.c7.p2",
           "pageOrder": 2,
           "pageTitle": "generic과 extension에서 재사용 경계 읽기",
           "kind": "direct",
@@ -241,7 +241,7 @@
       ]
     },
     {
-      "id": "v2.concept.815815970445",
+      "id": "concept.815815970445",
       "title": "Double",
       "definition": "`Double`은 소수 부분을 포함하는 부동소수점 수를 표현하는 Swift 타입이다.",
       "essentialQuestion": "이 정보는 소수 부분이 필요하며 근삿값의 특성을 허용하는 수인가?",
@@ -260,10 +260,10 @@
       ],
       "revisitPages": [
         {
-          "chapterID": "v2.s1.c2",
+          "chapterID": "s1.c2",
           "chapterOrder": 2,
           "chapterTitle": "값을 나타내는 말 알아보기",
-          "pageID": "v2.s1.c2.p2",
+          "pageID": "s1.c2.p2",
           "pageOrder": 2,
           "pageTitle": "정수와 소수 값 구분하기",
           "kind": "direct",
@@ -272,7 +272,7 @@
       ]
     },
     {
-      "id": "v2.concept.5c89edcac281",
+      "id": "concept.5c89edcac281",
       "title": "Int",
       "definition": "`Int`는 소수 부분이 없는 정수를 표현하는 Swift 타입이다.",
       "essentialQuestion": "이 정보는 소수점 없이 세거나 더하고 빼는 정수인가?",
@@ -291,70 +291,70 @@
       ],
       "revisitPages": [
         {
-          "chapterID": "v2.s1.c2",
+          "chapterID": "s1.c2",
           "chapterOrder": 2,
           "chapterTitle": "값을 나타내는 말 알아보기",
-          "pageID": "v2.s1.c2.p2",
+          "pageID": "s1.c2.p2",
           "pageOrder": 2,
           "pageTitle": "정수와 소수 값 구분하기",
           "kind": "direct",
           "connection": "정수와 소수 값 구분하기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s1.c3",
+          "chapterID": "s1.c3",
           "chapterOrder": 3,
           "chapterTitle": "이름과 약속 알아보기",
-          "pageID": "v2.s1.c3.p3",
+          "pageID": "s1.c3.p3",
           "pageOrder": 3,
           "pageTitle": "콜론·타입·등호의 자리 읽기",
           "kind": "direct",
           "connection": "콜론·타입·등호의 자리 읽기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s1.c3",
+          "chapterID": "s1.c3",
           "chapterOrder": 3,
           "chapterTitle": "이름과 약속 알아보기",
-          "pageID": "v2.s1.c3.p4",
+          "pageID": "s1.c3.p4",
           "pageOrder": 4,
           "pageTitle": "선언 한 줄을 카드로 해체하기",
           "kind": "direct",
           "connection": "선언 한 줄을 카드로 해체하기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s1.c7",
+          "chapterID": "s1.c7",
           "chapterOrder": 7,
           "chapterTitle": "이름 붙은 행동과 설계도 알아보기",
-          "pageID": "v2.s1.c7.p1",
+          "pageID": "s1.c7.p1",
           "pageOrder": 1,
           "pageTitle": "func와 return 사이 읽기",
           "kind": "direct",
           "connection": "func와 return 사이 읽기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s1.c7",
+          "chapterID": "s1.c7",
           "chapterOrder": 7,
           "chapterTitle": "이름 붙은 행동과 설계도 알아보기",
-          "pageID": "v2.s1.c7.p2",
+          "pageID": "s1.c7.p2",
           "pageOrder": 2,
           "pageTitle": "매개변수와 인자가 오가는 자리 보기",
           "kind": "direct",
           "connection": "매개변수와 인자가 오가는 자리 보기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s2.c3",
+          "chapterID": "s2.c3",
           "chapterOrder": 3,
           "chapterTitle": "분기와 반복의 실행 흐름 읽기",
-          "pageID": "v2.s2.c3.p3",
+          "pageID": "s2.c3.p3",
           "pageOrder": 3,
           "pageTitle": "반복과 컬렉션 변환의 전후 비교하기",
           "kind": "direct",
           "connection": "반복과 컬렉션 변환의 전후 비교하기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s2.c8",
+          "chapterID": "s2.c8",
           "chapterOrder": 8,
           "chapterTitle": "AI 구현을 검토하고 안전하게 바꾸기",
-          "pageID": "v2.s2.c8.p1",
+          "pageID": "s2.c8.p1",
           "pageOrder": 1,
           "pageTitle": "요구사항과 화면 결과를 코드에 연결하기",
           "kind": "direct",
@@ -363,7 +363,7 @@
       ]
     },
     {
-      "id": "v2.concept.3df63b7acb05",
+      "id": "concept.3df63b7acb05",
       "title": "String",
       "definition": "`String`은 글자들의 순서를 하나의 텍스트 값으로 표현하는 Swift 타입이다.",
       "essentialQuestion": "이 정보는 문자 내용과 순서를 그대로 보존하고 다루어야 하는가?",
@@ -382,120 +382,120 @@
       ],
       "revisitPages": [
         {
-          "chapterID": "v2.s1.c2",
+          "chapterID": "s1.c2",
           "chapterOrder": 2,
           "chapterTitle": "값을 나타내는 말 알아보기",
-          "pageID": "v2.s1.c2.p3",
+          "pageID": "s1.c2.p3",
           "pageOrder": 3,
           "pageTitle": "true·false·nil 알아보기",
           "kind": "direct",
           "connection": "true·false·nil 알아보기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s1.c2",
+          "chapterID": "s1.c2",
           "chapterOrder": 2,
           "chapterTitle": "값을 나타내는 말 알아보기",
-          "pageID": "v2.s1.c2.p4",
+          "pageID": "s1.c2.p4",
           "pageOrder": 4,
           "pageTitle": "다양한 코드에서 값 카드 고르기",
           "kind": "direct",
           "connection": "다양한 코드에서 값 카드 고르기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s1.c3",
+          "chapterID": "s1.c3",
           "chapterOrder": 3,
           "chapterTitle": "이름과 약속 알아보기",
-          "pageID": "v2.s1.c3.p3",
+          "pageID": "s1.c3.p3",
           "pageOrder": 3,
           "pageTitle": "콜론·타입·등호의 자리 읽기",
           "kind": "direct",
           "connection": "콜론·타입·등호의 자리 읽기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s1.c7",
+          "chapterID": "s1.c7",
           "chapterOrder": 7,
           "chapterTitle": "이름 붙은 행동과 설계도 알아보기",
-          "pageID": "v2.s1.c7.p1",
+          "pageID": "s1.c7.p1",
           "pageOrder": 1,
           "pageTitle": "func와 return 사이 읽기",
           "kind": "direct",
           "connection": "func와 return 사이 읽기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s1.c7",
+          "chapterID": "s1.c7",
           "chapterOrder": 7,
           "chapterTitle": "이름 붙은 행동과 설계도 알아보기",
-          "pageID": "v2.s1.c7.p2",
+          "pageID": "s1.c7.p2",
           "pageOrder": 2,
           "pageTitle": "매개변수와 인자가 오가는 자리 보기",
           "kind": "direct",
           "connection": "매개변수와 인자가 오가는 자리 보기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s1.c7",
+          "chapterID": "s1.c7",
           "chapterOrder": 7,
           "chapterTitle": "이름 붙은 행동과 설계도 알아보기",
-          "pageID": "v2.s1.c7.p4",
+          "pageID": "s1.c7.p4",
           "pageOrder": 4,
           "pageTitle": "struct·class·enum·protocol 구분하기",
           "kind": "direct",
           "connection": "struct·class·enum·protocol 구분하기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s2.c2",
+          "chapterID": "s2.c2",
           "chapterOrder": 2,
           "chapterTitle": "값과 상태의 흐름 읽기",
-          "pageID": "v2.s2.c2.p1",
+          "pageID": "s2.c2.p1",
           "pageOrder": 1,
           "pageTitle": "선언에서 이름·타입·값 구분하기",
           "kind": "direct",
           "connection": "선언에서 이름·타입·값 구분하기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s2.c2",
+          "chapterID": "s2.c2",
           "chapterOrder": 2,
           "chapterTitle": "값과 상태의 흐름 읽기",
-          "pageID": "v2.s2.c2.p2",
+          "pageID": "s2.c2.p2",
           "pageOrder": 2,
           "pageTitle": "Optional과 enum으로 가능한 상태 읽기",
           "kind": "direct",
           "connection": "Optional과 enum으로 가능한 상태 읽기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s2.c4",
+          "chapterID": "s2.c4",
           "chapterOrder": 4,
           "chapterTitle": "함수와 타입의 책임 읽기",
-          "pageID": "v2.s2.c4.p1",
+          "pageID": "s2.c4.p1",
           "pageOrder": 1,
           "pageTitle": "함수 호출에서 입력과 출력 찾기",
           "kind": "direct",
           "connection": "함수 호출에서 입력과 출력 찾기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s2.c4",
+          "chapterID": "s2.c4",
           "chapterOrder": 4,
           "chapterTitle": "함수와 타입의 책임 읽기",
-          "pageID": "v2.s2.c4.p3",
+          "pageID": "s2.c4.p3",
           "pageOrder": 3,
           "pageTitle": "struct·class·enum의 책임 경계 읽기",
           "kind": "direct",
           "connection": "struct·class·enum의 책임 경계 읽기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s2.c4",
+          "chapterID": "s2.c4",
           "chapterOrder": 4,
           "chapterTitle": "함수와 타입의 책임 읽기",
-          "pageID": "v2.s2.c4.p4",
+          "pageID": "s2.c4.p4",
           "pageOrder": 4,
           "pageTitle": "초기화와 멤버 연결로 객체 협력 읽기",
           "kind": "direct",
           "connection": "초기화와 멤버 연결로 객체 협력 읽기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s2.c5",
+          "chapterID": "s2.c5",
           "chapterOrder": 5,
           "chapterTitle": "SwiftUI 화면 흐름 읽기",
-          "pageID": "v2.s2.c5.p2",
+          "pageID": "s2.c5.p2",
           "pageOrder": 2,
           "pageTitle": "상태와 Binding이 화면을 바꾸는 흐름 읽기",
           "kind": "direct",
@@ -504,7 +504,7 @@
       ]
     },
     {
-      "id": "v2.concept.50d055d31163",
+      "id": "concept.50d055d31163",
       "title": "값",
       "definition": "값은 프로그램이 저장하거나 비교하거나 계산하거나 표시할 수 있도록 하나로 정해진 정보다.",
       "essentialQuestion": "현실의 정보 중 지금 프로그램이 직접 다룰 대상은 무엇인가?",
@@ -524,520 +524,520 @@
       ],
       "revisitPages": [
         {
-          "chapterID": "v2.s1.c1",
+          "chapterID": "s1.c1",
           "chapterOrder": 1,
           "chapterTitle": "코드라는 문장 구경하기",
-          "pageID": "v2.s1.c1.p1",
+          "pageID": "s1.c1.p1",
           "pageOrder": 1,
           "pageTitle": "코드와 화면 결과 연결하기",
           "kind": "direct",
           "connection": "코드와 화면 결과 연결하기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s1.c1",
+          "chapterID": "s1.c1",
           "chapterOrder": 1,
           "chapterTitle": "코드라는 문장 구경하기",
-          "pageID": "v2.s1.c1.p2",
+          "pageID": "s1.c1.p2",
           "pageOrder": 2,
           "pageTitle": "코드에서 단어와 기호 찾기",
           "kind": "direct",
           "connection": "코드에서 단어와 기호 찾기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s1.c1",
+          "chapterID": "s1.c1",
           "chapterOrder": 1,
           "chapterTitle": "코드라는 문장 구경하기",
-          "pageID": "v2.s1.c1.p3",
+          "pageID": "s1.c1.p3",
           "pageOrder": 3,
           "pageTitle": "한 줄과 여러 줄의 관계 보기",
           "kind": "direct",
           "connection": "한 줄과 여러 줄의 관계 보기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s1.c1",
+          "chapterID": "s1.c1",
           "chapterOrder": 1,
           "chapterTitle": "코드라는 문장 구경하기",
-          "pageID": "v2.s1.c1.p4",
+          "pageID": "s1.c1.p4",
           "pageOrder": 4,
           "pageTitle": "모르는 코드에서 아는 단서 찾기",
           "kind": "direct",
           "connection": "모르는 코드에서 아는 단서 찾기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s1.c2",
+          "chapterID": "s1.c2",
           "chapterOrder": 2,
           "chapterTitle": "값을 나타내는 말 알아보기",
-          "pageID": "v2.s1.c2.p1",
+          "pageID": "s1.c2.p1",
           "pageOrder": 1,
           "pageTitle": "따옴표 안의 글자 값 찾기",
           "kind": "direct",
           "connection": "따옴표 안의 글자 값 찾기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s1.c2",
+          "chapterID": "s1.c2",
           "chapterOrder": 2,
           "chapterTitle": "값을 나타내는 말 알아보기",
-          "pageID": "v2.s1.c2.p2",
+          "pageID": "s1.c2.p2",
           "pageOrder": 2,
           "pageTitle": "정수와 소수 값 구분하기",
           "kind": "direct",
           "connection": "정수와 소수 값 구분하기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s1.c2",
+          "chapterID": "s1.c2",
           "chapterOrder": 2,
           "chapterTitle": "값을 나타내는 말 알아보기",
-          "pageID": "v2.s1.c2.p3",
+          "pageID": "s1.c2.p3",
           "pageOrder": 3,
           "pageTitle": "true·false·nil 알아보기",
           "kind": "direct",
           "connection": "true·false·nil 알아보기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s1.c2",
+          "chapterID": "s1.c2",
           "chapterOrder": 2,
           "chapterTitle": "값을 나타내는 말 알아보기",
-          "pageID": "v2.s1.c2.p4",
+          "pageID": "s1.c2.p4",
           "pageOrder": 4,
           "pageTitle": "다양한 코드에서 값 카드 고르기",
           "kind": "direct",
           "connection": "다양한 코드에서 값 카드 고르기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s1.c3",
+          "chapterID": "s1.c3",
           "chapterOrder": 3,
           "chapterTitle": "이름과 약속 알아보기",
-          "pageID": "v2.s1.c3.p1",
+          "pageID": "s1.c3.p1",
           "pageOrder": 1,
           "pageTitle": "코드가 붙인 이름 찾기",
           "kind": "direct",
           "connection": "코드가 붙인 이름 찾기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s1.c3",
+          "chapterID": "s1.c3",
           "chapterOrder": 3,
           "chapterTitle": "이름과 약속 알아보기",
-          "pageID": "v2.s1.c3.p2",
+          "pageID": "s1.c3.p2",
           "pageOrder": 2,
           "pageTitle": "let과 var의 약속 구분하기",
           "kind": "direct",
           "connection": "let과 var의 약속 구분하기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s1.c3",
+          "chapterID": "s1.c3",
           "chapterOrder": 3,
           "chapterTitle": "이름과 약속 알아보기",
-          "pageID": "v2.s1.c3.p3",
+          "pageID": "s1.c3.p3",
           "pageOrder": 3,
           "pageTitle": "콜론·타입·등호의 자리 읽기",
           "kind": "direct",
           "connection": "콜론·타입·등호의 자리 읽기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s1.c3",
+          "chapterID": "s1.c3",
           "chapterOrder": 3,
           "chapterTitle": "이름과 약속 알아보기",
-          "pageID": "v2.s1.c3.p4",
+          "pageID": "s1.c3.p4",
           "pageOrder": 4,
           "pageTitle": "선언 한 줄을 카드로 해체하기",
           "kind": "direct",
           "connection": "선언 한 줄을 카드로 해체하기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s1.c4",
+          "chapterID": "s1.c4",
           "chapterOrder": 4,
           "chapterTitle": "계산과 질문의 기호 알아보기",
-          "pageID": "v2.s1.c4.p1",
+          "pageID": "s1.c4.p1",
           "pageOrder": 1,
           "pageTitle": "산술 연산자가 만드는 값 찾기",
           "kind": "direct",
           "connection": "산술 연산자가 만드는 값 찾기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s1.c4",
+          "chapterID": "s1.c4",
           "chapterOrder": 4,
           "chapterTitle": "계산과 질문의 기호 알아보기",
-          "pageID": "v2.s1.c4.p2",
+          "pageID": "s1.c4.p2",
           "pageOrder": 2,
           "pageTitle": "비교 연산자가 묻는 질문 읽기",
           "kind": "direct",
           "connection": "비교 연산자가 묻는 질문 읽기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s1.c4",
+          "chapterID": "s1.c4",
           "chapterOrder": 4,
           "chapterTitle": "계산과 질문의 기호 알아보기",
-          "pageID": "v2.s1.c4.p3",
+          "pageID": "s1.c4.p3",
           "pageOrder": 3,
           "pageTitle": "논리 연산자가 질문을 잇는 법 보기",
           "kind": "direct",
           "connection": "논리 연산자가 질문을 잇는 법 보기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s1.c4",
+          "chapterID": "s1.c4",
           "chapterOrder": 4,
           "chapterTitle": "계산과 질문의 기호 알아보기",
-          "pageID": "v2.s1.c4.p4",
+          "pageID": "s1.c4.p4",
           "pageOrder": 4,
           "pageTitle": "점과 괄호가 만드는 호출 읽기",
           "kind": "direct",
           "connection": "점과 괄호가 만드는 호출 읽기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s1.c5",
+          "chapterID": "s1.c5",
           "chapterOrder": 5,
           "chapterTitle": "묶음과 갈림길 알아보기",
-          "pageID": "v2.s1.c5.p1",
+          "pageID": "s1.c5.p1",
           "pageOrder": 1,
           "pageTitle": "소괄호·대괄호·중괄호 구분하기",
           "kind": "direct",
           "connection": "소괄호·대괄호·중괄호 구분하기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s1.c5",
+          "chapterID": "s1.c5",
           "chapterOrder": 5,
           "chapterTitle": "묶음과 갈림길 알아보기",
-          "pageID": "v2.s1.c5.p2",
+          "pageID": "s1.c5.p2",
           "pageOrder": 2,
           "pageTitle": "if와 else가 나누는 길 보기",
           "kind": "direct",
           "connection": "if와 else가 나누는 길 보기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s1.c5",
+          "chapterID": "s1.c5",
           "chapterOrder": 5,
           "chapterTitle": "묶음과 갈림길 알아보기",
-          "pageID": "v2.s1.c5.p3",
+          "pageID": "s1.c5.p3",
           "pageOrder": 3,
           "pageTitle": "guard와 return으로 멈추는 길 보기",
           "kind": "direct",
           "connection": "guard와 return으로 멈추는 길 보기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s1.c5",
+          "chapterID": "s1.c5",
           "chapterOrder": 5,
           "chapterTitle": "묶음과 갈림길 알아보기",
-          "pageID": "v2.s1.c5.p4",
+          "pageID": "s1.c5.p4",
           "pageOrder": 4,
           "pageTitle": "switch와 case로 가능한 길 보기",
           "kind": "direct",
           "connection": "switch와 case로 가능한 길 보기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s1.c6",
+          "chapterID": "s1.c6",
           "chapterOrder": 6,
           "chapterTitle": "여러 값과 반복 알아보기",
-          "pageID": "v2.s1.c6.p1",
+          "pageID": "s1.c6.p1",
           "pageOrder": 1,
           "pageTitle": "배열에서 전체와 원소 구분하기",
           "kind": "direct",
           "connection": "배열에서 전체와 원소 구분하기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s1.c6",
+          "chapterID": "s1.c6",
           "chapterOrder": 6,
           "chapterTitle": "여러 값과 반복 알아보기",
-          "pageID": "v2.s1.c6.p2",
+          "pageID": "s1.c6.p2",
           "pageOrder": 2,
           "pageTitle": "for와 ForEach의 반복 찾기",
           "kind": "direct",
           "connection": "for와 ForEach의 반복 찾기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s1.c6",
+          "chapterID": "s1.c6",
           "chapterOrder": 6,
           "chapterTitle": "여러 값과 반복 알아보기",
-          "pageID": "v2.s1.c6.p3",
+          "pageID": "s1.c6.p3",
           "pageOrder": 3,
           "pageTitle": "filter와 map의 전후 값 보기",
           "kind": "direct",
           "connection": "filter와 map의 전후 값 보기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s1.c6",
+          "chapterID": "s1.c6",
           "chapterOrder": 6,
           "chapterTitle": "여러 값과 반복 알아보기",
-          "pageID": "v2.s1.c6.p4",
+          "pageID": "s1.c6.p4",
           "pageOrder": 4,
           "pageTitle": "반복 코드 조각에 역할 카드 붙이기",
           "kind": "direct",
           "connection": "반복 코드 조각에 역할 카드 붙이기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s1.c7",
+          "chapterID": "s1.c7",
           "chapterOrder": 7,
           "chapterTitle": "이름 붙은 행동과 설계도 알아보기",
-          "pageID": "v2.s1.c7.p1",
+          "pageID": "s1.c7.p1",
           "pageOrder": 1,
           "pageTitle": "func와 return 사이 읽기",
           "kind": "direct",
           "connection": "func와 return 사이 읽기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s1.c7",
+          "chapterID": "s1.c7",
           "chapterOrder": 7,
           "chapterTitle": "이름 붙은 행동과 설계도 알아보기",
-          "pageID": "v2.s1.c7.p2",
+          "pageID": "s1.c7.p2",
           "pageOrder": 2,
           "pageTitle": "매개변수와 인자가 오가는 자리 보기",
           "kind": "direct",
           "connection": "매개변수와 인자가 오가는 자리 보기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s1.c7",
+          "chapterID": "s1.c7",
           "chapterOrder": 7,
           "chapterTitle": "이름 붙은 행동과 설계도 알아보기",
-          "pageID": "v2.s1.c7.p3",
+          "pageID": "s1.c7.p3",
           "pageOrder": 3,
           "pageTitle": "클로저가 나중에 할 행동 찾기",
           "kind": "direct",
           "connection": "클로저가 나중에 할 행동 찾기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s1.c7",
+          "chapterID": "s1.c7",
           "chapterOrder": 7,
           "chapterTitle": "이름 붙은 행동과 설계도 알아보기",
-          "pageID": "v2.s1.c7.p4",
+          "pageID": "s1.c7.p4",
           "pageOrder": 4,
           "pageTitle": "struct·class·enum·protocol 구분하기",
           "kind": "direct",
           "connection": "struct·class·enum·protocol 구분하기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s1.c8",
+          "chapterID": "s1.c8",
           "chapterOrder": 8,
           "chapterTitle": "Swift 앱의 자주 보이는 표식 알아보기",
-          "pageID": "v2.s1.c8.p1",
+          "pageID": "s1.c8.p1",
           "pageOrder": 1,
           "pageTitle": "import·타입·점 표기 알아보기",
           "kind": "direct",
           "connection": "import·타입·점 표기 알아보기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s1.c8",
+          "chapterID": "s1.c8",
           "chapterOrder": 8,
           "chapterTitle": "Swift 앱의 자주 보이는 표식 알아보기",
-          "pageID": "v2.s1.c8.p2",
+          "pageID": "s1.c8.p2",
           "pageOrder": 2,
           "pageTitle": "골뱅이와 달러 표식 알아보기",
           "kind": "direct",
           "connection": "골뱅이와 달러 표식 알아보기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s1.c8",
+          "chapterID": "s1.c8",
           "chapterOrder": 8,
           "chapterTitle": "Swift 앱의 자주 보이는 표식 알아보기",
-          "pageID": "v2.s1.c8.p3",
+          "pageID": "s1.c8.p3",
           "pageOrder": 3,
           "pageTitle": "try·throws·async·await 알아보기",
           "kind": "direct",
           "connection": "try·throws·async·await 알아보기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s1.c8",
+          "chapterID": "s1.c8",
           "chapterOrder": 8,
           "chapterTitle": "Swift 앱의 자주 보이는 표식 알아보기",
-          "pageID": "v2.s1.c8.p4",
+          "pageID": "s1.c8.p4",
           "pageOrder": 4,
           "pageTitle": "View·body·modifier의 첫 역할 알아보기",
           "kind": "direct",
           "connection": "View·body·modifier의 첫 역할 알아보기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s1.c9",
+          "chapterID": "s1.c9",
           "chapterOrder": 9,
           "chapterTitle": "짧은 코드 문장을 처음부터 읽어보기",
-          "pageID": "v2.s1.c9.p1",
+          "pageID": "s1.c9.p1",
           "pageOrder": 1,
           "pageTitle": "코드 단어 사냥하기",
           "kind": "direct",
           "connection": "코드 단어 사냥하기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s1.c9",
+          "chapterID": "s1.c9",
           "chapterOrder": 9,
           "chapterTitle": "짧은 코드 문장을 처음부터 읽어보기",
-          "pageID": "v2.s1.c9.p2",
+          "pageID": "s1.c9.p2",
           "pageOrder": 2,
           "pageTitle": "한 줄을 역할 카드로 설명하기",
           "kind": "direct",
           "connection": "한 줄을 역할 카드로 설명하기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s1.c9",
+          "chapterID": "s1.c9",
           "chapterOrder": 9,
           "chapterTitle": "짧은 코드 문장을 처음부터 읽어보기",
-          "pageID": "v2.s1.c9.p3",
+          "pageID": "s1.c9.p3",
           "pageOrder": 3,
           "pageTitle": "한 단어가 바뀐 코드 비교하기",
           "kind": "direct",
           "connection": "한 단어가 바뀐 코드 비교하기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s1.c9",
+          "chapterID": "s1.c9",
           "chapterOrder": 9,
           "chapterTitle": "짧은 코드 문장을 처음부터 읽어보기",
-          "pageID": "v2.s1.c9.p4",
+          "pageID": "s1.c9.p4",
           "pageOrder": 4,
           "pageTitle": "Stage 2 읽기 루프로 건너가기",
           "kind": "direct",
           "connection": "Stage 2 읽기 루프로 건너가기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s2.c1",
+          "chapterID": "s2.c1",
           "chapterOrder": 1,
           "chapterTitle": "코드를 의미 단위로 훑어보기",
-          "pageID": "v2.s2.c1.p1",
+          "pageID": "s2.c1.p1",
           "pageOrder": 1,
           "pageTitle": "실행 결과부터 예상하기",
           "kind": "direct",
           "connection": "실행 결과부터 예상하기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s2.c1",
+          "chapterID": "s2.c1",
           "chapterOrder": 1,
           "chapterTitle": "코드를 의미 단위로 훑어보기",
-          "pageID": "v2.s2.c1.p4",
+          "pageID": "s2.c1.p4",
           "pageOrder": 4,
           "pageTitle": "조각 사이 흐름과 변경 영향 말하기",
           "kind": "direct",
           "connection": "조각 사이 흐름과 변경 영향 말하기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s2.c2",
+          "chapterID": "s2.c2",
           "chapterOrder": 2,
           "chapterTitle": "값과 상태의 흐름 읽기",
-          "pageID": "v2.s2.c2.p1",
+          "pageID": "s2.c2.p1",
           "pageOrder": 1,
           "pageTitle": "선언에서 이름·타입·값 구분하기",
           "kind": "direct",
           "connection": "선언에서 이름·타입·값 구분하기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s2.c2",
+          "chapterID": "s2.c2",
           "chapterOrder": 2,
           "chapterTitle": "값과 상태의 흐름 읽기",
-          "pageID": "v2.s2.c2.p2",
+          "pageID": "s2.c2.p2",
           "pageOrder": 2,
           "pageTitle": "Optional과 enum으로 가능한 상태 읽기",
           "kind": "direct",
           "connection": "Optional과 enum으로 가능한 상태 읽기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s2.c2",
+          "chapterID": "s2.c2",
           "chapterOrder": 2,
           "chapterTitle": "값과 상태의 흐름 읽기",
-          "pageID": "v2.s2.c2.p3",
+          "pageID": "s2.c2.p3",
           "pageOrder": 3,
           "pageTitle": "컬렉션에서 여러 값의 역할 읽기",
           "kind": "direct",
           "connection": "컬렉션에서 여러 값의 역할 읽기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s2.c2",
+          "chapterID": "s2.c2",
           "chapterOrder": 2,
           "chapterTitle": "값과 상태의 흐름 읽기",
-          "pageID": "v2.s2.c2.p4",
+          "pageID": "s2.c2.p4",
           "pageOrder": 4,
           "pageTitle": "입력이 상태와 출력으로 바뀌는 흐름 추적하기",
           "kind": "direct",
           "connection": "입력이 상태와 출력으로 바뀌는 흐름 추적하기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s2.c3",
+          "chapterID": "s2.c3",
           "chapterOrder": 3,
           "chapterTitle": "분기와 반복의 실행 흐름 읽기",
-          "pageID": "v2.s2.c3.p2",
+          "pageID": "s2.c3.p2",
           "pageOrder": 2,
           "pageTitle": "switch에서 상태별 경우 읽기",
           "kind": "direct",
           "connection": "switch에서 상태별 경우 읽기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s2.c3",
+          "chapterID": "s2.c3",
           "chapterOrder": 3,
           "chapterTitle": "분기와 반복의 실행 흐름 읽기",
-          "pageID": "v2.s2.c3.p3",
+          "pageID": "s2.c3.p3",
           "pageOrder": 3,
           "pageTitle": "반복과 컬렉션 변환의 전후 비교하기",
           "kind": "direct",
           "connection": "반복과 컬렉션 변환의 전후 비교하기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s2.c3",
+          "chapterID": "s2.c3",
           "chapterOrder": 3,
           "chapterTitle": "분기와 반복의 실행 흐름 읽기",
-          "pageID": "v2.s2.c3.p4",
+          "pageID": "s2.c3.p4",
           "pageOrder": 4,
           "pageTitle": "조건과 반복을 결과까지 추적하기",
           "kind": "direct",
           "connection": "조건과 반복을 결과까지 추적하기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s2.c4",
+          "chapterID": "s2.c4",
           "chapterOrder": 4,
           "chapterTitle": "함수와 타입의 책임 읽기",
-          "pageID": "v2.s2.c4.p1",
+          "pageID": "s2.c4.p1",
           "pageOrder": 1,
           "pageTitle": "함수 호출에서 입력과 출력 찾기",
           "kind": "direct",
           "connection": "함수 호출에서 입력과 출력 찾기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s2.c4",
+          "chapterID": "s2.c4",
           "chapterOrder": 4,
           "chapterTitle": "함수와 타입의 책임 읽기",
-          "pageID": "v2.s2.c4.p2",
+          "pageID": "s2.c4.p2",
           "pageOrder": 2,
           "pageTitle": "클로저에서 나중에 실행될 행동 읽기",
           "kind": "direct",
           "connection": "클로저에서 나중에 실행될 행동 읽기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s2.c4",
+          "chapterID": "s2.c4",
           "chapterOrder": 4,
           "chapterTitle": "함수와 타입의 책임 읽기",
-          "pageID": "v2.s2.c4.p3",
+          "pageID": "s2.c4.p3",
           "pageOrder": 3,
           "pageTitle": "struct·class·enum의 책임 경계 읽기",
           "kind": "direct",
           "connection": "struct·class·enum의 책임 경계 읽기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s2.c5",
+          "chapterID": "s2.c5",
           "chapterOrder": 5,
           "chapterTitle": "SwiftUI 화면 흐름 읽기",
-          "pageID": "v2.s2.c5.p3",
+          "pageID": "s2.c5.p3",
           "pageOrder": 3,
           "pageTitle": "사용자 행동이 상태 변경으로 이어지는 길 찾기",
           "kind": "direct",
           "connection": "사용자 행동이 상태 변경으로 이어지는 길 찾기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s2.c5",
+          "chapterID": "s2.c5",
           "chapterOrder": 5,
           "chapterTitle": "SwiftUI 화면 흐름 읽기",
-          "pageID": "v2.s2.c5.p4",
+          "pageID": "s2.c5.p4",
           "pageOrder": 4,
           "pageTitle": "modifier·환경·navigation의 역할 읽기",
           "kind": "direct",
           "connection": "modifier·환경·navigation의 역할 읽기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s2.c7",
+          "chapterID": "s2.c7",
           "chapterOrder": 7,
           "chapterTitle": "계약과 아키텍처를 가로질러 읽기",
-          "pageID": "v2.s2.c7.p1",
+          "pageID": "s2.c7.p1",
           "pageOrder": 1,
           "pageTitle": "protocol에서 교체 가능한 약속 찾기",
           "kind": "direct",
           "connection": "protocol에서 교체 가능한 약속 찾기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s2.c8",
+          "chapterID": "s2.c8",
           "chapterOrder": 8,
           "chapterTitle": "AI 구현을 검토하고 안전하게 바꾸기",
-          "pageID": "v2.s2.c8.p3",
+          "pageID": "s2.c8.p3",
           "pageOrder": 3,
           "pageTitle": "한 변경의 영향 범위와 검증 지점 찾기",
           "kind": "direct",
@@ -1046,7 +1046,7 @@
       ]
     },
     {
-      "id": "v2.concept.df52c8a8a4db",
+      "id": "concept.df52c8a8a4db",
       "title": "계산 순서",
       "definition": "계산 순서는 괄호와 연산자 우선순위에 따라 표현식의 일부가 어떤 순서로 결과값이 되는지를 정한다.",
       "essentialQuestion": "“이 표현식에서 가장 먼저 하나의 값으로 접히는 부분은 어디인가?”",
@@ -1067,20 +1067,20 @@
       ],
       "revisitPages": [
         {
-          "chapterID": "v2.s2.c1",
+          "chapterID": "s2.c1",
           "chapterOrder": 1,
           "chapterTitle": "코드를 의미 단위로 훑어보기",
-          "pageID": "v2.s2.c1.p3",
+          "pageID": "s2.c1.p3",
           "pageOrder": 3,
           "pageTitle": "코드를 책임 조각으로 묶기",
           "kind": "direct",
           "connection": "코드를 책임 조각으로 묶기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s2.c2",
+          "chapterID": "s2.c2",
           "chapterOrder": 2,
           "chapterTitle": "값과 상태의 흐름 읽기",
-          "pageID": "v2.s2.c2.p4",
+          "pageID": "s2.c2.p4",
           "pageOrder": 4,
           "pageTitle": "입력이 상태와 출력으로 바뀌는 흐름 추적하기",
           "kind": "direct",
@@ -1089,7 +1089,7 @@
       ]
     },
     {
-      "id": "v2.concept.c06aff3f3e7d",
+      "id": "concept.c06aff3f3e7d",
       "title": "논리 연산과 조건 조합",
       "definition": "논리 연산은 Bool 질문을 &&, ||, !로 연결하거나 뒤집어 새 Bool 질문을 만든다.",
       "essentialQuestion": "모두 필요한가, 하나라도 충분한가, 반대로 묻는가?",
@@ -1107,10 +1107,10 @@
       ],
       "revisitPages": [
         {
-          "chapterID": "v2.s1.c4",
+          "chapterID": "s1.c4",
           "chapterOrder": 4,
           "chapterTitle": "계산과 질문의 기호 알아보기",
-          "pageID": "v2.s1.c4.p3",
+          "pageID": "s1.c4.p3",
           "pageOrder": 3,
           "pageTitle": "논리 연산자가 질문을 잇는 법 보기",
           "kind": "direct",
@@ -1119,7 +1119,7 @@
       ]
     },
     {
-      "id": "v2.concept.c8db3d00af09",
+      "id": "concept.c8db3d00af09",
       "title": "리터럴",
       "definition": "리터럴은 소스 코드에 값을 직접 적는 표기다.",
       "essentialQuestion": "구체적인 값을 Swift 코드에 어떤 모습으로 적는가?",
@@ -1138,60 +1138,60 @@
       ],
       "revisitPages": [
         {
-          "chapterID": "v2.s1.c2",
+          "chapterID": "s1.c2",
           "chapterOrder": 2,
           "chapterTitle": "값을 나타내는 말 알아보기",
-          "pageID": "v2.s1.c2.p1",
+          "pageID": "s1.c2.p1",
           "pageOrder": 1,
           "pageTitle": "따옴표 안의 글자 값 찾기",
           "kind": "direct",
           "connection": "따옴표 안의 글자 값 찾기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s1.c2",
+          "chapterID": "s1.c2",
           "chapterOrder": 2,
           "chapterTitle": "값을 나타내는 말 알아보기",
-          "pageID": "v2.s1.c2.p2",
+          "pageID": "s1.c2.p2",
           "pageOrder": 2,
           "pageTitle": "정수와 소수 값 구분하기",
           "kind": "direct",
           "connection": "정수와 소수 값 구분하기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s1.c2",
+          "chapterID": "s1.c2",
           "chapterOrder": 2,
           "chapterTitle": "값을 나타내는 말 알아보기",
-          "pageID": "v2.s1.c2.p4",
+          "pageID": "s1.c2.p4",
           "pageOrder": 4,
           "pageTitle": "다양한 코드에서 값 카드 고르기",
           "kind": "direct",
           "connection": "다양한 코드에서 값 카드 고르기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s1.c5",
+          "chapterID": "s1.c5",
           "chapterOrder": 5,
           "chapterTitle": "묶음과 갈림길 알아보기",
-          "pageID": "v2.s1.c5.p1",
+          "pageID": "s1.c5.p1",
           "pageOrder": 1,
           "pageTitle": "소괄호·대괄호·중괄호 구분하기",
           "kind": "direct",
           "connection": "소괄호·대괄호·중괄호 구분하기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s1.c6",
+          "chapterID": "s1.c6",
           "chapterOrder": 6,
           "chapterTitle": "여러 값과 반복 알아보기",
-          "pageID": "v2.s1.c6.p1",
+          "pageID": "s1.c6.p1",
           "pageOrder": 1,
           "pageTitle": "배열에서 전체와 원소 구분하기",
           "kind": "direct",
           "connection": "배열에서 전체와 원소 구분하기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s1.c8",
+          "chapterID": "s1.c8",
           "chapterOrder": 8,
           "chapterTitle": "Swift 앱의 자주 보이는 표식 알아보기",
-          "pageID": "v2.s1.c8.p2",
+          "pageID": "s1.c8.p2",
           "pageOrder": 2,
           "pageTitle": "골뱅이와 달러 표식 알아보기",
           "kind": "direct",
@@ -1200,7 +1200,7 @@
       ]
     },
     {
-      "id": "v2.concept.4546bb78ef25",
+      "id": "concept.4546bb78ef25",
       "title": "비교 연산",
       "definition": "비교 연산은 두 값의 관계를 확인해 Bool 결과를 만드는 연산이다.",
       "essentialQuestion": "어떤 관계를 확인하며 결과는 어떤 타입인가?",
@@ -1218,20 +1218,20 @@
       ],
       "revisitPages": [
         {
-          "chapterID": "v2.s1.c4",
+          "chapterID": "s1.c4",
           "chapterOrder": 4,
           "chapterTitle": "계산과 질문의 기호 알아보기",
-          "pageID": "v2.s1.c4.p2",
+          "pageID": "s1.c4.p2",
           "pageOrder": 2,
           "pageTitle": "비교 연산자가 묻는 질문 읽기",
           "kind": "direct",
           "connection": "비교 연산자가 묻는 질문 읽기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s1.c4",
+          "chapterID": "s1.c4",
           "chapterOrder": 4,
           "chapterTitle": "계산과 질문의 기호 알아보기",
-          "pageID": "v2.s1.c4.p3",
+          "pageID": "s1.c4.p3",
           "pageOrder": 3,
           "pageTitle": "논리 연산자가 질문을 잇는 법 보기",
           "kind": "direct",
@@ -1240,7 +1240,7 @@
       ]
     },
     {
-      "id": "v2.concept.e6958de38f69",
+      "id": "concept.e6958de38f69",
       "title": "산술 연산",
       "definition": "산술 연산은 수 값을 합치고, 제외하고, 반복해 묶고, 나누는 관계를 `+`, `-`, `*`, `/`로 표현한다.",
       "essentialQuestion": "“구하려는 결과와 입력의 관계는 합침·차이·반복·분배 중 무엇인가?”",
@@ -1261,30 +1261,30 @@
       ],
       "revisitPages": [
         {
-          "chapterID": "v2.s1.c3",
+          "chapterID": "s1.c3",
           "chapterOrder": 3,
           "chapterTitle": "이름과 약속 알아보기",
-          "pageID": "v2.s1.c3.p4",
+          "pageID": "s1.c3.p4",
           "pageOrder": 4,
           "pageTitle": "선언 한 줄을 카드로 해체하기",
           "kind": "direct",
           "connection": "선언 한 줄을 카드로 해체하기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s1.c4",
+          "chapterID": "s1.c4",
           "chapterOrder": 4,
           "chapterTitle": "계산과 질문의 기호 알아보기",
-          "pageID": "v2.s1.c4.p1",
+          "pageID": "s1.c4.p1",
           "pageOrder": 1,
           "pageTitle": "산술 연산자가 만드는 값 찾기",
           "kind": "direct",
           "connection": "산술 연산자가 만드는 값 찾기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s1.c4",
+          "chapterID": "s1.c4",
           "chapterOrder": 4,
           "chapterTitle": "계산과 질문의 기호 알아보기",
-          "pageID": "v2.s1.c4.p2",
+          "pageID": "s1.c4.p2",
           "pageOrder": 2,
           "pageTitle": "비교 연산자가 묻는 질문 읽기",
           "kind": "direct",
@@ -1293,7 +1293,7 @@
       ]
     },
     {
-      "id": "v2.concept.5a708dc2d306",
+      "id": "concept.5a708dc2d306",
       "title": "상수와 변수",
       "definition": "상수는 한 번 정한 뒤 같은 이름에 다른 값을 넣지 않는 `let` 선언이고, 변수는 필요할 때 값을 다시 넣을 수 있는 `var` 선언이다.",
       "essentialQuestion": "현재 책임과 시간 범위 안에서 이 이름이 가리키는 값은 바뀌어야 하는가?",
@@ -1314,7 +1314,7 @@
       "revisitPages": []
     },
     {
-      "id": "v2.concept.b8d0e64f4755",
+      "id": "concept.b8d0e64f4755",
       "title": "식별자와 이름 짓기",
       "definition": "식별자는 코드에서 값을 가리키는 이름이며, 좋은 이름은 값의 대상·역할·단위를 읽는 사람에게 드러낸다.",
       "essentialQuestion": "이 이름만 보고도 값이 무엇이며 어디에 쓰이는지 구분할 수 있는가?",
@@ -1334,80 +1334,80 @@
       ],
       "revisitPages": [
         {
-          "chapterID": "v2.s1.c1",
+          "chapterID": "s1.c1",
           "chapterOrder": 1,
           "chapterTitle": "코드라는 문장 구경하기",
-          "pageID": "v2.s1.c1.p1",
+          "pageID": "s1.c1.p1",
           "pageOrder": 1,
           "pageTitle": "코드와 화면 결과 연결하기",
           "kind": "direct",
           "connection": "코드와 화면 결과 연결하기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s1.c1",
+          "chapterID": "s1.c1",
           "chapterOrder": 1,
           "chapterTitle": "코드라는 문장 구경하기",
-          "pageID": "v2.s1.c1.p2",
+          "pageID": "s1.c1.p2",
           "pageOrder": 2,
           "pageTitle": "코드에서 단어와 기호 찾기",
           "kind": "direct",
           "connection": "코드에서 단어와 기호 찾기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s1.c3",
+          "chapterID": "s1.c3",
           "chapterOrder": 3,
           "chapterTitle": "이름과 약속 알아보기",
-          "pageID": "v2.s1.c3.p1",
+          "pageID": "s1.c3.p1",
           "pageOrder": 1,
           "pageTitle": "코드가 붙인 이름 찾기",
           "kind": "direct",
           "connection": "코드가 붙인 이름 찾기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s1.c3",
+          "chapterID": "s1.c3",
           "chapterOrder": 3,
           "chapterTitle": "이름과 약속 알아보기",
-          "pageID": "v2.s1.c3.p2",
+          "pageID": "s1.c3.p2",
           "pageOrder": 2,
           "pageTitle": "let과 var의 약속 구분하기",
           "kind": "direct",
           "connection": "let과 var의 약속 구분하기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s1.c4",
+          "chapterID": "s1.c4",
           "chapterOrder": 4,
           "chapterTitle": "계산과 질문의 기호 알아보기",
-          "pageID": "v2.s1.c4.p4",
+          "pageID": "s1.c4.p4",
           "pageOrder": 4,
           "pageTitle": "점과 괄호가 만드는 호출 읽기",
           "kind": "direct",
           "connection": "점과 괄호가 만드는 호출 읽기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s1.c7",
+          "chapterID": "s1.c7",
           "chapterOrder": 7,
           "chapterTitle": "이름 붙은 행동과 설계도 알아보기",
-          "pageID": "v2.s1.c7.p2",
+          "pageID": "s1.c7.p2",
           "pageOrder": 2,
           "pageTitle": "매개변수와 인자가 오가는 자리 보기",
           "kind": "direct",
           "connection": "매개변수와 인자가 오가는 자리 보기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s1.c8",
+          "chapterID": "s1.c8",
           "chapterOrder": 8,
           "chapterTitle": "Swift 앱의 자주 보이는 표식 알아보기",
-          "pageID": "v2.s1.c8.p1",
+          "pageID": "s1.c8.p1",
           "pageOrder": 1,
           "pageTitle": "import·타입·점 표기 알아보기",
           "kind": "direct",
           "connection": "import·타입·점 표기 알아보기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s1.c9",
+          "chapterID": "s1.c9",
           "chapterOrder": 9,
           "chapterTitle": "짧은 코드 문장을 처음부터 읽어보기",
-          "pageID": "v2.s1.c9.p1",
+          "pageID": "s1.c9.p1",
           "pageOrder": 1,
           "pageTitle": "코드 단어 사냥하기",
           "kind": "direct",
@@ -1416,7 +1416,7 @@
       ]
     },
     {
-      "id": "v2.concept.4c72a13ad43c",
+      "id": "concept.4c72a13ad43c",
       "title": "타입",
       "definition": "타입은 값이 어떤 종류의 정보이며 어떤 연산과 사용이 허용되는지를 정하는 약속이다.",
       "essentialQuestion": "이 값은 무엇을 나타내며 프로그램에서 어떤 일을 할 수 있는가?",
@@ -1436,260 +1436,260 @@
       ],
       "revisitPages": [
         {
-          "chapterID": "v2.s1.c1",
+          "chapterID": "s1.c1",
           "chapterOrder": 1,
           "chapterTitle": "코드라는 문장 구경하기",
-          "pageID": "v2.s1.c1.p3",
+          "pageID": "s1.c1.p3",
           "pageOrder": 3,
           "pageTitle": "한 줄과 여러 줄의 관계 보기",
           "kind": "direct",
           "connection": "한 줄과 여러 줄의 관계 보기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s1.c2",
+          "chapterID": "s1.c2",
           "chapterOrder": 2,
           "chapterTitle": "값을 나타내는 말 알아보기",
-          "pageID": "v2.s1.c2.p3",
+          "pageID": "s1.c2.p3",
           "pageOrder": 3,
           "pageTitle": "true·false·nil 알아보기",
           "kind": "direct",
           "connection": "true·false·nil 알아보기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s1.c3",
+          "chapterID": "s1.c3",
           "chapterOrder": 3,
           "chapterTitle": "이름과 약속 알아보기",
-          "pageID": "v2.s1.c3.p1",
+          "pageID": "s1.c3.p1",
           "pageOrder": 1,
           "pageTitle": "코드가 붙인 이름 찾기",
           "kind": "direct",
           "connection": "코드가 붙인 이름 찾기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s1.c3",
+          "chapterID": "s1.c3",
           "chapterOrder": 3,
           "chapterTitle": "이름과 약속 알아보기",
-          "pageID": "v2.s1.c3.p2",
+          "pageID": "s1.c3.p2",
           "pageOrder": 2,
           "pageTitle": "let과 var의 약속 구분하기",
           "kind": "direct",
           "connection": "let과 var의 약속 구분하기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s1.c3",
+          "chapterID": "s1.c3",
           "chapterOrder": 3,
           "chapterTitle": "이름과 약속 알아보기",
-          "pageID": "v2.s1.c3.p3",
+          "pageID": "s1.c3.p3",
           "pageOrder": 3,
           "pageTitle": "콜론·타입·등호의 자리 읽기",
           "kind": "direct",
           "connection": "콜론·타입·등호의 자리 읽기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s1.c3",
+          "chapterID": "s1.c3",
           "chapterOrder": 3,
           "chapterTitle": "이름과 약속 알아보기",
-          "pageID": "v2.s1.c3.p4",
+          "pageID": "s1.c3.p4",
           "pageOrder": 4,
           "pageTitle": "선언 한 줄을 카드로 해체하기",
           "kind": "direct",
           "connection": "선언 한 줄을 카드로 해체하기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s1.c4",
+          "chapterID": "s1.c4",
           "chapterOrder": 4,
           "chapterTitle": "계산과 질문의 기호 알아보기",
-          "pageID": "v2.s1.c4.p1",
+          "pageID": "s1.c4.p1",
           "pageOrder": 1,
           "pageTitle": "산술 연산자가 만드는 값 찾기",
           "kind": "direct",
           "connection": "산술 연산자가 만드는 값 찾기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s1.c5",
+          "chapterID": "s1.c5",
           "chapterOrder": 5,
           "chapterTitle": "묶음과 갈림길 알아보기",
-          "pageID": "v2.s1.c5.p1",
+          "pageID": "s1.c5.p1",
           "pageOrder": 1,
           "pageTitle": "소괄호·대괄호·중괄호 구분하기",
           "kind": "direct",
           "connection": "소괄호·대괄호·중괄호 구분하기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s1.c6",
+          "chapterID": "s1.c6",
           "chapterOrder": 6,
           "chapterTitle": "여러 값과 반복 알아보기",
-          "pageID": "v2.s1.c6.p3",
+          "pageID": "s1.c6.p3",
           "pageOrder": 3,
           "pageTitle": "filter와 map의 전후 값 보기",
           "kind": "direct",
           "connection": "filter와 map의 전후 값 보기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s1.c7",
+          "chapterID": "s1.c7",
           "chapterOrder": 7,
           "chapterTitle": "이름 붙은 행동과 설계도 알아보기",
-          "pageID": "v2.s1.c7.p4",
+          "pageID": "s1.c7.p4",
           "pageOrder": 4,
           "pageTitle": "struct·class·enum·protocol 구분하기",
           "kind": "direct",
           "connection": "struct·class·enum·protocol 구분하기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s1.c8",
+          "chapterID": "s1.c8",
           "chapterOrder": 8,
           "chapterTitle": "Swift 앱의 자주 보이는 표식 알아보기",
-          "pageID": "v2.s1.c8.p1",
+          "pageID": "s1.c8.p1",
           "pageOrder": 1,
           "pageTitle": "import·타입·점 표기 알아보기",
           "kind": "direct",
           "connection": "import·타입·점 표기 알아보기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s1.c8",
+          "chapterID": "s1.c8",
           "chapterOrder": 8,
           "chapterTitle": "Swift 앱의 자주 보이는 표식 알아보기",
-          "pageID": "v2.s1.c8.p2",
+          "pageID": "s1.c8.p2",
           "pageOrder": 2,
           "pageTitle": "골뱅이와 달러 표식 알아보기",
           "kind": "direct",
           "connection": "골뱅이와 달러 표식 알아보기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s1.c8",
+          "chapterID": "s1.c8",
           "chapterOrder": 8,
           "chapterTitle": "Swift 앱의 자주 보이는 표식 알아보기",
-          "pageID": "v2.s1.c8.p4",
+          "pageID": "s1.c8.p4",
           "pageOrder": 4,
           "pageTitle": "View·body·modifier의 첫 역할 알아보기",
           "kind": "direct",
           "connection": "View·body·modifier의 첫 역할 알아보기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s1.c9",
+          "chapterID": "s1.c9",
           "chapterOrder": 9,
           "chapterTitle": "짧은 코드 문장을 처음부터 읽어보기",
-          "pageID": "v2.s1.c9.p4",
+          "pageID": "s1.c9.p4",
           "pageOrder": 4,
           "pageTitle": "Stage 2 읽기 루프로 건너가기",
           "kind": "direct",
           "connection": "Stage 2 읽기 루프로 건너가기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s2.c1",
+          "chapterID": "s2.c1",
           "chapterOrder": 1,
           "chapterTitle": "코드를 의미 단위로 훑어보기",
-          "pageID": "v2.s2.c1.p1",
+          "pageID": "s2.c1.p1",
           "pageOrder": 1,
           "pageTitle": "실행 결과부터 예상하기",
           "kind": "direct",
           "connection": "실행 결과부터 예상하기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s2.c2",
+          "chapterID": "s2.c2",
           "chapterOrder": 2,
           "chapterTitle": "값과 상태의 흐름 읽기",
-          "pageID": "v2.s2.c2.p1",
+          "pageID": "s2.c2.p1",
           "pageOrder": 1,
           "pageTitle": "선언에서 이름·타입·값 구분하기",
           "kind": "direct",
           "connection": "선언에서 이름·타입·값 구분하기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s2.c2",
+          "chapterID": "s2.c2",
           "chapterOrder": 2,
           "chapterTitle": "값과 상태의 흐름 읽기",
-          "pageID": "v2.s2.c2.p3",
+          "pageID": "s2.c2.p3",
           "pageOrder": 3,
           "pageTitle": "컬렉션에서 여러 값의 역할 읽기",
           "kind": "direct",
           "connection": "컬렉션에서 여러 값의 역할 읽기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s2.c3",
+          "chapterID": "s2.c3",
           "chapterOrder": 3,
           "chapterTitle": "분기와 반복의 실행 흐름 읽기",
-          "pageID": "v2.s2.c3.p1",
+          "pageID": "s2.c3.p1",
           "pageOrder": 1,
           "pageTitle": "if와 guard에서 계속되는 길 찾기",
           "kind": "direct",
           "connection": "if와 guard에서 계속되는 길 찾기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s2.c3",
+          "chapterID": "s2.c3",
           "chapterOrder": 3,
           "chapterTitle": "분기와 반복의 실행 흐름 읽기",
-          "pageID": "v2.s2.c3.p3",
+          "pageID": "s2.c3.p3",
           "pageOrder": 3,
           "pageTitle": "반복과 컬렉션 변환의 전후 비교하기",
           "kind": "direct",
           "connection": "반복과 컬렉션 변환의 전후 비교하기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s2.c4",
+          "chapterID": "s2.c4",
           "chapterOrder": 4,
           "chapterTitle": "함수와 타입의 책임 읽기",
-          "pageID": "v2.s2.c4.p1",
+          "pageID": "s2.c4.p1",
           "pageOrder": 1,
           "pageTitle": "함수 호출에서 입력과 출력 찾기",
           "kind": "direct",
           "connection": "함수 호출에서 입력과 출력 찾기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s2.c4",
+          "chapterID": "s2.c4",
           "chapterOrder": 4,
           "chapterTitle": "함수와 타입의 책임 읽기",
-          "pageID": "v2.s2.c4.p2",
+          "pageID": "s2.c4.p2",
           "pageOrder": 2,
           "pageTitle": "클로저에서 나중에 실행될 행동 읽기",
           "kind": "direct",
           "connection": "클로저에서 나중에 실행될 행동 읽기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s2.c4",
+          "chapterID": "s2.c4",
           "chapterOrder": 4,
           "chapterTitle": "함수와 타입의 책임 읽기",
-          "pageID": "v2.s2.c4.p3",
+          "pageID": "s2.c4.p3",
           "pageOrder": 3,
           "pageTitle": "struct·class·enum의 책임 경계 읽기",
           "kind": "direct",
           "connection": "struct·class·enum의 책임 경계 읽기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s2.c7",
+          "chapterID": "s2.c7",
           "chapterOrder": 7,
           "chapterTitle": "계약과 아키텍처를 가로질러 읽기",
-          "pageID": "v2.s2.c7.p1",
+          "pageID": "s2.c7.p1",
           "pageOrder": 1,
           "pageTitle": "protocol에서 교체 가능한 약속 찾기",
           "kind": "direct",
           "connection": "protocol에서 교체 가능한 약속 찾기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s2.c7",
+          "chapterID": "s2.c7",
           "chapterOrder": 7,
           "chapterTitle": "계약과 아키텍처를 가로질러 읽기",
-          "pageID": "v2.s2.c7.p2",
+          "pageID": "s2.c7.p2",
           "pageOrder": 2,
           "pageTitle": "generic과 extension에서 재사용 경계 읽기",
           "kind": "direct",
           "connection": "generic과 extension에서 재사용 경계 읽기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s2.c8",
+          "chapterID": "s2.c8",
           "chapterOrder": 8,
           "chapterTitle": "AI 구현을 검토하고 안전하게 바꾸기",
-          "pageID": "v2.s2.c8.p3",
+          "pageID": "s2.c8.p3",
           "pageOrder": 3,
           "pageTitle": "한 변경의 영향 범위와 검증 지점 찾기",
           "kind": "direct",
           "connection": "한 변경의 영향 범위와 검증 지점 찾기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s2.c8",
+          "chapterID": "s2.c8",
           "chapterOrder": 8,
           "chapterTitle": "AI 구현을 검토하고 안전하게 바꾸기",
-          "pageID": "v2.s2.c8.p4",
+          "pageID": "s2.c8.p4",
           "pageOrder": 4,
           "pageTitle": "처음 보는 앱을 읽고 개선 요청 만들기",
           "kind": "direct",
@@ -1698,7 +1698,7 @@
       ]
     },
     {
-      "id": "v2.concept.6816e901238c",
+      "id": "concept.6816e901238c",
       "title": "표현식",
       "definition": "표현식은 값, 이름과 연산을 조합해 평가하면 하나의 결과값이 되는 코드다.",
       "essentialQuestion": "“이 코드 조각을 평가했을 때 하나의 값으로 읽을 수 있는가?”",
@@ -1718,60 +1718,60 @@
       ],
       "revisitPages": [
         {
-          "chapterID": "v2.s1.c2",
+          "chapterID": "s1.c2",
           "chapterOrder": 2,
           "chapterTitle": "값을 나타내는 말 알아보기",
-          "pageID": "v2.s1.c2.p1",
+          "pageID": "s1.c2.p1",
           "pageOrder": 1,
           "pageTitle": "따옴표 안의 글자 값 찾기",
           "kind": "direct",
           "connection": "따옴표 안의 글자 값 찾기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s1.c4",
+          "chapterID": "s1.c4",
           "chapterOrder": 4,
           "chapterTitle": "계산과 질문의 기호 알아보기",
-          "pageID": "v2.s1.c4.p1",
+          "pageID": "s1.c4.p1",
           "pageOrder": 1,
           "pageTitle": "산술 연산자가 만드는 값 찾기",
           "kind": "direct",
           "connection": "산술 연산자가 만드는 값 찾기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s1.c5",
+          "chapterID": "s1.c5",
           "chapterOrder": 5,
           "chapterTitle": "묶음과 갈림길 알아보기",
-          "pageID": "v2.s1.c5.p1",
+          "pageID": "s1.c5.p1",
           "pageOrder": 1,
           "pageTitle": "소괄호·대괄호·중괄호 구분하기",
           "kind": "direct",
           "connection": "소괄호·대괄호·중괄호 구분하기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s1.c5",
+          "chapterID": "s1.c5",
           "chapterOrder": 5,
           "chapterTitle": "묶음과 갈림길 알아보기",
-          "pageID": "v2.s1.c5.p2",
+          "pageID": "s1.c5.p2",
           "pageOrder": 2,
           "pageTitle": "if와 else가 나누는 길 보기",
           "kind": "direct",
           "connection": "if와 else가 나누는 길 보기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s1.c7",
+          "chapterID": "s1.c7",
           "chapterOrder": 7,
           "chapterTitle": "이름 붙은 행동과 설계도 알아보기",
-          "pageID": "v2.s1.c7.p1",
+          "pageID": "s1.c7.p1",
           "pageOrder": 1,
           "pageTitle": "func와 return 사이 읽기",
           "kind": "direct",
           "connection": "func와 return 사이 읽기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s1.c9",
+          "chapterID": "s1.c9",
           "chapterOrder": 9,
           "chapterTitle": "짧은 코드 문장을 처음부터 읽어보기",
-          "pageID": "v2.s1.c9.p2",
+          "pageID": "s1.c9.p2",
           "pageOrder": 2,
           "pageTitle": "한 줄을 역할 카드로 설명하기",
           "kind": "direct",
@@ -1780,7 +1780,7 @@
       ]
     },
     {
-      "id": "v2.concept.24b928f5af76",
+      "id": "concept.24b928f5af76",
       "title": "사실·추정·질문 구분하기",
       "definition": "읽은 코드가 보장하는 것과 이름·관례로 짐작한 것을 분리해 AI 구현을 과신하지 않게 한다.",
       "essentialQuestion": "어느 줄이 이 설명을 뒷받침하는가? 실행·테스트가 필요한 주장은 무엇인가? 확인할 다음 파일은 어디인가?",
@@ -1795,40 +1795,40 @@
       ],
       "revisitPages": [
         {
-          "chapterID": "v2.s1.c1",
+          "chapterID": "s1.c1",
           "chapterOrder": 1,
           "chapterTitle": "코드라는 문장 구경하기",
-          "pageID": "v2.s1.c1.p4",
+          "pageID": "s1.c1.p4",
           "pageOrder": 4,
           "pageTitle": "모르는 코드에서 아는 단서 찾기",
           "kind": "direct",
           "connection": "모르는 코드에서 아는 단서 찾기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s1.c6",
+          "chapterID": "s1.c6",
           "chapterOrder": 6,
           "chapterTitle": "여러 값과 반복 알아보기",
-          "pageID": "v2.s1.c6.p4",
+          "pageID": "s1.c6.p4",
           "pageOrder": 4,
           "pageTitle": "반복 코드 조각에 역할 카드 붙이기",
           "kind": "direct",
           "connection": "반복 코드 조각에 역할 카드 붙이기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s1.c9",
+          "chapterID": "s1.c9",
           "chapterOrder": 9,
           "chapterTitle": "짧은 코드 문장을 처음부터 읽어보기",
-          "pageID": "v2.s1.c9.p2",
+          "pageID": "s1.c9.p2",
           "pageOrder": 2,
           "pageTitle": "한 줄을 역할 카드로 설명하기",
           "kind": "direct",
           "connection": "한 줄을 역할 카드로 설명하기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s2.c1",
+          "chapterID": "s2.c1",
           "chapterOrder": 1,
           "chapterTitle": "코드를 의미 단위로 훑어보기",
-          "pageID": "v2.s2.c1.p2",
+          "pageID": "s2.c1.p2",
           "pageOrder": 2,
           "pageTitle": "코드에서 역할 단서 찾기",
           "kind": "direct",
@@ -1837,7 +1837,7 @@
       ]
     },
     {
-      "id": "v2.concept.7f5b67cb56c3",
+      "id": "concept.7f5b67cb56c3",
       "title": "실행 결과에서 시작하기",
       "definition": "화면·로그·테스트 결과를 먼저 보면 읽을 코드와 확인할 변화가 좁아진다.",
       "essentialQuestion": "사용자가 한 행동은 무엇인가? 관찰된 결과는 무엇인가? 그 둘을 잇는 이름은 코드 어디에 있는가?",
@@ -1852,50 +1852,50 @@
       ],
       "revisitPages": [
         {
-          "chapterID": "v2.s1.c5",
+          "chapterID": "s1.c5",
           "chapterOrder": 5,
           "chapterTitle": "묶음과 갈림길 알아보기",
-          "pageID": "v2.s1.c5.p3",
+          "pageID": "s1.c5.p3",
           "pageOrder": 3,
           "pageTitle": "guard와 return으로 멈추는 길 보기",
           "kind": "direct",
           "connection": "guard와 return으로 멈추는 길 보기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s1.c7",
+          "chapterID": "s1.c7",
           "chapterOrder": 7,
           "chapterTitle": "이름 붙은 행동과 설계도 알아보기",
-          "pageID": "v2.s1.c7.p3",
+          "pageID": "s1.c7.p3",
           "pageOrder": 3,
           "pageTitle": "클로저가 나중에 할 행동 찾기",
           "kind": "direct",
           "connection": "클로저가 나중에 할 행동 찾기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s2.c1",
+          "chapterID": "s2.c1",
           "chapterOrder": 1,
           "chapterTitle": "코드를 의미 단위로 훑어보기",
-          "pageID": "v2.s2.c1.p1",
+          "pageID": "s2.c1.p1",
           "pageOrder": 1,
           "pageTitle": "실행 결과부터 예상하기",
           "kind": "direct",
           "connection": "실행 결과부터 예상하기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s2.c3",
+          "chapterID": "s2.c3",
           "chapterOrder": 3,
           "chapterTitle": "분기와 반복의 실행 흐름 읽기",
-          "pageID": "v2.s2.c3.p1",
+          "pageID": "s2.c3.p1",
           "pageOrder": 1,
           "pageTitle": "if와 guard에서 계속되는 길 찾기",
           "kind": "direct",
           "connection": "if와 guard에서 계속되는 길 찾기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s2.c8",
+          "chapterID": "s2.c8",
           "chapterOrder": 8,
           "chapterTitle": "AI 구현을 검토하고 안전하게 바꾸기",
-          "pageID": "v2.s2.c8.p1",
+          "pageID": "s2.c8.p1",
           "pageOrder": 1,
           "pageTitle": "요구사항과 화면 결과를 코드에 연결하기",
           "kind": "direct",
@@ -1904,7 +1904,7 @@
       ]
     },
     {
-      "id": "v2.concept.fe8294523602",
+      "id": "concept.fe8294523602",
       "title": "의미 단위 조각",
       "definition": "같은 결과를 위해 같은 책임을 수행하는 코드 요소를 물리적 위치와 무관하게 묶는다.",
       "essentialQuestion": "이 요소들은 함께 무엇을 완성하는가? 무엇이 들어와 무엇이 나가는가? 하나를 제거하면 같은 결과가 깨지는가?",
@@ -1919,120 +1919,120 @@
       ],
       "revisitPages": [
         {
-          "chapterID": "v2.s1.c9",
+          "chapterID": "s1.c9",
           "chapterOrder": 9,
           "chapterTitle": "짧은 코드 문장을 처음부터 읽어보기",
-          "pageID": "v2.s1.c9.p4",
+          "pageID": "s1.c9.p4",
           "pageOrder": 4,
           "pageTitle": "Stage 2 읽기 루프로 건너가기",
           "kind": "direct",
           "connection": "Stage 2 읽기 루프로 건너가기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s2.c1",
+          "chapterID": "s2.c1",
           "chapterOrder": 1,
           "chapterTitle": "코드를 의미 단위로 훑어보기",
-          "pageID": "v2.s2.c1.p2",
+          "pageID": "s2.c1.p2",
           "pageOrder": 2,
           "pageTitle": "코드에서 역할 단서 찾기",
           "kind": "direct",
           "connection": "코드에서 역할 단서 찾기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s2.c1",
+          "chapterID": "s2.c1",
           "chapterOrder": 1,
           "chapterTitle": "코드를 의미 단위로 훑어보기",
-          "pageID": "v2.s2.c1.p3",
+          "pageID": "s2.c1.p3",
           "pageOrder": 3,
           "pageTitle": "코드를 책임 조각으로 묶기",
           "kind": "direct",
           "connection": "코드를 책임 조각으로 묶기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s2.c3",
+          "chapterID": "s2.c3",
           "chapterOrder": 3,
           "chapterTitle": "분기와 반복의 실행 흐름 읽기",
-          "pageID": "v2.s2.c3.p1",
+          "pageID": "s2.c3.p1",
           "pageOrder": 1,
           "pageTitle": "if와 guard에서 계속되는 길 찾기",
           "kind": "direct",
           "connection": "if와 guard에서 계속되는 길 찾기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s2.c5",
+          "chapterID": "s2.c5",
           "chapterOrder": 5,
           "chapterTitle": "SwiftUI 화면 흐름 읽기",
-          "pageID": "v2.s2.c5.p2",
+          "pageID": "s2.c5.p2",
           "pageOrder": 2,
           "pageTitle": "상태와 Binding이 화면을 바꾸는 흐름 읽기",
           "kind": "direct",
           "connection": "상태와 Binding이 화면을 바꾸는 흐름 읽기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s2.c6",
+          "chapterID": "s2.c6",
           "chapterOrder": 6,
           "chapterTitle": "저장과 외부 데이터 경계 읽기",
-          "pageID": "v2.s2.c6.p1",
+          "pageID": "s2.c6.p1",
           "pageOrder": 1,
           "pageTitle": "Codable·요청·응답의 데이터 변환 읽기",
           "kind": "direct",
           "connection": "Codable·요청·응답의 데이터 변환 읽기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s2.c6",
+          "chapterID": "s2.c6",
           "chapterOrder": 6,
           "chapterTitle": "저장과 외부 데이터 경계 읽기",
-          "pageID": "v2.s2.c6.p2",
+          "pageID": "s2.c6.p2",
           "pageOrder": 2,
           "pageTitle": "async·await·Task의 시간 흐름 읽기",
           "kind": "direct",
           "connection": "async·await·Task의 시간 흐름 읽기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s2.c6",
+          "chapterID": "s2.c6",
           "chapterOrder": 6,
           "chapterTitle": "저장과 외부 데이터 경계 읽기",
-          "pageID": "v2.s2.c6.p3",
+          "pageID": "s2.c6.p3",
           "pageOrder": 3,
           "pageTitle": "오류·로딩·빈·성공 상태 구분하기",
           "kind": "direct",
           "connection": "오류·로딩·빈·성공 상태 구분하기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s2.c6",
+          "chapterID": "s2.c6",
           "chapterOrder": 6,
           "chapterTitle": "저장과 외부 데이터 경계 읽기",
-          "pageID": "v2.s2.c6.p4",
+          "pageID": "s2.c6.p4",
           "pageOrder": 4,
           "pageTitle": "SwiftData 저장·조회·삭제 흐름 읽기",
           "kind": "direct",
           "connection": "SwiftData 저장·조회·삭제 흐름 읽기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s2.c7",
+          "chapterID": "s2.c7",
           "chapterOrder": 7,
           "chapterTitle": "계약과 아키텍처를 가로질러 읽기",
-          "pageID": "v2.s2.c7.p4",
+          "pageID": "s2.c7.p4",
           "pageOrder": 4,
           "pageTitle": "여러 파일을 가로질러 기능 흐름 추적하기",
           "kind": "direct",
           "connection": "여러 파일을 가로질러 기능 흐름 추적하기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s2.c8",
+          "chapterID": "s2.c8",
           "chapterOrder": 8,
           "chapterTitle": "AI 구현을 검토하고 안전하게 바꾸기",
-          "pageID": "v2.s2.c8.p1",
+          "pageID": "s2.c8.p1",
           "pageOrder": 1,
           "pageTitle": "요구사항과 화면 결과를 코드에 연결하기",
           "kind": "direct",
           "connection": "요구사항과 화면 결과를 코드에 연결하기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s2.c8",
+          "chapterID": "s2.c8",
           "chapterOrder": 8,
           "chapterTitle": "AI 구현을 검토하고 안전하게 바꾸기",
-          "pageID": "v2.s2.c8.p2",
+          "pageID": "s2.c8.p2",
           "pageOrder": 2,
           "pageTitle": "낯선 구현을 여섯 조각으로 요약하기",
           "kind": "direct",
@@ -2041,7 +2041,7 @@
       ]
     },
     {
-      "id": "v2.concept.63c92ed18525",
+      "id": "concept.63c92ed18525",
       "title": "이름과 프레임워크 단서",
       "definition": "좋은 이름과 익숙한 표식은 조각의 역할을 빠르게 가설로 세우게 한다.",
       "essentialQuestion": "이름이 데이터·행동·상태 중 무엇을 암시하는가? 프레임워크 표식이 자동으로 제공하는 책임은 무엇인가?",
@@ -2056,160 +2056,160 @@
       ],
       "revisitPages": [
         {
-          "chapterID": "v2.s1.c1",
+          "chapterID": "s1.c1",
           "chapterOrder": 1,
           "chapterTitle": "코드라는 문장 구경하기",
-          "pageID": "v2.s1.c1.p1",
+          "pageID": "s1.c1.p1",
           "pageOrder": 1,
           "pageTitle": "코드와 화면 결과 연결하기",
           "kind": "direct",
           "connection": "코드와 화면 결과 연결하기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s1.c1",
+          "chapterID": "s1.c1",
           "chapterOrder": 1,
           "chapterTitle": "코드라는 문장 구경하기",
-          "pageID": "v2.s1.c1.p2",
+          "pageID": "s1.c1.p2",
           "pageOrder": 2,
           "pageTitle": "코드에서 단어와 기호 찾기",
           "kind": "direct",
           "connection": "코드에서 단어와 기호 찾기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s1.c1",
+          "chapterID": "s1.c1",
           "chapterOrder": 1,
           "chapterTitle": "코드라는 문장 구경하기",
-          "pageID": "v2.s1.c1.p3",
+          "pageID": "s1.c1.p3",
           "pageOrder": 3,
           "pageTitle": "한 줄과 여러 줄의 관계 보기",
           "kind": "direct",
           "connection": "한 줄과 여러 줄의 관계 보기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s1.c1",
+          "chapterID": "s1.c1",
           "chapterOrder": 1,
           "chapterTitle": "코드라는 문장 구경하기",
-          "pageID": "v2.s1.c1.p4",
+          "pageID": "s1.c1.p4",
           "pageOrder": 4,
           "pageTitle": "모르는 코드에서 아는 단서 찾기",
           "kind": "direct",
           "connection": "모르는 코드에서 아는 단서 찾기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s1.c2",
+          "chapterID": "s1.c2",
           "chapterOrder": 2,
           "chapterTitle": "값을 나타내는 말 알아보기",
-          "pageID": "v2.s1.c2.p1",
+          "pageID": "s1.c2.p1",
           "pageOrder": 1,
           "pageTitle": "따옴표 안의 글자 값 찾기",
           "kind": "direct",
           "connection": "따옴표 안의 글자 값 찾기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s1.c3",
+          "chapterID": "s1.c3",
           "chapterOrder": 3,
           "chapterTitle": "이름과 약속 알아보기",
-          "pageID": "v2.s1.c3.p1",
+          "pageID": "s1.c3.p1",
           "pageOrder": 1,
           "pageTitle": "코드가 붙인 이름 찾기",
           "kind": "direct",
           "connection": "코드가 붙인 이름 찾기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s1.c4",
+          "chapterID": "s1.c4",
           "chapterOrder": 4,
           "chapterTitle": "계산과 질문의 기호 알아보기",
-          "pageID": "v2.s1.c4.p4",
+          "pageID": "s1.c4.p4",
           "pageOrder": 4,
           "pageTitle": "점과 괄호가 만드는 호출 읽기",
           "kind": "direct",
           "connection": "점과 괄호가 만드는 호출 읽기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s1.c5",
+          "chapterID": "s1.c5",
           "chapterOrder": 5,
           "chapterTitle": "묶음과 갈림길 알아보기",
-          "pageID": "v2.s1.c5.p4",
+          "pageID": "s1.c5.p4",
           "pageOrder": 4,
           "pageTitle": "switch와 case로 가능한 길 보기",
           "kind": "direct",
           "connection": "switch와 case로 가능한 길 보기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s1.c6",
+          "chapterID": "s1.c6",
           "chapterOrder": 6,
           "chapterTitle": "여러 값과 반복 알아보기",
-          "pageID": "v2.s1.c6.p2",
+          "pageID": "s1.c6.p2",
           "pageOrder": 2,
           "pageTitle": "for와 ForEach의 반복 찾기",
           "kind": "direct",
           "connection": "for와 ForEach의 반복 찾기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s1.c6",
+          "chapterID": "s1.c6",
           "chapterOrder": 6,
           "chapterTitle": "여러 값과 반복 알아보기",
-          "pageID": "v2.s1.c6.p4",
+          "pageID": "s1.c6.p4",
           "pageOrder": 4,
           "pageTitle": "반복 코드 조각에 역할 카드 붙이기",
           "kind": "direct",
           "connection": "반복 코드 조각에 역할 카드 붙이기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s1.c7",
+          "chapterID": "s1.c7",
           "chapterOrder": 7,
           "chapterTitle": "이름 붙은 행동과 설계도 알아보기",
-          "pageID": "v2.s1.c7.p3",
+          "pageID": "s1.c7.p3",
           "pageOrder": 3,
           "pageTitle": "클로저가 나중에 할 행동 찾기",
           "kind": "direct",
           "connection": "클로저가 나중에 할 행동 찾기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s1.c8",
+          "chapterID": "s1.c8",
           "chapterOrder": 8,
           "chapterTitle": "Swift 앱의 자주 보이는 표식 알아보기",
-          "pageID": "v2.s1.c8.p1",
+          "pageID": "s1.c8.p1",
           "pageOrder": 1,
           "pageTitle": "import·타입·점 표기 알아보기",
           "kind": "direct",
           "connection": "import·타입·점 표기 알아보기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s1.c9",
+          "chapterID": "s1.c9",
           "chapterOrder": 9,
           "chapterTitle": "짧은 코드 문장을 처음부터 읽어보기",
-          "pageID": "v2.s1.c9.p1",
+          "pageID": "s1.c9.p1",
           "pageOrder": 1,
           "pageTitle": "코드 단어 사냥하기",
           "kind": "direct",
           "connection": "코드 단어 사냥하기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s1.c9",
+          "chapterID": "s1.c9",
           "chapterOrder": 9,
           "chapterTitle": "짧은 코드 문장을 처음부터 읽어보기",
-          "pageID": "v2.s1.c9.p2",
+          "pageID": "s1.c9.p2",
           "pageOrder": 2,
           "pageTitle": "한 줄을 역할 카드로 설명하기",
           "kind": "direct",
           "connection": "한 줄을 역할 카드로 설명하기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s1.c9",
+          "chapterID": "s1.c9",
           "chapterOrder": 9,
           "chapterTitle": "짧은 코드 문장을 처음부터 읽어보기",
-          "pageID": "v2.s1.c9.p3",
+          "pageID": "s1.c9.p3",
           "pageOrder": 3,
           "pageTitle": "한 단어가 바뀐 코드 비교하기",
           "kind": "direct",
           "connection": "한 단어가 바뀐 코드 비교하기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s2.c1",
+          "chapterID": "s2.c1",
           "chapterOrder": 1,
           "chapterTitle": "코드를 의미 단위로 훑어보기",
-          "pageID": "v2.s2.c1.p2",
+          "pageID": "s2.c1.p2",
           "pageOrder": 2,
           "pageTitle": "코드에서 역할 단서 찾기",
           "kind": "direct",
@@ -2218,7 +2218,7 @@
       ]
     },
     {
-      "id": "v2.concept.5e5f60c822eb",
+      "id": "concept.5e5f60c822eb",
       "title": "진입점 찾기",
       "definition": "진입점은 현재 질문의 흐름을 처음 따라갈 수 있는 위치다. 앱 전체의 유일한 시작점일 필요는 없다.",
       "essentialQuestion": "지금 결과를 만든 최초의 사용자 행동은 어디서 처리되는가? 이 이름은 어디서 선언되고 호출되는가?",
@@ -2233,20 +2233,20 @@
       ],
       "revisitPages": [
         {
-          "chapterID": "v2.s2.c1",
+          "chapterID": "s2.c1",
           "chapterOrder": 1,
           "chapterTitle": "코드를 의미 단위로 훑어보기",
-          "pageID": "v2.s2.c1.p1",
+          "pageID": "s2.c1.p1",
           "pageOrder": 1,
           "pageTitle": "실행 결과부터 예상하기",
           "kind": "direct",
           "connection": "실행 결과부터 예상하기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s2.c8",
+          "chapterID": "s2.c8",
           "chapterOrder": 8,
           "chapterTitle": "AI 구현을 검토하고 안전하게 바꾸기",
-          "pageID": "v2.s2.c8.p4",
+          "pageID": "s2.c8.p4",
           "pageOrder": 4,
           "pageTitle": "처음 보는 앱을 읽고 개선 요청 만들기",
           "kind": "direct",
@@ -2255,7 +2255,7 @@
       ]
     },
     {
-      "id": "v2.concept.b58dd05a41b8",
+      "id": "concept.b58dd05a41b8",
       "title": "Optional과 값 없음",
       "definition": "`T?`는 `T` 값이 있거나 `nil`인 두 가능성을 코드가 다루게 한다.",
       "essentialQuestion": "값이 없는 것이 정상 상태인가 오류인가? 값이 없을 때 어느 길로 가는가? 기본값이 의미를 숨기지는 않는가?",
@@ -2270,20 +2270,20 @@
       ],
       "revisitPages": [
         {
-          "chapterID": "v2.s2.c2",
+          "chapterID": "s2.c2",
           "chapterOrder": 2,
           "chapterTitle": "값과 상태의 흐름 읽기",
-          "pageID": "v2.s2.c2.p2",
+          "pageID": "s2.c2.p2",
           "pageOrder": 2,
           "pageTitle": "Optional과 enum으로 가능한 상태 읽기",
           "kind": "direct",
           "connection": "Optional과 enum으로 가능한 상태 읽기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s2.c3",
+          "chapterID": "s2.c3",
           "chapterOrder": 3,
           "chapterTitle": "분기와 반복의 실행 흐름 읽기",
-          "pageID": "v2.s2.c3.p4",
+          "pageID": "s2.c3.p4",
           "pageOrder": 4,
           "pageTitle": "조건과 반복을 결과까지 추적하기",
           "kind": "direct",
@@ -2292,7 +2292,7 @@
       ]
     },
     {
-      "id": "v2.concept.28be754d2196",
+      "id": "concept.28be754d2196",
       "title": "enum과 가능한 상태",
       "definition": "enum은 가능한 경우를 이름 붙여 제한하며 각 경우가 필요한 데이터를 함께 가질 수 있다.",
       "essentialQuestion": "가능한 상태는 빠짐없는가? 동시에 존재하면 안 되는 Bool들을 대신하는가? 각 case에 필요한 데이터가 붙어 있는가?",
@@ -2305,20 +2305,20 @@
       ],
       "revisitPages": [
         {
-          "chapterID": "v2.s2.c1",
+          "chapterID": "s2.c1",
           "chapterOrder": 1,
           "chapterTitle": "코드를 의미 단위로 훑어보기",
-          "pageID": "v2.s2.c1.p4",
+          "pageID": "s2.c1.p4",
           "pageOrder": 4,
           "pageTitle": "조각 사이 흐름과 변경 영향 말하기",
           "kind": "direct",
           "connection": "조각 사이 흐름과 변경 영향 말하기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s2.c2",
+          "chapterID": "s2.c2",
           "chapterOrder": 2,
           "chapterTitle": "값과 상태의 흐름 읽기",
-          "pageID": "v2.s2.c2.p2",
+          "pageID": "s2.c2.p2",
           "pageOrder": 2,
           "pageTitle": "Optional과 enum으로 가능한 상태 읽기",
           "kind": "direct",
@@ -2327,7 +2327,7 @@
       ]
     },
     {
-      "id": "v2.concept.edd494f442d8",
+      "id": "concept.edd494f442d8",
       "title": "상태 소유권",
       "definition": "상태 소유자는 값을 보관하고 변경 규칙을 결정하며, 다른 조각은 읽거나 변경 요청을 보낸다.",
       "essentialQuestion": "진짜 원본은 어디인가? 복사인가 연결인가? 변경 권한과 생명주기는 누가 가지는가?",
@@ -2342,10 +2342,10 @@
       ],
       "revisitPages": [
         {
-          "chapterID": "v2.s2.c2",
+          "chapterID": "s2.c2",
           "chapterOrder": 2,
           "chapterTitle": "값과 상태의 흐름 읽기",
-          "pageID": "v2.s2.c2.p4",
+          "pageID": "s2.c2.p4",
           "pageOrder": 4,
           "pageTitle": "입력이 상태와 출력으로 바뀌는 흐름 추적하기",
           "kind": "direct",
@@ -2354,7 +2354,7 @@
       ]
     },
     {
-      "id": "v2.concept.384945bc2929",
+      "id": "concept.384945bc2929",
       "title": "선언 읽기",
       "definition": "선언에서 `이름 → 타입 → 현재 값 → 변경 가능성`을 읽으면 이후 사용처를 예상할 수 있다.",
       "essentialQuestion": "무엇을 나타내는 이름인가? 타입이 허용하는 값과 연산은 무엇인가? 누가 언제 바꿀 수 있는가?",
@@ -2367,20 +2367,20 @@
       ],
       "revisitPages": [
         {
-          "chapterID": "v2.s1.c8",
+          "chapterID": "s1.c8",
           "chapterOrder": 8,
           "chapterTitle": "Swift 앱의 자주 보이는 표식 알아보기",
-          "pageID": "v2.s1.c8.p3",
+          "pageID": "s1.c8.p3",
           "pageOrder": 3,
           "pageTitle": "try·throws·async·await 알아보기",
           "kind": "direct",
           "connection": "try·throws·async·await 알아보기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s2.c2",
+          "chapterID": "s2.c2",
           "chapterOrder": 2,
           "chapterTitle": "값과 상태의 흐름 읽기",
-          "pageID": "v2.s2.c2.p1",
+          "pageID": "s2.c2.p1",
           "pageOrder": 1,
           "pageTitle": "선언에서 이름·타입·값 구분하기",
           "kind": "direct",
@@ -2389,7 +2389,7 @@
       ]
     },
     {
-      "id": "v2.concept.d4ca67109cc0",
+      "id": "concept.d4ca67109cc0",
       "title": "컬렉션과 원소 흐름",
       "definition": "컬렉션은 여러 값을 보관하며 순서·키·중복 가능성에 따라 Array, Dictionary, Set의 의미가 달라진다.",
       "essentialQuestion": "원소 하나는 무엇인가? 순서와 중복이 의미 있는가? 원본을 바꾸는가 새 컬렉션을 만드는가?",
@@ -2404,40 +2404,40 @@
       ],
       "revisitPages": [
         {
-          "chapterID": "v2.s1.c6",
+          "chapterID": "s1.c6",
           "chapterOrder": 6,
           "chapterTitle": "여러 값과 반복 알아보기",
-          "pageID": "v2.s1.c6.p1",
+          "pageID": "s1.c6.p1",
           "pageOrder": 1,
           "pageTitle": "배열에서 전체와 원소 구분하기",
           "kind": "direct",
           "connection": "배열에서 전체와 원소 구분하기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s1.c6",
+          "chapterID": "s1.c6",
           "chapterOrder": 6,
           "chapterTitle": "여러 값과 반복 알아보기",
-          "pageID": "v2.s1.c6.p2",
+          "pageID": "s1.c6.p2",
           "pageOrder": 2,
           "pageTitle": "for와 ForEach의 반복 찾기",
           "kind": "direct",
           "connection": "for와 ForEach의 반복 찾기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s1.c6",
+          "chapterID": "s1.c6",
           "chapterOrder": 6,
           "chapterTitle": "여러 값과 반복 알아보기",
-          "pageID": "v2.s1.c6.p3",
+          "pageID": "s1.c6.p3",
           "pageOrder": 3,
           "pageTitle": "filter와 map의 전후 값 보기",
           "kind": "direct",
           "connection": "filter와 map의 전후 값 보기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s2.c2",
+          "chapterID": "s2.c2",
           "chapterOrder": 2,
           "chapterTitle": "값과 상태의 흐름 읽기",
-          "pageID": "v2.s2.c2.p3",
+          "pageID": "s2.c2.p3",
           "pageOrder": 3,
           "pageTitle": "컬렉션에서 여러 값의 역할 읽기",
           "kind": "direct",
@@ -2446,7 +2446,7 @@
       ]
     },
     {
-      "id": "v2.concept.534ea64e457f",
+      "id": "concept.534ea64e457f",
       "title": "if와 guard",
       "definition": "`if`는 조건에 따라 길을 고르고, `guard`는 필요한 조건이 아니면 현재 범위를 일찍 빠져나간다.",
       "essentialQuestion": "조건은 어떤 질문인가? 참과 거짓에서 각각 어디로 가는가? `guard` 뒤에 무엇이 보장되는가?",
@@ -2461,120 +2461,120 @@
       ],
       "revisitPages": [
         {
-          "chapterID": "v2.s1.c1",
+          "chapterID": "s1.c1",
           "chapterOrder": 1,
           "chapterTitle": "코드라는 문장 구경하기",
-          "pageID": "v2.s1.c1.p3",
+          "pageID": "s1.c1.p3",
           "pageOrder": 3,
           "pageTitle": "한 줄과 여러 줄의 관계 보기",
           "kind": "direct",
           "connection": "한 줄과 여러 줄의 관계 보기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s1.c5",
+          "chapterID": "s1.c5",
           "chapterOrder": 5,
           "chapterTitle": "묶음과 갈림길 알아보기",
-          "pageID": "v2.s1.c5.p2",
+          "pageID": "s1.c5.p2",
           "pageOrder": 2,
           "pageTitle": "if와 else가 나누는 길 보기",
           "kind": "direct",
           "connection": "if와 else가 나누는 길 보기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s1.c5",
+          "chapterID": "s1.c5",
           "chapterOrder": 5,
           "chapterTitle": "묶음과 갈림길 알아보기",
-          "pageID": "v2.s1.c5.p3",
+          "pageID": "s1.c5.p3",
           "pageOrder": 3,
           "pageTitle": "guard와 return으로 멈추는 길 보기",
           "kind": "direct",
           "connection": "guard와 return으로 멈추는 길 보기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s1.c5",
+          "chapterID": "s1.c5",
           "chapterOrder": 5,
           "chapterTitle": "묶음과 갈림길 알아보기",
-          "pageID": "v2.s1.c5.p4",
+          "pageID": "s1.c5.p4",
           "pageOrder": 4,
           "pageTitle": "switch와 case로 가능한 길 보기",
           "kind": "direct",
           "connection": "switch와 case로 가능한 길 보기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s2.c2",
+          "chapterID": "s2.c2",
           "chapterOrder": 2,
           "chapterTitle": "값과 상태의 흐름 읽기",
-          "pageID": "v2.s2.c2.p4",
+          "pageID": "s2.c2.p4",
           "pageOrder": 4,
           "pageTitle": "입력이 상태와 출력으로 바뀌는 흐름 추적하기",
           "kind": "direct",
           "connection": "입력이 상태와 출력으로 바뀌는 흐름 추적하기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s2.c3",
+          "chapterID": "s2.c3",
           "chapterOrder": 3,
           "chapterTitle": "분기와 반복의 실행 흐름 읽기",
-          "pageID": "v2.s2.c3.p1",
+          "pageID": "s2.c3.p1",
           "pageOrder": 1,
           "pageTitle": "if와 guard에서 계속되는 길 찾기",
           "kind": "direct",
           "connection": "if와 guard에서 계속되는 길 찾기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s2.c3",
+          "chapterID": "s2.c3",
           "chapterOrder": 3,
           "chapterTitle": "분기와 반복의 실행 흐름 읽기",
-          "pageID": "v2.s2.c3.p2",
+          "pageID": "s2.c3.p2",
           "pageOrder": 2,
           "pageTitle": "switch에서 상태별 경우 읽기",
           "kind": "direct",
           "connection": "switch에서 상태별 경우 읽기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s2.c5",
+          "chapterID": "s2.c5",
           "chapterOrder": 5,
           "chapterTitle": "SwiftUI 화면 흐름 읽기",
-          "pageID": "v2.s2.c5.p1",
+          "pageID": "s2.c5.p1",
           "pageOrder": 1,
           "pageTitle": "View 트리에서 화면 윤곽 찾기",
           "kind": "direct",
           "connection": "View 트리에서 화면 윤곽 찾기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s2.c5",
+          "chapterID": "s2.c5",
           "chapterOrder": 5,
           "chapterTitle": "SwiftUI 화면 흐름 읽기",
-          "pageID": "v2.s2.c5.p3",
+          "pageID": "s2.c5.p3",
           "pageOrder": 3,
           "pageTitle": "사용자 행동이 상태 변경으로 이어지는 길 찾기",
           "kind": "direct",
           "connection": "사용자 행동이 상태 변경으로 이어지는 길 찾기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s2.c5",
+          "chapterID": "s2.c5",
           "chapterOrder": 5,
           "chapterTitle": "SwiftUI 화면 흐름 읽기",
-          "pageID": "v2.s2.c5.p4",
+          "pageID": "s2.c5.p4",
           "pageOrder": 4,
           "pageTitle": "modifier·환경·navigation의 역할 읽기",
           "kind": "direct",
           "connection": "modifier·환경·navigation의 역할 읽기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s2.c6",
+          "chapterID": "s2.c6",
           "chapterOrder": 6,
           "chapterTitle": "저장과 외부 데이터 경계 읽기",
-          "pageID": "v2.s2.c6.p4",
+          "pageID": "s2.c6.p4",
           "pageOrder": 4,
           "pageTitle": "SwiftData 저장·조회·삭제 흐름 읽기",
           "kind": "direct",
           "connection": "SwiftData 저장·조회·삭제 흐름 읽기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s2.c7",
+          "chapterID": "s2.c7",
           "chapterOrder": 7,
           "chapterTitle": "계약과 아키텍처를 가로질러 읽기",
-          "pageID": "v2.s2.c7.p4",
+          "pageID": "s2.c7.p4",
           "pageOrder": 4,
           "pageTitle": "여러 파일을 가로질러 기능 흐름 추적하기",
           "kind": "direct",
@@ -2583,7 +2583,7 @@
       ]
     },
     {
-      "id": "v2.concept.80c31ac6b9c2",
+      "id": "concept.80c31ac6b9c2",
       "title": "switch와 빠짐없는 분기",
       "definition": "`switch`는 하나의 값을 가능한 case와 대조해 한 경로를 고른다.",
       "essentialQuestion": "무엇을 기준으로 나누는가? 모든 의미 있는 경우가 드러나는가? case가 가진 데이터는 어디서 쓰이는가?",
@@ -2598,20 +2598,20 @@
       ],
       "revisitPages": [
         {
-          "chapterID": "v2.s1.c5",
+          "chapterID": "s1.c5",
           "chapterOrder": 5,
           "chapterTitle": "묶음과 갈림길 알아보기",
-          "pageID": "v2.s1.c5.p4",
+          "pageID": "s1.c5.p4",
           "pageOrder": 4,
           "pageTitle": "switch와 case로 가능한 길 보기",
           "kind": "direct",
           "connection": "switch와 case로 가능한 길 보기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s2.c3",
+          "chapterID": "s2.c3",
           "chapterOrder": 3,
           "chapterTitle": "분기와 반복의 실행 흐름 읽기",
-          "pageID": "v2.s2.c3.p2",
+          "pageID": "s2.c3.p2",
           "pageOrder": 2,
           "pageTitle": "switch에서 상태별 경우 읽기",
           "kind": "direct",
@@ -2620,7 +2620,7 @@
       ]
     },
     {
-      "id": "v2.concept.4d57bcac9843",
+      "id": "concept.4d57bcac9843",
       "title": "반복과 컬렉션 변환",
       "definition": "반복은 원소마다 행동을 실행하고, `map`·`filter`·`reduce`는 컬렉션을 새 결과로 변환한다.",
       "essentialQuestion": "원소 하나에 무엇을 하는가? 원소 수와 순서는 어떻게 달라지는가? 외부 상태를 바꾸는가 새 값을 반환하는가?",
@@ -2635,50 +2635,50 @@
       ],
       "revisitPages": [
         {
-          "chapterID": "v2.s1.c6",
+          "chapterID": "s1.c6",
           "chapterOrder": 6,
           "chapterTitle": "여러 값과 반복 알아보기",
-          "pageID": "v2.s1.c6.p3",
+          "pageID": "s1.c6.p3",
           "pageOrder": 3,
           "pageTitle": "filter와 map의 전후 값 보기",
           "kind": "direct",
           "connection": "filter와 map의 전후 값 보기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s2.c2",
+          "chapterID": "s2.c2",
           "chapterOrder": 2,
           "chapterTitle": "값과 상태의 흐름 읽기",
-          "pageID": "v2.s2.c2.p3",
+          "pageID": "s2.c2.p3",
           "pageOrder": 3,
           "pageTitle": "컬렉션에서 여러 값의 역할 읽기",
           "kind": "direct",
           "connection": "컬렉션에서 여러 값의 역할 읽기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s2.c3",
+          "chapterID": "s2.c3",
           "chapterOrder": 3,
           "chapterTitle": "분기와 반복의 실행 흐름 읽기",
-          "pageID": "v2.s2.c3.p2",
+          "pageID": "s2.c3.p2",
           "pageOrder": 2,
           "pageTitle": "switch에서 상태별 경우 읽기",
           "kind": "direct",
           "connection": "switch에서 상태별 경우 읽기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s2.c3",
+          "chapterID": "s2.c3",
           "chapterOrder": 3,
           "chapterTitle": "분기와 반복의 실행 흐름 읽기",
-          "pageID": "v2.s2.c3.p3",
+          "pageID": "s2.c3.p3",
           "pageOrder": 3,
           "pageTitle": "반복과 컬렉션 변환의 전후 비교하기",
           "kind": "direct",
           "connection": "반복과 컬렉션 변환의 전후 비교하기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s2.c3",
+          "chapterID": "s2.c3",
           "chapterOrder": 3,
           "chapterTitle": "분기와 반복의 실행 흐름 읽기",
-          "pageID": "v2.s2.c3.p4",
+          "pageID": "s2.c3.p4",
           "pageOrder": 4,
           "pageTitle": "조건과 반복을 결과까지 추적하기",
           "kind": "direct",
@@ -2687,7 +2687,7 @@
       ]
     },
     {
-      "id": "v2.concept.136c9b878c59",
+      "id": "concept.136c9b878c59",
       "title": "함수 호출과 반환",
       "definition": "함수는 입력을 받아 책임을 수행하고 반환값·오류·상태 변경 중 하나 이상을 밖에 남긴다.",
       "essentialQuestion": "호출자는 무엇을 넘기는가? 무엇을 돌려받거나 어떤 상태가 달라지는가? 함수 이름과 실제 책임이 일치하는가?",
@@ -2702,10 +2702,10 @@
       ],
       "revisitPages": [
         {
-          "chapterID": "v2.s2.c4",
+          "chapterID": "s2.c4",
           "chapterOrder": 4,
           "chapterTitle": "함수와 타입의 책임 읽기",
-          "pageID": "v2.s2.c4.p1",
+          "pageID": "s2.c4.p1",
           "pageOrder": 1,
           "pageTitle": "함수 호출에서 입력과 출력 찾기",
           "kind": "direct",
@@ -2714,7 +2714,7 @@
       ]
     },
     {
-      "id": "v2.concept.7307d21c693c",
+      "id": "concept.7307d21c693c",
       "title": "generic과 extension",
       "definition": "generic은 타입을 나중에 선택하면서 공통 알고리즘을 재사용하고, extension은 기존 타입의 기능이나 채택을 이어서 정의한다.",
       "essentialQuestion": "무엇이 달라도 같은 규칙을 쓸 수 있는가? 필요한 능력은 어떤 제약으로 표현됐는가? extension이 원래 책임을 보완하는가 흩뜨리는가?",
@@ -2729,30 +2729,30 @@
       ],
       "revisitPages": [
         {
-          "chapterID": "v2.s2.c7",
+          "chapterID": "s2.c7",
           "chapterOrder": 7,
           "chapterTitle": "계약과 아키텍처를 가로질러 읽기",
-          "pageID": "v2.s2.c7.p1",
+          "pageID": "s2.c7.p1",
           "pageOrder": 1,
           "pageTitle": "protocol에서 교체 가능한 약속 찾기",
           "kind": "direct",
           "connection": "protocol에서 교체 가능한 약속 찾기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s2.c7",
+          "chapterID": "s2.c7",
           "chapterOrder": 7,
           "chapterTitle": "계약과 아키텍처를 가로질러 읽기",
-          "pageID": "v2.s2.c7.p2",
+          "pageID": "s2.c7.p2",
           "pageOrder": 2,
           "pageTitle": "generic과 extension에서 재사용 경계 읽기",
           "kind": "direct",
           "connection": "generic과 extension에서 재사용 경계 읽기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s2.c7",
+          "chapterID": "s2.c7",
           "chapterOrder": 7,
           "chapterTitle": "계약과 아키텍처를 가로질러 읽기",
-          "pageID": "v2.s2.c7.p3",
+          "pageID": "s2.c7.p3",
           "pageOrder": 3,
           "pageTitle": "MVVM과 단방향 흐름을 같은 질문으로 읽기",
           "kind": "direct",
@@ -2761,7 +2761,7 @@
       ]
     },
     {
-      "id": "v2.concept.893af0d64616",
+      "id": "concept.893af0d64616",
       "title": "protocol과 교체 가능한 약속",
       "definition": "protocol은 특정 기능에 필요한 프로퍼티와 메서드의 약속을 정의하고 여러 타입이 이를 구현하게 한다.",
       "essentialQuestion": "호출자가 실제로 필요한 능력은 무엇인가? 구현은 어디서 선택되는가? 계약이 구현 세부를 충분히 숨기는가?",
@@ -2776,20 +2776,20 @@
       ],
       "revisitPages": [
         {
-          "chapterID": "v2.s2.c6",
+          "chapterID": "s2.c6",
           "chapterOrder": 6,
           "chapterTitle": "저장과 외부 데이터 경계 읽기",
-          "pageID": "v2.s2.c6.p4",
+          "pageID": "s2.c6.p4",
           "pageOrder": 4,
           "pageTitle": "SwiftData 저장·조회·삭제 흐름 읽기",
           "kind": "direct",
           "connection": "SwiftData 저장·조회·삭제 흐름 읽기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s2.c7",
+          "chapterID": "s2.c7",
           "chapterOrder": 7,
           "chapterTitle": "계약과 아키텍처를 가로질러 읽기",
-          "pageID": "v2.s2.c7.p1",
+          "pageID": "s2.c7.p1",
           "pageOrder": 1,
           "pageTitle": "protocol에서 교체 가능한 약속 찾기",
           "kind": "direct",
@@ -2798,7 +2798,7 @@
       ]
     },
     {
-      "id": "v2.concept.7b867a56edc9",
+      "id": "concept.7b867a56edc9",
       "title": "struct·class·enum의 책임",
       "definition": "타입은 함께 변하고 사용되는 데이터와 행동에 경계를 만든다.",
       "essentialQuestion": "이 타입이 아는 것과 하는 일은 무엇인가? 값 복사와 공유 참조 중 어느 의미가 필요한가? 가능한 상태를 case로 제한하는가?",
@@ -2813,40 +2813,40 @@
       ],
       "revisitPages": [
         {
-          "chapterID": "v2.s1.c7",
+          "chapterID": "s1.c7",
           "chapterOrder": 7,
           "chapterTitle": "이름 붙은 행동과 설계도 알아보기",
-          "pageID": "v2.s1.c7.p4",
+          "pageID": "s1.c7.p4",
           "pageOrder": 4,
           "pageTitle": "struct·class·enum·protocol 구분하기",
           "kind": "direct",
           "connection": "struct·class·enum·protocol 구분하기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s1.c9",
+          "chapterID": "s1.c9",
           "chapterOrder": 9,
           "chapterTitle": "짧은 코드 문장을 처음부터 읽어보기",
-          "pageID": "v2.s1.c9.p4",
+          "pageID": "s1.c9.p4",
           "pageOrder": 4,
           "pageTitle": "Stage 2 읽기 루프로 건너가기",
           "kind": "direct",
           "connection": "Stage 2 읽기 루프로 건너가기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s2.c4",
+          "chapterID": "s2.c4",
           "chapterOrder": 4,
           "chapterTitle": "함수와 타입의 책임 읽기",
-          "pageID": "v2.s2.c4.p2",
+          "pageID": "s2.c4.p2",
           "pageOrder": 2,
           "pageTitle": "클로저에서 나중에 실행될 행동 읽기",
           "kind": "direct",
           "connection": "클로저에서 나중에 실행될 행동 읽기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s2.c4",
+          "chapterID": "s2.c4",
           "chapterOrder": 4,
           "chapterTitle": "함수와 타입의 책임 읽기",
-          "pageID": "v2.s2.c4.p3",
+          "pageID": "s2.c4.p3",
           "pageOrder": 3,
           "pageTitle": "struct·class·enum의 책임 경계 읽기",
           "kind": "direct",
@@ -2855,7 +2855,7 @@
       ]
     },
     {
-      "id": "v2.concept.6a42d77cc67e",
+      "id": "concept.6a42d77cc67e",
       "title": "의존성과 주입",
       "definition": "의존성은 현재 조각이 일을 하기 위해 필요로 하는 외부 능력이며, 주입은 그 구현의 선택을 바깥으로 옮긴다.",
       "essentialQuestion": "이 조각이 직접 생성하는 외부 객체는 무엇인가? 실제 구현은 어디서 조립되는가? 테스트에서는 무엇으로 바뀌는가?",
@@ -2870,10 +2870,10 @@
       ],
       "revisitPages": [
         {
-          "chapterID": "v2.s2.c4",
+          "chapterID": "s2.c4",
           "chapterOrder": 4,
           "chapterTitle": "함수와 타입의 책임 읽기",
-          "pageID": "v2.s2.c4.p4",
+          "pageID": "s2.c4.p4",
           "pageOrder": 4,
           "pageTitle": "초기화와 멤버 연결로 객체 협력 읽기",
           "kind": "direct",
@@ -2882,7 +2882,7 @@
       ]
     },
     {
-      "id": "v2.concept.4399498de565",
+      "id": "concept.4399498de565",
       "title": "초기화와 멤버 연결",
       "definition": "초기화는 타입이 유효하게 시작하기 위해 필요한 값과 협력 대상을 드러낸다.",
       "essentialQuestion": "생성 시 반드시 필요한 것은 무엇인가? 기본값 뒤에 숨은 결정은 무엇인가? 전달된 객체는 누가 소유하는가?",
@@ -2897,90 +2897,90 @@
       ],
       "revisitPages": [
         {
-          "chapterID": "v2.s1.c1",
+          "chapterID": "s1.c1",
           "chapterOrder": 1,
           "chapterTitle": "코드라는 문장 구경하기",
-          "pageID": "v2.s1.c1.p1",
+          "pageID": "s1.c1.p1",
           "pageOrder": 1,
           "pageTitle": "코드와 화면 결과 연결하기",
           "kind": "direct",
           "connection": "코드와 화면 결과 연결하기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s1.c1",
+          "chapterID": "s1.c1",
           "chapterOrder": 1,
           "chapterTitle": "코드라는 문장 구경하기",
-          "pageID": "v2.s1.c1.p2",
+          "pageID": "s1.c1.p2",
           "pageOrder": 2,
           "pageTitle": "코드에서 단어와 기호 찾기",
           "kind": "direct",
           "connection": "코드에서 단어와 기호 찾기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s1.c1",
+          "chapterID": "s1.c1",
           "chapterOrder": 1,
           "chapterTitle": "코드라는 문장 구경하기",
-          "pageID": "v2.s1.c1.p4",
+          "pageID": "s1.c1.p4",
           "pageOrder": 4,
           "pageTitle": "모르는 코드에서 아는 단서 찾기",
           "kind": "direct",
           "connection": "모르는 코드에서 아는 단서 찾기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s1.c3",
+          "chapterID": "s1.c3",
           "chapterOrder": 3,
           "chapterTitle": "이름과 약속 알아보기",
-          "pageID": "v2.s1.c3.p2",
+          "pageID": "s1.c3.p2",
           "pageOrder": 2,
           "pageTitle": "let과 var의 약속 구분하기",
           "kind": "direct",
           "connection": "let과 var의 약속 구분하기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s1.c4",
+          "chapterID": "s1.c4",
           "chapterOrder": 4,
           "chapterTitle": "계산과 질문의 기호 알아보기",
-          "pageID": "v2.s1.c4.p4",
+          "pageID": "s1.c4.p4",
           "pageOrder": 4,
           "pageTitle": "점과 괄호가 만드는 호출 읽기",
           "kind": "direct",
           "connection": "점과 괄호가 만드는 호출 읽기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s1.c8",
+          "chapterID": "s1.c8",
           "chapterOrder": 8,
           "chapterTitle": "Swift 앱의 자주 보이는 표식 알아보기",
-          "pageID": "v2.s1.c8.p2",
+          "pageID": "s1.c8.p2",
           "pageOrder": 2,
           "pageTitle": "골뱅이와 달러 표식 알아보기",
           "kind": "direct",
           "connection": "골뱅이와 달러 표식 알아보기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s1.c9",
+          "chapterID": "s1.c9",
           "chapterOrder": 9,
           "chapterTitle": "짧은 코드 문장을 처음부터 읽어보기",
-          "pageID": "v2.s1.c9.p1",
+          "pageID": "s1.c9.p1",
           "pageOrder": 1,
           "pageTitle": "코드 단어 사냥하기",
           "kind": "direct",
           "connection": "코드 단어 사냥하기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s2.c4",
+          "chapterID": "s2.c4",
           "chapterOrder": 4,
           "chapterTitle": "함수와 타입의 책임 읽기",
-          "pageID": "v2.s2.c4.p4",
+          "pageID": "s2.c4.p4",
           "pageOrder": 4,
           "pageTitle": "초기화와 멤버 연결로 객체 협력 읽기",
           "kind": "direct",
           "connection": "초기화와 멤버 연결로 객체 협력 읽기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s2.c8",
+          "chapterID": "s2.c8",
           "chapterOrder": 8,
           "chapterTitle": "AI 구현을 검토하고 안전하게 바꾸기",
-          "pageID": "v2.s2.c8.p1",
+          "pageID": "s2.c8.p1",
           "pageOrder": 1,
           "pageTitle": "요구사항과 화면 결과를 코드에 연결하기",
           "kind": "direct",
@@ -2989,7 +2989,7 @@
       ]
     },
     {
-      "id": "v2.concept.daf22bea5078",
+      "id": "concept.daf22bea5078",
       "title": "클로저와 실행 시점",
       "definition": "클로저는 함께 실행할 행동을 값처럼 전달하며 주변 값을 캡처할 수 있다.",
       "essentialQuestion": "누가 이 행동을 받는가? 지금 실행되는가 나중에 실행되는가? 바깥의 어떤 값을 읽거나 붙잡는가?",
@@ -3004,30 +3004,30 @@
       ],
       "revisitPages": [
         {
-          "chapterID": "v2.s1.c5",
+          "chapterID": "s1.c5",
           "chapterOrder": 5,
           "chapterTitle": "묶음과 갈림길 알아보기",
-          "pageID": "v2.s1.c5.p3",
+          "pageID": "s1.c5.p3",
           "pageOrder": 3,
           "pageTitle": "guard와 return으로 멈추는 길 보기",
           "kind": "direct",
           "connection": "guard와 return으로 멈추는 길 보기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s1.c7",
+          "chapterID": "s1.c7",
           "chapterOrder": 7,
           "chapterTitle": "이름 붙은 행동과 설계도 알아보기",
-          "pageID": "v2.s1.c7.p3",
+          "pageID": "s1.c7.p3",
           "pageOrder": 3,
           "pageTitle": "클로저가 나중에 할 행동 찾기",
           "kind": "direct",
           "connection": "클로저가 나중에 할 행동 찾기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s2.c4",
+          "chapterID": "s2.c4",
           "chapterOrder": 4,
           "chapterTitle": "함수와 타입의 책임 읽기",
-          "pageID": "v2.s2.c4.p2",
+          "pageID": "s2.c4.p2",
           "pageOrder": 2,
           "pageTitle": "클로저에서 나중에 실행될 행동 읽기",
           "kind": "direct",
@@ -3036,7 +3036,7 @@
       ]
     },
     {
-      "id": "v2.concept.78a172ca71d7",
+      "id": "concept.78a172ca71d7",
       "title": "Environment와 navigation",
       "definition": "Environment는 View 계층을 통해 공유 값을 전달하고, navigation 상태는 현재 화면 경로를 표현한다.",
       "essentialQuestion": "값은 어느 조상에서 공급되는가? 없을 때 기본값은 무엇인가? 경로는 사용자가 복원하거나 변경할 수 있는 상태인가?",
@@ -3051,20 +3051,20 @@
       ],
       "revisitPages": [
         {
-          "chapterID": "v2.s2.c5",
+          "chapterID": "s2.c5",
           "chapterOrder": 5,
           "chapterTitle": "SwiftUI 화면 흐름 읽기",
-          "pageID": "v2.s2.c5.p1",
+          "pageID": "s2.c5.p1",
           "pageOrder": 1,
           "pageTitle": "View 트리에서 화면 윤곽 찾기",
           "kind": "direct",
           "connection": "View 트리에서 화면 윤곽 찾기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s2.c5",
+          "chapterID": "s2.c5",
           "chapterOrder": 5,
           "chapterTitle": "SwiftUI 화면 흐름 읽기",
-          "pageID": "v2.s2.c5.p4",
+          "pageID": "s2.c5.p4",
           "pageOrder": 4,
           "pageTitle": "modifier·환경·navigation의 역할 읽기",
           "kind": "direct",
@@ -3073,7 +3073,7 @@
       ]
     },
     {
-      "id": "v2.concept.8a008c70e4f2",
+      "id": "concept.8a008c70e4f2",
       "title": "State와 Binding",
       "definition": "State는 화면 생명주기에 속한 원본 값을 보관하고, Binding은 그 값에 대한 읽기·쓰기 연결을 자식에게 전달한다.",
       "essentialQuestion": "원본 상태는 어디에 있는가? 자식은 값을 복사받는가 연결받는가? 이 상태는 화면이 사라져도 남아야 하는가?",
@@ -3088,30 +3088,30 @@
       ],
       "revisitPages": [
         {
-          "chapterID": "v2.s2.c1",
+          "chapterID": "s2.c1",
           "chapterOrder": 1,
           "chapterTitle": "코드를 의미 단위로 훑어보기",
-          "pageID": "v2.s2.c1.p2",
+          "pageID": "s2.c1.p2",
           "pageOrder": 2,
           "pageTitle": "코드에서 역할 단서 찾기",
           "kind": "direct",
           "connection": "코드에서 역할 단서 찾기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s2.c5",
+          "chapterID": "s2.c5",
           "chapterOrder": 5,
           "chapterTitle": "SwiftUI 화면 흐름 읽기",
-          "pageID": "v2.s2.c5.p2",
+          "pageID": "s2.c5.p2",
           "pageOrder": 2,
           "pageTitle": "상태와 Binding이 화면을 바꾸는 흐름 읽기",
           "kind": "direct",
           "connection": "상태와 Binding이 화면을 바꾸는 흐름 읽기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s2.c6",
+          "chapterID": "s2.c6",
           "chapterOrder": 6,
           "chapterTitle": "저장과 외부 데이터 경계 읽기",
-          "pageID": "v2.s2.c6.p2",
+          "pageID": "s2.c6.p2",
           "pageOrder": 2,
           "pageTitle": "async·await·Task의 시간 흐름 읽기",
           "kind": "direct",
@@ -3120,7 +3120,7 @@
       ]
     },
     {
-      "id": "v2.concept.ad7c4cc1526f",
+      "id": "concept.ad7c4cc1526f",
       "title": "View 트리",
       "definition": "SwiftUI 화면은 `body`가 반환하는 View의 포함 관계와 조건부 가지로 읽는다.",
       "essentialQuestion": "최상위 컨테이너는 무엇인가? 반복되는 자식은 무엇인가? 상태에 따라 어느 가지가 보이는가?",
@@ -3135,60 +3135,60 @@
       ],
       "revisitPages": [
         {
-          "chapterID": "v2.s1.c8",
+          "chapterID": "s1.c8",
           "chapterOrder": 8,
           "chapterTitle": "Swift 앱의 자주 보이는 표식 알아보기",
-          "pageID": "v2.s1.c8.p4",
+          "pageID": "s1.c8.p4",
           "pageOrder": 4,
           "pageTitle": "View·body·modifier의 첫 역할 알아보기",
           "kind": "direct",
           "connection": "View·body·modifier의 첫 역할 알아보기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s2.c4",
+          "chapterID": "s2.c4",
           "chapterOrder": 4,
           "chapterTitle": "함수와 타입의 책임 읽기",
-          "pageID": "v2.s2.c4.p4",
+          "pageID": "s2.c4.p4",
           "pageOrder": 4,
           "pageTitle": "초기화와 멤버 연결로 객체 협력 읽기",
           "kind": "direct",
           "connection": "초기화와 멤버 연결로 객체 협력 읽기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s2.c5",
+          "chapterID": "s2.c5",
           "chapterOrder": 5,
           "chapterTitle": "SwiftUI 화면 흐름 읽기",
-          "pageID": "v2.s2.c5.p1",
+          "pageID": "s2.c5.p1",
           "pageOrder": 1,
           "pageTitle": "View 트리에서 화면 윤곽 찾기",
           "kind": "direct",
           "connection": "View 트리에서 화면 윤곽 찾기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s2.c5",
+          "chapterID": "s2.c5",
           "chapterOrder": 5,
           "chapterTitle": "SwiftUI 화면 흐름 읽기",
-          "pageID": "v2.s2.c5.p2",
+          "pageID": "s2.c5.p2",
           "pageOrder": 2,
           "pageTitle": "상태와 Binding이 화면을 바꾸는 흐름 읽기",
           "kind": "direct",
           "connection": "상태와 Binding이 화면을 바꾸는 흐름 읽기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s2.c6",
+          "chapterID": "s2.c6",
           "chapterOrder": 6,
           "chapterTitle": "저장과 외부 데이터 경계 읽기",
-          "pageID": "v2.s2.c6.p3",
+          "pageID": "s2.c6.p3",
           "pageOrder": 3,
           "pageTitle": "오류·로딩·빈·성공 상태 구분하기",
           "kind": "direct",
           "connection": "오류·로딩·빈·성공 상태 구분하기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s2.c7",
+          "chapterID": "s2.c7",
           "chapterOrder": 7,
           "chapterTitle": "계약과 아키텍처를 가로질러 읽기",
-          "pageID": "v2.s2.c7.p2",
+          "pageID": "s2.c7.p2",
           "pageOrder": 2,
           "pageTitle": "generic과 extension에서 재사용 경계 읽기",
           "kind": "direct",
@@ -3197,7 +3197,7 @@
       ]
     },
     {
-      "id": "v2.concept.fa72d7932292",
+      "id": "concept.fa72d7932292",
       "title": "modifier 사슬",
       "definition": "modifier는 앞의 View를 받아 모양·동작·환경이 달라진 새 View를 차례로 만든다.",
       "essentialQuestion": "어느 View에 적용되는가? 순서가 결과에 영향을 주는가? 모양, 행동, 데이터 주입 중 어느 역할인가?",
@@ -3212,20 +3212,20 @@
       ],
       "revisitPages": [
         {
-          "chapterID": "v2.s1.c8",
+          "chapterID": "s1.c8",
           "chapterOrder": 8,
           "chapterTitle": "Swift 앱의 자주 보이는 표식 알아보기",
-          "pageID": "v2.s1.c8.p4",
+          "pageID": "s1.c8.p4",
           "pageOrder": 4,
           "pageTitle": "View·body·modifier의 첫 역할 알아보기",
           "kind": "direct",
           "connection": "View·body·modifier의 첫 역할 알아보기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s2.c5",
+          "chapterID": "s2.c5",
           "chapterOrder": 5,
           "chapterTitle": "SwiftUI 화면 흐름 읽기",
-          "pageID": "v2.s2.c5.p4",
+          "pageID": "s2.c5.p4",
           "pageOrder": 4,
           "pageTitle": "modifier·환경·navigation의 역할 읽기",
           "kind": "direct",
@@ -3234,7 +3234,7 @@
       ]
     },
     {
-      "id": "v2.concept.f5b66ffc6439",
+      "id": "concept.f5b66ffc6439",
       "title": "사용자 행동과 다시 그리기",
       "definition": "사용자 action이 상태를 바꾸면 SwiftUI가 그 상태를 읽는 화면을 다시 평가해 새 표현을 만든다.",
       "essentialQuestion": "행동은 어떤 상태 변경을 요청하는가? 누가 변경을 처리하는가? 어떤 View가 그 상태를 읽는가?",
@@ -3249,10 +3249,10 @@
       ],
       "revisitPages": [
         {
-          "chapterID": "v2.s2.c5",
+          "chapterID": "s2.c5",
           "chapterOrder": 5,
           "chapterTitle": "SwiftUI 화면 흐름 읽기",
-          "pageID": "v2.s2.c5.p3",
+          "pageID": "s2.c5.p3",
           "pageOrder": 3,
           "pageTitle": "사용자 행동이 상태 변경으로 이어지는 길 찾기",
           "kind": "direct",
@@ -3261,7 +3261,7 @@
       ]
     },
     {
-      "id": "v2.concept.1e7165331770",
+      "id": "concept.1e7165331770",
       "title": "Codable과 요청·응답",
       "definition": "네트워크 경계는 요청을 만들고 응답 상태를 확인한 뒤 bytes를 앱의 타입으로 변환한다.",
       "essentialQuestion": "URL·method·header·body는 어디서 정해지는가? HTTP 실패와 decode 실패는 구분되는가? 외부 DTO와 내부 모델은 같은가?",
@@ -3276,10 +3276,10 @@
       ],
       "revisitPages": [
         {
-          "chapterID": "v2.s2.c6",
+          "chapterID": "s2.c6",
           "chapterOrder": 6,
           "chapterTitle": "저장과 외부 데이터 경계 읽기",
-          "pageID": "v2.s2.c6.p1",
+          "pageID": "s2.c6.p1",
           "pageOrder": 1,
           "pageTitle": "Codable·요청·응답의 데이터 변환 읽기",
           "kind": "direct",
@@ -3288,7 +3288,7 @@
       ]
     },
     {
-      "id": "v2.concept.091255424ade",
+      "id": "concept.091255424ade",
       "title": "SwiftData 모델과 문맥",
       "definition": "`@Model` 타입은 저장 대상이고, `@Query`는 결과를 화면에 공급하며, `ModelContext`는 삽입·삭제·변경 추적·저장을 맡는다.",
       "essentialQuestion": "어떤 container가 이 context를 공급하는가? 변경은 언제 디스크에 반영되는가? 조회 정렬·필터와 화면 상태는 어디에 있는가?",
@@ -3303,10 +3303,10 @@
       ],
       "revisitPages": [
         {
-          "chapterID": "v2.s2.c6",
+          "chapterID": "s2.c6",
           "chapterOrder": 6,
           "chapterTitle": "저장과 외부 데이터 경계 읽기",
-          "pageID": "v2.s2.c6.p4",
+          "pageID": "s2.c6.p4",
           "pageOrder": 4,
           "pageTitle": "SwiftData 저장·조회·삭제 흐름 읽기",
           "kind": "direct",
@@ -3315,7 +3315,7 @@
       ]
     },
     {
-      "id": "v2.concept.ce65ce877ca9",
+      "id": "concept.ce65ce877ca9",
       "title": "async·await·Task",
       "definition": "`async`는 중단될 수 있는 함수, `await`는 중단 가능 지점, `Task`는 비동기 작업의 생명주기를 시작하거나 담는 단서다.",
       "essentialQuestion": "무엇을 기다리는가? 기다리는 동안 어떤 상태인가? 취소와 오류는 어디로 가는가? 공유 상태는 어느 격리에 있는가?",
@@ -3330,70 +3330,70 @@
       ],
       "revisitPages": [
         {
-          "chapterID": "v2.s1.c6",
+          "chapterID": "s1.c6",
           "chapterOrder": 6,
           "chapterTitle": "여러 값과 반복 알아보기",
-          "pageID": "v2.s1.c6.p1",
+          "pageID": "s1.c6.p1",
           "pageOrder": 1,
           "pageTitle": "배열에서 전체와 원소 구분하기",
           "kind": "direct",
           "connection": "배열에서 전체와 원소 구분하기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s1.c6",
+          "chapterID": "s1.c6",
           "chapterOrder": 6,
           "chapterTitle": "여러 값과 반복 알아보기",
-          "pageID": "v2.s1.c6.p2",
+          "pageID": "s1.c6.p2",
           "pageOrder": 2,
           "pageTitle": "for와 ForEach의 반복 찾기",
           "kind": "direct",
           "connection": "for와 ForEach의 반복 찾기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s1.c6",
+          "chapterID": "s1.c6",
           "chapterOrder": 6,
           "chapterTitle": "여러 값과 반복 알아보기",
-          "pageID": "v2.s1.c6.p4",
+          "pageID": "s1.c6.p4",
           "pageOrder": 4,
           "pageTitle": "반복 코드 조각에 역할 카드 붙이기",
           "kind": "direct",
           "connection": "반복 코드 조각에 역할 카드 붙이기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s1.c8",
+          "chapterID": "s1.c8",
           "chapterOrder": 8,
           "chapterTitle": "Swift 앱의 자주 보이는 표식 알아보기",
-          "pageID": "v2.s1.c8.p3",
+          "pageID": "s1.c8.p3",
           "pageOrder": 3,
           "pageTitle": "try·throws·async·await 알아보기",
           "kind": "direct",
           "connection": "try·throws·async·await 알아보기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s2.c6",
+          "chapterID": "s2.c6",
           "chapterOrder": 6,
           "chapterTitle": "저장과 외부 데이터 경계 읽기",
-          "pageID": "v2.s2.c6.p1",
+          "pageID": "s2.c6.p1",
           "pageOrder": 1,
           "pageTitle": "Codable·요청·응답의 데이터 변환 읽기",
           "kind": "direct",
           "connection": "Codable·요청·응답의 데이터 변환 읽기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s2.c6",
+          "chapterID": "s2.c6",
           "chapterOrder": 6,
           "chapterTitle": "저장과 외부 데이터 경계 읽기",
-          "pageID": "v2.s2.c6.p2",
+          "pageID": "s2.c6.p2",
           "pageOrder": 2,
           "pageTitle": "async·await·Task의 시간 흐름 읽기",
           "kind": "direct",
           "connection": "async·await·Task의 시간 흐름 읽기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s2.c6",
+          "chapterID": "s2.c6",
           "chapterOrder": 6,
           "chapterTitle": "저장과 외부 데이터 경계 읽기",
-          "pageID": "v2.s2.c6.p3",
+          "pageID": "s2.c6.p3",
           "pageOrder": 3,
           "pageTitle": "오류·로딩·빈·성공 상태 구분하기",
           "kind": "direct",
@@ -3402,7 +3402,7 @@
       ]
     },
     {
-      "id": "v2.concept.07958e825aff",
+      "id": "concept.07958e825aff",
       "title": "로딩·오류·빈·성공 상태",
       "definition": "외부 데이터를 쓰는 화면은 기다림, 실패, 성공한 빈 결과, 성공한 데이터 결과를 서로 다른 의미로 다룬다.",
       "essentialQuestion": "최초 로딩과 새로고침은 같은가? 오류 중에도 이전 데이터를 유지하는가? 빈 결과는 정상인가?",
@@ -3417,30 +3417,30 @@
       ],
       "revisitPages": [
         {
-          "chapterID": "v2.s1.c8",
+          "chapterID": "s1.c8",
           "chapterOrder": 8,
           "chapterTitle": "Swift 앱의 자주 보이는 표식 알아보기",
-          "pageID": "v2.s1.c8.p3",
+          "pageID": "s1.c8.p3",
           "pageOrder": 3,
           "pageTitle": "try·throws·async·await 알아보기",
           "kind": "direct",
           "connection": "try·throws·async·await 알아보기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s2.c6",
+          "chapterID": "s2.c6",
           "chapterOrder": 6,
           "chapterTitle": "저장과 외부 데이터 경계 읽기",
-          "pageID": "v2.s2.c6.p2",
+          "pageID": "s2.c6.p2",
           "pageOrder": 2,
           "pageTitle": "async·await·Task의 시간 흐름 읽기",
           "kind": "direct",
           "connection": "async·await·Task의 시간 흐름 읽기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s2.c6",
+          "chapterID": "s2.c6",
           "chapterOrder": 6,
           "chapterTitle": "저장과 외부 데이터 경계 읽기",
-          "pageID": "v2.s2.c6.p3",
+          "pageID": "s2.c6.p3",
           "pageOrder": 3,
           "pageTitle": "오류·로딩·빈·성공 상태 구분하기",
           "kind": "direct",
@@ -3449,7 +3449,7 @@
       ]
     },
     {
-      "id": "v2.concept.12f7c7373056",
+      "id": "concept.12f7c7373056",
       "title": "부작용 경계",
       "definition": "저장, 통신, 시간, 난수, 알림처럼 같은 입력에도 외부 결과가 달라질 수 있는 일을 경계로 표시한다.",
       "essentialQuestion": "외부 세계와 만나는 첫 줄은 어디인가? 실패와 재시도는 누가 책임지는가? 테스트에서 무엇으로 대체할 수 있는가?",
@@ -3464,70 +3464,70 @@
       ],
       "revisitPages": [
         {
-          "chapterID": "v2.s2.c1",
+          "chapterID": "s2.c1",
           "chapterOrder": 1,
           "chapterTitle": "코드를 의미 단위로 훑어보기",
-          "pageID": "v2.s2.c1.p3",
+          "pageID": "s2.c1.p3",
           "pageOrder": 3,
           "pageTitle": "코드를 책임 조각으로 묶기",
           "kind": "direct",
           "connection": "코드를 책임 조각으로 묶기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s2.c3",
+          "chapterID": "s2.c3",
           "chapterOrder": 3,
           "chapterTitle": "분기와 반복의 실행 흐름 읽기",
-          "pageID": "v2.s2.c3.p4",
+          "pageID": "s2.c3.p4",
           "pageOrder": 4,
           "pageTitle": "조건과 반복을 결과까지 추적하기",
           "kind": "direct",
           "connection": "조건과 반복을 결과까지 추적하기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s2.c5",
+          "chapterID": "s2.c5",
           "chapterOrder": 5,
           "chapterTitle": "SwiftUI 화면 흐름 읽기",
-          "pageID": "v2.s2.c5.p1",
+          "pageID": "s2.c5.p1",
           "pageOrder": 1,
           "pageTitle": "View 트리에서 화면 윤곽 찾기",
           "kind": "direct",
           "connection": "View 트리에서 화면 윤곽 찾기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s2.c6",
+          "chapterID": "s2.c6",
           "chapterOrder": 6,
           "chapterTitle": "저장과 외부 데이터 경계 읽기",
-          "pageID": "v2.s2.c6.p1",
+          "pageID": "s2.c6.p1",
           "pageOrder": 1,
           "pageTitle": "Codable·요청·응답의 데이터 변환 읽기",
           "kind": "direct",
           "connection": "Codable·요청·응답의 데이터 변환 읽기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s2.c7",
+          "chapterID": "s2.c7",
           "chapterOrder": 7,
           "chapterTitle": "계약과 아키텍처를 가로질러 읽기",
-          "pageID": "v2.s2.c7.p4",
+          "pageID": "s2.c7.p4",
           "pageOrder": 4,
           "pageTitle": "여러 파일을 가로질러 기능 흐름 추적하기",
           "kind": "direct",
           "connection": "여러 파일을 가로질러 기능 흐름 추적하기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s2.c8",
+          "chapterID": "s2.c8",
           "chapterOrder": 8,
           "chapterTitle": "AI 구현을 검토하고 안전하게 바꾸기",
-          "pageID": "v2.s2.c8.p2",
+          "pageID": "s2.c8.p2",
           "pageOrder": 2,
           "pageTitle": "낯선 구현을 여섯 조각으로 요약하기",
           "kind": "direct",
           "connection": "낯선 구현을 여섯 조각으로 요약하기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s2.c8",
+          "chapterID": "s2.c8",
           "chapterOrder": 8,
           "chapterTitle": "AI 구현을 검토하고 안전하게 바꾸기",
-          "pageID": "v2.s2.c8.p4",
+          "pageID": "s2.c8.p4",
           "pageOrder": 4,
           "pageTitle": "처음 보는 앱을 읽고 개선 요청 만들기",
           "kind": "direct",
@@ -3536,7 +3536,7 @@
       ]
     },
     {
-      "id": "v2.concept.50024a4c36c6",
+      "id": "concept.50024a4c36c6",
       "title": "MVVM 읽기",
       "definition": "MVVM에서는 View가 표시와 입력을 맡고, ViewModel이 화면 상태와 행동 처리를 제공하며, 모델·서비스가 데이터와 외부 작업을 맡는지 확인한다.",
       "essentialQuestion": "상태의 원본은 어디인가? View가 직접 수행하는 정책은 무엇인가? ViewModel이 화면 하나보다 너무 많은 책임을 갖는가?",
@@ -3552,7 +3552,7 @@
       "revisitPages": []
     },
     {
-      "id": "v2.concept.98dadc90a56c",
+      "id": "concept.98dadc90a56c",
       "title": "기능 흐름",
       "definition": "기능 흐름은 사용자 행동에서 화면 결과까지 관련된 상태·로직·외부 경계를 파일을 가로질러 연결한 길이다.",
       "essentialQuestion": "행동은 어디서 이름 붙는가? 누가 처리하는가? 외부 결과가 어떤 상태가 되어 어느 화면에 보이는가?",
@@ -3567,30 +3567,30 @@
       ],
       "revisitPages": [
         {
-          "chapterID": "v2.s2.c7",
+          "chapterID": "s2.c7",
           "chapterOrder": 7,
           "chapterTitle": "계약과 아키텍처를 가로질러 읽기",
-          "pageID": "v2.s2.c7.p3",
+          "pageID": "s2.c7.p3",
           "pageOrder": 3,
           "pageTitle": "MVVM과 단방향 흐름을 같은 질문으로 읽기",
           "kind": "direct",
           "connection": "MVVM과 단방향 흐름을 같은 질문으로 읽기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s2.c7",
+          "chapterID": "s2.c7",
           "chapterOrder": 7,
           "chapterTitle": "계약과 아키텍처를 가로질러 읽기",
-          "pageID": "v2.s2.c7.p4",
+          "pageID": "s2.c7.p4",
           "pageOrder": 4,
           "pageTitle": "여러 파일을 가로질러 기능 흐름 추적하기",
           "kind": "direct",
           "connection": "여러 파일을 가로질러 기능 흐름 추적하기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s2.c8",
+          "chapterID": "s2.c8",
           "chapterOrder": 8,
           "chapterTitle": "AI 구현을 검토하고 안전하게 바꾸기",
-          "pageID": "v2.s2.c8.p4",
+          "pageID": "s2.c8.p4",
           "pageOrder": 4,
           "pageTitle": "처음 보는 앱을 읽고 개선 요청 만들기",
           "kind": "direct",
@@ -3599,7 +3599,7 @@
       ]
     },
     {
-      "id": "v2.concept.e361cf592000",
+      "id": "concept.e361cf592000",
       "title": "단방향 상태 흐름",
       "definition": "사용자·시스템 action이 상태 전이를 거쳐 새 상태를 만들고 View가 이를 표시하는 한 방향의 순환이다.",
       "essentialQuestion": "사건은 어떤 action인가? 어느 전이가 상태를 바꾸는가? 비동기 결과는 어떤 새 action으로 돌아오는가?",
@@ -3614,10 +3614,10 @@
       ],
       "revisitPages": [
         {
-          "chapterID": "v2.s2.c7",
+          "chapterID": "s2.c7",
           "chapterOrder": 7,
           "chapterTitle": "계약과 아키텍처를 가로질러 읽기",
-          "pageID": "v2.s2.c7.p3",
+          "pageID": "s2.c7.p3",
           "pageOrder": 3,
           "pageTitle": "MVVM과 단방향 흐름을 같은 질문으로 읽기",
           "kind": "direct",
@@ -3626,7 +3626,7 @@
       ]
     },
     {
-      "id": "v2.concept.47f024303e8d",
+      "id": "concept.47f024303e8d",
       "title": "변경 영향",
       "definition": "변경 영향은 수정 대상뿐 아니라 그 값을 생성·저장·전달·표시·검증하는 조각을 함께 찾는 일이다.",
       "essentialQuestion": "무엇이 새로 달라지는가? 무엇은 그대로여야 하는가? 타입·상태·외부 계약·저장 데이터 중 경계가 바뀌는가?",
@@ -3641,70 +3641,70 @@
       ],
       "revisitPages": [
         {
-          "chapterID": "v2.s1.c9",
+          "chapterID": "s1.c9",
           "chapterOrder": 9,
           "chapterTitle": "짧은 코드 문장을 처음부터 읽어보기",
-          "pageID": "v2.s1.c9.p3",
+          "pageID": "s1.c9.p3",
           "pageOrder": 3,
           "pageTitle": "한 단어가 바뀐 코드 비교하기",
           "kind": "direct",
           "connection": "한 단어가 바뀐 코드 비교하기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s2.c1",
+          "chapterID": "s2.c1",
           "chapterOrder": 1,
           "chapterTitle": "코드를 의미 단위로 훑어보기",
-          "pageID": "v2.s2.c1.p3",
+          "pageID": "s2.c1.p3",
           "pageOrder": 3,
           "pageTitle": "코드를 책임 조각으로 묶기",
           "kind": "direct",
           "connection": "코드를 책임 조각으로 묶기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s2.c1",
+          "chapterID": "s2.c1",
           "chapterOrder": 1,
           "chapterTitle": "코드를 의미 단위로 훑어보기",
-          "pageID": "v2.s2.c1.p4",
+          "pageID": "s2.c1.p4",
           "pageOrder": 4,
           "pageTitle": "조각 사이 흐름과 변경 영향 말하기",
           "kind": "direct",
           "connection": "조각 사이 흐름과 변경 영향 말하기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s2.c5",
+          "chapterID": "s2.c5",
           "chapterOrder": 5,
           "chapterTitle": "SwiftUI 화면 흐름 읽기",
-          "pageID": "v2.s2.c5.p3",
+          "pageID": "s2.c5.p3",
           "pageOrder": 3,
           "pageTitle": "사용자 행동이 상태 변경으로 이어지는 길 찾기",
           "kind": "direct",
           "connection": "사용자 행동이 상태 변경으로 이어지는 길 찾기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s2.c7",
+          "chapterID": "s2.c7",
           "chapterOrder": 7,
           "chapterTitle": "계약과 아키텍처를 가로질러 읽기",
-          "pageID": "v2.s2.c7.p3",
+          "pageID": "s2.c7.p3",
           "pageOrder": 3,
           "pageTitle": "MVVM과 단방향 흐름을 같은 질문으로 읽기",
           "kind": "direct",
           "connection": "MVVM과 단방향 흐름을 같은 질문으로 읽기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s2.c8",
+          "chapterID": "s2.c8",
           "chapterOrder": 8,
           "chapterTitle": "AI 구현을 검토하고 안전하게 바꾸기",
-          "pageID": "v2.s2.c8.p2",
+          "pageID": "s2.c8.p2",
           "pageOrder": 2,
           "pageTitle": "낯선 구현을 여섯 조각으로 요약하기",
           "kind": "direct",
           "connection": "낯선 구현을 여섯 조각으로 요약하기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s2.c8",
+          "chapterID": "s2.c8",
           "chapterOrder": 8,
           "chapterTitle": "AI 구현을 검토하고 안전하게 바꾸기",
-          "pageID": "v2.s2.c8.p3",
+          "pageID": "s2.c8.p3",
           "pageOrder": 3,
           "pageTitle": "한 변경의 영향 범위와 검증 지점 찾기",
           "kind": "direct",
@@ -3713,7 +3713,7 @@
       ]
     },
     {
-      "id": "v2.concept.c03639a5c779",
+      "id": "concept.c03639a5c779",
       "title": "테스트 증거",
       "definition": "테스트는 구현을 설명하는 문서가 아니라 특정 입력·행동에서 지켜야 할 결과를 실행으로 확인하는 증거다.",
       "essentialQuestion": "어떤 계약을 검증하는가? 실패하면 어느 책임 조각을 의심할 수 있는가? 중요한 경계와 실패 경로가 포함됐는가?",
@@ -3728,20 +3728,20 @@
       ],
       "revisitPages": [
         {
-          "chapterID": "v2.s2.c8",
+          "chapterID": "s2.c8",
           "chapterOrder": 8,
           "chapterTitle": "AI 구현을 검토하고 안전하게 바꾸기",
-          "pageID": "v2.s2.c8.p2",
+          "pageID": "s2.c8.p2",
           "pageOrder": 2,
           "pageTitle": "낯선 구현을 여섯 조각으로 요약하기",
           "kind": "direct",
           "connection": "낯선 구현을 여섯 조각으로 요약하기에서 이 지식을 직접 사용한다."
         },
         {
-          "chapterID": "v2.s2.c8",
+          "chapterID": "s2.c8",
           "chapterOrder": 8,
           "chapterTitle": "AI 구현을 검토하고 안전하게 바꾸기",
-          "pageID": "v2.s2.c8.p3",
+          "pageID": "s2.c8.p3",
           "pageOrder": 3,
           "pageTitle": "한 변경의 영향 범위와 검증 지점 찾기",
           "kind": "direct",
@@ -3750,7 +3750,7 @@
       ]
     },
     {
-      "id": "v2.concept.9130e95e56d9",
+      "id": "concept.9130e95e56d9",
       "title": "변환하기 패턴",
       "definition": "`원본 → 선택 → 정렬 → 형태 변경 → 출력`은 목록·검색·API 응답에서 반복된다.",
       "essentialQuestion": "각 단계의 입력과 출력 타입은 무엇인가? 원본을 바꾸는가 새 값을 만드는가? 순서를 바꿔도 의미가 같은가?",
@@ -3764,7 +3764,7 @@
       "revisitPages": []
     },
     {
-      "id": "v2.concept.f1f3ae68aa47",
+      "id": "concept.f1f3ae68aa47",
       "title": "불러오기 패턴",
       "definition": "`계기 → 로딩 상태 → 외부 호출 → 변환 → 성공·실패 상태 → 화면`은 API와 저장소 조회에서 반복된다.",
       "essentialQuestion": "누가 시작하는가? 중복 요청과 취소는 누가 소유하는가? 이전 데이터는 유지되는가?",
@@ -3778,7 +3778,7 @@
       "revisitPages": []
     },
     {
-      "id": "v2.concept.e1b6156005b4",
+      "id": "concept.e1b6156005b4",
       "title": "실패 복구 패턴",
       "definition": "`실패 감지 → 의미 있는 오류로 변환 → 상태 보존 → 피드백 → 재시도·취소 → 결과 확인`은 안전한 기능의 공통 흐름이다.",
       "essentialQuestion": "어느 경계에서 실패했는가? 무엇을 잃지 않아야 하는가? 재시도는 같은 요청을 안전하게 반복하는가?",
@@ -3792,7 +3792,7 @@
       "revisitPages": []
     },
     {
-      "id": "v2.concept.9aaca74daa01",
+      "id": "concept.9aaca74daa01",
       "title": "저장하기 패턴",
       "definition": "`사용자 입력 → 검증 → 모델 생성·변경 → 저장 요청 → 성공·실패 피드백 → 화면 갱신`은 영속화 기술과 무관하게 반복된다.",
       "essentialQuestion": "저장 전에 무엇을 검증하는가? 메모리 변경과 디스크 반영은 언제 갈리는가? 실패하면 입력이 유지되는가?",
@@ -3808,366 +3808,366 @@
   ],
   "relations": [
     {
-      "id": "v2.relation.daf760a167a8.4c72a13ad43c",
-      "sourceConceptID": "v2.concept.daf760a167a8",
-      "targetConceptID": "v2.concept.4c72a13ad43c",
+      "id": "relation.daf760a167a8.4c72a13ad43c",
+      "sourceConceptID": "concept.daf760a167a8",
+      "targetConceptID": "concept.4c72a13ad43c",
       "kind": "leadsTo",
       "summary": "현재 기준을 바탕으로 다음 코드 단서와 책임을 읽는다."
     },
     {
-      "id": "v2.relation.815815970445.daf760a167a8",
-      "sourceConceptID": "v2.concept.815815970445",
-      "targetConceptID": "v2.concept.daf760a167a8",
+      "id": "relation.815815970445.daf760a167a8",
+      "sourceConceptID": "concept.815815970445",
+      "targetConceptID": "concept.daf760a167a8",
       "kind": "leadsTo",
       "summary": "현재 기준을 바탕으로 다음 코드 단서와 책임을 읽는다."
     },
     {
-      "id": "v2.relation.5c89edcac281.815815970445",
-      "sourceConceptID": "v2.concept.5c89edcac281",
-      "targetConceptID": "v2.concept.815815970445",
+      "id": "relation.5c89edcac281.815815970445",
+      "sourceConceptID": "concept.5c89edcac281",
+      "targetConceptID": "concept.815815970445",
       "kind": "leadsTo",
       "summary": "현재 기준을 바탕으로 다음 코드 단서와 책임을 읽는다."
     },
     {
-      "id": "v2.relation.3df63b7acb05.5c89edcac281",
-      "sourceConceptID": "v2.concept.3df63b7acb05",
-      "targetConceptID": "v2.concept.5c89edcac281",
+      "id": "relation.3df63b7acb05.5c89edcac281",
+      "sourceConceptID": "concept.3df63b7acb05",
+      "targetConceptID": "concept.5c89edcac281",
       "kind": "leadsTo",
       "summary": "현재 기준을 바탕으로 다음 코드 단서와 책임을 읽는다."
     },
     {
-      "id": "v2.relation.50d055d31163.c8db3d00af09",
-      "sourceConceptID": "v2.concept.50d055d31163",
-      "targetConceptID": "v2.concept.c8db3d00af09",
+      "id": "relation.50d055d31163.c8db3d00af09",
+      "sourceConceptID": "concept.50d055d31163",
+      "targetConceptID": "concept.c8db3d00af09",
       "kind": "leadsTo",
       "summary": "현재 기준을 바탕으로 다음 코드 단서와 책임을 읽는다."
     },
     {
-      "id": "v2.relation.df52c8a8a4db.4546bb78ef25",
-      "sourceConceptID": "v2.concept.df52c8a8a4db",
-      "targetConceptID": "v2.concept.4546bb78ef25",
+      "id": "relation.df52c8a8a4db.4546bb78ef25",
+      "sourceConceptID": "concept.df52c8a8a4db",
+      "targetConceptID": "concept.4546bb78ef25",
       "kind": "leadsTo",
       "summary": "현재 기준을 바탕으로 다음 코드 단서와 책임을 읽는다."
     },
     {
-      "id": "v2.relation.c06aff3f3e7d.7f5b67cb56c3",
-      "sourceConceptID": "v2.concept.c06aff3f3e7d",
-      "targetConceptID": "v2.concept.7f5b67cb56c3",
+      "id": "relation.c06aff3f3e7d.7f5b67cb56c3",
+      "sourceConceptID": "concept.c06aff3f3e7d",
+      "targetConceptID": "concept.7f5b67cb56c3",
       "kind": "leadsTo",
       "summary": "현재 기준을 바탕으로 다음 코드 단서와 책임을 읽는다."
     },
     {
-      "id": "v2.relation.c8db3d00af09.3df63b7acb05",
-      "sourceConceptID": "v2.concept.c8db3d00af09",
-      "targetConceptID": "v2.concept.3df63b7acb05",
+      "id": "relation.c8db3d00af09.3df63b7acb05",
+      "sourceConceptID": "concept.c8db3d00af09",
+      "targetConceptID": "concept.3df63b7acb05",
       "kind": "leadsTo",
       "summary": "현재 기준을 바탕으로 다음 코드 단서와 책임을 읽는다."
     },
     {
-      "id": "v2.relation.4546bb78ef25.c06aff3f3e7d",
-      "sourceConceptID": "v2.concept.4546bb78ef25",
-      "targetConceptID": "v2.concept.c06aff3f3e7d",
+      "id": "relation.4546bb78ef25.c06aff3f3e7d",
+      "sourceConceptID": "concept.4546bb78ef25",
+      "targetConceptID": "concept.c06aff3f3e7d",
       "kind": "leadsTo",
       "summary": "현재 기준을 바탕으로 다음 코드 단서와 책임을 읽는다."
     },
     {
-      "id": "v2.relation.e6958de38f69.df52c8a8a4db",
-      "sourceConceptID": "v2.concept.e6958de38f69",
-      "targetConceptID": "v2.concept.df52c8a8a4db",
+      "id": "relation.e6958de38f69.df52c8a8a4db",
+      "sourceConceptID": "concept.e6958de38f69",
+      "targetConceptID": "concept.df52c8a8a4db",
       "kind": "leadsTo",
       "summary": "현재 기준을 바탕으로 다음 코드 단서와 책임을 읽는다."
     },
     {
-      "id": "v2.relation.5a708dc2d306.b8d0e64f4755",
-      "sourceConceptID": "v2.concept.5a708dc2d306",
-      "targetConceptID": "v2.concept.b8d0e64f4755",
+      "id": "relation.5a708dc2d306.b8d0e64f4755",
+      "sourceConceptID": "concept.5a708dc2d306",
+      "targetConceptID": "concept.b8d0e64f4755",
       "kind": "leadsTo",
       "summary": "현재 기준을 바탕으로 다음 코드 단서와 책임을 읽는다."
     },
     {
-      "id": "v2.relation.b8d0e64f4755.6816e901238c",
-      "sourceConceptID": "v2.concept.b8d0e64f4755",
-      "targetConceptID": "v2.concept.6816e901238c",
+      "id": "relation.b8d0e64f4755.6816e901238c",
+      "sourceConceptID": "concept.b8d0e64f4755",
+      "targetConceptID": "concept.6816e901238c",
       "kind": "leadsTo",
       "summary": "현재 기준을 바탕으로 다음 코드 단서와 책임을 읽는다."
     },
     {
-      "id": "v2.relation.4c72a13ad43c.5a708dc2d306",
-      "sourceConceptID": "v2.concept.4c72a13ad43c",
-      "targetConceptID": "v2.concept.5a708dc2d306",
+      "id": "relation.4c72a13ad43c.5a708dc2d306",
+      "sourceConceptID": "concept.4c72a13ad43c",
+      "targetConceptID": "concept.5a708dc2d306",
       "kind": "leadsTo",
       "summary": "현재 기준을 바탕으로 다음 코드 단서와 책임을 읽는다."
     },
     {
-      "id": "v2.relation.6816e901238c.e6958de38f69",
-      "sourceConceptID": "v2.concept.6816e901238c",
-      "targetConceptID": "v2.concept.e6958de38f69",
+      "id": "relation.6816e901238c.e6958de38f69",
+      "sourceConceptID": "concept.6816e901238c",
+      "targetConceptID": "concept.e6958de38f69",
       "kind": "leadsTo",
       "summary": "현재 기준을 바탕으로 다음 코드 단서와 책임을 읽는다."
     },
     {
-      "id": "v2.relation.24b928f5af76.384945bc2929",
-      "sourceConceptID": "v2.concept.24b928f5af76",
-      "targetConceptID": "v2.concept.384945bc2929",
+      "id": "relation.24b928f5af76.384945bc2929",
+      "sourceConceptID": "concept.24b928f5af76",
+      "targetConceptID": "concept.384945bc2929",
       "kind": "leadsTo",
       "summary": "현재 기준을 바탕으로 다음 코드 단서와 책임을 읽는다."
     },
     {
-      "id": "v2.relation.7f5b67cb56c3.5e5f60c822eb",
-      "sourceConceptID": "v2.concept.7f5b67cb56c3",
-      "targetConceptID": "v2.concept.5e5f60c822eb",
+      "id": "relation.7f5b67cb56c3.5e5f60c822eb",
+      "sourceConceptID": "concept.7f5b67cb56c3",
+      "targetConceptID": "concept.5e5f60c822eb",
       "kind": "leadsTo",
       "summary": "현재 기준을 바탕으로 다음 코드 단서와 책임을 읽는다."
     },
     {
-      "id": "v2.relation.fe8294523602.24b928f5af76",
-      "sourceConceptID": "v2.concept.fe8294523602",
-      "targetConceptID": "v2.concept.24b928f5af76",
+      "id": "relation.fe8294523602.24b928f5af76",
+      "sourceConceptID": "concept.fe8294523602",
+      "targetConceptID": "concept.24b928f5af76",
       "kind": "leadsTo",
       "summary": "현재 기준을 바탕으로 다음 코드 단서와 책임을 읽는다."
     },
     {
-      "id": "v2.relation.63c92ed18525.fe8294523602",
-      "sourceConceptID": "v2.concept.63c92ed18525",
-      "targetConceptID": "v2.concept.fe8294523602",
+      "id": "relation.63c92ed18525.fe8294523602",
+      "sourceConceptID": "concept.63c92ed18525",
+      "targetConceptID": "concept.fe8294523602",
       "kind": "leadsTo",
       "summary": "현재 기준을 바탕으로 다음 코드 단서와 책임을 읽는다."
     },
     {
-      "id": "v2.relation.5e5f60c822eb.63c92ed18525",
-      "sourceConceptID": "v2.concept.5e5f60c822eb",
-      "targetConceptID": "v2.concept.63c92ed18525",
+      "id": "relation.5e5f60c822eb.63c92ed18525",
+      "sourceConceptID": "concept.5e5f60c822eb",
+      "targetConceptID": "concept.63c92ed18525",
       "kind": "leadsTo",
       "summary": "현재 기준을 바탕으로 다음 코드 단서와 책임을 읽는다."
     },
     {
-      "id": "v2.relation.b58dd05a41b8.28be754d2196",
-      "sourceConceptID": "v2.concept.b58dd05a41b8",
-      "targetConceptID": "v2.concept.28be754d2196",
+      "id": "relation.b58dd05a41b8.28be754d2196",
+      "sourceConceptID": "concept.b58dd05a41b8",
+      "targetConceptID": "concept.28be754d2196",
       "kind": "leadsTo",
       "summary": "현재 기준을 바탕으로 다음 코드 단서와 책임을 읽는다."
     },
     {
-      "id": "v2.relation.28be754d2196.d4ca67109cc0",
-      "sourceConceptID": "v2.concept.28be754d2196",
-      "targetConceptID": "v2.concept.d4ca67109cc0",
+      "id": "relation.28be754d2196.d4ca67109cc0",
+      "sourceConceptID": "concept.28be754d2196",
+      "targetConceptID": "concept.d4ca67109cc0",
       "kind": "leadsTo",
       "summary": "현재 기준을 바탕으로 다음 코드 단서와 책임을 읽는다."
     },
     {
-      "id": "v2.relation.edd494f442d8.136c9b878c59",
-      "sourceConceptID": "v2.concept.edd494f442d8",
-      "targetConceptID": "v2.concept.136c9b878c59",
+      "id": "relation.edd494f442d8.136c9b878c59",
+      "sourceConceptID": "concept.edd494f442d8",
+      "targetConceptID": "concept.136c9b878c59",
       "kind": "leadsTo",
       "summary": "현재 기준을 바탕으로 다음 코드 단서와 책임을 읽는다."
     },
     {
-      "id": "v2.relation.384945bc2929.b58dd05a41b8",
-      "sourceConceptID": "v2.concept.384945bc2929",
-      "targetConceptID": "v2.concept.b58dd05a41b8",
+      "id": "relation.384945bc2929.b58dd05a41b8",
+      "sourceConceptID": "concept.384945bc2929",
+      "targetConceptID": "concept.b58dd05a41b8",
       "kind": "leadsTo",
       "summary": "현재 기준을 바탕으로 다음 코드 단서와 책임을 읽는다."
     },
     {
-      "id": "v2.relation.d4ca67109cc0.edd494f442d8",
-      "sourceConceptID": "v2.concept.d4ca67109cc0",
-      "targetConceptID": "v2.concept.edd494f442d8",
+      "id": "relation.d4ca67109cc0.edd494f442d8",
+      "sourceConceptID": "concept.d4ca67109cc0",
+      "targetConceptID": "concept.edd494f442d8",
       "kind": "leadsTo",
       "summary": "현재 기준을 바탕으로 다음 코드 단서와 책임을 읽는다."
     },
     {
-      "id": "v2.relation.534ea64e457f.80c31ac6b9c2",
-      "sourceConceptID": "v2.concept.534ea64e457f",
-      "targetConceptID": "v2.concept.80c31ac6b9c2",
+      "id": "relation.534ea64e457f.80c31ac6b9c2",
+      "sourceConceptID": "concept.534ea64e457f",
+      "targetConceptID": "concept.80c31ac6b9c2",
       "kind": "leadsTo",
       "summary": "현재 기준을 바탕으로 다음 코드 단서와 책임을 읽는다."
     },
     {
-      "id": "v2.relation.80c31ac6b9c2.4d57bcac9843",
-      "sourceConceptID": "v2.concept.80c31ac6b9c2",
-      "targetConceptID": "v2.concept.4d57bcac9843",
+      "id": "relation.80c31ac6b9c2.4d57bcac9843",
+      "sourceConceptID": "concept.80c31ac6b9c2",
+      "targetConceptID": "concept.4d57bcac9843",
       "kind": "leadsTo",
       "summary": "현재 기준을 바탕으로 다음 코드 단서와 책임을 읽는다."
     },
     {
-      "id": "v2.relation.4d57bcac9843.daf22bea5078",
-      "sourceConceptID": "v2.concept.4d57bcac9843",
-      "targetConceptID": "v2.concept.daf22bea5078",
+      "id": "relation.4d57bcac9843.daf22bea5078",
+      "sourceConceptID": "concept.4d57bcac9843",
+      "targetConceptID": "concept.daf22bea5078",
       "kind": "leadsTo",
       "summary": "현재 기준을 바탕으로 다음 코드 단서와 책임을 읽는다."
     },
     {
-      "id": "v2.relation.136c9b878c59.534ea64e457f",
-      "sourceConceptID": "v2.concept.136c9b878c59",
-      "targetConceptID": "v2.concept.534ea64e457f",
+      "id": "relation.136c9b878c59.534ea64e457f",
+      "sourceConceptID": "concept.136c9b878c59",
+      "targetConceptID": "concept.534ea64e457f",
       "kind": "leadsTo",
       "summary": "현재 기준을 바탕으로 다음 코드 단서와 책임을 읽는다."
     },
     {
-      "id": "v2.relation.7307d21c693c.6a42d77cc67e",
-      "sourceConceptID": "v2.concept.7307d21c693c",
-      "targetConceptID": "v2.concept.6a42d77cc67e",
+      "id": "relation.7307d21c693c.6a42d77cc67e",
+      "sourceConceptID": "concept.7307d21c693c",
+      "targetConceptID": "concept.6a42d77cc67e",
       "kind": "leadsTo",
       "summary": "현재 기준을 바탕으로 다음 코드 단서와 책임을 읽는다."
     },
     {
-      "id": "v2.relation.893af0d64616.7307d21c693c",
-      "sourceConceptID": "v2.concept.893af0d64616",
-      "targetConceptID": "v2.concept.7307d21c693c",
+      "id": "relation.893af0d64616.7307d21c693c",
+      "sourceConceptID": "concept.893af0d64616",
+      "targetConceptID": "concept.7307d21c693c",
       "kind": "leadsTo",
       "summary": "현재 기준을 바탕으로 다음 코드 단서와 책임을 읽는다."
     },
     {
-      "id": "v2.relation.7b867a56edc9.4399498de565",
-      "sourceConceptID": "v2.concept.7b867a56edc9",
-      "targetConceptID": "v2.concept.4399498de565",
+      "id": "relation.7b867a56edc9.4399498de565",
+      "sourceConceptID": "concept.7b867a56edc9",
+      "targetConceptID": "concept.4399498de565",
       "kind": "leadsTo",
       "summary": "현재 기준을 바탕으로 다음 코드 단서와 책임을 읽는다."
     },
     {
-      "id": "v2.relation.6a42d77cc67e.ad7c4cc1526f",
-      "sourceConceptID": "v2.concept.6a42d77cc67e",
-      "targetConceptID": "v2.concept.ad7c4cc1526f",
+      "id": "relation.6a42d77cc67e.ad7c4cc1526f",
+      "sourceConceptID": "concept.6a42d77cc67e",
+      "targetConceptID": "concept.ad7c4cc1526f",
       "kind": "leadsTo",
       "summary": "현재 기준을 바탕으로 다음 코드 단서와 책임을 읽는다."
     },
     {
-      "id": "v2.relation.4399498de565.893af0d64616",
-      "sourceConceptID": "v2.concept.4399498de565",
-      "targetConceptID": "v2.concept.893af0d64616",
+      "id": "relation.4399498de565.893af0d64616",
+      "sourceConceptID": "concept.4399498de565",
+      "targetConceptID": "concept.893af0d64616",
       "kind": "leadsTo",
       "summary": "현재 기준을 바탕으로 다음 코드 단서와 책임을 읽는다."
     },
     {
-      "id": "v2.relation.daf22bea5078.7b867a56edc9",
-      "sourceConceptID": "v2.concept.daf22bea5078",
-      "targetConceptID": "v2.concept.7b867a56edc9",
+      "id": "relation.daf22bea5078.7b867a56edc9",
+      "sourceConceptID": "concept.daf22bea5078",
+      "targetConceptID": "concept.7b867a56edc9",
       "kind": "leadsTo",
       "summary": "현재 기준을 바탕으로 다음 코드 단서와 책임을 읽는다."
     },
     {
-      "id": "v2.relation.78a172ca71d7.1e7165331770",
-      "sourceConceptID": "v2.concept.78a172ca71d7",
-      "targetConceptID": "v2.concept.1e7165331770",
+      "id": "relation.78a172ca71d7.1e7165331770",
+      "sourceConceptID": "concept.78a172ca71d7",
+      "targetConceptID": "concept.1e7165331770",
       "kind": "leadsTo",
       "summary": "현재 기준을 바탕으로 다음 코드 단서와 책임을 읽는다."
     },
     {
-      "id": "v2.relation.8a008c70e4f2.f5b66ffc6439",
-      "sourceConceptID": "v2.concept.8a008c70e4f2",
-      "targetConceptID": "v2.concept.f5b66ffc6439",
+      "id": "relation.8a008c70e4f2.f5b66ffc6439",
+      "sourceConceptID": "concept.8a008c70e4f2",
+      "targetConceptID": "concept.f5b66ffc6439",
       "kind": "leadsTo",
       "summary": "현재 기준을 바탕으로 다음 코드 단서와 책임을 읽는다."
     },
     {
-      "id": "v2.relation.ad7c4cc1526f.fa72d7932292",
-      "sourceConceptID": "v2.concept.ad7c4cc1526f",
-      "targetConceptID": "v2.concept.fa72d7932292",
+      "id": "relation.ad7c4cc1526f.fa72d7932292",
+      "sourceConceptID": "concept.ad7c4cc1526f",
+      "targetConceptID": "concept.fa72d7932292",
       "kind": "leadsTo",
       "summary": "현재 기준을 바탕으로 다음 코드 단서와 책임을 읽는다."
     },
     {
-      "id": "v2.relation.fa72d7932292.8a008c70e4f2",
-      "sourceConceptID": "v2.concept.fa72d7932292",
-      "targetConceptID": "v2.concept.8a008c70e4f2",
+      "id": "relation.fa72d7932292.8a008c70e4f2",
+      "sourceConceptID": "concept.fa72d7932292",
+      "targetConceptID": "concept.8a008c70e4f2",
       "kind": "leadsTo",
       "summary": "현재 기준을 바탕으로 다음 코드 단서와 책임을 읽는다."
     },
     {
-      "id": "v2.relation.f5b66ffc6439.78a172ca71d7",
-      "sourceConceptID": "v2.concept.f5b66ffc6439",
-      "targetConceptID": "v2.concept.78a172ca71d7",
+      "id": "relation.f5b66ffc6439.78a172ca71d7",
+      "sourceConceptID": "concept.f5b66ffc6439",
+      "targetConceptID": "concept.78a172ca71d7",
       "kind": "leadsTo",
       "summary": "현재 기준을 바탕으로 다음 코드 단서와 책임을 읽는다."
     },
     {
-      "id": "v2.relation.1e7165331770.ce65ce877ca9",
-      "sourceConceptID": "v2.concept.1e7165331770",
-      "targetConceptID": "v2.concept.ce65ce877ca9",
+      "id": "relation.1e7165331770.ce65ce877ca9",
+      "sourceConceptID": "concept.1e7165331770",
+      "targetConceptID": "concept.ce65ce877ca9",
       "kind": "leadsTo",
       "summary": "현재 기준을 바탕으로 다음 코드 단서와 책임을 읽는다."
     },
     {
-      "id": "v2.relation.091255424ade.12f7c7373056",
-      "sourceConceptID": "v2.concept.091255424ade",
-      "targetConceptID": "v2.concept.12f7c7373056",
+      "id": "relation.091255424ade.12f7c7373056",
+      "sourceConceptID": "concept.091255424ade",
+      "targetConceptID": "concept.12f7c7373056",
       "kind": "leadsTo",
       "summary": "현재 기준을 바탕으로 다음 코드 단서와 책임을 읽는다."
     },
     {
-      "id": "v2.relation.ce65ce877ca9.07958e825aff",
-      "sourceConceptID": "v2.concept.ce65ce877ca9",
-      "targetConceptID": "v2.concept.07958e825aff",
+      "id": "relation.ce65ce877ca9.07958e825aff",
+      "sourceConceptID": "concept.ce65ce877ca9",
+      "targetConceptID": "concept.07958e825aff",
       "kind": "leadsTo",
       "summary": "현재 기준을 바탕으로 다음 코드 단서와 책임을 읽는다."
     },
     {
-      "id": "v2.relation.07958e825aff.091255424ade",
-      "sourceConceptID": "v2.concept.07958e825aff",
-      "targetConceptID": "v2.concept.091255424ade",
+      "id": "relation.07958e825aff.091255424ade",
+      "sourceConceptID": "concept.07958e825aff",
+      "targetConceptID": "concept.091255424ade",
       "kind": "leadsTo",
       "summary": "현재 기준을 바탕으로 다음 코드 단서와 책임을 읽는다."
     },
     {
-      "id": "v2.relation.12f7c7373056.98dadc90a56c",
-      "sourceConceptID": "v2.concept.12f7c7373056",
-      "targetConceptID": "v2.concept.98dadc90a56c",
+      "id": "relation.12f7c7373056.98dadc90a56c",
+      "sourceConceptID": "concept.12f7c7373056",
+      "targetConceptID": "concept.98dadc90a56c",
       "kind": "leadsTo",
       "summary": "현재 기준을 바탕으로 다음 코드 단서와 책임을 읽는다."
     },
     {
-      "id": "v2.relation.50024a4c36c6.e361cf592000",
-      "sourceConceptID": "v2.concept.50024a4c36c6",
-      "targetConceptID": "v2.concept.e361cf592000",
+      "id": "relation.50024a4c36c6.e361cf592000",
+      "sourceConceptID": "concept.50024a4c36c6",
+      "targetConceptID": "concept.e361cf592000",
       "kind": "leadsTo",
       "summary": "현재 기준을 바탕으로 다음 코드 단서와 책임을 읽는다."
     },
     {
-      "id": "v2.relation.98dadc90a56c.50024a4c36c6",
-      "sourceConceptID": "v2.concept.98dadc90a56c",
-      "targetConceptID": "v2.concept.50024a4c36c6",
+      "id": "relation.98dadc90a56c.50024a4c36c6",
+      "sourceConceptID": "concept.98dadc90a56c",
+      "targetConceptID": "concept.50024a4c36c6",
       "kind": "leadsTo",
       "summary": "현재 기준을 바탕으로 다음 코드 단서와 책임을 읽는다."
     },
     {
-      "id": "v2.relation.e361cf592000.47f024303e8d",
-      "sourceConceptID": "v2.concept.e361cf592000",
-      "targetConceptID": "v2.concept.47f024303e8d",
+      "id": "relation.e361cf592000.47f024303e8d",
+      "sourceConceptID": "concept.e361cf592000",
+      "targetConceptID": "concept.47f024303e8d",
       "kind": "leadsTo",
       "summary": "현재 기준을 바탕으로 다음 코드 단서와 책임을 읽는다."
     },
     {
-      "id": "v2.relation.47f024303e8d.c03639a5c779",
-      "sourceConceptID": "v2.concept.47f024303e8d",
-      "targetConceptID": "v2.concept.c03639a5c779",
+      "id": "relation.47f024303e8d.c03639a5c779",
+      "sourceConceptID": "concept.47f024303e8d",
+      "targetConceptID": "concept.c03639a5c779",
       "kind": "leadsTo",
       "summary": "현재 기준을 바탕으로 다음 코드 단서와 책임을 읽는다."
     },
     {
-      "id": "v2.relation.c03639a5c779.f1f3ae68aa47",
-      "sourceConceptID": "v2.concept.c03639a5c779",
-      "targetConceptID": "v2.concept.f1f3ae68aa47",
+      "id": "relation.c03639a5c779.f1f3ae68aa47",
+      "sourceConceptID": "concept.c03639a5c779",
+      "targetConceptID": "concept.f1f3ae68aa47",
       "kind": "leadsTo",
       "summary": "현재 기준을 바탕으로 다음 코드 단서와 책임을 읽는다."
     },
     {
-      "id": "v2.relation.9130e95e56d9.9aaca74daa01",
-      "sourceConceptID": "v2.concept.9130e95e56d9",
-      "targetConceptID": "v2.concept.9aaca74daa01",
+      "id": "relation.9130e95e56d9.9aaca74daa01",
+      "sourceConceptID": "concept.9130e95e56d9",
+      "targetConceptID": "concept.9aaca74daa01",
       "kind": "leadsTo",
       "summary": "현재 기준을 바탕으로 다음 코드 단서와 책임을 읽는다."
     },
     {
-      "id": "v2.relation.f1f3ae68aa47.9130e95e56d9",
-      "sourceConceptID": "v2.concept.f1f3ae68aa47",
-      "targetConceptID": "v2.concept.9130e95e56d9",
+      "id": "relation.f1f3ae68aa47.9130e95e56d9",
+      "sourceConceptID": "concept.f1f3ae68aa47",
+      "targetConceptID": "concept.9130e95e56d9",
       "kind": "leadsTo",
       "summary": "현재 기준을 바탕으로 다음 코드 단서와 책임을 읽는다."
     },
     {
-      "id": "v2.relation.9aaca74daa01.e1b6156005b4",
-      "sourceConceptID": "v2.concept.9aaca74daa01",
-      "targetConceptID": "v2.concept.e1b6156005b4",
+      "id": "relation.9aaca74daa01.e1b6156005b4",
+      "sourceConceptID": "concept.9aaca74daa01",
+      "targetConceptID": "concept.e1b6156005b4",
       "kind": "leadsTo",
       "summary": "현재 기준을 바탕으로 다음 코드 단서와 책임을 읽는다."
     }

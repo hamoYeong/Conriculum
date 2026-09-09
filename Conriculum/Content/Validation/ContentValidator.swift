@@ -5,10 +5,6 @@ struct ContentValidator: Sendable {
         guard manifest.schemaVersion == 1 else {
             throw ContentError.unsupportedSchema(manifest.schemaVersion)
         }
-        guard manifest.contentVersion == .v2 else {
-            throw ContentError.wrongVersion(manifest.contentVersion)
-        }
-
         var ids = Set<String>()
         try register(manifest.id, in: &ids)
         try validateOrders(manifest.stages.map(\.order), path: "stages")
@@ -38,9 +34,6 @@ struct ContentValidator: Sendable {
     func validate(page: LessonPage, reference: PageReference) throws {
         guard page.schemaVersion == 1 else {
             throw ContentError.unsupportedSchema(page.schemaVersion)
-        }
-        guard page.contentVersion == .v2 else {
-            throw ContentError.wrongVersion(page.contentVersion)
         }
         guard page.id == reference.id, page.order == reference.order else {
             throw ContentError.invalidReference("\(reference.id).pageIdentity")
@@ -81,7 +74,7 @@ struct ContentValidator: Sendable {
             } else if block.knowledgeUnlock != nil {
                 throw ContentError.invalidReference("\(block.id).knowledgeUnlock")
             }
-            if page.stageID == "v2.s1",
+            if page.stageID == "s1",
                block.kind == .game || block.kind == .boss,
                block.activities.isEmpty {
                 throw ContentError.invalidReference("\(block.id).activities")

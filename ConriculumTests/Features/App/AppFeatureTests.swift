@@ -12,7 +12,7 @@ struct AppFeatureTests {
 
     @Test
     func pageRequestOpensLearningRoute() async {
-        let pageID = "v2.s1.c1.p1"
+        let pageID = "s1.c1.p1"
         let store = TestStore(initialState: AppFeature.State()) {
             AppFeature()
         }
@@ -54,7 +54,7 @@ struct AppFeatureTests {
 
     @Test
     func knowledgeRevisitOpensLearningAndReleasesKnowledgeState() async {
-        let pageID = "v2.s2.c1.p1"
+        let pageID = "s2.c1.p1"
         var initialState = AppFeature.State()
         initialState.route = .knowledgeSystem
         initialState.knowledgeSystem = KnowledgeSystemFeature.State()

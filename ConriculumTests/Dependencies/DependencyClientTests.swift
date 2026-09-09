@@ -6,12 +6,11 @@ import Testing
 @MainActor
 struct DependencyClientTests {
     @Test
-    func legacyProgressMigratesOnceWithoutDeletingItsSource() async throws {
-        let suite = try #require(UserDefaults(suiteName: UUID().uuidString))
+    func progressClientLoadsAndSavesThroughTheStore() async throws {
         let environment = try PersistenceEnvironmentRegistry.makeInMemoryEnvironment()
         let progress = CourseProgress(
-            lastVisitedPageID: "v2.s2.c3.p4",
-            completedPageIDs: ["v2.s1.c1.p1", "v2.s1.c1.p2"],
+            lastVisitedPageID: "s2.c3.p4",
+            completedPageIDs: ["s1.c1.p1", "s1.c1.p2"],
             activityResponses: [
                 "activity-1": GameResponse(
                     activityID: "activity-1",
@@ -21,30 +20,24 @@ struct DependencyClientTests {
                     answeredAt: Date(timeIntervalSince1970: 1_800_000_000)
                 )
             ],
-            supportLevelsByPageID: ["v2.s1.c1.p2": .hinted]
+            supportLevelsByPageID: ["s1.c1.p2": .hinted]
         )
-        let legacyData = try JSONEncoder().encode(progress)
-        suite.set(legacyData, forKey: "learning.progress.v2")
-        let client = ProgressClient.live(
-            store: environment.courseProgressStore,
-            legacyStore: suite
-        )
+        let client = ProgressClient.live(store: environment.courseProgressStore)
 
-        #expect(try await client.load() == progress)
+        #expect(try await client.load() == .empty)
+        try await client.save(progress)
         #expect(try environment.courseProgressStore.load() == progress)
-        #expect(suite.data(forKey: "learning.progress.v2") == legacyData)
 
         var updated = progress
-        updated.lastVisitedPageID = "v2.s2.c4.p1"
+        updated.lastVisitedPageID = "s2.c4.p1"
         try await client.save(updated)
 
         #expect(try await client.load() == updated)
-        #expect(suite.data(forKey: "learning.progress.v2") == legacyData)
     }
 
     @Test
-    func oldLegacyPayloadDefaultsMissingSupportLevels() throws {
-        let data = Data(#"{"lastVisitedPageID":"v2.s1.c1.p1","completedPageIDs":[],"activityResponses":{}}"#.utf8)
+    func payloadDefaultsMissingSupportLevels() throws {
+        let data = Data(#"{"lastVisitedPageID":"s1.c1.p1","completedPageIDs":[],"activityResponses":{}}"#.utf8)
 
         let progress = try JSONDecoder().decode(CourseProgress.self, from: data)
 

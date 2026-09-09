@@ -93,10 +93,10 @@ struct LearningView: View {
     @ViewBuilder
     private func content(showsSidebar: Bool, availableWidth: CGFloat) -> some View {
         if store.isLoading, store.page == nil {
-            ProgressView("ver.2 학습 페이지를 불러오는 중…")
+            ProgressView("학습 페이지를 불러오는 중…")
         } else if let message = store.loadErrorMessage, store.page == nil {
             ContentUnavailableView {
-                Label("ver.2 페이지를 열 수 없습니다", systemImage: "exclamationmark.triangle")
+                Label("페이지를 열 수 없습니다", systemImage: "exclamationmark.triangle")
             } description: {
                 Text(message)
             } actions: {

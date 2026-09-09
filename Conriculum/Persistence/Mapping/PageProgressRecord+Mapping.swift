@@ -2,7 +2,6 @@ import Foundation
 
 extension PageProgressRecord {
     convenience init(
-        contentVersion: ContentVersion,
         pageID: String,
         isCompleted: Bool,
         supportLevel: LearningSupportLevel?,
@@ -10,8 +9,7 @@ extension PageProgressRecord {
     ) throws {
         try Self.validate(pageID: pageID)
         self.init(
-            id: Self.storageID(contentVersion: contentVersion, pageID: pageID),
-            contentVersion: contentVersion.rawValue,
+            id: Self.storageID(pageID: pageID),
             pageID: pageID,
             isCompleted: isCompleted,
             supportLevelRawValue: supportLevel?.rawValue,
@@ -20,24 +18,17 @@ extension PageProgressRecord {
         )
     }
 
-    func values(contentVersion expectedVersion: ContentVersion) throws -> (
+    func values() throws -> (
         pageID: String,
         isCompleted: Bool,
         supportLevel: LearningSupportLevel?
     ) {
-        guard contentVersion == expectedVersion.rawValue else {
-            throw PersistenceMappingSupport.invalid(
-                record: Self.recordName,
-                fieldPath: "contentVersion",
-                message: "does not belong to the requested content version"
-            )
-        }
         try Self.validate(pageID: pageID)
-        guard id == Self.storageID(contentVersion: expectedVersion, pageID: pageID) else {
+        guard id == Self.storageID(pageID: pageID) else {
             throw PersistenceMappingSupport.invalid(
                 record: Self.recordName,
                 fieldPath: "id",
-                message: "does not match the content version and page identifier"
+                message: "does not match the page identifier"
             )
         }
         let supportLevel: LearningSupportLevel?
@@ -78,9 +69,8 @@ extension PageProgressRecord {
         updatedAt = timestamp
     }
 
-    static func storageID(contentVersion: ContentVersion, pageID: String) -> String {
+    static func storageID(pageID: String) -> String {
         PersistenceMappingSupport.storageID(
-            contentVersion: contentVersion,
             value: pageID,
             namespace: "page-progress"
         )

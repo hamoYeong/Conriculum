@@ -1,0 +1,391 @@
+{
+  "schemaVersion": 1,
+  "id": "s1.c5.p2",
+  "stageID": "s1",
+  "chapterID": "s1.c5",
+  "order": 2,
+  "title": "if와 else가 나누는 길 보기",
+  "goal": "`if` 뒤 Bool 질문이 참일 때 첫 블록, 거짓일 때 `else` 블록이 실행됨을 따라간다.",
+  "sourcePath": "Stage 1 - 코드의 단어와 모양에 익숙해지기/Chapter 5 - 묶음과 갈림길 알아보기/02 if와 else가 나누는 길 보기.md",
+  "blocks": [
+    {
+      "id": "02-if와-else가-나누는-길-보기.block-1",
+      "order": 1,
+      "kind": "mission",
+      "title": "클리어 목표",
+      "markdown": "`if` 뒤 Bool 질문이 참일 때 첫 블록, 거짓일 때 `else` 블록이 실행됨을 따라간다.",
+      "activities": []
+    },
+    {
+      "id": "02-if와-else가-나누는-길-보기.block-2",
+      "order": 2,
+      "kind": "wordSystem",
+      "title": "단어 체계",
+      "markdown": "",
+      "activities": [],
+      "wordSystem": {
+        "entries": [
+          {
+            "id": "02-if와-else가-나누는-길-보기.block-2.word-1",
+            "term": "if",
+            "parentSystem": "분기 키워드",
+            "role": "조건이 참일 때 길을 엶",
+            "firstThought": "어떤 질문을 검사하나?"
+          },
+          {
+            "id": "02-if와-else가-나누는-길-보기.block-2.word-2",
+            "term": "조건",
+            "parentSystem": "Bool 표현식",
+            "role": "실행할 길을 고르는 질문",
+            "firstThought": "참이면 어느 블록인가?"
+          },
+          {
+            "id": "02-if와-else가-나누는-길-보기.block-2.word-3",
+            "term": "else",
+            "parentSystem": "대안 키워드",
+            "role": "앞 조건이 거짓일 때 길을 엶",
+            "firstThought": "그 밖의 경우는 무엇인가?"
+          },
+          {
+            "id": "02-if와-else가-나누는-길-보기.block-2.word-4",
+            "term": "분기",
+            "parentSystem": "실행 길의 구조",
+            "role": "조건의 답에 따라 다른 블록을 고름",
+            "firstThought": "어느 길이 선택되고 어느 길을 건너뛰나?"
+          }
+        ]
+      }
+    },
+    {
+      "id": "02-if와-else가-나누는-길-보기.block-3",
+      "order": 3,
+      "kind": "scene",
+      "title": "장면 카드",
+      "markdown": "로그인 여부에 따라 다른 화면 글자를 보인다.\n\n```swift\nif isLoggedIn {\n    Text(\"환영합니다\")\n} else {\n    Text(\"로그인하세요\")\n}\n```",
+      "activities": []
+    },
+    {
+      "id": "02-if와-else가-나누는-길-보기.block-4",
+      "order": 4,
+      "kind": "game",
+      "title": "게임 1 · 첫 생각 카드",
+      "markdown": "`isLoggedIn`이 false면 보이는 글자는?\n\n> [!game]- 활동 방식 · 판단 카드 고르기\n> 근거가 되는 카드를 모두 고른 뒤 답을 확인한다.\n\n<!-- conriculum-activity: choice; correct: 2 -->\n\n1. 환영합니다\n2. 로그인하세요\n3. 둘 다\n\n> [!check]- 정답과 근거\n> `로그인하세요`. 거짓이면 `if` 블록을 건너뛰고 `else` 블록으로 간다.",
+      "activities": [
+        {
+          "id": "02-if와-else가-나누는-길-보기.block-4.activity-1",
+          "kind": "singleChoice",
+          "promptMarkdown": "`isLoggedIn`이 false면 보이는 글자는?",
+          "options": [
+            {
+              "id": "02-if와-else가-나누는-길-보기.block-4.activity-1.option-1",
+              "title": "환영합니다"
+            },
+            {
+              "id": "02-if와-else가-나누는-길-보기.block-4.activity-1.option-2",
+              "title": "로그인하세요"
+            },
+            {
+              "id": "02-if와-else가-나누는-길-보기.block-4.activity-1.option-3",
+              "title": "둘 다"
+            }
+          ],
+          "pairs": [],
+          "correctOptionIDs": [
+            "02-if와-else가-나누는-길-보기.block-4.activity-1.option-2"
+          ],
+          "correctFeedback": "`로그인하세요`. 거짓이면 `if` 블록을 건너뛰고 `else` 블록으로 간다.",
+          "incorrectFeedback": "아직 맞지 않는 연결이나 빠진 단서가 있습니다. 코드의 모양·자리·주변 단어를 다시 비교해 보세요."
+        }
+      ]
+    },
+    {
+      "id": "02-if와-else가-나누는-길-보기.block-5",
+      "order": 5,
+      "kind": "game",
+      "title": "게임 2 · 구절 역할 지도",
+      "markdown": "> [!game]- 활동 방식 · 구절과 역할 연결하기\n> 왼쪽 카드와 오른쪽 카드를 직접 연결하고, 모든 연결을 마친 뒤 한 번에 확인한다.\n\n<!-- conriculum-activity: matching; source: 코드 구절; target: 붙일 역할 카드 -->\n\n| 코드 구절 | 맡은 역할 | 붙일 역할 카드 |\n| --- | --- | --- |\n| `if` | 분기 시작 | 질문 검사 |\n| `isLoggedIn` | 조건 | Bool 답 |\n| 첫 `{}` | 참 길 | 환영 글자 |\n| `else {}` | 거짓 길 | 로그인 안내 |",
+      "activities": [
+        {
+          "id": "02-if와-else가-나누는-길-보기.block-5.activity-1",
+          "kind": "matching",
+          "promptMarkdown": "게임 2 · 구절 역할 지도",
+          "options": [],
+          "pairs": [
+            {
+              "id": "02-if와-else가-나누는-길-보기.block-5.activity-1.pair-1",
+              "left": "`if`",
+              "right": "질문 검사"
+            },
+            {
+              "id": "02-if와-else가-나누는-길-보기.block-5.activity-1.pair-2",
+              "left": "`isLoggedIn`",
+              "right": "Bool 답"
+            },
+            {
+              "id": "02-if와-else가-나누는-길-보기.block-5.activity-1.pair-3",
+              "left": "첫 `{}`",
+              "right": "환영 글자"
+            },
+            {
+              "id": "02-if와-else가-나누는-길-보기.block-5.activity-1.pair-4",
+              "left": "`else {}`",
+              "right": "로그인 안내"
+            }
+          ],
+          "correctOptionIDs": [],
+          "correctFeedback": "모든 카드가 원문의 역할 관계와 일치한다.",
+          "incorrectFeedback": "아직 맞지 않는 연결이나 빠진 단서가 있습니다. 코드의 모양·자리·주변 단어를 다시 비교해 보세요."
+        }
+      ]
+    },
+    {
+      "id": "02-if와-else가-나누는-길-보기.block-6",
+      "order": 6,
+      "kind": "game",
+      "title": "게임 3 · 헷갈리는 카드 대조",
+      "markdown": "> [!game]- 활동 방식 · 대조 카드 연결하기\n> 왼쪽 카드와 오른쪽 카드를 직접 연결하고, 모든 연결을 마친 뒤 한 번에 확인한다.\n\n<!-- conriculum-activity: matching; source: 후보; target: 판별 단서 -->\n\n| 후보 | 결정적인 차이 | 판별 단서 |\n| --- | --- | --- |\n| if | 조건이 참일 때 | 선택적 길 |\n| else | 앞 조건이 거짓일 때 | 대안 길 |\n| 두 개의 독립 if | 각 조건을 따로 검사 | 둘 다 실행 가능 |\n\n### 수상한 카드\n\n“`if`와 `else`의 두 블록은 위에서 아래로 모두 실행된다.”\n\n> [!game]- 활동 방식 · 주장 판정하기\n> 주장이 앞의 대조 근거와 맞는지 판단한 뒤 확인한다.\n\n<!-- conriculum-activity: choice; correct: 2 -->\n\n1. 근거가 있다\n2. 근거가 없다\n\n> [!check]- 판정\n> 아니다. 한 if–else 묶음에서는 조건 결과에 맞는 길 하나만 고른다.",
+      "activities": [
+        {
+          "id": "02-if와-else가-나누는-길-보기.block-6.activity-1",
+          "kind": "matching",
+          "promptMarkdown": "게임 3 · 헷갈리는 카드 대조",
+          "options": [],
+          "pairs": [
+            {
+              "id": "02-if와-else가-나누는-길-보기.block-6.activity-1.pair-1",
+              "left": "if",
+              "right": "선택적 길"
+            },
+            {
+              "id": "02-if와-else가-나누는-길-보기.block-6.activity-1.pair-2",
+              "left": "else",
+              "right": "대안 길"
+            },
+            {
+              "id": "02-if와-else가-나누는-길-보기.block-6.activity-1.pair-3",
+              "left": "두 개의 독립 if",
+              "right": "둘 다 실행 가능"
+            }
+          ],
+          "correctOptionIDs": [],
+          "correctFeedback": "모든 카드가 원문의 역할 관계와 일치한다.",
+          "incorrectFeedback": "아직 맞지 않는 연결이나 빠진 단서가 있습니다. 코드의 모양·자리·주변 단어를 다시 비교해 보세요."
+        },
+        {
+          "id": "02-if와-else가-나누는-길-보기.block-6.activity-2",
+          "kind": "singleChoice",
+          "promptMarkdown": "### 수상한 카드\n\n“`if`와 `else`의 두 블록은 위에서 아래로 모두 실행된다.”",
+          "options": [
+            {
+              "id": "02-if와-else가-나누는-길-보기.block-6.activity-2.option-1",
+              "title": "근거가 있다"
+            },
+            {
+              "id": "02-if와-else가-나누는-길-보기.block-6.activity-2.option-2",
+              "title": "근거가 없다"
+            }
+          ],
+          "pairs": [],
+          "correctOptionIDs": [
+            "02-if와-else가-나누는-길-보기.block-6.activity-2.option-2"
+          ],
+          "correctFeedback": "아니다. 한 if–else 묶음에서는 조건 결과에 맞는 길 하나만 고른다.",
+          "incorrectFeedback": "아직 맞지 않는 연결이나 빠진 단서가 있습니다. 코드의 모양·자리·주변 단어를 다시 비교해 보세요."
+        }
+      ]
+    },
+    {
+      "id": "02-if와-else가-나누는-길-보기.block-7",
+      "order": 7,
+      "kind": "game",
+      "title": "게임 4 · 다른 옷을 입은 코드",
+      "markdown": "### 1\n\n```swift\nif count > 0 { Text(\"있음\") }\n```\n\n**질문:** count가 0이면?\n\n> [!game]- 활동 방식 · 코드 단서 고르기\n> 답이 되는 코드 단서 카드 하나를 고르면 바로 확인한다.\n\n<!-- conriculum-activity: choice; correct: 1 -->\n\n**선택 카드:**\n\n1. `{`\n2. `if`\n3. `count`\n4. `>`\n5. `0`\n6. `Text`\n7. `(`\n8. `\"있음\"`\n\n> [!check]- 확인\n> 블록을 건너뛰며 else가 없으므로 아무 대안도 실행하지 않는다.\n\n### 2\n\n```swift\nif isDark { dark() } else { light() }\n```\n\n**질문:** 참 길은?\n\n> [!game]- 활동 방식 · 코드 단서 고르기\n> 답이 되는 코드 단서 카드 하나를 고르면 바로 확인한다.\n\n<!-- conriculum-activity: choice; correct: 1 -->\n\n**선택 카드:**\n\n1. `dark`\n2. `if`\n3. `isDark`\n4. `{`\n5. `()`\n6. `}`\n7. `else`\n8. `light`\n\n> [!check]- 확인\n> `dark()` 호출.",
+      "activities": [
+        {
+          "id": "02-if와-else가-나누는-길-보기.block-7.activity-1",
+          "kind": "singleChoice",
+          "promptMarkdown": "### 1\n\n```swift\nif count > 0 { Text(\"있음\") }\n```\n\n**질문:** count가 0이면?",
+          "options": [
+            {
+              "id": "02-if와-else가-나누는-길-보기.block-7.activity-1.option-1",
+              "title": "`{`"
+            },
+            {
+              "id": "02-if와-else가-나누는-길-보기.block-7.activity-1.option-2",
+              "title": "`if`"
+            },
+            {
+              "id": "02-if와-else가-나누는-길-보기.block-7.activity-1.option-3",
+              "title": "`count`"
+            },
+            {
+              "id": "02-if와-else가-나누는-길-보기.block-7.activity-1.option-4",
+              "title": "`>`"
+            },
+            {
+              "id": "02-if와-else가-나누는-길-보기.block-7.activity-1.option-5",
+              "title": "`0`"
+            },
+            {
+              "id": "02-if와-else가-나누는-길-보기.block-7.activity-1.option-6",
+              "title": "`Text`"
+            },
+            {
+              "id": "02-if와-else가-나누는-길-보기.block-7.activity-1.option-7",
+              "title": "`(`"
+            },
+            {
+              "id": "02-if와-else가-나누는-길-보기.block-7.activity-1.option-8",
+              "title": "`\"있음\"`"
+            }
+          ],
+          "pairs": [],
+          "correctOptionIDs": [
+            "02-if와-else가-나누는-길-보기.block-7.activity-1.option-1"
+          ],
+          "correctFeedback": "블록을 건너뛰며 else가 없으므로 아무 대안도 실행하지 않는다.",
+          "incorrectFeedback": "아직 맞지 않는 연결이나 빠진 단서가 있습니다. 코드의 모양·자리·주변 단어를 다시 비교해 보세요."
+        },
+        {
+          "id": "02-if와-else가-나누는-길-보기.block-7.activity-2",
+          "kind": "singleChoice",
+          "promptMarkdown": "### 2\n\n```swift\nif isDark { dark() } else { light() }\n```\n\n**질문:** 참 길은?",
+          "options": [
+            {
+              "id": "02-if와-else가-나누는-길-보기.block-7.activity-2.option-1",
+              "title": "`dark`"
+            },
+            {
+              "id": "02-if와-else가-나누는-길-보기.block-7.activity-2.option-2",
+              "title": "`if`"
+            },
+            {
+              "id": "02-if와-else가-나누는-길-보기.block-7.activity-2.option-3",
+              "title": "`isDark`"
+            },
+            {
+              "id": "02-if와-else가-나누는-길-보기.block-7.activity-2.option-4",
+              "title": "`{`"
+            },
+            {
+              "id": "02-if와-else가-나누는-길-보기.block-7.activity-2.option-5",
+              "title": "`()`"
+            },
+            {
+              "id": "02-if와-else가-나누는-길-보기.block-7.activity-2.option-6",
+              "title": "`}`"
+            },
+            {
+              "id": "02-if와-else가-나누는-길-보기.block-7.activity-2.option-7",
+              "title": "`else`"
+            },
+            {
+              "id": "02-if와-else가-나누는-길-보기.block-7.activity-2.option-8",
+              "title": "`light`"
+            }
+          ],
+          "pairs": [],
+          "correctOptionIDs": [
+            "02-if와-else가-나누는-길-보기.block-7.activity-2.option-1"
+          ],
+          "correctFeedback": "`dark()` 호출.",
+          "incorrectFeedback": "아직 맞지 않는 연결이나 빠진 단서가 있습니다. 코드의 모양·자리·주변 단어를 다시 비교해 보세요."
+        }
+      ]
+    },
+    {
+      "id": "02-if와-else가-나누는-길-보기.block-8",
+      "order": 8,
+      "kind": "boss",
+      "title": "보스 코드",
+      "markdown": "```swift\nlet hasError = true\nif hasError {\n    Text(\"다시 시도\")\n} else {\n    Text(\"완료\")\n}\n```\n\n**클리어 과제:** 질문 값·선택된 블록·건너뛴 블록을 고른다.\n\n> [!game]- 활동 방식 · 보스 단서 모두 찾기\n> 질문에 답이 되는 코드 단서를 모두 고른 뒤 한 번에 확인한다.\n\n<!-- conriculum-activity: multiple-choice; correct: 1,2,3,4 -->\n\n**선택 카드 (복수 선택 가능):**\n\n1. `true`\n2. `{`\n3. `\"다시 시도\"`\n4. `\"완료\"`\n5. `hasError`\n6. `if`\n7. `Text`\n8. `(`\n\n> [!check]- 보스 해설\n> 조건은 true, `다시 시도` 블록이 선택되고 `완료` 블록은 건너뛴다.",
+      "activities": [
+        {
+          "id": "02-if와-else가-나누는-길-보기.block-8.activity-1",
+          "kind": "multipleChoice",
+          "promptMarkdown": "```swift\nlet hasError = true\nif hasError {\n    Text(\"다시 시도\")\n} else {\n    Text(\"완료\")\n}\n```\n\n**클리어 과제:** 질문 값·선택된 블록·건너뛴 블록을 고른다.",
+          "options": [
+            {
+              "id": "02-if와-else가-나누는-길-보기.block-8.activity-1.option-1",
+              "title": "`true`"
+            },
+            {
+              "id": "02-if와-else가-나누는-길-보기.block-8.activity-1.option-2",
+              "title": "`{`"
+            },
+            {
+              "id": "02-if와-else가-나누는-길-보기.block-8.activity-1.option-3",
+              "title": "`\"다시 시도\"`"
+            },
+            {
+              "id": "02-if와-else가-나누는-길-보기.block-8.activity-1.option-4",
+              "title": "`\"완료\"`"
+            },
+            {
+              "id": "02-if와-else가-나누는-길-보기.block-8.activity-1.option-5",
+              "title": "`hasError`"
+            },
+            {
+              "id": "02-if와-else가-나누는-길-보기.block-8.activity-1.option-6",
+              "title": "`if`"
+            },
+            {
+              "id": "02-if와-else가-나누는-길-보기.block-8.activity-1.option-7",
+              "title": "`Text`"
+            },
+            {
+              "id": "02-if와-else가-나누는-길-보기.block-8.activity-1.option-8",
+              "title": "`(`"
+            }
+          ],
+          "pairs": [],
+          "correctOptionIDs": [
+            "02-if와-else가-나누는-길-보기.block-8.activity-1.option-1",
+            "02-if와-else가-나누는-길-보기.block-8.activity-1.option-2",
+            "02-if와-else가-나누는-길-보기.block-8.activity-1.option-3",
+            "02-if와-else가-나누는-길-보기.block-8.activity-1.option-4"
+          ],
+          "correctFeedback": "조건은 true, `다시 시도` 블록이 선택되고 `완료` 블록은 건너뛴다.",
+          "incorrectFeedback": "아직 맞지 않는 연결이나 빠진 단서가 있습니다. 코드의 모양·자리·주변 단어를 다시 비교해 보세요."
+        }
+      ]
+    },
+    {
+      "id": "02-if와-else가-나누는-길-보기.block-9",
+      "order": 9,
+      "kind": "unlock",
+      "title": "지식 카드 해금",
+      "markdown": "",
+      "activities": [],
+      "knowledgeUnlock": {
+        "cards": [
+          {
+            "id": "02-if와-else가-나누는-길-보기.block-9.card-1",
+            "title": "if",
+            "summary": "조건이 참일 때 실행할 길"
+          },
+          {
+            "id": "02-if와-else가-나누는-길-보기.block-9.card-2",
+            "title": "else",
+            "summary": "앞 조건이 거짓일 때 실행할 대안 길"
+          },
+          {
+            "id": "02-if와-else가-나누는-길-보기.block-9.card-3",
+            "title": "분기",
+            "summary": "질문 결과로 실행 경로를 고름"
+          }
+        ],
+        "completionCriteria": "다른 맥락에서의 구별, 헷갈리는 개념과의 대조, 처음 보는 보스 코드에 적용하는 과정을 모두 통과하면 클리어한다. 도움 사용 여부는 `많은 안내와 함께 / 단서와 함께 / 독립적으로` 중 하나로 남긴다.",
+        "beginnerHint": "먼저 조건의 답을 true/false 카드로 바꾼 뒤 해당 중괄호 방으로 이동한다.",
+        "advancedTip": "`else if`는 새 질문을 순서대로 검사한다. 먼저 참이 된 가지 뒤의 조건은 검사하지 않는다."
+      }
+    }
+  ],
+  "termRefs": [],
+  "knowledgeConceptIDs": [
+    "concept.daf760a167a8",
+    "concept.534ea64e457f",
+    "concept.6816e901238c",
+    "concept.50d055d31163"
+  ]
+}

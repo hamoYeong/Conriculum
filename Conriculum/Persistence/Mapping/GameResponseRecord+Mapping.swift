@@ -2,16 +2,13 @@ import Foundation
 
 extension GameResponseRecord {
     convenience init(
-        contentVersion: ContentVersion,
         domainValue response: GameResponse
     ) throws {
         try Self.validate(response)
         self.init(
             id: Self.storageID(
-                contentVersion: contentVersion,
                 activityID: response.activityID
             ),
-            contentVersion: contentVersion.rawValue,
             activityID: response.activityID,
             selectedOptionIDs: response.selectedOptionIDs.sorted(),
             matchesPayload: try PersistenceMappingSupport.encode(
@@ -25,22 +22,14 @@ extension GameResponseRecord {
         )
     }
 
-    func domainValue(contentVersion expectedVersion: ContentVersion) throws -> GameResponse {
-        guard contentVersion == expectedVersion.rawValue else {
-            throw PersistenceMappingSupport.invalid(
-                record: Self.recordName,
-                fieldPath: "contentVersion",
-                message: "does not belong to the requested content version"
-            )
-        }
+    func domainValue() throws -> GameResponse {
         guard id == Self.storageID(
-            contentVersion: expectedVersion,
             activityID: activityID
         ) else {
             throw PersistenceMappingSupport.invalid(
                 record: Self.recordName,
                 fieldPath: "id",
-                message: "does not match the content version and activity identifier"
+                message: "does not match the activity identifier"
             )
         }
         let matches = try PersistenceMappingSupport.decode(
@@ -88,9 +77,8 @@ extension GameResponseRecord {
         answeredAt = response.answeredAt
     }
 
-    static func storageID(contentVersion: ContentVersion, activityID: String) -> String {
+    static func storageID(activityID: String) -> String {
         PersistenceMappingSupport.storageID(
-            contentVersion: contentVersion,
             value: activityID,
             namespace: "game-response"
         )

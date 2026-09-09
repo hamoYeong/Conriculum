@@ -1,0 +1,43 @@
+{
+  "schemaVersion": 1,
+  "id": "s2.c2.p2",
+  "stageID": "s2",
+  "chapterID": "s2.c2",
+  "order": 2,
+  "title": "Optional과 enum으로 가능한 상태 읽기",
+  "goal": "선택된 메모와 데이터 로딩 상태가 표현하는 경우를 그림으로 나눈다. 완료 증거: 가능한 상태와 불가능해야 할 상태를 각각 하나 설명.",
+  "sourcePath": "Stage 2 - AI 구현을 의미 단위로 읽는 기초/Chapter 2 - 값과 상태의 흐름 읽기/02 Optional과 enum으로 가능한 상태 읽기.md",
+  "blocks": [
+    {
+      "id": "02-optional과-enum으로-가능한-상태-읽기.block-1",
+      "order": 1,
+      "kind": "mission",
+      "title": "읽기 미션",
+      "markdown": "선택된 메모와 데이터 로딩 상태가 표현하는 경우를 그림으로 나눈다. **완료 증거:** 가능한 상태와 불가능해야 할 상태를 각각 하나 설명.\n\n```swift\nvar selectedMemo: Memo?\n\nenum LoadState {\n    case idle\n    case loading\n    case loaded([Memo])\n    case failed(String)\n}\n```",
+      "activities": []
+    },
+    {
+      "id": "02-optional과-enum으로-가능한-상태-읽기.block-2",
+      "order": 2,
+      "kind": "support",
+      "title": "기본 흐름",
+      "markdown": "Optional은 `선택 있음/없음`처럼 같은 종류의 값 하나가 없을 수 있음을 표현한다. enum은 `대기/로딩/성공/실패`처럼 서로 다른 의미와 필요한 데이터를 case로 제한한다.\n\n> [!question] 막히면 · 초보자 연결\n> `nil`이 빈 메모인지 헷갈리면 [[지식 체계/02 값과 상태/Optional과 값 없음|Optional과 값 없음]]을, case 뒤 괄호가 낯설면 [[지식 체계/02 값과 상태/enum과 가능한 상태|enum과 가능한 상태]]를 연다.",
+      "activities": []
+    },
+    {
+      "id": "02-optional과-enum으로-가능한-상태-읽기.block-3",
+      "order": 3,
+      "kind": "changeExperiment",
+      "title": "변경 실험",
+      "markdown": "`isLoading: Bool`, `memos: [Memo]`, `error: String?` 세 값으로 표현하면 `로딩 중인데 오류도 있고 데이터도 있음`이 가능하다. 이것이 실제 요구인지 모순인지 고른다.\n\n> [!tip]- 이미 안다면 · 직교하는 상태\n> 새로고침 중 이전 데이터를 보여 줘야 한다면 단일 enum보다 `현재 데이터`와 `요청 상태`를 분리하는 편이 정확할 수 있다.",
+      "activities": []
+    }
+  ],
+  "termRefs": [],
+  "knowledgeConceptIDs": [
+    "concept.50d055d31163",
+    "concept.28be754d2196",
+    "concept.b58dd05a41b8",
+    "concept.3df63b7acb05"
+  ]
+}

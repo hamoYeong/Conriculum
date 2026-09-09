@@ -7,7 +7,7 @@ struct HomeFeature {
     struct State: Equatable {
         var manifest: ContentManifest?
         var learningProgress: CourseProgress = .empty
-        var selectedStageID = "v2.s1"
+        var selectedStageID = "s1"
         var contentLoadErrorMessage: String?
     }
 

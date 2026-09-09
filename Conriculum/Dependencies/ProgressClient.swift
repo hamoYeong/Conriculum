@@ -11,8 +11,7 @@ extension ProgressClient: DependencyKey {
     static let liveValue = Self.live(
         resolveStore: {
             try await PersistenceEnvironmentRegistry.live().courseProgressStore
-        },
-        legacyStore: .standard
+        }
     )
 }
 
@@ -23,30 +22,18 @@ extension ProgressClient: TestDependencyKey {
 
 extension ProgressClient {
     @MainActor
-    static func live(
-        store: CourseProgressStore,
-        legacyStore: UserDefaults? = nil
-    ) -> Self {
-        live(resolveStore: { store }, legacyStore: legacyStore)
+    static func live(store: CourseProgressStore) -> Self {
+        live(resolveStore: { store })
     }
 
     @MainActor
     private static func live(
-        resolveStore: @escaping @Sendable () async throws -> CourseProgressStore,
-        legacyStore: UserDefaults?
+        resolveStore: @escaping @Sendable () async throws -> CourseProgressStore
     ) -> Self {
-        let legacyStorage = legacyStore.map(LegacyProgressStorage.init(store:))
         return Self(
             load: {
                 let store = try await resolveStore()
-                if let progress = try await store.load() {
-                    return progress
-                }
-                guard let progress = try legacyStorage?.load() else {
-                    return .empty
-                }
-                try await store.save(progress)
-                return progress
+                return try await store.load() ?? .empty
             },
             save: { progress in
                 let store = try await resolveStore()
@@ -60,22 +47,5 @@ extension DependencyValues {
     var progressClient: ProgressClient {
         get { self[ProgressClient.self] }
         set { self[ProgressClient.self] = newValue }
-    }
-}
-
-private final class LegacyProgressStorage: @unchecked Sendable {
-    private let store: UserDefaults
-    private let key = "learning.progress.v2"
-    private let lock = NSLock()
-
-    init(store: UserDefaults) {
-        self.store = store
-    }
-
-    func load() throws -> CourseProgress? {
-        try lock.withLock {
-            guard let data = store.data(forKey: key) else { return nil }
-            return try JSONDecoder().decode(CourseProgress.self, from: data)
-        }
     }
 }

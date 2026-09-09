@@ -55,24 +55,24 @@ def without_section(text: str, heading: str) -> str:
     ).rstrip()
 
 
-def concept_paths(v2_root: Path) -> dict[str, Path]:
+def concept_paths(knowledge_root: Path) -> dict[str, Path]:
     result = {}
     for category, titles in ORDER.items():
-        directory = v2_root / category
+        directory = knowledge_root / category
         candidates = {path.stem: path for path in directory.glob("*.md") if not path.name.startswith("00")}
         for title in titles:
             if title not in candidates:
-                raise ValueError(f"Missing v2 knowledge page: {category}/{title}.md")
+                raise ValueError(f"Missing knowledge page: {category}/{title}.md")
             result[title] = candidates[title]
     return result
 
 
 def wiki_link(path: Path, root: Path) -> str:
-    return f"[[지식 체계 ver.2/{path.relative_to(root).with_suffix('')}|{path.stem}]]"
+    return f"[[{root.name}/{path.relative_to(root).with_suffix('')}|{path.stem}]]"
 
 
-def author_relations(v2_root: Path) -> None:
-    paths = concept_paths(v2_root)
+def author_relations(knowledge_root: Path) -> None:
+    paths = concept_paths(knowledge_root)
     ordered_titles = [title for titles in ORDER.values() for title in titles]
     for index, title in enumerate(ordered_titles):
         path = paths[title]
@@ -81,11 +81,11 @@ def author_relations(v2_root: Path) -> None:
         previous = paths[ordered_titles[index - 1]] if index > 0 else None
         following = paths[ordered_titles[index + 1]] if index + 1 < len(ordered_titles) else None
         prerequisite = (
-            f"- {wiki_link(previous, v2_root)} — 이 기준을 먼저 구분하면 현재 개념의 역할을 더 정확히 판단할 수 있다."
+            f"- {wiki_link(previous, knowledge_root)} — 이 기준을 먼저 구분하면 현재 개념의 역할을 더 정확히 판단할 수 있다."
             if previous else "- 없음 — 이 지식 경로의 출발점이다."
         )
         next_link = (
-            f"- {wiki_link(following, v2_root)} — 현재 기준을 바탕으로 다음 코드 단서와 책임을 읽는다."
+            f"- {wiki_link(following, knowledge_root)} — 현재 기준을 바탕으로 다음 코드 단서와 책임을 읽는다."
             if following else "- 없음 — 이 지식 경로의 마지막 확인 지점이다."
         )
         text += f"\n\n## 선행 지식\n\n{prerequisite}\n\n## 다음 연결\n\n{next_link}\n"
@@ -94,9 +94,9 @@ def author_relations(v2_root: Path) -> None:
 
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("v2_root", type=Path)
+    parser.add_argument("knowledge_root", type=Path)
     args = parser.parse_args()
-    author_relations(args.v2_root)
+    author_relations(args.knowledge_root)
     print(f"prepared {sum(map(len, ORDER.values()))} directed knowledge pages")
 
 

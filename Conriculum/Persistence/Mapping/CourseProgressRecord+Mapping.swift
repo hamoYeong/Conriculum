@@ -2,7 +2,6 @@ import Foundation
 
 extension CourseProgressRecord {
     convenience init(
-        contentVersion: ContentVersion,
         lastVisitedPageID: String?,
         updatedAt: Date
     ) throws {
@@ -14,26 +13,18 @@ extension CourseProgressRecord {
             )
         }
         self.init(
-            id: Self.storageID(contentVersion: contentVersion),
-            contentVersion: contentVersion.rawValue,
+            id: Self.storageID,
             lastVisitedPageID: lastVisitedPageID,
             updatedAt: updatedAt
         )
     }
 
-    func validate(contentVersion expectedVersion: ContentVersion) throws {
-        guard contentVersion == expectedVersion.rawValue else {
-            throw PersistenceMappingSupport.invalid(
-                record: Self.recordName,
-                fieldPath: "contentVersion",
-                message: "does not belong to the requested content version"
-            )
-        }
-        guard id == Self.storageID(contentVersion: expectedVersion) else {
+    func validate() throws {
+        guard id == Self.storageID else {
             throw PersistenceMappingSupport.invalid(
                 record: Self.recordName,
                 fieldPath: "id",
-                message: "does not match the content version"
+                message: "does not match the course progress identity"
             )
         }
         if let lastVisitedPageID {
@@ -57,9 +48,7 @@ extension CourseProgressRecord {
         self.updatedAt = updatedAt
     }
 
-    static func storageID(contentVersion: ContentVersion) -> String {
-        "course-progress:\(contentVersion.rawValue)"
-    }
+    static let storageID = "course-progress"
 
     static let recordName = "CourseProgressRecord"
 }

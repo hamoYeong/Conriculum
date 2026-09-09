@@ -9,8 +9,8 @@ struct StageComponentRenderingTests {
     @Test
     func gameAndLearningStagesRenderThroughDifferentComponents() throws {
         let store = BundledContentStore()
-        let gamePage = try store.loadPage(id: .init(version: .v2, rawValue: "v2.s1.c1.p1"))
-        let learningPage = try store.loadPage(id: .init(version: .v2, rawValue: "v2.s2.c1.p1"))
+        let gamePage = try store.loadPage(id: "s1.c1.p1")
+        let learningPage = try store.loadPage(id: "s2.c1.p1")
 
         let gameImage = try render(StageOneGameComponent(page: gamePage))
         let learningImage = try render(StageTwoLearningComponent(page: learningPage))
@@ -23,10 +23,7 @@ struct StageComponentRenderingTests {
 
     @Test
     func wordSystemAndKnowledgeUnlockRenderAsDedicatedComponents() throws {
-        let page = try BundledContentStore().loadPage(id: .init(
-            version: .v2,
-            rawValue: "v2.s1.c1.p1"
-        ))
+        let page = try BundledContentStore().loadPage(id: "s1.c1.p1")
         let wordSystem = try #require(page.blocks.compactMap(\.wordSystem).first)
         let knowledgeUnlock = try #require(page.blocks.compactMap(\.knowledgeUnlock).first)
 

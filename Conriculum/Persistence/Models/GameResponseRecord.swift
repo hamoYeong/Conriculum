@@ -4,7 +4,6 @@ import SwiftData
 @Model
 final class GameResponseRecord {
     @Attribute(.unique) var id: String
-    var contentVersion: String
     var activityID: String
     var selectedOptionIDs: [String]
     var matchesPayload: Data
@@ -14,7 +13,6 @@ final class GameResponseRecord {
 
     init(
         id: String,
-        contentVersion: String,
         activityID: String,
         selectedOptionIDs: [String],
         matchesPayload: Data,
@@ -23,7 +21,6 @@ final class GameResponseRecord {
         answeredAt: Date
     ) {
         self.id = id
-        self.contentVersion = contentVersion
         self.activityID = activityID
         self.selectedOptionIDs = selectedOptionIDs
         self.matchesPayload = matchesPayload
