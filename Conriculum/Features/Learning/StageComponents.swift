@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// V1Stage 1은 알아보기·대조·보스 전이를 게임 라운드로 보여 준다.
+/// Stage 1은 알아보기·대조·보스 전이를 게임 라운드로 보여 준다.
 struct StageOneGameComponent: View {
     let page: LessonPage
     let responses: [String: GameResponse]
@@ -457,7 +457,7 @@ private struct GameActivityView: View {
     }
 }
 
-/// V1Stage 2는 결과·단서·조각·흐름·영향의 읽기 행동을 얇은 학습 프레임으로 보여 준다.
+/// Stage 2는 결과·단서·조각·흐름·영향의 읽기 행동을 얇은 학습 프레임으로 보여 준다.
 struct StageTwoLearningComponent: View {
     let page: LessonPage
 

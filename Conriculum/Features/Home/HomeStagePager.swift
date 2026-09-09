@@ -60,7 +60,7 @@ struct HomeStagePager: View {
                     Text("전체 학습 지도")
                         .font(.title2.bold())
                         .accessibilityHeading(.h2)
-                    Text("화살표나 좌우 스와이프로 V1Stage를 넘기고, 어느 챕터든 바로 열 수 있습니다.")
+                    Text("화살표나 좌우 스와이프로 Stage를 넘기고, 어느 챕터든 바로 열 수 있습니다.")
                         .font(.callout)
                         .foregroundStyle(.secondary)
                 }
@@ -98,7 +98,7 @@ struct HomeStagePager: View {
                 Image(systemName: "chevron.left")
             }
             .disabled(selectedIndex == 0)
-            .accessibilityLabel("이전 V1Stage")
+            .accessibilityLabel("이전 Stage")
 
             Text("\((selectedIndex ?? 0) + 1) / \(stages.count)")
                 .font(.callout.monospacedDigit())
@@ -111,7 +111,7 @@ struct HomeStagePager: View {
                 Image(systemName: "chevron.right")
             }
             .disabled(selectedIndex == nil || selectedIndex == stages.count - 1)
-            .accessibilityLabel("다음 V1Stage")
+            .accessibilityLabel("다음 Stage")
         }
         .buttonStyle(.bordered)
     }
