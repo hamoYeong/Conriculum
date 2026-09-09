@@ -1,6 +1,6 @@
 import Foundation
 
-struct KnowledgeChangeCollection: Equatable, Sendable {
+struct V1KnowledgeChangeCollection: Equatable, Sendable {
     enum Confirmed: Equatable, Identifiable, Sendable {
         case revision(Revision)
         case relation(Relation)
@@ -59,20 +59,20 @@ struct KnowledgeChangeCollection: Equatable, Sendable {
     let pending: [Pending]
 }
 
-struct KnowledgeChangeCollectionComposer {
+struct V1KnowledgeChangeCollectionComposer {
     func compose(
         concepts: [KnowledgeConcept],
         revisions: [PersonalConceptRevision],
         relations: [PersonalKnowledgeRelation],
         pendingReviews: [V1KnowledgePersonalizationReview]
-    ) -> KnowledgeChangeCollection {
+    ) -> V1KnowledgeChangeCollection {
         let titlesByID = Dictionary(
             uniqueKeysWithValues: concepts.map { ($0.id, $0.title) }
         )
         let confirmedRevisions = latestRevisions(revisions).values.map {
             revision in
-            KnowledgeChangeCollection.Confirmed.revision(
-                KnowledgeChangeCollection.Revision(
+            V1KnowledgeChangeCollection.Confirmed.revision(
+                V1KnowledgeChangeCollection.Revision(
                     id: revision.id,
                     conceptID: revision.conceptID,
                     conceptTitle: title(
@@ -89,8 +89,8 @@ struct KnowledgeChangeCollectionComposer {
         }
         let confirmedRelations = latestRelations(relations).values.map {
             relation in
-            KnowledgeChangeCollection.Confirmed.relation(
-                KnowledgeChangeCollection.Relation(
+            V1KnowledgeChangeCollection.Confirmed.relation(
+                V1KnowledgeChangeCollection.Relation(
                     id: relation.id,
                     sourceConceptID: relation.sourceConceptID,
                     sourceConceptTitle: title(
@@ -111,7 +111,7 @@ struct KnowledgeChangeCollectionComposer {
         }
         let pending = latestPendingReviews(pendingReviews).values.map {
             review in
-            KnowledgeChangeCollection.Pending(
+            V1KnowledgeChangeCollection.Pending(
                 id: review.id,
                 targetConceptID: review.targetConceptID,
                 targetConceptTitle: title(
@@ -127,7 +127,7 @@ struct KnowledgeChangeCollectionComposer {
             )
         }
 
-        return KnowledgeChangeCollection(
+        return V1KnowledgeChangeCollection(
             confirmed: (confirmedRevisions + confirmedRelations).sorted {
                 if $0.modifiedAt != $1.modifiedAt {
                     return $0.modifiedAt > $1.modifiedAt

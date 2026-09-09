@@ -427,11 +427,11 @@ struct HomeView: View {
     }
 
     private func knowledgeChangePanel(
-        _ knowledgeChanges: KnowledgeChangeCollection,
+        _ knowledgeChanges: V1KnowledgeChangeCollection,
         emptyMessage: String
     ) -> some View {
         HomePanel(title: "이번 학습으로 달라진 내 지식", systemImage: "sparkles") {
-            KnowledgeChangeCollectionView(
+            V1KnowledgeChangeCollectionView(
                 collection: knowledgeChanges,
                 confirmedEmptyMessage: emptyMessage
             )

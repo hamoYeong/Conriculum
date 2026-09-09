@@ -159,7 +159,7 @@ struct V1EnrichmentTaskComponent: View {
 
             if isExpanded {
                 if !content.materials.isEmpty {
-                    LearningLabeledTextGrid(
+                    V1LearningLabeledTextGrid(
                         items: content.materials,
                         accent: .purple
                     )
@@ -217,7 +217,7 @@ struct V1PersonalKnowledgePromotionComponent: View {
                 .fixedSize(horizontal: false, vertical: true)
             }
 
-            LearningOptionGrid(
+            V1LearningOptionGrid(
                 title: "반영할 개념",
                 options: content.conceptIDs.map {
                     V1LearningContentItem(
@@ -585,7 +585,7 @@ struct V1PersonalKnowledgeRelationComponent: View {
         )
 
         return VStack(alignment: .leading, spacing: 5) {
-            LearningOptionGrid(
+            V1LearningOptionGrid(
                 title: title,
                 options: conceptIDs.map {
                     V1LearningContentItem(

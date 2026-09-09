@@ -56,7 +56,7 @@ struct V1KnowledgeContextView: View {
     private func snapshotContent(
         _ snapshot: V1KnowledgeContextSnapshot
     ) -> some View {
-        let changeCollection = KnowledgeChangeCollectionComposer().compose(
+        let changeCollection = V1KnowledgeChangeCollectionComposer().compose(
             concepts: snapshot.availableConcepts,
             revisions: snapshot.changedConcepts.compactMap(
                 \.personalRevision
@@ -102,7 +102,7 @@ struct V1KnowledgeContextView: View {
             }
 
             if isChangesExpanded {
-                KnowledgeChangeCollectionView(
+                V1KnowledgeChangeCollectionView(
                     collection: changeCollection,
                     confirmedEmptyMessage: snapshot.emptyStateMessage,
                     onConceptSelected: { conceptID in

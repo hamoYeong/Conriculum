@@ -20,7 +20,7 @@ struct V1SituationComponent: View {
             }
 
             if !content.materials.isEmpty {
-                LearningLabeledTextGrid(
+                V1LearningLabeledTextGrid(
                     items: content.materials,
                     accent: .indigo
                 )

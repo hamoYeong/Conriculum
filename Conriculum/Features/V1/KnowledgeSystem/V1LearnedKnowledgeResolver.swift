@@ -1,7 +1,7 @@
 import Foundation
 
 /// Derives knowledge exposure and personal expression separately; neither implies mastery.
-enum LearnedKnowledgeResolver {
+enum V1LearnedKnowledgeResolver {
     static func personalConceptIDs(page: V1LearningPage, responses: [V1ActivityResponse]) -> Set<KnowledgeConceptID> {
         guard page.kind == .lesson else { return [] }
         var result = Set<KnowledgeConceptID>()

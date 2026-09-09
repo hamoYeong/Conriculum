@@ -47,7 +47,7 @@ struct V1HomeSnapshot: Equatable, Sendable {
     let chapter: ChapterCard
     let lastActivity: ActivitySummary?
     let evidence: [EvidenceSummary]
-    let knowledgeChanges: KnowledgeChangeCollection
+    let knowledgeChanges: V1KnowledgeChangeCollection
     let knowledgeChangesEmptyStateMessage: String
     var availableChapters: [ChapterCard] = []
 }

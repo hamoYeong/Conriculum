@@ -212,7 +212,7 @@ struct V1MatchingComponent: View {
                         Text(item.text)
                             .font(.callout.weight(.semibold))
 
-                        LearningOptionGrid(
+                        V1LearningOptionGrid(
                             title: "연결할 항목",
                             options: content.rightItems,
                             selection: activity.textBinding(
@@ -263,7 +263,7 @@ struct V1ChoiceWithReasonComponent: View {
                             .font(.callout.weight(.semibold))
                             .fixedSize(horizontal: false, vertical: true)
 
-                        LearningOptionGrid(
+                        V1LearningOptionGrid(
                             title: nil,
                             options: question.options,
                             selection: activity.textBinding(
@@ -325,7 +325,7 @@ struct V1FillInBlankComponent: View {
                         .accessibilityLabel(blank.placeholder)
                         .accessibilityHint("빈칸에 들어갈 내용을 입력합니다.")
                     } else {
-                        LearningOptionGrid(
+                        V1LearningOptionGrid(
                             title: blank.placeholder,
                             options: blank.options.map {
                                 V1LearningContentItem(id: $0, text: $0)
@@ -427,7 +427,7 @@ struct V1CodeAssemblyComponent: View {
             SwiftCodeText(line, textStyle: .callout)
                 .textSelection(.enabled)
 
-            LearningOptionGrid(
+            V1LearningOptionGrid(
                 title: "이 줄에 사용할 이름",
                 options: content.pieces,
                 selection: selectionBinding(at: index),

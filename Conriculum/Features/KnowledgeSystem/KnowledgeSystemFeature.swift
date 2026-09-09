@@ -166,10 +166,10 @@ struct KnowledgeSystemFeature {
                                 if historicalIDs.contains(page.id) || evidence.contains(where: { $0.kind == .viewed && $0.pageID == page.id }) {
                                     learnedIDs.formUnion(await V1LearningExposure.directConceptIDs(page: page))
                                 }
-                                learnedIDs.formUnion(await LearnedKnowledgeResolver.conceptIDs(
+                                learnedIDs.formUnion(await V1LearnedKnowledgeResolver.conceptIDs(
                                     page: page, responses: responses
                                 ))
-                                personalIDs.formUnion(await LearnedKnowledgeResolver.personalConceptIDs(page: page, responses: responses))
+                                personalIDs.formUnion(await V1LearnedKnowledgeResolver.personalConceptIDs(page: page, responses: responses))
                             }
                         }
                         let loadedLearnedIDs = learnedIDs

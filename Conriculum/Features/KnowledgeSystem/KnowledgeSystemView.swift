@@ -418,10 +418,7 @@ private struct KnowledgeSystemDetailPane: View {
 }
 
 #Preview("지식 체계") {
-    let catalog = try! ContentResourceDecoder().decode(
-        KnowledgeCatalog.self,
-            from: V1BundledContentResource.valuesAndTypes
-    )
+    let catalog = try! BundledContentStore().loadKnowledgeCatalog()
     let snapshot = KnowledgeSystemSnapshotComposer().compose(
         catalog: catalog,
         revisions: [],

@@ -4,7 +4,7 @@ import Testing
 @testable import Conriculum
 
 @MainActor
-struct LearningNavigationAndBookshelfTests {
+struct V1LearningNavigationAndBookshelfTests {
     @Test
     func completionOpensChapterThreeMapThroughTheWholeReducerChain() async throws {
         let chapter = try ContentResourceDecoder().decode(V1Chapter.self, from: .chapter02)
@@ -62,18 +62,18 @@ struct LearningNavigationAndBookshelfTests {
         let activityID = try #require(exercise.activityID)
         let response = V1ActivityResponse(id: "test-attempt", activityID: activityID, pageID: page.id,
             fields: [.init(key: "reason", values: ["값이 쓰이는 의미를 비교했다"])], recordedAt: .distantPast)
-        let actual = LearnedKnowledgeResolver.conceptIDs(page: page, responses: [response])
+        let actual = V1LearnedKnowledgeResolver.conceptIDs(page: page, responses: [response])
         #expect(actual == Set(page.knowledgeLinks.filter { $0.role == .primary || $0.role == .supporting }.map(\.conceptID)))
         #expect(!actual.isEmpty)
-        #expect(LearnedKnowledgeResolver.conceptIDs(page: chapter.overview, responses: [response]).isEmpty)
-        #expect(LearnedKnowledgeResolver.conceptIDs(page: page, responses: []).isEmpty)
+        #expect(V1LearnedKnowledgeResolver.conceptIDs(page: chapter.overview, responses: [response]).isEmpty)
+        #expect(V1LearnedKnowledgeResolver.conceptIDs(page: page, responses: []).isEmpty)
         let blank = V1ActivityResponse(id: response.id, activityID: activityID, pageID: page.id,
             fields: [.init(key: "reason", values: [" \n "])], recordedAt: .distantFuture)
-        #expect(LearnedKnowledgeResolver.conceptIDs(page: page, responses: [response, blank]).isEmpty)
+        #expect(V1LearnedKnowledgeResolver.conceptIDs(page: page, responses: [response, blank]).isEmpty)
         let compass = try #require(page.sections.first { $0.content.tag == .learningCompass }?.activityID)
         let guess = V1ActivityResponse(id: "guess", activityID: compass, pageID: page.id,
             fields: response.fields, recordedAt: .distantPast)
-        #expect(LearnedKnowledgeResolver.conceptIDs(page: page, responses: [guess]).isEmpty)
+        #expect(V1LearnedKnowledgeResolver.conceptIDs(page: page, responses: [guess]).isEmpty)
     }
 
     @Test

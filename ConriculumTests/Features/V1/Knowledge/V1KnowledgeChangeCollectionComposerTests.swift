@@ -3,7 +3,7 @@ import Testing
 
 @testable import Conriculum
 
-struct KnowledgeChangeCollectionComposerTests {
+struct V1KnowledgeChangeCollectionComposerTests {
     @Test
     func keepsLatestItemPerIdentityAndSeparatesPendingReviews() {
         let firstDate = Date(timeIntervalSince1970: 1_725_782_400)
@@ -42,7 +42,7 @@ struct KnowledgeChangeCollectionComposerTests {
             createdAt: secondDate
         )
 
-        let collection = KnowledgeChangeCollectionComposer().compose(
+        let collection = V1KnowledgeChangeCollectionComposer().compose(
             concepts: concepts,
             revisions: [oldRevision, latestRevision],
             relations: [oldRelation, latestRelation],
@@ -85,7 +85,7 @@ struct KnowledgeChangeCollectionComposerTests {
             createdAt: timestamp
         )
 
-        let collection = KnowledgeChangeCollectionComposer().compose(
+        let collection = V1KnowledgeChangeCollectionComposer().compose(
             concepts: concepts,
             revisions: [replacement, lowerID, higherID],
             relations: [],

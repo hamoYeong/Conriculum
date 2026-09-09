@@ -61,7 +61,7 @@ struct V1HomeSnapshotComposer {
                     latestAt: matchingEvidence.map(\.recordedAt).max()
                 )
             },
-            knowledgeChanges: KnowledgeChangeCollectionComposer().compose(
+            knowledgeChanges: V1KnowledgeChangeCollectionComposer().compose(
                 concepts: catalog.concepts,
                 revisions: revisions,
                 relations: relations,

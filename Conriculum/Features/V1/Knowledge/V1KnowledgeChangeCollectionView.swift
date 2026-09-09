@@ -1,7 +1,7 @@
 import SwiftUI
 
-struct KnowledgeChangeCollectionView: View {
-    let collection: KnowledgeChangeCollection
+struct V1KnowledgeChangeCollectionView: View {
+    let collection: V1KnowledgeChangeCollection
     let confirmedEmptyMessage: String
     var onConceptSelected: ((KnowledgeConceptID) -> Void)?
 
@@ -79,7 +79,7 @@ struct KnowledgeChangeCollectionView: View {
 
     @ViewBuilder
     private func confirmedRow(
-        _ change: KnowledgeChangeCollection.Confirmed
+        _ change: V1KnowledgeChangeCollection.Confirmed
     ) -> some View {
         switch change {
         case let .revision(revision):
@@ -130,7 +130,7 @@ struct KnowledgeChangeCollectionView: View {
     }
 
     private func revisionContent(
-        _ revision: KnowledgeChangeCollection.Revision
+        _ revision: V1KnowledgeChangeCollection.Revision
     ) -> some View {
         VStack(alignment: .leading, spacing: 7) {
             HStack(alignment: .firstTextBaseline, spacing: 8) {
@@ -171,7 +171,7 @@ struct KnowledgeChangeCollectionView: View {
     }
 
     private func relationContent(
-        _ relation: KnowledgeChangeCollection.Relation
+        _ relation: V1KnowledgeChangeCollection.Relation
     ) -> some View {
         VStack(alignment: .leading, spacing: 7) {
             HStack(alignment: .firstTextBaseline, spacing: 8) {
@@ -206,7 +206,7 @@ struct KnowledgeChangeCollectionView: View {
     }
 
     private func pendingRow(
-        _ candidate: KnowledgeChangeCollection.Pending
+        _ candidate: V1KnowledgeChangeCollection.Pending
     ) -> some View {
         HStack(alignment: .top, spacing: 10) {
             Capsule()

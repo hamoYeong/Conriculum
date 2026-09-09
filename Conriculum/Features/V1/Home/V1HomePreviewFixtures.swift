@@ -17,7 +17,7 @@ enum V1HomePreviewFixtures {
         evidence: V1LearningEvidenceKind.allCases.map {
             V1HomeSnapshot.EvidenceSummary(kind: $0, count: 0, latestAt: nil)
         },
-        knowledgeChanges: KnowledgeChangeCollection(
+        knowledgeChanges: V1KnowledgeChangeCollection(
             confirmed: [],
             pending: []
         ),
@@ -68,9 +68,9 @@ enum V1HomePreviewFixtures {
                     latestAt: counts[kind, default: 0] == 0 ? nil : timestamp
                 )
             },
-            knowledgeChanges: KnowledgeChangeCollection(
+            knowledgeChanges: V1KnowledgeChangeCollection(
                 confirmed: [
-                    .revision(KnowledgeChangeCollection.Revision(
+                    .revision(V1KnowledgeChangeCollection.Revision(
                         id: "preview-revision-type-selection",
                         conceptID: "concept-type-selection",
                         conceptTitle: "타입 선택",
@@ -80,7 +80,7 @@ enum V1HomePreviewFixtures {
                         evidenceActivityID: "activity-page03-choice",
                         modifiedAt: timestamp
                     )),
-                    .relation(KnowledgeChangeCollection.Relation(
+                    .relation(V1KnowledgeChangeCollection.Relation(
                         id: "preview-relation-value-type-selection",
                         sourceConceptID: "concept-value",
                         sourceConceptTitle: "값",
@@ -93,7 +93,7 @@ enum V1HomePreviewFixtures {
                     )),
                 ],
                 pending: [
-                    KnowledgeChangeCollection.Pending(
+                    V1KnowledgeChangeCollection.Pending(
                         id: "preview-candidate-value",
                         targetConceptID: "concept-value",
                         targetConceptTitle: "값",

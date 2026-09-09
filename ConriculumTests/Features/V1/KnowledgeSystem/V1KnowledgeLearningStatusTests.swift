@@ -5,7 +5,7 @@ import Testing
 @testable import Conriculum
 
 @MainActor
-struct KnowledgeLearningStatusTests {
+struct V1KnowledgeLearningStatusTests {
     private func chapter() throws -> V1Chapter {
         try ContentResourceDecoder().decode(V1Chapter.self, from: .chapter02)
     }
@@ -37,12 +37,12 @@ struct KnowledgeLearningStatusTests {
             .init(id: "answer", activityID: id, pageID: page.id, fields: fields, recordedAt: date)
         }
         let choice = response([.init(key: "choice.test", values: ["option-a"])])
-        #expect(LearnedKnowledgeResolver.personalConceptIDs(page: page, responses: [choice]).isEmpty)
+        #expect(V1LearnedKnowledgeResolver.personalConceptIDs(page: page, responses: [choice]).isEmpty)
         let explanation = response([.init(key: "reason", values: ["사용 목적이 달라서 다르게 표현한다"])])
-        #expect(LearnedKnowledgeResolver.personalConceptIDs(page: page, responses: [explanation]) == V1LearningExposure.directConceptIDs(page: page))
+        #expect(V1LearnedKnowledgeResolver.personalConceptIDs(page: page, responses: [explanation]) == V1LearningExposure.directConceptIDs(page: page))
         let cleared = response([.init(key: "reason", values: ["  "])], date: .distantFuture)
-        #expect(LearnedKnowledgeResolver.personalConceptIDs(page: page, responses: [explanation, cleared]).isEmpty)
-        #expect(LearnedKnowledgeResolver.personalConceptIDs(page: chapter.overview, responses: [explanation]).isEmpty)
+        #expect(V1LearnedKnowledgeResolver.personalConceptIDs(page: page, responses: [explanation, cleared]).isEmpty)
+        #expect(V1LearnedKnowledgeResolver.personalConceptIDs(page: chapter.overview, responses: [explanation]).isEmpty)
     }
 
     @Test
