@@ -6,16 +6,6 @@ import Testing
 @MainActor
 struct DependencyClientTests {
     @Test
-    func selectedVersionDefaultsToCurrentAndRestoresExplicitChoice() async throws {
-        let suite = try #require(UserDefaults(suiteName: UUID().uuidString))
-        let client = ContentSettingsClient.live(store: suite)
-
-        #expect(await client.loadSelectedVersion() == .v2)
-        await client.saveSelectedVersion(.v1)
-        #expect(await client.loadSelectedVersion() == .v1)
-    }
-
-    @Test
     func legacyProgressMigratesOnceWithoutDeletingItsSource() async throws {
         let suite = try #require(UserDefaults(suiteName: UUID().uuidString))
         let environment = try PersistenceEnvironmentRegistry.makeInMemoryEnvironment()
@@ -50,7 +40,6 @@ struct DependencyClientTests {
 
         #expect(try await client.load() == updated)
         #expect(suite.data(forKey: "learning.progress.v2") == legacyData)
-        #expect(suite.object(forKey: "learning.progress.v1") == nil)
     }
 
     @Test

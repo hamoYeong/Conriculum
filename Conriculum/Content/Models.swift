@@ -1,6 +1,6 @@
 import Foundation
 
-/// ver.2 manifest는 ver.1 V1Chapter schema와 독립적으로 진입 순서와 리소스 소유권을 정의한다.
+/// manifest는 학습 진입 순서와 각 페이지 리소스의 소유권을 정의한다.
 struct ContentManifest: Codable, Equatable, Sendable {
     let schemaVersion: Int
     let contentVersion: ContentVersion

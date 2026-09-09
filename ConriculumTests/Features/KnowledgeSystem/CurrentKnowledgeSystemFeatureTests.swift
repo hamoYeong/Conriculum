@@ -7,7 +7,7 @@ import Testing
 @MainActor
 struct CurrentKnowledgeSystemFeatureTests {
     @Test
-    func loadUsesCurrentCatalogAndProgressWithoutV1Dependencies() async throws {
+    func loadUsesCatalogAndProgress() async throws {
         let catalog = try BundledContentStore().loadKnowledgeCatalog()
         let references = catalog.concepts.flatMap { $0.revisitPages ?? [] }
         let learnedPageID = try #require(references.first).pageID.rawValue
@@ -27,7 +27,7 @@ struct CurrentKnowledgeSystemFeatureTests {
             learnedConceptIDs: learnedConceptIDs
         )
         let store = TestStore(
-            initialState: KnowledgeSystemFeature.State(contentVersion: .v2)
+            initialState: KnowledgeSystemFeature.State()
         ) {
             KnowledgeSystemFeature()
         } withDependencies: {
@@ -56,7 +56,7 @@ struct CurrentKnowledgeSystemFeatureTests {
         let references = catalog.concepts.flatMap { $0.revisitPages ?? [] }
         let reference = try #require(references.first)
         let store = TestStore(
-            initialState: KnowledgeSystemFeature.State(contentVersion: .v2)
+            initialState: KnowledgeSystemFeature.State()
         ) {
             KnowledgeSystemFeature()
         }
@@ -85,10 +85,7 @@ struct CurrentKnowledgeSystemFeatureTests {
         let second = try #require(collectionConcepts.dropFirst().first)
         let third = try #require(collectionConcepts.dropFirst(2).first)
         let store = TestStore(
-            initialState: KnowledgeSystemFeature.State(
-                contentVersion: .v2,
-                snapshot: snapshot
-            )
+            initialState: KnowledgeSystemFeature.State(snapshot: snapshot)
         ) {
             KnowledgeSystemFeature()
         }
@@ -131,10 +128,7 @@ struct CurrentKnowledgeSystemFeatureTests {
             personalRelations: []
         )
         let store = TestStore(
-            initialState: KnowledgeSystemFeature.State(
-                contentVersion: .v2,
-                snapshot: snapshot
-            )
+            initialState: KnowledgeSystemFeature.State(snapshot: snapshot)
         ) {
             KnowledgeSystemFeature()
         } withDependencies: {

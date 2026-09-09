@@ -11,24 +11,30 @@ struct KnowledgeSystemSnapshotComposerTests {
     {
         let catalog = try ContentResourceDecoder().decode(
             KnowledgeCatalog.self,
-            from: .valuesAndTypes
+            from: BundledContentResource.knowledgeCatalog
         )
+        let typeID = try #require(
+            catalog.concepts.first { $0.title == "타입" }
+        ).id
+        let valueID = try #require(
+            catalog.concepts.first { $0.title == "값" }
+        ).id
         let oldRevision = revision(
             id: "revision-old",
-            conceptID: "concept-type",
+            conceptID: typeID,
             explanation: "이전 설명",
             timestamp: 10
         )
         let latestRevision = revision(
             id: "revision-latest",
-            conceptID: "concept-type",
+            conceptID: typeID,
             explanation: "최신 설명",
             timestamp: 20
         )
         let relation = personalRelation(
             id: "personal-relation-value-type",
-            source: "concept-value",
-            target: "concept-type",
+            source: valueID,
+            target: typeID,
             timestamp: 30
         )
 
@@ -41,13 +47,13 @@ struct KnowledgeSystemSnapshotComposerTests {
         #expect(snapshot.collections.map(\.id) == catalog.collections.map(\.id))
         #expect(snapshot.concepts.map(\.id) == catalog.concepts.map(\.id))
         #expect(
-            snapshot.conceptItem(id: "concept-type")?.latestRevision
+            snapshot.conceptItem(id: typeID)?.latestRevision
                 == latestRevision
         )
         #expect(snapshot.personalRelations == [relation])
         #expect(
-            snapshot.relatedConceptIDs(for: "concept-value")
-                .contains("concept-type")
+            snapshot.relatedConceptIDs(for: valueID)
+                .contains(typeID)
         )
     }
 
@@ -55,8 +61,11 @@ struct KnowledgeSystemSnapshotComposerTests {
     func danglingPersonalValuesAreExcludedFromTheSnapshot() throws {
         let catalog = try ContentResourceDecoder().decode(
             KnowledgeCatalog.self,
-            from: .valuesAndTypes
+            from: BundledContentResource.knowledgeCatalog
         )
+        let valueID = try #require(
+            catalog.concepts.first { $0.title == "값" }
+        ).id
         let danglingRevision = revision(
             id: "revision-dangling",
             conceptID: "concept-missing",
@@ -65,7 +74,7 @@ struct KnowledgeSystemSnapshotComposerTests {
         )
         let danglingRelation = personalRelation(
             id: "relation-dangling",
-            source: "concept-value",
+            source: valueID,
             target: "concept-missing",
             timestamp: 20
         )

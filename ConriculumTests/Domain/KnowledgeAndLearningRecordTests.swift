@@ -75,38 +75,25 @@ struct KnowledgeAndLearningRecordTests {
         #expect(relation.evidenceActivityID == "activity-page-07-create-relation")
     }
 
-    /// Page → Concept 역할과 학습 증거 종류의 case 집합 자체를 Domain 계약으로 고정한다.
+    /// Page → Concept 역할의 case 집합 자체를 Domain 계약으로 고정한다.
     @Test
-    func linkRolesAndEvidenceKindsMatchTheDomainContract() {
+    func linkRolesMatchTheDomainContract() {
         #expect(Set(KnowledgeLinkRole.allCases) == [
             .primary, .supporting, .prerequisite, .enrichment,
-        ])
-        #expect(Set(V1LearningEvidenceKind.allCases) == [
-            .viewed,
-            .activityAttempt,
-            .assistedSuccess,
-            .independentSuccess,
-            .reasoningExplanation,
-            .conceptLink,
         ])
     }
 
     /// 지식과 기록 값도 concurrency 경계를 안전하게 넘는 순수 `Sendable` 값인지 확인한다.
     @Test
     func knowledgeAndLearningRecordValuesAreSendable() {
-        let progress = V1LearningProgress(
-            chapterID: "chapter-02",
-            currentPageID: "chapter-02-page-01",
-            completedPageIDs: [],
-            updatedAt: Date(timeIntervalSince1970: 3)
+        let progress = CourseProgress(
+            lastVisitedPageID: "v2.s1.c1.p1",
+            completedPageIDs: []
         )
 
         assertKnowledgeSendable(progress)
         assertKnowledgeSendable(KnowledgeLinkRole.primary)
-        assertKnowledgeSendable(V1LearningEvidenceKind.reasoningExplanation)
     }
 }
 
 private func assertKnowledgeSendable<Value: Sendable>(_ value: Value) {}
-
-// MARK: - 다음 읽기: Conriculum/Content/V1/Schema/V1LearningSectionContent.swift

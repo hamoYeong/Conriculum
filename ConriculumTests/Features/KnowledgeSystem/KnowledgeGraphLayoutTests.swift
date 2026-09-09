@@ -25,12 +25,29 @@ struct KnowledgeGraphLayoutTests {
 
         #expect(first == second)
         #expect(first.positions.count == snapshot.concepts.count)
+        let center = CGPoint(
+            x: first.canvasSize.width / 2,
+            y: first.canvasSize.height / 2
+        )
+        let centeredConceptIDs = first.positions.compactMap {
+            $0.value == center ? $0.key : nil
+        }
+        let centeredConceptID = try #require(centeredConceptIDs.first)
+        let visibleIDs = Set(snapshot.concepts.map(\.id))
+        let degrees = snapshot.baseRelations.reduce(
+            into: [KnowledgeConceptID: Int]()
+        ) { result, relation in
+            guard visibleIDs.contains(relation.sourceConceptID),
+                  visibleIDs.contains(relation.targetConceptID)
+            else { return }
+            result[relation.sourceConceptID, default: 0] += 1
+            result[relation.targetConceptID, default: 0] += 1
+        }
+
+        #expect(centeredConceptIDs.count == 1)
         #expect(
-            first.position(for: "concept-type")
-                == CGPoint(
-                    x: first.canvasSize.width / 2,
-                    y: first.canvasSize.height / 2
-                )
+            degrees[centeredConceptID, default: 0]
+                == degrees.values.max()
         )
     }
 
@@ -100,7 +117,7 @@ struct KnowledgeGraphLayoutTests {
     private func makeSnapshot() throws -> KnowledgeSystemSnapshot {
         let catalog = try ContentResourceDecoder().decode(
             KnowledgeCatalog.self,
-            from: .valuesAndTypes
+            from: BundledContentResource.knowledgeCatalog
         )
         return KnowledgeSystemSnapshotComposer().compose(
             catalog: catalog,

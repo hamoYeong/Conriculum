@@ -24,8 +24,10 @@ struct KnowledgeSystemViewRenderingTests {
 
     @Test
     func actualShelfWidthFollowsColumnPolicyWhileWindowResizes() async throws {
-        var state = KnowledgeSystemFeature.State(snapshot: try makeSnapshot())
-        state.selectedConceptIDs = ["concept-type"]
+        let snapshot = try makeSnapshot()
+        let typeID = try conceptID(named: "타입", in: snapshot)
+        var state = KnowledgeSystemFeature.State(snapshot: snapshot)
+        state.selectedConceptIDs = [typeID]
         let host = NSHostingView(rootView: KnowledgeSystemView(store: Store(initialState: state) { KnowledgeSystemFeature() }))
         host.frame = NSRect(x: 0, y: 0, width: 1600, height: 800)
         let window = NSWindow(contentRect: host.frame, styleMask: [], backing: .buffered, defer: false)
@@ -67,6 +69,7 @@ struct KnowledgeSystemViewRenderingTests {
     @Test
     func openingAndClosingDetailKeepsBookshelfScrollView() async throws {
         let snapshot = try makeSnapshot()
+        let typeID = try conceptID(named: "타입", in: snapshot)
         let store = Store(initialState: KnowledgeSystemFeature.State(snapshot: snapshot)) { KnowledgeSystemFeature() }
         let host = NSHostingView(rootView: KnowledgeSystemView(store: store))
         host.frame = NSRect(x: 0, y: 0, width: 1100, height: 720)
@@ -89,7 +92,7 @@ struct KnowledgeSystemViewRenderingTests {
             try await Task.sleep(for: .milliseconds(10))
         }
         #expect(shelf.contentView.bounds.minY > 0, "document: \(String(describing: shelf.documentView?.frame)), viewport: \(shelf.bounds)")
-        for action in [KnowledgeSystemFeature.Action.conceptSelected("concept-type"), .selectionCleared] {
+        for action in [KnowledgeSystemFeature.Action.conceptSelected(typeID), .selectionCleared] {
             store.send(action)
             try await Task.sleep(for: .milliseconds(100))
             host.layoutSubtreeIfNeeded()
@@ -105,6 +108,11 @@ struct KnowledgeSystemViewRenderingTests {
     @Test
     func shelfDetailAndComparisonLayoutsRender() async throws {
         let snapshot = try makeSnapshot()
+        let typeID = try conceptID(named: "타입", in: snapshot)
+        let valueID = try conceptID(named: "값", in: snapshot)
+        let collectionID = try #require(
+            snapshot.concepts.first { $0.id == typeID }
+        ).collectionID
         let fixtures: [Fixture] = [
             Fixture(
                 name: "shelf-wide",
@@ -114,39 +122,39 @@ struct KnowledgeSystemViewRenderingTests {
             Fixture(
                 name: "shelf-detail-narrow",
                 size: CGSize(width: 720, height: 720),
-                selectedConceptIDs: ["concept-type"]
+                selectedConceptIDs: [typeID]
             ),
             Fixture(
                 name: "shelf-detail-minimum",
                 size: CGSize(width: 720, height: 600),
-                selectedConceptIDs: ["concept-type"]
+                selectedConceptIDs: [typeID]
             ),
             Fixture(
                 name: "shelf-detail-wide",
                 size: CGSize(width: 1400, height: 900),
-                selectedConceptIDs: ["concept-type"]
+                selectedConceptIDs: [typeID]
             ),
             Fixture(
                 name: "shelf-detail-extra-wide",
                 size: CGSize(width: 2000, height: 900),
-                selectedConceptIDs: ["concept-type"]
+                selectedConceptIDs: [typeID]
             ),
             Fixture(
                 name: "shelf-detail-two-columns",
                 size: CGSize(width: 1200, height: 900),
-                selectedConceptIDs: ["concept-type"]
+                selectedConceptIDs: [typeID]
             ),
             Fixture(
                 name: "comparison-wide",
                 size: CGSize(width: 1_100, height: 760),
-                selectedConceptIDs: ["concept-type", "concept-value"]
+                selectedConceptIDs: [typeID, valueID]
             ),
         ]
 
         for fixture in fixtures {
             var state = KnowledgeSystemFeature.State(snapshot: snapshot)
             state.selectedConceptIDs = fixture.selectedConceptIDs
-            state.selectedCollectionID = "collection-02-values-and-types"
+            state.selectedCollectionID = collectionID
 
             let view = KnowledgeSystemView(
                 store: Store(initialState: state) {
@@ -165,11 +173,19 @@ struct KnowledgeSystemViewRenderingTests {
     private func makeSnapshot() throws -> KnowledgeSystemSnapshot {
         let catalog = try ContentResourceDecoder().decode(
             KnowledgeCatalog.self,
-            from: .valuesAndTypes
+            from: BundledContentResource.knowledgeCatalog
+        )
+        let typeID = try #require(
+            catalog.concepts.first { $0.title == "타입" }
+        ).id
+        let learnedConceptIDs = Set(
+            catalog.concepts.filter {
+                ["값", "타입", "Bool", "String", "Int"].contains($0.title)
+            }.map(\.id)
         )
         let revision = PersonalConceptRevision(
             id: "render-revision-type",
-            conceptID: "concept-type",
+            conceptID: typeID,
             personalTitle: "할 수 있는 일의 약속",
             explanation: "값의 가능한 사용을 함께 설명한다.",
             examples: [],
@@ -181,8 +197,15 @@ struct KnowledgeSystemViewRenderingTests {
             catalog: catalog,
             revisions: [revision],
             personalRelations: [],
-            learnedConceptIDs: ["concept-value", "concept-type", "concept-bool", "concept-string", "concept-int"]
+            learnedConceptIDs: learnedConceptIDs
         )
+    }
+
+    private func conceptID(
+        named title: String,
+        in snapshot: KnowledgeSystemSnapshot
+    ) throws -> KnowledgeConceptID {
+        try #require(snapshot.concepts.first { $0.concept.title == title }).id
     }
 
     private func render<V: View>(

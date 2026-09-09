@@ -9,16 +9,14 @@ struct PersistenceTests {
     private let secondDate = Date(timeIntervalSince1970: 1_800_086_400)
 
     @Test
-    func currentSchemaIsPhysicallySeparateFromV1() {
+    func currentSchemaContainsOnlyProgressModels() {
         let currentNames = Set(PersistenceSchema.schema.entities.map(\.name))
-        let v1Names = Set(V1PersistenceSchema.schema.entities.map(\.name))
 
         #expect(currentNames == [
             "CourseProgressRecord",
             "PageProgressRecord",
             "GameResponseRecord",
         ])
-        #expect(currentNames.isDisjoint(with: v1Names))
     }
 
     @Test

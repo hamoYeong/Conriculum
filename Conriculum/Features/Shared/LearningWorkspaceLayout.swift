@@ -1,7 +1,7 @@
 import AppKit
 import SwiftUI
 
-/// V1과 현재 학습 화면이 같은 세 패널 너비 규칙을 사용하도록 하는 공용 브리지.
+/// 학습 화면의 세 패널 너비 규칙을 적용하는 브리지.
 struct LearningWorkspacePanelSizing: NSViewRepresentable {
     struct Configuration: Equatable {
         var showsSidebar: Bool
