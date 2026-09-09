@@ -4,7 +4,7 @@ import Testing
 @testable import Conriculum
 
 @MainActor
-struct ChapterFourNavigationTests {
+struct V1ChapterFourNavigationTests {
     @Test(arguments: ["new", "resume", "removed-page"])
     func chapterThreeCompletionOpensChapterFourAndPreservesProgress(_ scenario: String) async throws {
         let assembly = try AppAssembly.inMemory()

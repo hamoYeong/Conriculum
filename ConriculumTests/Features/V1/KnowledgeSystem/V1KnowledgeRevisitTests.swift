@@ -5,7 +5,7 @@ import Testing
 @testable import Conriculum
 
 @MainActor
-struct KnowledgeRevisitTests {
+struct V1KnowledgeRevisitTests {
     @Test
     func everyCatalogConceptHasOneOrderedDeduplicatedRevisitList() throws {
         let content = V1BundledContentStore()

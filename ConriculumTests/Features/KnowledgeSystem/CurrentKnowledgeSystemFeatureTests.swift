@@ -68,6 +68,61 @@ struct CurrentKnowledgeSystemFeatureTests {
     }
 
     @Test
+    func currentCatalogSupportsCollectionSearchAndConceptComparison() async throws {
+        let catalog = try BundledContentStore().loadKnowledgeCatalog()
+        let learnedConceptIDs = Set(catalog.concepts.map(\.id))
+        let snapshot = KnowledgeSystemSnapshotComposer().compose(
+            catalog: catalog,
+            revisions: [],
+            personalRelations: [],
+            learnedConceptIDs: learnedConceptIDs
+        )
+        let collection = try #require(snapshot.collections.first)
+        let collectionConcepts = snapshot.concepts.filter {
+            $0.collectionID == collection.id
+        }
+        let first = try #require(collectionConcepts.first)
+        let second = try #require(collectionConcepts.dropFirst().first)
+        let third = try #require(collectionConcepts.dropFirst(2).first)
+        let store = TestStore(
+            initialState: KnowledgeSystemFeature.State(
+                contentVersion: .v2,
+                snapshot: snapshot
+            )
+        ) {
+            KnowledgeSystemFeature()
+        }
+
+        await store.send(.collectionSelected(collection.id)) {
+            $0.selectedCollectionID = collection.id
+        }
+        #expect(store.state.visibleConcepts.allSatisfy {
+            $0.collectionID == collection.id
+        })
+
+        await store.send(.searchQueryChanged(first.concept.title)) {
+            $0.searchQuery = first.concept.title
+        }
+        #expect(store.state.visibleConcepts.contains { $0.id == first.id })
+
+        await store.send(.conceptSelected(first.id)) {
+            $0.selectedConceptIDs = [first.id]
+        }
+        await store.send(.compareConceptRequested(second.id)) {
+            $0.selectedConceptIDs = [first.id, second.id]
+        }
+        await store.send(.compareConceptRequested(third.id)) {
+            $0.selectedConceptIDs = [first.id, third.id]
+        }
+        await store.send(.conceptClosed(first.id)) {
+            $0.selectedConceptIDs = [third.id]
+        }
+        await store.send(.selectionCleared) {
+            $0.selectedConceptIDs = []
+        }
+    }
+
+    @Test
     func currentReloadFailurePreservesLastSuccessfulSnapshot() async throws {
         let catalog = try BundledContentStore().loadKnowledgeCatalog()
         let snapshot = KnowledgeSystemSnapshotComposer().compose(

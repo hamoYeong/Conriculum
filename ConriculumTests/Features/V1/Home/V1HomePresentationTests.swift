@@ -3,7 +3,7 @@ import Testing
 @testable import Conriculum
 
 @MainActor
-struct HomePresentationTests {
+struct V1HomePresentationTests {
     @Test
     func evidenceKindsHaveStableKoreanLabelsAndSymbols() {
         let presentations = V1LearningEvidenceKind.allCases.map(

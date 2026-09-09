@@ -3,7 +3,7 @@ import Testing
 @testable import Conriculum
 
 @MainActor
-struct HomeSnapshotComposerTests {
+struct V1HomeSnapshotComposerTests {
     @Test
     func emptyFixtureHasNoInventedProgressOrCompletion() {
         let v1Snapshot = V1HomePreviewFixtures.empty

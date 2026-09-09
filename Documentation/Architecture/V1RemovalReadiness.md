@@ -71,7 +71,7 @@ Conriculum은 아직 배포되지 않았고 V1을 사용한 실제 사용자가 
 - `ConriculumTests` 아래의 모든 V1 전용 테스트
 - `Documentation/Persistence/V1`
 
-버전 폴더 밖의 App, Home, KnowledgeSystem 테스트에는 V1과 V2 시나리오가 섞여 있다. 파일을 통째로 지우지 말고 V2 수용 조건만 남긴다.
+버전 폴더 밖에 남은 App, Home 테스트에는 V1과 V2 시나리오가 섞여 있다. 파일을 통째로 지우지 말고 V2 수용 조건만 남긴다. V1 전용 Home·KnowledgeSystem·챕터 이동 테스트는 이미 `ConriculumTests/Features/V1` 아래로 격리했다.
 
 ### 5. V2 단독 검증
 

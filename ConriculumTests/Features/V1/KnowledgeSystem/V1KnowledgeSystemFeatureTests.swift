@@ -5,7 +5,7 @@ import Testing
 @testable import Conriculum
 
 @MainActor
-struct KnowledgeSystemFeatureTests {
+struct V1KnowledgeSystemFeatureTests {
     @Test
     func loadComposesCatalogAndPersonalKnowledge() async throws {
         let catalog = try loadCatalog()
@@ -142,7 +142,7 @@ struct KnowledgeSystemFeatureTests {
         } withDependencies: {
             $0.v1KnowledgeCatalogClient.loadCatalog = {
                 throw NSError(
-                    domain: "KnowledgeSystemFeatureTests",
+                    domain: "V1KnowledgeSystemFeatureTests",
                     code: 1,
                     userInfo: [
                         NSLocalizedDescriptionKey: "지식 체계 조회 실패"

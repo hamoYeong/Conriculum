@@ -4,7 +4,7 @@ import Testing
 @testable import Conriculum
 
 @MainActor
-struct HomeFeatureTests {
+struct V1HomeFeatureTests {
     @Test
     func freshHomeResumesMostRecentlySavedChapterAndOffersEveryChapter() async throws {
         let decoder = ContentResourceDecoder()
@@ -202,7 +202,7 @@ struct HomeFeatureTests {
             $0.v1LearningRecordClient.loadEvidence = { _ in [] }
             $0.v1PersonalKnowledgeClient.loadRevisions = { _ in
                 throw NSError(
-                    domain: "HomeFeatureTests",
+                    domain: "V1HomeFeatureTests",
                     code: 1,
                     userInfo: [
                         NSLocalizedDescriptionKey:
