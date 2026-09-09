@@ -1,0 +1,355 @@
+{
+  "schemaVersion": 1,
+  "contentVersion": "v2",
+  "id": "v2.s1.c9.p3",
+  "stageID": "v2.s1",
+  "chapterID": "v2.s1.c9",
+  "order": 3,
+  "title": "한 단어가 바뀐 코드 비교하기",
+  "goal": "최소 대조 쌍에서 바뀐 토큰 하나를 찾아 질문·경로·결과 중 무엇이 달라지는지 예측한다.",
+  "sourcePath": "Stage 1 - 코드의 단어와 모양에 익숙해지기/Final Chapter - 짧은 코드 문장을 처음부터 읽어보기/03 한 단어가 바뀐 코드 비교하기.md",
+  "blocks": [
+    {
+      "id": "03-한-단어가-바뀐-코드-비교하기.block-1",
+      "order": 1,
+      "kind": "mission",
+      "title": "클리어 목표",
+      "markdown": "최소 대조 쌍에서 바뀐 토큰 하나를 찾아 질문·경로·결과 중 무엇이 달라지는지 예측한다.",
+      "activities": []
+    },
+    {
+      "id": "03-한-단어가-바뀐-코드-비교하기.block-2",
+      "order": 2,
+      "kind": "wordSystem",
+      "title": "단어 체계",
+      "markdown": "",
+      "activities": [],
+      "wordSystem": {
+        "entries": [
+          {
+            "id": "03-한-단어가-바뀐-코드-비교하기.block-2.word-1",
+            "term": "최소 대조",
+            "parentSystem": "비교 방법",
+            "role": "한 요소만 다른 두 코드를 비교",
+            "firstThought": "정확히 어디가 바뀌었나?"
+          },
+          {
+            "id": "03-한-단어가-바뀐-코드-비교하기.block-2.word-2",
+            "term": "변경 지점",
+            "parentSystem": "원인",
+            "role": "결과 차이를 만든 토큰",
+            "firstThought": "역할이 무엇으로 바뀌었나?"
+          },
+          {
+            "id": "03-한-단어가-바뀐-코드-비교하기.block-2.word-3",
+            "term": "영향",
+            "parentSystem": "결과",
+            "role": "바뀐 경로·값·화면",
+            "firstThought": "무엇은 그대로인가?"
+          }
+        ]
+      }
+    },
+    {
+      "id": "03-한-단어가-바뀐-코드-비교하기.block-3",
+      "order": 3,
+      "kind": "scene",
+      "title": "장면 카드",
+      "markdown": "완료 항목을 보이던 코드가 미완료 항목을 보이도록 한 기호만 바뀐다.\n\n```swift\n// 전\nlet visible = tasks.filter { $0.isDone }\n// 후\nlet visible = tasks.filter { !$0.isDone }\n```",
+      "activities": []
+    },
+    {
+      "id": "03-한-단어가-바뀐-코드-비교하기.block-4",
+      "order": 4,
+      "kind": "game",
+      "title": "게임 1 · 첫 생각 카드",
+      "markdown": "직접 바뀐 토큰과 의미는?\n\n> [!game]- 활동 방식 · 판단 카드 고르기\n> 근거가 되는 카드를 모두 고른 뒤 답을 확인한다.\n\n<!-- conriculum-activity: choice; correct: 2 -->\n\n1. `filter`가 `map`으로 바뀜\n2. `!`가 추가되어 질문이 반전됨\n3. tasks가 삭제됨\n\n> [!check]- 정답과 근거\n> `!`가 추가되어 완료 질문이 반전되고 미완료 항목이 남는다.",
+      "activities": [
+        {
+          "id": "03-한-단어가-바뀐-코드-비교하기.block-4.activity-1",
+          "kind": "singleChoice",
+          "promptMarkdown": "직접 바뀐 토큰과 의미는?",
+          "options": [
+            {
+              "id": "03-한-단어가-바뀐-코드-비교하기.block-4.activity-1.option-1",
+              "title": "`filter`가 `map`으로 바뀜"
+            },
+            {
+              "id": "03-한-단어가-바뀐-코드-비교하기.block-4.activity-1.option-2",
+              "title": "`!`가 추가되어 질문이 반전됨"
+            },
+            {
+              "id": "03-한-단어가-바뀐-코드-비교하기.block-4.activity-1.option-3",
+              "title": "tasks가 삭제됨"
+            }
+          ],
+          "pairs": [],
+          "correctOptionIDs": [
+            "03-한-단어가-바뀐-코드-비교하기.block-4.activity-1.option-2"
+          ],
+          "correctFeedback": "`!`가 추가되어 완료 질문이 반전되고 미완료 항목이 남는다.",
+          "incorrectFeedback": "아직 맞지 않는 연결이나 빠진 단서가 있습니다. 코드의 모양·자리·주변 단어를 다시 비교해 보세요."
+        }
+      ]
+    },
+    {
+      "id": "03-한-단어가-바뀐-코드-비교하기.block-5",
+      "order": 5,
+      "kind": "game",
+      "title": "게임 2 · 구절 역할 지도",
+      "markdown": "> [!game]- 활동 방식 · 구절과 역할 연결하기\n> 왼쪽 카드와 오른쪽 카드를 직접 연결하고, 모든 연결을 마친 뒤 한 번에 확인한다.\n\n<!-- conriculum-activity: matching; source: 코드 구절; target: 붙일 역할 카드 -->\n\n| 코드 구절 | 맡은 역할 | 붙일 역할 카드 |\n| --- | --- | --- |\n| `!` | 변경 지점 | Bool 반전 |\n| `filter` | 그대로 | 참인 원소 선택 |\n| `tasks` | 그대로 | 입력 전체 |\n| `visible` | 이름은 그대로 | 내용이 달라짐 |",
+      "activities": [
+        {
+          "id": "03-한-단어가-바뀐-코드-비교하기.block-5.activity-1",
+          "kind": "matching",
+          "promptMarkdown": "게임 2 · 구절 역할 지도",
+          "options": [],
+          "pairs": [
+            {
+              "id": "03-한-단어가-바뀐-코드-비교하기.block-5.activity-1.pair-1",
+              "left": "`!`",
+              "right": "Bool 반전"
+            },
+            {
+              "id": "03-한-단어가-바뀐-코드-비교하기.block-5.activity-1.pair-2",
+              "left": "`filter`",
+              "right": "참인 원소 선택"
+            },
+            {
+              "id": "03-한-단어가-바뀐-코드-비교하기.block-5.activity-1.pair-3",
+              "left": "`tasks`",
+              "right": "입력 전체"
+            },
+            {
+              "id": "03-한-단어가-바뀐-코드-비교하기.block-5.activity-1.pair-4",
+              "left": "`visible`",
+              "right": "내용이 달라짐"
+            }
+          ],
+          "correctOptionIDs": [],
+          "correctFeedback": "모든 카드가 원문의 역할 관계와 일치한다.",
+          "incorrectFeedback": "아직 맞지 않는 연결이나 빠진 단서가 있습니다. 코드의 모양·자리·주변 단어를 다시 비교해 보세요."
+        }
+      ]
+    },
+    {
+      "id": "03-한-단어가-바뀐-코드-비교하기.block-6",
+      "order": 6,
+      "kind": "game",
+      "title": "게임 3 · 헷갈리는 카드 대조",
+      "markdown": "> [!game]- 활동 방식 · 대조 카드 연결하기\n> 왼쪽 카드와 오른쪽 카드를 직접 연결하고, 모든 연결을 마친 뒤 한 번에 확인한다.\n\n<!-- conriculum-activity: matching; source: 후보; target: 판별 단서 -->\n\n| 후보 | 결정적인 차이 | 판별 단서 |\n| --- | --- | --- |\n| 직접 변경 | 코드에 실제 차이 | `!` 추가 |\n| 1차 영향 | 바로 달라지는 질문 | isDone 반전 |\n| 후속 영향 | 결과 데이터 변화 | visible의 구성 |\n| 불변 | 달라지지 않음 | 입력과 filter 방식 |\n\n### 수상한 카드\n\n“한 글자만 바뀌었으므로 영향도 언제나 아주 작다.”\n\n> [!game]- 활동 방식 · 주장 판정하기\n> 주장이 앞의 대조 근거와 맞는지 판단한 뒤 확인한다.\n\n<!-- conriculum-activity: choice; correct: 2 -->\n\n1. 근거가 있다\n2. 근거가 없다\n\n> [!check]- 판정\n> 아니다. 작은 조건 변화가 많은 화면·저장·호출에 전달될 수 있다. 영향 경로를 따라가야 한다.",
+      "activities": [
+        {
+          "id": "03-한-단어가-바뀐-코드-비교하기.block-6.activity-1",
+          "kind": "matching",
+          "promptMarkdown": "게임 3 · 헷갈리는 카드 대조",
+          "options": [],
+          "pairs": [
+            {
+              "id": "03-한-단어가-바뀐-코드-비교하기.block-6.activity-1.pair-1",
+              "left": "직접 변경",
+              "right": "`!` 추가"
+            },
+            {
+              "id": "03-한-단어가-바뀐-코드-비교하기.block-6.activity-1.pair-2",
+              "left": "1차 영향",
+              "right": "isDone 반전"
+            },
+            {
+              "id": "03-한-단어가-바뀐-코드-비교하기.block-6.activity-1.pair-3",
+              "left": "후속 영향",
+              "right": "visible의 구성"
+            },
+            {
+              "id": "03-한-단어가-바뀐-코드-비교하기.block-6.activity-1.pair-4",
+              "left": "불변",
+              "right": "입력과 filter 방식"
+            }
+          ],
+          "correctOptionIDs": [],
+          "correctFeedback": "모든 카드가 원문의 역할 관계와 일치한다.",
+          "incorrectFeedback": "아직 맞지 않는 연결이나 빠진 단서가 있습니다. 코드의 모양·자리·주변 단어를 다시 비교해 보세요."
+        },
+        {
+          "id": "03-한-단어가-바뀐-코드-비교하기.block-6.activity-2",
+          "kind": "singleChoice",
+          "promptMarkdown": "### 수상한 카드\n\n“한 글자만 바뀌었으므로 영향도 언제나 아주 작다.”",
+          "options": [
+            {
+              "id": "03-한-단어가-바뀐-코드-비교하기.block-6.activity-2.option-1",
+              "title": "근거가 있다"
+            },
+            {
+              "id": "03-한-단어가-바뀐-코드-비교하기.block-6.activity-2.option-2",
+              "title": "근거가 없다"
+            }
+          ],
+          "pairs": [],
+          "correctOptionIDs": [
+            "03-한-단어가-바뀐-코드-비교하기.block-6.activity-2.option-2"
+          ],
+          "correctFeedback": "아니다. 작은 조건 변화가 많은 화면·저장·호출에 전달될 수 있다. 영향 경로를 따라가야 한다.",
+          "incorrectFeedback": "아직 맞지 않는 연결이나 빠진 단서가 있습니다. 코드의 모양·자리·주변 단어를 다시 비교해 보세요."
+        }
+      ]
+    },
+    {
+      "id": "03-한-단어가-바뀐-코드-비교하기.block-7",
+      "order": 7,
+      "kind": "game",
+      "title": "게임 4 · 다른 옷을 입은 코드",
+      "markdown": "### 1\n\n```swift\nlet canEnter = age > 18\nlet canEnter = age >= 18\n```\n\n**질문:** 달라진 경계는?\n\n> [!game]- 활동 방식 · 코드 단서 고르기\n> 답이 되는 코드 단서 카드 하나를 고르면 바로 확인한다.\n\n<!-- conriculum-activity: choice; correct: 1 -->\n\n**선택 카드:**\n\n1. `18`\n2. `canEnter`\n3. `age`\n4. `>`\n5. `>=`\n\n> [!check]- 확인\n> 18이 허용되는지 달라진다.\n\n### 2\n\n```swift\nvar count = 0\nlet count = 0\n```\n\n**질문:** 달라진 약속은?\n\n> [!game]- 활동 방식 · 코드 단서 고르기\n> 답이 되는 코드 단서 카드 하나를 고르면 바로 확인한다.\n\n<!-- conriculum-activity: choice; correct: 1 -->\n\n**선택 카드:**\n\n1. `0`\n2. `count`\n\n> [!check]- 확인\n> 이름에 새 값을 재대입할 수 있는지 달라진다.",
+      "activities": [
+        {
+          "id": "03-한-단어가-바뀐-코드-비교하기.block-7.activity-1",
+          "kind": "singleChoice",
+          "promptMarkdown": "### 1\n\n```swift\nlet canEnter = age > 18\nlet canEnter = age >= 18\n```\n\n**질문:** 달라진 경계는?",
+          "options": [
+            {
+              "id": "03-한-단어가-바뀐-코드-비교하기.block-7.activity-1.option-1",
+              "title": "`18`"
+            },
+            {
+              "id": "03-한-단어가-바뀐-코드-비교하기.block-7.activity-1.option-2",
+              "title": "`canEnter`"
+            },
+            {
+              "id": "03-한-단어가-바뀐-코드-비교하기.block-7.activity-1.option-3",
+              "title": "`age`"
+            },
+            {
+              "id": "03-한-단어가-바뀐-코드-비교하기.block-7.activity-1.option-4",
+              "title": "`>`"
+            },
+            {
+              "id": "03-한-단어가-바뀐-코드-비교하기.block-7.activity-1.option-5",
+              "title": "`>=`"
+            }
+          ],
+          "pairs": [],
+          "correctOptionIDs": [
+            "03-한-단어가-바뀐-코드-비교하기.block-7.activity-1.option-1"
+          ],
+          "correctFeedback": "18이 허용되는지 달라진다.",
+          "incorrectFeedback": "아직 맞지 않는 연결이나 빠진 단서가 있습니다. 코드의 모양·자리·주변 단어를 다시 비교해 보세요."
+        },
+        {
+          "id": "03-한-단어가-바뀐-코드-비교하기.block-7.activity-2",
+          "kind": "singleChoice",
+          "promptMarkdown": "### 2\n\n```swift\nvar count = 0\nlet count = 0\n```\n\n**질문:** 달라진 약속은?",
+          "options": [
+            {
+              "id": "03-한-단어가-바뀐-코드-비교하기.block-7.activity-2.option-1",
+              "title": "`0`"
+            },
+            {
+              "id": "03-한-단어가-바뀐-코드-비교하기.block-7.activity-2.option-2",
+              "title": "`count`"
+            }
+          ],
+          "pairs": [],
+          "correctOptionIDs": [
+            "03-한-단어가-바뀐-코드-비교하기.block-7.activity-2.option-1"
+          ],
+          "correctFeedback": "이름에 새 값을 재대입할 수 있는지 달라진다.",
+          "incorrectFeedback": "아직 맞지 않는 연결이나 빠진 단서가 있습니다. 코드의 모양·자리·주변 단어를 다시 비교해 보세요."
+        }
+      ]
+    },
+    {
+      "id": "03-한-단어가-바뀐-코드-비교하기.block-8",
+      "order": 8,
+      "kind": "boss",
+      "title": "보스 코드",
+      "markdown": "```swift\n// A\nif hasError { showError() } else { showContent() }\n// B\nif !hasError { showError() } else { showContent() }\n```\n\n**클리어 과제:** 바뀐 토큰·직접 질문·화면 결과·그대로인 호출을 설명한다.\n\n> [!game]- 활동 방식 · 보스 단서 모두 찾기\n> 질문에 답이 되는 코드 단서를 모두 고른 뒤 한 번에 확인한다.\n\n<!-- conriculum-activity: multiple-choice; correct: 1,2,3,4,5 -->\n\n**선택 카드 (복수 선택 가능):**\n\n1. `A`\n2. `hasError`\n3. `showError`\n4. `showContent`\n5. `B`\n6. `/`\n7. `if`\n8. `{`\n\n> [!check]- 보스 해설\n> B에 `!`가 추가되어 조건이 반전된다. hasError가 true일 때 A는 showError, B는 showContent를 부른다. 두 호출 자체는 그대로다.",
+      "activities": [
+        {
+          "id": "03-한-단어가-바뀐-코드-비교하기.block-8.activity-1",
+          "kind": "multipleChoice",
+          "promptMarkdown": "```swift\n// A\nif hasError { showError() } else { showContent() }\n// B\nif !hasError { showError() } else { showContent() }\n```\n\n**클리어 과제:** 바뀐 토큰·직접 질문·화면 결과·그대로인 호출을 설명한다.",
+          "options": [
+            {
+              "id": "03-한-단어가-바뀐-코드-비교하기.block-8.activity-1.option-1",
+              "title": "`A`"
+            },
+            {
+              "id": "03-한-단어가-바뀐-코드-비교하기.block-8.activity-1.option-2",
+              "title": "`hasError`"
+            },
+            {
+              "id": "03-한-단어가-바뀐-코드-비교하기.block-8.activity-1.option-3",
+              "title": "`showError`"
+            },
+            {
+              "id": "03-한-단어가-바뀐-코드-비교하기.block-8.activity-1.option-4",
+              "title": "`showContent`"
+            },
+            {
+              "id": "03-한-단어가-바뀐-코드-비교하기.block-8.activity-1.option-5",
+              "title": "`B`"
+            },
+            {
+              "id": "03-한-단어가-바뀐-코드-비교하기.block-8.activity-1.option-6",
+              "title": "`/`"
+            },
+            {
+              "id": "03-한-단어가-바뀐-코드-비교하기.block-8.activity-1.option-7",
+              "title": "`if`"
+            },
+            {
+              "id": "03-한-단어가-바뀐-코드-비교하기.block-8.activity-1.option-8",
+              "title": "`{`"
+            }
+          ],
+          "pairs": [],
+          "correctOptionIDs": [
+            "03-한-단어가-바뀐-코드-비교하기.block-8.activity-1.option-1",
+            "03-한-단어가-바뀐-코드-비교하기.block-8.activity-1.option-2",
+            "03-한-단어가-바뀐-코드-비교하기.block-8.activity-1.option-3",
+            "03-한-단어가-바뀐-코드-비교하기.block-8.activity-1.option-4",
+            "03-한-단어가-바뀐-코드-비교하기.block-8.activity-1.option-5"
+          ],
+          "correctFeedback": "B에 `!`가 추가되어 조건이 반전된다. hasError가 true일 때 A는 showError, B는 showContent를 부른다. 두 호출 자체는 그대로다.",
+          "incorrectFeedback": "아직 맞지 않는 연결이나 빠진 단서가 있습니다. 코드의 모양·자리·주변 단어를 다시 비교해 보세요."
+        }
+      ]
+    },
+    {
+      "id": "03-한-단어가-바뀐-코드-비교하기.block-9",
+      "order": 9,
+      "kind": "unlock",
+      "title": "지식 카드 해금",
+      "markdown": "",
+      "activities": [],
+      "knowledgeUnlock": {
+        "cards": [
+          {
+            "id": "03-한-단어가-바뀐-코드-비교하기.block-9.card-1",
+            "title": "최소 대조",
+            "summary": "한 요소만 다른 코드로 역할 차이를 선명하게 봄"
+          },
+          {
+            "id": "03-한-단어가-바뀐-코드-비교하기.block-9.card-2",
+            "title": "변경 영향",
+            "summary": "변경 지점에서 결과까지 이어지는 차이"
+          },
+          {
+            "id": "03-한-단어가-바뀐-코드-비교하기.block-9.card-3",
+            "title": "불변 찾기",
+            "summary": "바뀌지 않은 부분도 함께 확인"
+          }
+        ],
+        "completionCriteria": "다른 맥락에서의 구별, 헷갈리는 개념과의 대조, 처음 보는 보스 코드에 적용하는 과정을 모두 통과하면 클리어한다. 도움 사용 여부는 `많은 안내와 함께 / 단서와 함께 / 독립적으로` 중 하나로 남긴다.",
+        "beginnerHint": "두 코드를 겹쳐 본다고 생각하고 다른 글자 하나에 먼저 표시한다.",
+        "advancedTip": "실전 diff에서는 이름 변경·서식 변경 같은 비의미 차이와 실행 의미 차이를 분리한 뒤 데이터·부작용(계산 결과를 만드는 것 말고 저장된 내용·화면·앱 밖을 바꾸는 일) 경계를 추적한다."
+      }
+    }
+  ],
+  "termRefs": [],
+  "knowledgeConceptIDs": [
+    "v2.concept.50d055d31163",
+    "v2.concept.47f024303e8d",
+    "v2.concept.daf760a167a8",
+    "v2.concept.63c92ed18525"
+  ]
+}

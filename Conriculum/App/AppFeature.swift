@@ -6,19 +6,22 @@ struct AppFeature {
     struct State: Equatable {
         var route: Route = .home
         var home = HomeFeature.State()
-        var workspace: LearningWorkspaceFeature.State?
+        var v1Workspace: V1LearningWorkspaceFeature.State?
+        var learning: LearningFeature.State?
         var knowledgeSystem: KnowledgeSystemFeature.State?
     }
 
     enum Route: Equatable {
         case home
-        case learningWorkspace(chapterID: ChapterID)
+        case v1Learning(chapterID: ChapterID)
+        case learning(pageID: String)
         case knowledgeSystem
     }
 
     enum Action: Equatable {
         case home(HomeFeature.Action)
-        case workspace(LearningWorkspaceFeature.Action)
+        case v1Workspace(V1LearningWorkspaceFeature.Action)
+        case learning(LearningFeature.Action)
         case knowledgeSystem(KnowledgeSystemFeature.Action)
     }
 
@@ -29,61 +32,82 @@ struct AppFeature {
 
         Reduce { state, action in
             switch action {
-            case let .workspace(.delegate(.chapterRequested(chapterID, pageID))):
-                let pending = state.workspace?.pendingPersonalizationReviews ?? []
-                state.workspace = LearningWorkspaceFeature.State(
+            case let .v1Workspace(.delegate(.v1ChapterRequested(chapterID, pageID))):
+                let pending = state.v1Workspace?.v1PendingPersonalizationReviews ?? []
+                state.v1Workspace = V1LearningWorkspaceFeature.State(
                     chapterID: chapterID, pageID: pageID,
-                    pendingPersonalizationReviews: pending
+                    v1PendingPersonalizationReviews: pending
                 )
-                state.route = .learningWorkspace(chapterID: chapterID)
+                state.route = .v1Learning(chapterID: chapterID)
                 return .none
 
-            case let .home(.delegate(.chapterRequested(chapterID, pageID))):
-                state.workspace = LearningWorkspaceFeature.State(
+            case let .home(.delegate(.v1ChapterRequested(chapterID, pageID))):
+                state.v1Workspace = V1LearningWorkspaceFeature.State(
                     chapterID: chapterID,
                     pageID: pageID,
-                    pendingPersonalizationReviews: state.home
-                        .pendingPersonalizationReviews
+                    v1PendingPersonalizationReviews: state.home
+                        .v1PendingPersonalizationReviews
                 )
-                state.route = .learningWorkspace(chapterID: chapterID)
+                state.route = .v1Learning(chapterID: chapterID)
                 return .none
 
             case .home(.delegate(.knowledgeSystemRequested)):
-                state.knowledgeSystem = KnowledgeSystemFeature.State()
+                state.knowledgeSystem = KnowledgeSystemFeature.State(
+                    contentVersion: state.home.selectedContentVersion
+                )
                 state.route = .knowledgeSystem
                 return .none
 
-            case .workspace(.delegate(.homeRequested)):
-                let pendingReviews = state.workspace?
-                    .pendingPersonalizationReviews ?? []
+            case let .home(.delegate(.pageRequested(pageID))):
+                state.learning = LearningFeature.State(pageID: pageID)
+                state.route = .learning(pageID: pageID)
+                return .none
+
+            case .v1Workspace(.delegate(.homeRequested)):
+                let pendingReviews = state.v1Workspace?
+                    .v1PendingPersonalizationReviews ?? []
                 state.route = .home
-                return .send(.home(.workspaceReturned(pendingReviews)))
+                return .send(.home(.v1WorkspaceReturned(pendingReviews)))
+
+            case .learning(.delegate(.homeRequested)):
+                state.route = .home
+                state.learning = nil
+                return .send(.home(.learningReturned))
 
             case .knowledgeSystem(.delegate(.homeRequested)):
                 state.route = .home
                 state.knowledgeSystem = nil
                 return .none
 
-            case let .knowledgeSystem(.delegate(.learningRequested(
+            case let .knowledgeSystem(.delegate(.v1LearningRequested(
                 chapterID,
                 pageID
             ))):
                 state.knowledgeSystem = nil
-                state.workspace = LearningWorkspaceFeature.State(
+                state.v1Workspace = V1LearningWorkspaceFeature.State(
                     chapterID: chapterID,
                     pageID: pageID,
-                    pendingPersonalizationReviews: state.home
-                        .pendingPersonalizationReviews
+                    v1PendingPersonalizationReviews: state.home
+                        .v1PendingPersonalizationReviews
                 )
-                state.route = .learningWorkspace(chapterID: chapterID)
+                state.route = .v1Learning(chapterID: chapterID)
                 return .none
 
-            case .home, .workspace, .knowledgeSystem:
+            case let .knowledgeSystem(.delegate(.learningRequested(pageID))):
+                state.knowledgeSystem = nil
+                state.learning = LearningFeature.State(pageID: pageID)
+                state.route = .learning(pageID: pageID)
+                return .none
+
+            case .home, .v1Workspace, .learning, .knowledgeSystem:
                 return .none
             }
         }
-        .ifLet(\.workspace, action: \.workspace) {
-            LearningWorkspaceFeature()
+        .ifLet(\.v1Workspace, action: \.v1Workspace) {
+            V1LearningWorkspaceFeature()
+        }
+        .ifLet(\.learning, action: \.learning) {
+            LearningFeature()
         }
         .ifLet(\.knowledgeSystem, action: \.knowledgeSystem) {
             KnowledgeSystemFeature()

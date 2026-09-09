@@ -233,7 +233,7 @@ struct KnowledgeSystemView: View {
                 .font(.title.weight(.bold))
                 .accessibilityHeading(.h1)
             Text(
-                "\(snapshot.title) · "
+                "\(store.contentVersion.title) · \(snapshot.title) · "
                     + "\(store.visibleConcepts.count)개 개념 · "
                     + "\(store.visibleBaseRelations.count)개 기본 연결"
             )
@@ -406,7 +406,8 @@ private struct KnowledgeSystemDetailPane: View {
                 KnowledgeRelationsSection(
                     baseRelations: baseRelations,
                     personalRelations: personalRelations,
-                    conceptIndex: conceptIndex
+                    conceptIndex: conceptIndex,
+                    focusConceptID: item.id
                 )
             }
             .padding(20)
@@ -417,10 +418,7 @@ private struct KnowledgeSystemDetailPane: View {
 }
 
 #Preview("지식 체계") {
-    let catalog = try! ContentResourceDecoder().decode(
-        KnowledgeCatalog.self,
-        from: .valuesAndTypes
-    )
+    let catalog = try! BundledContentStore().loadKnowledgeCatalog()
     let snapshot = KnowledgeSystemSnapshotComposer().compose(
         catalog: catalog,
         revisions: [],

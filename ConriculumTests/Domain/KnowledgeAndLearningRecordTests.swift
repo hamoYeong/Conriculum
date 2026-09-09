@@ -81,7 +81,7 @@ struct KnowledgeAndLearningRecordTests {
         #expect(Set(KnowledgeLinkRole.allCases) == [
             .primary, .supporting, .prerequisite, .enrichment,
         ])
-        #expect(Set(LearningEvidenceKind.allCases) == [
+        #expect(Set(V1LearningEvidenceKind.allCases) == [
             .viewed,
             .activityAttempt,
             .assistedSuccess,
@@ -94,7 +94,7 @@ struct KnowledgeAndLearningRecordTests {
     /// 지식과 기록 값도 concurrency 경계를 안전하게 넘는 순수 `Sendable` 값인지 확인한다.
     @Test
     func knowledgeAndLearningRecordValuesAreSendable() {
-        let progress = LearningProgress(
+        let progress = V1LearningProgress(
             chapterID: "chapter-02",
             currentPageID: "chapter-02-page-01",
             completedPageIDs: [],
@@ -103,10 +103,10 @@ struct KnowledgeAndLearningRecordTests {
 
         assertKnowledgeSendable(progress)
         assertKnowledgeSendable(KnowledgeLinkRole.primary)
-        assertKnowledgeSendable(LearningEvidenceKind.reasoningExplanation)
+        assertKnowledgeSendable(V1LearningEvidenceKind.reasoningExplanation)
     }
 }
 
 private func assertKnowledgeSendable<Value: Sendable>(_ value: Value) {}
 
-// MARK: - 다음 읽기: Conriculum/Content/Schema/LearningSectionContent.swift
+// MARK: - 다음 읽기: Conriculum/Content/V1/Schema/V1LearningSectionContent.swift

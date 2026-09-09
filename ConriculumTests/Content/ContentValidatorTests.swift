@@ -1,447 +1,97 @@
-import Foundation
 import Testing
 
 @testable import Conriculum
 
-// MARK: - 전체 조립 흐름을 먼저 보고, 마지막에 validation 계약을 재확인
-
 struct ContentValidatorTests {
-    /// 관련 JSON을 Domain으로 decode한 뒤 서로 대조하는 정상 호출 흐름.
-    /// 처음에는 이 함수와 아래 `loadValidContent()`만 읽어 전체 지도를 잡는다.
     @Test
-    func bundledChapterTwoContentPassesValidation() throws {
-        let content = try loadValidContent()
+    @MainActor
+    func bundledManifestAndEveryPageDecodeIndependently() throws {
+        let store = BundledContentStore()
+        let manifest = try store.loadManifest()
+        let knowledgeCatalog = try store.loadKnowledgeCatalog()
+        let conceptIDs = Set(knowledgeCatalog.concepts.map(\.id))
 
-        try ContentValidator().validate(
-            chapter: content.chapter,
-            catalog: content.catalog,
-            identityManifest: content.identityManifest
-        )
-    }
-
-    /// 중복 stable page ID와 빠진 진도 order가 각각 정확한 field로 보고되는지 확인한다.
-    @Test
-    func duplicatePageIDAndMissingOrderReportExactFields() throws {
-        let content = try loadValidContent()
-        var pages = content.chapter.pages
-        pages[1] = copyPage(
-            pages[1],
-            id: pages[0].id,
-            order: nil
-        )
-        let brokenChapter = copyChapter(content.chapter, pages: pages)
-
-        let error = validationError(
-            chapter: brokenChapter,
-            catalog: content.catalog,
-            identityManifest: content.identityManifest
-        )
-
-        #expect(error.issues.contains {
-            $0.resource.hasSuffix("chapter-02.json")
-                && $0.fieldPath == "pages[1].id"
-                && $0.message.contains("duplicate page ID")
+        #expect(manifest.contentVersion == .v2)
+        #expect(manifest.stages.map(\.kind) == [.game, .learning])
+        #expect(manifest.stages.map { $0.chapters.count } == [9, 8])
+        #expect(manifest.chapters.flatMap(\.pages).count == 68)
+        #expect(knowledgeCatalog.id == "learning-system-v2-knowledge.ko-KR")
+        #expect(knowledgeCatalog.collections.count == 9)
+        #expect(knowledgeCatalog.concepts.count == 53)
+        #expect(knowledgeCatalog.relations.count == 52)
+        let relationDirections = Set(knowledgeCatalog.relations.map {
+            "\($0.sourceConceptID.rawValue)->\($0.targetConceptID.rawValue)"
         })
-        #expect(error.issues.contains {
-            $0.fieldPath == "pages.order"
-                && $0.message.contains("1 through 9")
+        #expect(knowledgeCatalog.relations.allSatisfy {
+            !relationDirections.contains(
+                "\($0.targetConceptID.rawValue)->\($0.sourceConceptID.rawValue)"
+            )
         })
-    }
+        var interactiveActivityCount = 0
+        var wordSystemCount = 0
+        var knowledgeUnlockCount = 0
 
-    /// Page/Section payload의 깨진 Concept·Activity 참조가 원래 JSON 위치로 보고되는지 확인한다.
-    @Test
-    func brokenKnowledgeAndActivityLinksReportTheirPayloadFields() throws {
-        let content = try loadValidContent()
-        var pages = content.chapter.pages
-
-        var firstPageSections = pages[0].sections
-        let promotionIndex = try #require(firstPageSections.firstIndex {
-            $0.content.tag == .personalKnowledgePromotion
-        })
-        firstPageSections[promotionIndex] = copySection(
-            firstPageSections[promotionIndex],
-            content: brokenPromotionContent(firstPageSections[promotionIndex].content)
-        )
-        pages[0] = copyPage(
-            pages[0],
-            sections: firstPageSections,
-            knowledgeLinks: pages[0].knowledgeLinks + [
-                LearningKnowledgeLink(
-                    conceptID: "concept-does-not-exist",
-                    role: .supporting,
-                    usage: "깨진 fixture",
-                    displayTiming: nil
-                )
-            ]
-        )
-
-        var seventhPageSections = pages[6].sections
-        let relationIndex = try #require(seventhPageSections.firstIndex {
-            $0.content.tag == .personalKnowledgeRelation
-        })
-        seventhPageSections[relationIndex] = copySection(
-            seventhPageSections[relationIndex],
-            content: brokenRelationContent(seventhPageSections[relationIndex].content)
-        )
-        pages[6] = copyPage(pages[6], sections: seventhPageSections)
-
-        let error = validationError(
-            chapter: copyChapter(content.chapter, pages: pages),
-            catalog: content.catalog,
-            identityManifest: content.identityManifest
-        )
-
-        #expect(error.issues.contains {
-            $0.fieldPath == "pages[0].knowledgeLinks[3].conceptID"
-                && $0.message.contains("does not resolve")
-        })
-        #expect(error.issues.contains {
-            $0.fieldPath.contains("pages[0].sections")
-                && $0.fieldPath.hasSuffix("evidenceActivityIDs")
-                && $0.message.contains("activity-missing-promotion")
-        })
-        #expect(error.issues.contains {
-            $0.fieldPath.contains("pages[6].sections")
-                && $0.fieldPath.hasSuffix("evidenceActivityIDs")
-                && $0.message.contains("activity-missing-relation")
-        })
-    }
-
-    /// Catalog Relation의 dangling Concept와 manifest의 누락 identity를 resource별로 거부하는지 확인한다.
-    @Test
-    func brokenCatalogRelationAndMissingIdentityAreRejected() throws {
-        let content = try loadValidContent()
-        var relations = content.catalog.relations
-        let firstRelation = try #require(relations.first)
-        relations[0] = KnowledgeRelation(
-            id: firstRelation.id,
-            sourceConceptID: firstRelation.sourceConceptID,
-            targetConceptID: "concept-does-not-exist",
-            kind: firstRelation.kind,
-            summary: firstRelation.summary
-        )
-        let brokenCatalog = KnowledgeCatalog(
-            schemaVersion: content.catalog.schemaVersion,
-            id: content.catalog.id,
-            title: content.catalog.title,
-            collections: content.catalog.collections,
-            concepts: content.catalog.concepts,
-            relations: relations
-        )
-        let brokenManifest = ContentIdentityManifest(
-            schemaVersion: content.identityManifest.schemaVersion,
-            identities: content.identityManifest.identities.filter {
-                $0.stableID != "chapter-02-page-08"
+        for reference in manifest.chapters.flatMap(\.pages) {
+            let page = try store.loadPage(id: VersionedContentID(
+                version: .v2,
+                rawValue: reference.id
+            ))
+            #expect(page.id == reference.id)
+            #expect(page.blocks.isEmpty == false)
+            #expect(page.sourcePath.hasSuffix(".md"))
+            #expect(page.knowledgeConceptIDs.isEmpty == false)
+            #expect(page.knowledgeConceptIDs.allSatisfy(conceptIDs.contains))
+            interactiveActivityCount += page.blocks.flatMap(\.activities).count
+            wordSystemCount += page.blocks.compactMap(\.wordSystem).count
+            knowledgeUnlockCount += page.blocks.compactMap(\.knowledgeUnlock).count
+            for block in page.blocks where block.kind == .wordSystem || block.kind == .unlock {
+                #expect(block.markdown.isEmpty)
             }
-        )
-
-        let error = validationError(
-            chapter: content.chapter,
-            catalog: brokenCatalog,
-            identityManifest: brokenManifest
-        )
-
-        #expect(error.issues.contains {
-            $0.resource.hasSuffix("values-and-types.json")
-                && $0.fieldPath == "relations[0].targetConceptID"
-        })
-        #expect(error.issues.contains {
-            $0.resource.hasSuffix("content-identity.json")
-                && $0.message.contains("chapter-02-page-08")
-        })
-    }
-
-    /// Collection ID·Concept 참조·중복 소속·누락 소속을 각 원래 field에서 거부하는지 확인한다.
-    @Test
-    func brokenKnowledgeCollectionsReportExactMembershipFields() throws {
-        let content = try loadValidContent()
-        var collections = content.catalog.collections
-        let firstCollection = try #require(collections.first)
-        let secondCollection = try #require(collections.dropFirst().first)
-
-        collections[0] = KnowledgeCollection(
-            id: firstCollection.id,
-            order: firstCollection.order,
-            title: " \n",
-            summary: "",
-            systemImage: firstCollection.systemImage,
-            conceptIDs: firstCollection.conceptIDs.filter { $0 != "concept-output" }
-                + ["concept-missing-collection"]
-        )
-        collections[1] = KnowledgeCollection(
-            id: firstCollection.id,
-            order: firstCollection.order,
-            title: secondCollection.title,
-            summary: secondCollection.summary,
-            systemImage: " ",
-            conceptIDs: secondCollection.conceptIDs + ["concept-concrete-values-rules"]
-        )
-
-        let brokenCatalog = KnowledgeCatalog(
-            schemaVersion: content.catalog.schemaVersion,
-            id: content.catalog.id,
-            title: content.catalog.title,
-            collections: collections,
-            concepts: content.catalog.concepts,
-            relations: content.catalog.relations
-        )
-        let error = validationError(
-            chapter: content.chapter,
-            catalog: brokenCatalog,
-            identityManifest: content.identityManifest
-        )
-
-        #expect(error.issues.contains {
-            $0.fieldPath == "collections[1].id"
-                && $0.message.contains("duplicate collection ID")
-        })
-        #expect(error.issues.contains {
-            $0.fieldPath == "collections[1].order"
-                && $0.message.contains("duplicate collection order ID")
-        })
-        #expect(error.issues.contains {
-            $0.fieldPath == "collections[0].title"
-                && $0.message.contains("must not be empty")
-        })
-        #expect(error.issues.contains {
-            $0.fieldPath == "collections[0].summary"
-                && $0.message.contains("must not be empty")
-        })
-        #expect(error.issues.contains {
-            $0.fieldPath == "collections[1].systemImage"
-                && $0.message.contains("must not be empty")
-        })
-        #expect(error.issues.contains {
-            $0.fieldPath == "collections[0].conceptIDs[6]"
-                && $0.message.contains("does not resolve")
-        })
-        #expect(error.issues.contains {
-            $0.fieldPath == "collections[1].conceptIDs[12]"
-                && $0.message.contains("duplicate collection membership for concept ID")
-                && $0.message.contains("collections[0].conceptIDs[0]")
-        })
-        #expect(error.issues.contains {
-            $0.fieldPath == "concepts[16].id"
-                && $0.message.contains("exactly one collection")
-        })
+        }
+        #expect(interactiveActivityCount == 252)
+        #expect(wordSystemCount == 36)
+        #expect(knowledgeUnlockCount == 36)
     }
 
     @Test
-    func chapterWithSevenContiguousLessonsPassesValidation() throws {
-        let content = try loadValidContent()
-        var pages = content.chapter.pages
-        pages.removeLast()
-
-        try ContentValidator().validate(
-            chapter: copyChapter(content.chapter, pages: pages),
-            catalog: content.catalog,
-            identityManifest: content.identityManifest
+    func rejectsOverlappingV2Identifiers() throws {
+        let page = PageReference(
+            id: "v2.s1.c1.p1", order: 1, title: "페이지", goal: "목표",
+            resource: "Content/learning/Stage01/Chapter01/page-01.json"
         )
+        let chapter = LearningChapter(
+            id: "v2.s1.c1", stageID: "v2.s1", order: 1,
+            title: "챕터", summary: "요약", pages: [page, page]
+        )
+        let manifest = ContentManifest(
+            schemaVersion: 1, contentVersion: .v2,
+            id: "learning-system-v2.ko-KR", locale: "ko-KR", title: "과정",
+            stages: [LearningStage(
+                id: "v2.s1", order: 1, title: "스테이지", summary: "요약",
+                kind: .game, chapters: [chapter]
+            )]
+        )
+
+        #expect(throws: ContentError.self) {
+            try ContentValidator().validate(manifest: manifest)
+        }
     }
 
-    /// Chapter마다 다른 lesson 수를 허용하면서 현재 개수 안의 연속 order는 강제한다.
     @Test
-    func nonContiguousOrderAndKnowledgeContextReportExactFields() throws {
-        let content = try loadValidContent()
-        var pages = content.chapter.pages
-        let firstPage = pages[0]
-        let brokenContext = PageKnowledgeContext(
-            currentlyUsedConceptIDs: ["concept-missing-context"],
-            currentlyUsedSummary: firstPage.knowledgeContext
-                .currentlyUsedSummary,
-            changedKnowledgeSummary: firstPage.knowledgeContext
-                .changedKnowledgeSummary,
-            nearbyKnowledge: firstPage.knowledgeContext.nearbyKnowledge,
-            refreshTriggers: firstPage.knowledgeContext.refreshTriggers,
-            emptyStateMessage: firstPage.knowledgeContext.emptyStateMessage,
-            focusModeSummary: firstPage.knowledgeContext.focusModeSummary
+    func pageReferenceMustMatchDecodedPage() {
+        let reference = PageReference(
+            id: "v2.s1.c1.p1", order: 1, title: "페이지", goal: "목표",
+            resource: "Content/learning/Stage01/Chapter01/page-01.json"
         )
-        pages[0] = copyPage(firstPage, knowledgeContext: brokenContext)
-        pages.removeLast()
-        pages[6] = copyPage(
-            pages[6],
-            id: pages[6].id,
-            order: 8
+        let page = LessonPage(
+            schemaVersion: 1, contentVersion: .v2, id: "v2.s1.c1.p2",
+            stageID: "v2.s1", chapterID: "v2.s1.c1", order: 1,
+            title: "페이지", goal: "목표", sourcePath: "source.md",
+            blocks: [], termRefs: [], knowledgeConceptIDs: []
         )
 
-        let error = validationError(
-            chapter: copyChapter(content.chapter, pages: pages),
-            catalog: content.catalog,
-            identityManifest: content.identityManifest
-        )
-
-        #expect(error.issues.contains {
-            $0.fieldPath == "pages[0].knowledgeContext"
-                && $0.message.contains("concept-missing-context")
-        })
-        #expect(error.issues.contains {
-            $0.fieldPath == "pages.order"
-                && $0.message.contains("1 through 8")
-        })
-    }
-
-    /// 이 schema 전체를 가장 압축해서 보여 주는 조립 호출부.
-    /// `chapter-02 → Chapter`, `values-and-types → KnowledgeCatalog`,
-    /// `content-identity → ContentIdentityManifest` 순서로 JSON을 typed Domain 값으로 바꾼다.
-    private func loadValidContent() throws -> ValidContent {
-        let decoder = ContentResourceDecoder()
-        return try ValidContent(
-            chapter: decoder.decode(Chapter.self, from: .chapter02),
-            catalog: decoder.decode(KnowledgeCatalog.self, from: .valuesAndTypes),
-            identityManifest: decoder.decode(ContentIdentityManifest.self, from: .contentIdentity)
-        )
-    }
-
-    /// 깨진 fixture가 던진 aggregate validation 오류를 assertion하기 쉽게 꺼낸다.
-    private func validationError(
-        chapter: Chapter,
-        catalog: KnowledgeCatalog,
-        identityManifest: ContentIdentityManifest
-    ) -> ContentValidationError {
-        do {
-            try ContentValidator().validate(
-                chapter: chapter,
-                catalog: catalog,
-                identityManifest: identityManifest
-            )
-            Issue.record("깨진 fixture가 validation을 통과했다.")
-            return ContentValidationError(issues: [])
-        } catch let error as ContentValidationError {
-            return error
-        } catch {
-            Issue.record("예상하지 못한 오류: \(error)")
-            return ContentValidationError(issues: [])
+        #expect(throws: ContentError.self) {
+            try ContentValidator().validate(page: page, reference: reference)
         }
     }
-
-    // 아래 copy/broken helper는 불변 Domain fixture의 한 부분만 의도적으로 깨뜨리는 테스트 도구다.
-    // validation 규칙과 assertion을 이해한 뒤 읽는다.
-    private func copyChapter(_ chapter: Chapter, pages: [LearningPage]) -> Chapter {
-        Chapter(
-            id: chapter.id,
-            stageID: chapter.stageID,
-            order: chapter.order,
-            title: chapter.title,
-            summary: chapter.summary,
-            overview: chapter.overview,
-            pages: pages
-        )
-    }
-
-    private func copyPage(
-        _ page: LearningPage,
-        id: LearningPageID,
-        order: Int?
-    ) -> LearningPage {
-        LearningPage(
-            id: id,
-            kind: page.kind,
-            order: order,
-            title: page.title,
-            goal: page.goal,
-            sections: page.sections,
-            activities: page.activities,
-            knowledgeLinks: page.knowledgeLinks,
-            knowledgeContext: page.knowledgeContext,
-            navigation: page.navigation
-        )
-    }
-
-    private func copyPage(
-        _ page: LearningPage,
-        sections: [LearningSection],
-        knowledgeLinks: [LearningKnowledgeLink]? = nil
-    ) -> LearningPage {
-        LearningPage(
-            id: page.id,
-            kind: page.kind,
-            order: page.order,
-            title: page.title,
-            goal: page.goal,
-            sections: sections,
-            activities: page.activities,
-            knowledgeLinks: knowledgeLinks ?? page.knowledgeLinks,
-            knowledgeContext: page.knowledgeContext,
-            navigation: page.navigation
-        )
-    }
-
-    private func copyPage(
-        _ page: LearningPage,
-        knowledgeContext: PageKnowledgeContext
-    ) -> LearningPage {
-        LearningPage(
-            id: page.id,
-            kind: page.kind,
-            order: page.order,
-            title: page.title,
-            goal: page.goal,
-            sections: page.sections,
-            activities: page.activities,
-            knowledgeLinks: page.knowledgeLinks,
-            knowledgeContext: knowledgeContext,
-            navigation: page.navigation
-        )
-    }
-
-    private func copySection(
-        _ section: LearningSection,
-        content: LearningSectionContent
-    ) -> LearningSection {
-        LearningSection(
-            id: section.id,
-            order: section.order,
-            title: section.title,
-            activityID: section.activityID,
-            content: content
-        )
-    }
-
-    private func brokenPromotionContent(
-        _ content: LearningSectionContent
-    ) -> LearningSectionContent {
-        guard case let .personalKnowledgePromotion(value) = content else {
-            Issue.record("개인 지식 반영 section을 찾지 못했다.")
-            return content
-        }
-
-        return .personalKnowledgePromotion(
-            PersonalKnowledgePromotionContent(
-                evidenceActivityIDs: ["activity-missing-promotion"],
-                conceptIDs: value.conceptIDs,
-                candidateKind: value.candidateKind,
-                editableDraft: value.editableDraft,
-                confirmationQuestion: value.confirmationQuestion,
-                savedFields: value.savedFields,
-                cancellationResult: value.cancellationResult
-            )
-        )
-    }
-
-    private func brokenRelationContent(
-        _ content: LearningSectionContent
-    ) -> LearningSectionContent {
-        guard case let .personalKnowledgeRelation(value) = content else {
-            Issue.record("나의 연결 만들기 section을 찾지 못했다.")
-            return content
-        }
-
-        return .personalKnowledgeRelation(
-            PersonalKnowledgeRelationSectionContent(
-                sourceConceptIDs: value.sourceConceptIDs,
-                targetConceptIDs: value.targetConceptIDs,
-                draftStatement: value.draftStatement,
-                reasonPrompt: value.reasonPrompt,
-                evidenceActivityIDs: ["activity-missing-relation"],
-                confirmationQuestion: value.confirmationQuestion
-            )
-        )
-    }
-}
-
-/// Validator에 동시에 전달되는 root Domain 값을 묶는 테스트 전용 값.
-private struct ValidContent {
-    let chapter: Chapter
-    let catalog: KnowledgeCatalog
-    let identityManifest: ContentIdentityManifest
 }

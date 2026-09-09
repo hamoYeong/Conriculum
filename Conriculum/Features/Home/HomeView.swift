@@ -11,21 +11,12 @@ struct HomeView: View {
 
             ScrollView {
                 VStack(alignment: .leading, spacing: 24) {
-                    if let snapshot = store.snapshot {
-                        stageHeader(snapshot.stage)
-                        previewDisclosure(for: snapshot.source)
-                        chapterCard(snapshot.chapter)
-                        chapterLibrary(snapshot.availableChapters)
+                    contentVersionPicker
 
-                        if let loadErrorMessage = store.loadErrorMessage {
-                            loadErrorBanner(message: loadErrorMessage)
-                        }
-
-                        learningSummary(snapshot)
-                    } else if let loadErrorMessage = store.loadErrorMessage {
-                        unavailableState(message: loadErrorMessage)
+                    if store.selectedContentVersion == .v2 {
+                        learningHome
                     } else {
-                        loadingState
+                        v1Home
                     }
 
                     knowledgeSystemCard
@@ -38,13 +29,167 @@ struct HomeView: View {
         }
         .frame(minWidth: 720, minHeight: 600)
         .task {
-            guard store.snapshot == nil else { return }
+            guard store.v1Snapshot == nil else { return }
             await store.send(.task).finish()
+            await store.send(.contentReloadRequested).finish()
+        }
+    }
+
+    private var contentVersionPicker: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Text("학습 콘텐츠")
+                .font(.caption.weight(.semibold))
+                .foregroundStyle(.secondary)
+            Picker(
+                "학습 콘텐츠 버전",
+                selection: Binding(
+                    get: { store.selectedContentVersion },
+                    set: { store.send(.contentVersionSelected($0)) }
+                )
+            ) {
+                ForEach(ContentVersion.allCases, id: \.self) { version in
+                    Text(version.title).tag(version)
+                }
+            }
+            .pickerStyle(.segmented)
+            .labelsHidden()
+        }
+        .accessibilityElement(children: .contain)
+    }
+
+    @ViewBuilder
+    private var v1Home: some View {
+        if let v1Snapshot = store.v1Snapshot {
+            stageHeader(v1Snapshot.stage)
+            previewDisclosure(for: v1Snapshot.source)
+            chapterCard(v1Snapshot.chapter)
+            chapterLibrary(v1Snapshot.availableChapters)
+
+            if let v1LoadErrorMessage = store.v1LoadErrorMessage {
+                loadErrorBanner(message: v1LoadErrorMessage)
+            }
+
+            learningSummary(v1Snapshot)
+        } else if let v1LoadErrorMessage = store.v1LoadErrorMessage {
+            unavailableState(message: v1LoadErrorMessage)
+        } else {
+            loadingState
+        }
+    }
+
+    @ViewBuilder
+    private var learningHome: some View {
+        if let manifest = store.manifest {
+            VStack(alignment: .leading, spacing: 10) {
+                Text("CONRICULUM · VER.2")
+                    .font(.caption.weight(.semibold))
+                    .tracking(1.4)
+                    .foregroundStyle(.secondary)
+                Text(manifest.title)
+                    .font(.largeTitle.bold())
+                    .accessibilityHeading(.h1)
+                Text("코드를 게임처럼 알아보고, 의미 단위와 실행 흐름으로 읽는 독립형 과정입니다.")
+                    .font(.title3)
+                    .foregroundStyle(.secondary)
+            }
+
+            if let resumeChapter = resumeLearningChapter(in: manifest) {
+                resumeLearningCard(resumeChapter, manifest: manifest)
+            }
+
+            HomeStagePager(
+                manifest: manifest,
+                progress: store.learningProgress,
+                selectedStageID: store.selectedStageID,
+                onStageSelected: { store.send(.stageSelected($0)) },
+                onChapterSelected: { store.send(.learningChapterSelected($0)) }
+            )
+        } else if let message = store.contentLoadErrorMessage {
+            ContentUnavailableView {
+                Label("ver.2 콘텐츠를 불러오지 못했습니다", systemImage: "exclamationmark.triangle")
+            } description: {
+                Text(message)
+            } actions: {
+                Button("다시 불러오기") { store.send(.contentReloadRequested) }
+                    .buttonStyle(.borderedProminent)
+                Button("ver.1 기존 과정 보기") {
+                    store.send(.contentVersionSelected(.v1))
+                }
+            }
+            .frame(maxWidth: .infinity, minHeight: 360)
+        } else {
+            VStack(spacing: 12) {
+                ProgressView()
+                Text("ver.2 학습 지도를 불러오는 중입니다.")
+                    .foregroundStyle(.secondary)
+            }
+            .frame(maxWidth: .infinity, minHeight: 360)
+        }
+    }
+
+    private func resumeLearningChapter(in manifest: ContentManifest) -> LearningChapter? {
+        if let pageID = store.learningProgress.lastVisitedPageID,
+           let chapter = manifest.chapters.first(where: {
+               $0.pages.contains { $0.id == pageID }
+           }) {
+            return chapter
+        }
+        return manifest.stages
+            .sorted { $0.order < $1.order }
+            .first?.chapters
+            .sorted { $0.order < $1.order }
+            .first
+    }
+
+    private func resumeLearningCard(
+        _ chapter: LearningChapter,
+        manifest: ContentManifest
+    ) -> some View {
+        let pageID = store.learningProgress.lastVisitedPageID.flatMap { pageID in
+            chapter.pages.contains { $0.id == pageID } ? pageID : nil
+        } ?? chapter.firstPageID
+        let page = pageID.flatMap { manifest.pageReference(id: $0) }
+
+        return VStack(alignment: .leading, spacing: 16) {
+            Label(
+                store.learningProgress.lastVisitedPageID == nil ? "여기서 시작해 보세요" : "이어서 학습하기",
+                systemImage: "play.circle.fill"
+            )
+            .font(.headline)
+            .foregroundStyle(.tint)
+
+            Text(chapter.title)
+                .font(.title2.bold())
+            if let page {
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(page.title).font(.headline)
+                    Text(page.goal)
+                        .font(.callout)
+                        .foregroundStyle(.secondary)
+                }
+            }
+
+            Button(store.learningProgress.lastVisitedPageID == nil ? "학습 시작" : "이어보기") {
+                store.send(.learningChapterSelected(chapter.id))
+            }
+            .buttonStyle(.borderedProminent)
+            .controlSize(.large)
+            .keyboardShortcut(.defaultAction)
+        }
+        .padding(24)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(
+            Color.accentColor.opacity(0.10),
+            in: RoundedRectangle(cornerRadius: 18, style: .continuous)
+        )
+        .overlay {
+            RoundedRectangle(cornerRadius: 18, style: .continuous)
+                .stroke(Color.accentColor.opacity(0.24), lineWidth: 1)
         }
     }
 
     private func stageHeader(
-        _ stage: HomeSnapshot.StageSummary
+        _ stage: V1HomeSnapshot.StageSummary
     ) -> some View {
         VStack(alignment: .leading, spacing: 10) {
             Text("CONRICULUM")
@@ -65,7 +210,7 @@ struct HomeView: View {
     }
 
     @ViewBuilder
-    private func previewDisclosure(for source: HomeSnapshot.Source) -> some View {
+    private func previewDisclosure(for source: V1HomeSnapshot.Source) -> some View {
         if case let .previewFixture(disclosure) = source {
             Label(disclosure, systemImage: "eye.trianglebadge.exclamationmark")
                 .font(.callout.weight(.medium))
@@ -82,7 +227,7 @@ struct HomeView: View {
     }
 
     private func chapterCard(
-        _ chapter: HomeSnapshot.ChapterCard
+        _ chapter: V1HomeSnapshot.ChapterCard
     ) -> some View {
         VStack(alignment: .leading, spacing: 18) {
             Label(chapter.resumePageID == nil ? "여기서 시작해 보세요" : "이어서 학습하기", systemImage: "play.circle.fill")
@@ -125,8 +270,8 @@ struct HomeView: View {
             Button(chapter.primaryActionTitle) {
                 store.send(
                     chapter.resumePageID == nil
-                        ? .startButtonTapped
-                        : .resumeButtonTapped
+                        ? .v1StartButtonTapped
+                        : .v1ResumeButtonTapped
                 )
             }
             .buttonStyle(.borderedProminent)
@@ -164,9 +309,9 @@ struct HomeView: View {
                     )
 
                 VStack(alignment: .leading, spacing: 5) {
-                    Text("지식 체계 둘러보기")
+                    Text("지식 책장 열기")
                         .font(.title3.weight(.semibold))
-                    Text("배운 지식을 다시 읽고, 선택한 지식과 연결되는 개념을 책장에서 확인합니다.")
+                    Text("콘텐츠 버전과 관계없이 배운 지식과 연결된 개념을 다시 확인합니다.")
                         .font(.callout)
                         .foregroundStyle(.secondary)
                         .fixedSize(horizontal: false, vertical: true)
@@ -183,6 +328,7 @@ struct HomeView: View {
             .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
+        .accessibilityIdentifier("home.knowledge-bookshelf")
         .background(
             .regularMaterial,
             in: RoundedRectangle(cornerRadius: 16, style: .continuous)
@@ -191,33 +337,33 @@ struct HomeView: View {
             RoundedRectangle(cornerRadius: 16, style: .continuous)
                 .stroke(Color.primary.opacity(0.08), lineWidth: 1)
         }
-        .accessibilityHint("지식 체계 탐색 화면을 엽니다.")
+        .accessibilityHint("지식 책장 화면을 엽니다.")
     }
 
     @ViewBuilder
-    private func learningSummary(_ snapshot: HomeSnapshot) -> some View {
-        if snapshot.lastActivity != nil || !snapshot.knowledgeChanges.confirmed.isEmpty
-            || !snapshot.knowledgeChanges.pending.isEmpty {
+    private func learningSummary(_ v1Snapshot: V1HomeSnapshot) -> some View {
+        if v1Snapshot.lastActivity != nil || !v1Snapshot.knowledgeChanges.confirmed.isEmpty
+            || !v1Snapshot.knowledgeChanges.pending.isEmpty {
             DisclosureGroup("이 챕터에 남긴 학습 기록") {
                 VStack(alignment: .leading, spacing: 18) {
-                    if snapshot.lastActivity != nil {
-                        lastActivityPanel(snapshot.lastActivity)
+                    if v1Snapshot.lastActivity != nil {
+                        lastActivityPanel(v1Snapshot.lastActivity)
                     }
-                    if !snapshot.knowledgeChanges.confirmed.isEmpty || !snapshot.knowledgeChanges.pending.isEmpty {
+                    if !v1Snapshot.knowledgeChanges.confirmed.isEmpty || !v1Snapshot.knowledgeChanges.pending.isEmpty {
                         knowledgeChangePanel(
-                            snapshot.knowledgeChanges,
-                            emptyMessage: snapshot.knowledgeChangesEmptyStateMessage
+                            v1Snapshot.knowledgeChanges,
+                            emptyMessage: v1Snapshot.knowledgeChangesEmptyStateMessage
                         )
                     }
                 }.padding(.top, 12)
             }
         }
-        if snapshot.evidence.contains(where: { $0.count > 0 }) {
-            evidenceSection(snapshot.evidence.filter { $0.count > 0 })
+        if v1Snapshot.evidence.contains(where: { $0.count > 0 }) {
+            evidenceSection(v1Snapshot.evidence.filter { $0.count > 0 })
         }
     }
 
-    private func chapterLibrary(_ chapters: [HomeSnapshot.ChapterCard]) -> some View {
+    private func chapterLibrary(_ chapters: [V1HomeSnapshot.ChapterCard]) -> some View {
         VStack(alignment: .leading, spacing: 12) {
             Text("챕터 선택").font(.title3.weight(.semibold))
                 .accessibilityHeading(.h2)
@@ -225,7 +371,7 @@ struct HomeView: View {
                 .font(.callout).foregroundStyle(.secondary)
             ForEach(chapters, id: \.chapterID) { chapter in
                 Button {
-                    store.send(.chapterSelected(chapter.chapterID))
+                    store.send(.v1ChapterSelected(chapter.chapterID))
                 } label: {
                     HStack(spacing: 16) {
                         VStack(alignment: .leading, spacing: 5) {
@@ -246,7 +392,7 @@ struct HomeView: View {
     }
 
     private func lastActivityPanel(
-        _ activity: HomeSnapshot.ActivitySummary?
+        _ activity: V1HomeSnapshot.ActivitySummary?
     ) -> some View {
         HomePanel(title: "마지막 활동", systemImage: "clock.arrow.circlepath") {
             if let activity {
@@ -281,11 +427,11 @@ struct HomeView: View {
     }
 
     private func knowledgeChangePanel(
-        _ knowledgeChanges: KnowledgeChangeCollection,
+        _ knowledgeChanges: V1KnowledgeChangeCollection,
         emptyMessage: String
     ) -> some View {
         HomePanel(title: "이번 학습으로 달라진 내 지식", systemImage: "sparkles") {
-            KnowledgeChangeCollectionView(
+            V1KnowledgeChangeCollectionView(
                 collection: knowledgeChanges,
                 confirmedEmptyMessage: emptyMessage
             )
@@ -293,7 +439,7 @@ struct HomeView: View {
     }
 
     private func evidenceSection(
-        _ evidence: [HomeSnapshot.EvidenceSummary]
+        _ evidence: [V1HomeSnapshot.EvidenceSummary]
     ) -> some View {
         VStack(alignment: .leading, spacing: 14) {
             VStack(alignment: .leading, spacing: 4) {
@@ -366,7 +512,7 @@ struct HomeView: View {
     }
 
     private func lastPageLabel(
-        _ page: HomeSnapshot.PageSummary
+        _ page: V1HomeSnapshot.PageSummary
     ) -> String {
         if let order = page.order {
             return "\(order)페이지 · \(page.title)"
@@ -375,7 +521,7 @@ struct HomeView: View {
     }
 
     private func lastActivityAccessibilityLabel(
-        _ activity: HomeSnapshot.ActivitySummary
+        _ activity: V1HomeSnapshot.ActivitySummary
     ) -> String {
         let section = activity.sectionTitle.map { ", \($0)" } ?? ""
         let date = activity.occurredAt.formatted(
@@ -440,10 +586,10 @@ private struct EmptyDashboardState: View {
 }
 
 private struct EvidenceCard: View {
-    let summary: HomeSnapshot.EvidenceSummary
+    let summary: V1HomeSnapshot.EvidenceSummary
 
-    private var presentation: HomeEvidencePresentation {
-        HomeEvidencePresentation(kind: summary.kind)
+    private var presentation: V1HomeEvidencePresentation {
+        V1HomeEvidencePresentation(kind: summary.kind)
     }
 
     var body: some View {
@@ -489,7 +635,7 @@ private struct EvidenceCard: View {
     HomeView(
         store: Store(
             initialState: HomeFeature.State(
-                snapshot: HomePreviewFixtures.empty,
+                v1Snapshot: V1HomePreviewFixtures.empty,
                 usesSnapshotAsPlaceholder: true
             )
         ) {
@@ -502,7 +648,7 @@ private struct EvidenceCard: View {
     HomeView(
         store: Store(
             initialState: HomeFeature.State(
-                snapshot: HomePreviewFixtures.mock,
+                v1Snapshot: V1HomePreviewFixtures.mock,
                 usesSnapshotAsPlaceholder: true
             )
         ) {

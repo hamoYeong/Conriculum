@@ -11,15 +11,27 @@ struct AppView: View {
                 store: store.scope(state: \.home, action: \.home)
             )
 
-        case let .learningWorkspace(chapterID):
+        case let .v1Learning(chapterID):
             if let workspaceStore = store.scope(
-                state: \.workspace,
-                action: \.workspace
+                state: \.v1Workspace,
+                action: \.v1Workspace
             ) {
-                LearningWorkspaceView(store: workspaceStore)
+                V1LearningWorkspaceView(store: workspaceStore)
                     .id(chapterID)
             } else {
                 ProgressView("학습 워크스페이스를 준비하는 중입니다.")
+                    .frame(minWidth: 720, minHeight: 560)
+            }
+
+        case let .learning(pageID):
+            if let learningStore = store.scope(
+                state: \.learning,
+                action: \.learning
+            ) {
+                LearningView(store: learningStore)
+                    .id(pageID)
+            } else {
+                ProgressView("ver.2 학습 화면을 준비하는 중입니다.")
                     .frame(minWidth: 720, minHeight: 560)
             }
 

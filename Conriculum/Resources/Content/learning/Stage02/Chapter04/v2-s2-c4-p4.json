@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "contentVersion": "v2",
+  "id": "v2.s2.c4.p4",
+  "stageID": "v2.s2",
+  "chapterID": "v2.s2.c4",
+  "order": 4,
+  "title": "초기화와 멤버 연결로 객체 협력 읽기",
+  "goal": "초기화 코드를 객체 생성법이 아니라 협력 관계의 조립도로 읽는다. 완료 증거: `누가 무엇을 필요로 하고 누가 실제 구현을 선택하는가` 그림.",
+  "sourcePath": "Stage 2 - AI 구현을 의미 단위로 읽는 기초/Chapter 4 - 함수와 타입의 책임 읽기/04 초기화와 멤버 연결로 객체 협력 읽기.md",
+  "blocks": [
+    {
+      "id": "04-초기화와-멤버-연결로-객체-협력-읽기.block-1",
+      "order": 1,
+      "kind": "mission",
+      "title": "읽기 미션",
+      "markdown": "초기화 코드를 객체 생성법이 아니라 협력 관계의 조립도로 읽는다. **완료 증거:** `누가 무엇을 필요로 하고 누가 실제 구현을 선택하는가` 그림.\n\n```swift\nfinal class MemoFeature {\n    private let store: MemoStore\n    private let clock: Clock\n\n    init(store: MemoStore, clock: Clock) {\n        self.store = store\n        self.clock = clock\n    }\n\n    func add(title: String) {\n        store.add(Memo(title: title, createdAt: clock.now))\n    }\n}\n```\n\n> [!question] 막히면 · 초보자 연결\n> `self.store = store`의 양쪽이 헷갈리면 [[지식 체계 ver.2/04 책임과 경계/초기화와 멤버 연결|초기화와 멤버 연결]]에서 프로퍼티와 인자를 구분한다.",
+      "activities": []
+    },
+    {
+      "id": "04-초기화와-멤버-연결로-객체-협력-읽기.block-2",
+      "order": 2,
+      "kind": "flow",
+      "title": "흐름 잇기",
+      "markdown": "바깥 조립자 → MemoStore·Clock 전달 → Feature가 보관 → add가 두 협력자를 사용한다. 테스트에서 시간을 고정하려면 어디를 바꾸면 되는가?\n\n> [!tip]- 이미 안다면 · 작은 계약\n> 전체 Clock 객체보다 `now` 능력만 필요하다면 현재 기능의 의존성 표면을 더 작게 만들 수 있다. [[지식 체계 ver.2/04 책임과 경계/의존성과 주입|의존성과 주입]]",
+      "activities": []
+    }
+  ],
+  "termRefs": [],
+  "knowledgeConceptIDs": [
+    "v2.concept.4399498de565",
+    "v2.concept.6a42d77cc67e",
+    "v2.concept.ad7c4cc1526f",
+    "v2.concept.3df63b7acb05"
+  ]
+}

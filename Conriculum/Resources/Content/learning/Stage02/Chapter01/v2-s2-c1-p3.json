@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "contentVersion": "v2",
+  "id": "v2.s2.c1.p3",
+  "stageID": "v2.s2",
+  "chapterID": "v2.s2.c1",
+  "order": 3,
+  "title": "코드를 책임 조각으로 묶기",
+  "goal": "서로 떨어진 줄도 같은 결과를 만들면 함께 묶는다. 완료 증거: `상태 보관`, `보일 메모 계산`, `사용자 입력`, `결과 표시` 네 조각.",
+  "sourcePath": "Stage 2 - AI 구현을 의미 단위로 읽는 기초/Chapter 1 - 코드를 의미 단위로 훑어보기/03 코드를 책임 조각으로 묶기.md",
+  "blocks": [
+    {
+      "id": "03-코드를-책임-조각으로-묶기.block-1",
+      "order": 1,
+      "kind": "mission",
+      "title": "읽기 미션",
+      "markdown": "서로 떨어진 줄도 같은 결과를 만들면 함께 묶는다. **완료 증거:** `상태 보관`, `보일 메모 계산`, `사용자 입력`, `결과 표시` 네 조각.\n\n```swift\n@State private var hidesCompleted = false        // A\nlet memos: [Memo]                                // B\nvar visibleMemos: [Memo] {                       // C\n    hidesCompleted ? memos.filter { !$0.isCompleted } : memos\n}\nToggle(\"완료 숨기기\", isOn: $hidesCompleted)    // D\nText(\"할 일 \\(visibleMemos.count)개\")            // E\n```",
+      "activities": []
+    },
+    {
+      "id": "03-코드를-책임-조각으로-묶기.block-2",
+      "order": 2,
+      "kind": "chunking",
+      "title": "조각 묶기",
+      "markdown": "- A와 D는 떨어져 있지만 `숨김 상태를 보관하고 바꾸기` 조각이다.\n- B와 C는 `원본에서 보일 메모 계산하기` 조각이다.\n- E는 `계산 결과 표시하기` 조각이다.\n\n직접 다른 경계를 제안해도 된다. 각 묶음에 “함께 무엇을 완성하는가”를 동사구로 붙인다.\n\n> [!question] 막히면 · 초보자 연결\n> 중괄호나 한 줄마다 잘랐다면 [[지식 체계 ver.2/01 방향과 단서/의미 단위 조각|의미 단위 조각]]의 세 질문만 적용한다.\n\n> [!tip]- 이미 안다면 · 조각 경계의 효율\n> B와 C를 분리할지는 변경 이유로 판단한다. 원본 공급 방식과 필터 정책이 서로 다른 이유로 자주 바뀐다면 둘은 별도 조각일 수 있다.",
+      "activities": []
+    }
+  ],
+  "termRefs": [],
+  "knowledgeConceptIDs": [
+    "v2.concept.fe8294523602",
+    "v2.concept.47f024303e8d",
+    "v2.concept.df52c8a8a4db",
+    "v2.concept.12f7c7373056"
+  ]
+}

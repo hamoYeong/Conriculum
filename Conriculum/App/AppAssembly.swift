@@ -2,29 +2,29 @@ import SwiftData
 
 struct AppAssembly {
     let modelContainer: ModelContainer
-    let curriculumClient: CurriculumClient
-    let knowledgeCatalogClient: KnowledgeCatalogClient
-    let learningRecordClient: LearningRecordClient
-    let personalKnowledgeClient: PersonalKnowledgeClient
+    let v1CurriculumClient: V1CurriculumClient
+    let v1KnowledgeCatalogClient: V1KnowledgeCatalogClient
+    let v1LearningRecordClient: V1LearningRecordClient
+    let v1PersonalKnowledgeClient: V1PersonalKnowledgeClient
 
     static func live() throws -> Self {
-        make(environment: try PersistenceEnvironmentRegistry.live())
+        make(environment: try V1PersistenceEnvironmentRegistry.live())
     }
 
     static func inMemory() throws -> Self {
-        make(environment: try PersistenceEnvironmentRegistry.makeInMemoryEnvironment())
+        make(environment: try V1PersistenceEnvironmentRegistry.makeInMemoryEnvironment())
     }
 
     private static func make(
-        environment: PersistenceEnvironment
+        environment: V1PersistenceEnvironment
     ) -> Self {
-        let contentStore = BundledContentStore()
+        let contentStore = V1BundledContentStore()
         return Self(
             modelContainer: environment.modelContainer,
-            curriculumClient: .live(store: contentStore),
-            knowledgeCatalogClient: .live(store: contentStore),
-            learningRecordClient: .live(store: environment.userDataStore),
-            personalKnowledgeClient: .live(store: environment.userDataStore)
+            v1CurriculumClient: .live(store: contentStore),
+            v1KnowledgeCatalogClient: .live(store: contentStore),
+            v1LearningRecordClient: .live(store: environment.userDataStore),
+            v1PersonalKnowledgeClient: .live(store: environment.userDataStore)
         )
     }
 }

@@ -1,51 +1,116 @@
 import Foundation
 
-// MARK: - 학습 과정에서 생성되는 사용자 기록
+struct CourseProgress: Codable, Equatable, Sendable {
+    var lastVisitedPageID: String?
+    var completedPageIDs: Set<String>
+    var activityResponses: [String: GameResponse]
+    var supportLevelsByPageID: [String: LearningSupportLevel]
 
-/// Chapter에서 현재 위치와 완료 상태를 stable page ID로 저장한다.
-struct LearningProgress: Codable, Equatable, Sendable {
-    let chapterID: ChapterID
-    var currentPageID: LearningPageID
-    var completedPageIDs: Set<LearningPageID>
-    var updatedAt: Date
+    init(
+        lastVisitedPageID: String?,
+        completedPageIDs: Set<String>,
+        activityResponses: [String: GameResponse] = [:],
+        supportLevelsByPageID: [String: LearningSupportLevel] = [:]
+    ) {
+        self.lastVisitedPageID = lastVisitedPageID
+        self.completedPageIDs = completedPageIDs
+        self.activityResponses = activityResponses
+        self.supportLevelsByPageID = supportLevelsByPageID
+    }
+
+    private enum CodingKeys: String, CodingKey {
+        case lastVisitedPageID
+        case completedPageIDs
+        case activityResponses
+        case supportLevelsByPageID
+    }
+
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        lastVisitedPageID = try container.decodeIfPresent(
+            String.self,
+            forKey: .lastVisitedPageID
+        )
+        completedPageIDs = try container.decodeIfPresent(
+            Set<String>.self,
+            forKey: .completedPageIDs
+        ) ?? []
+        activityResponses = try container.decodeIfPresent(
+            [String: GameResponse].self,
+            forKey: .activityResponses
+        ) ?? [:]
+        supportLevelsByPageID = try container.decodeIfPresent(
+            [String: LearningSupportLevel].self,
+            forKey: .supportLevelsByPageID
+        ) ?? [:]
+    }
+
+    nonisolated static let empty = Self(
+        lastVisitedPageID: nil,
+        completedPageIDs: [],
+        activityResponses: [:],
+        supportLevelsByPageID: [:]
+    )
 }
 
-/// 사용자가 특정 Activity에 실제로 입력한 응답.
-/// 활동 종류마다 다른 입력은 `fields`의 key-values 구조로 수용한다.
-struct ActivityResponse: Codable, Equatable, Sendable {
-    let id: ActivityResponseID
-    let activityID: LearningActivityID
-    let pageID: LearningPageID
-    let fields: [ActivityResponseField]
-    let recordedAt: Date
+enum LearningSupportLevel: String, Codable, CaseIterable, Equatable, Sendable {
+    case guided
+    case hinted
+    case independent
 }
 
-/// 하나의 응답 항목. 단일·복수 선택을 모두 표현하도록 값 배열을 사용한다.
-struct ActivityResponseField: Codable, Equatable, Sendable {
-    let key: String
-    let values: [String]
-}
+struct GameResponse: Codable, Equatable, Sendable {
+    let activityID: String
+    let selectedOptionIDs: Set<String>
+    let matches: [String: String]
+    let isCorrect: Bool
+    let attempts: Int
+    let answeredAt: Date
 
-/// 응답 내용과 별개로, 학습 과정에서 무엇이 관찰되었는지를 남기는 증거.
-/// `ActivityResponse`가 “무엇을 했는가”라면 이 값은 “무엇이 확인되었는가”를 뜻한다.
-struct LearningEvidence: Codable, Equatable, Sendable {
-    let id: LearningEvidenceID
-    let kind: LearningEvidenceKind
-    let pageID: LearningPageID
-    let activityID: LearningActivityID?
-    let responseID: ActivityResponseID?
-    let note: String?
-    let recordedAt: Date
-}
+    init(
+        activityID: String,
+        selectedOptionIDs: Set<String> = [],
+        matches: [String: String] = [:],
+        isCorrect: Bool,
+        attempts: Int,
+        answeredAt: Date
+    ) {
+        self.activityID = activityID
+        self.selectedOptionIDs = selectedOptionIDs
+        self.matches = matches
+        self.isCorrect = isCorrect
+        self.attempts = attempts
+        self.answeredAt = answeredAt
+    }
 
-/// 단순 완료 여부보다 세분화된 학습 증거의 단계와 종류.
-enum LearningEvidenceKind: String, Codable, CaseIterable, Hashable, Sendable {
-    case viewed
-    case activityAttempt
-    case assistedSuccess
-    case independentSuccess
-    case reasoningExplanation
-    case conceptLink
-}
+    private enum CodingKeys: String, CodingKey {
+        case activityID, selectedOptionIDs, selectedOptionID, matches
+        case isCorrect, attempts, answeredAt
+    }
 
-// MARK: - 다음 읽기: ConriculumTests/Domain/KnowledgeAndLearningRecordTests.swift
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        activityID = try container.decode(String.self, forKey: .activityID)
+        selectedOptionIDs = try container.decodeIfPresent(
+            Set<String>.self,
+            forKey: .selectedOptionIDs
+        ) ?? container.decodeIfPresent(String.self, forKey: .selectedOptionID).map { [$0] } ?? []
+        matches = try container.decodeIfPresent(
+            [String: String].self,
+            forKey: .matches
+        ) ?? [:]
+        isCorrect = try container.decode(Bool.self, forKey: .isCorrect)
+        attempts = try container.decode(Int.self, forKey: .attempts)
+        answeredAt = try container.decode(Date.self, forKey: .answeredAt)
+    }
+
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(activityID, forKey: .activityID)
+        try container.encode(selectedOptionIDs, forKey: .selectedOptionIDs)
+        try container.encode(matches, forKey: .matches)
+        try container.encode(isCorrect, forKey: .isCorrect)
+        try container.encode(attempts, forKey: .attempts)
+        try container.encode(answeredAt, forKey: .answeredAt)
+    }
+}

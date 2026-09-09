@@ -1,0 +1,44 @@
+{
+  "schemaVersion": 1,
+  "contentVersion": "v2",
+  "id": "v2.s2.c8.p1",
+  "stageID": "v2.s2",
+  "chapterID": "v2.s2.c8",
+  "order": 1,
+  "title": "요구사항과 화면 결과를 코드에 연결하기",
+  "goal": "AI에게 준 “식물별 다음 물 주기 날짜를 보여 줘”라는 요구를 검증 가능한 결과로 바꾼다. 완료 증거: 요구·예시 결과·코드 단서·미정 정책 표.",
+  "sourcePath": "Stage 2 - AI 구현을 의미 단위로 읽는 기초/Final Chapter - AI 구현을 검토하고 안전하게 바꾸기/01 요구사항과 화면 결과를 코드에 연결하기.md",
+  "blocks": [
+    {
+      "id": "01-요구사항과-화면-결과를-코드에-연결하기.block-1",
+      "order": 1,
+      "kind": "mission",
+      "title": "읽기 미션",
+      "markdown": "AI에게 준 “식물별 다음 물 주기 날짜를 보여 줘”라는 요구를 검증 가능한 결과로 바꾼다. **완료 증거:** 요구·예시 결과·코드 단서·미정 정책 표.\n\n```swift\nvar nextWateringDate: Date {\n    lastWateredAt.addingTimeInterval(intervalDays * 86_400)\n}\n\nText(plant.nextWateringDate.formatted(date: .abbreviated, time: .omitted))\n```",
+      "activities": []
+    },
+    {
+      "id": "01-요구사항과-화면-결과를-코드에-연결하기.block-2",
+      "order": 2,
+      "kind": "support",
+      "title": "중심 활동",
+      "markdown": "코드가 직접 고려한 것은 마지막 날짜, 일수 간격, 날짜 표시다. 시간대·달력상의 하루·기록 없음·식물별 예외는 코드만으로 해결되었다고 볼 수 없다.\n\n> [!question] 막히면 · 초보자 연결\n> 요구사항 문장과 코드 줄을 바로 연결하기 어렵다면 [[지식 체계 ver.2/01 방향과 단서/실행 결과에서 시작하기|실행 결과에서 시작하기]]로 구체적인 예시 화면부터 만든다.",
+      "activities": []
+    },
+    {
+      "id": "01-요구사항과-화면-결과를-코드에-연결하기.block-3",
+      "order": 3,
+      "kind": "closure",
+      "title": "마무리",
+      "markdown": "`확인됨: 날짜를 초 단위로 더해 표시함 / 추정: intervalDays는 항상 존재함 / 질문: 달력 날짜 기준인가?`로 나눈다.\n\n> [!tip]- 이미 안다면 · 숨은 도메인 규칙\n> `86_400초=항상 달력 하루`라는 가정은 시간대 전환에서 깨질 수 있다. 최적화보다 먼저 제품이 원하는 “하루”의 의미를 묻는다.",
+      "activities": []
+    }
+  ],
+  "termRefs": [],
+  "knowledgeConceptIDs": [
+    "v2.concept.7f5b67cb56c3",
+    "v2.concept.5c89edcac281",
+    "v2.concept.fe8294523602",
+    "v2.concept.4399498de565"
+  ]
+}

@@ -1,13 +1,11 @@
+import Foundation
 import SwiftData
 
-enum ConriculumPersistenceSchema {
+enum PersistenceSchema {
     static let modelTypes: [any PersistentModel.Type] = [
-        LocalProfileRecord.self,
-        LearningProgressRecord.self,
-        ActivityResponseRecord.self,
-        LearningEvidenceRecord.self,
-        PersonalConceptRevisionRecord.self,
-        PersonalKnowledgeRelationRecord.self,
+        CourseProgressRecord.self,
+        PageProgressRecord.self,
+        GameResponseRecord.self,
     ]
 
     static let schema = Schema(modelTypes)
@@ -15,28 +13,36 @@ enum ConriculumPersistenceSchema {
 
 enum PersistenceContainerFactory {
     static func live() throws -> ModelContainer {
-        let configuration = ModelConfiguration(
-            "Conriculum",
-            schema: ConriculumPersistenceSchema.schema,
+        try make(configuration: ModelConfiguration(
+            "ConriculumCurrent",
+            schema: PersistenceSchema.schema,
             cloudKitDatabase: .none
-        )
-
-        return try ModelContainer(
-            for: ConriculumPersistenceSchema.schema,
-            configurations: [configuration]
-        )
+        ))
     }
 
     static func inMemory() throws -> ModelContainer {
-        let configuration = ModelConfiguration(
-            "ConriculumInMemory",
-            schema: ConriculumPersistenceSchema.schema,
+        try make(configuration: ModelConfiguration(
+            "ConriculumCurrentInMemory",
+            schema: PersistenceSchema.schema,
             isStoredInMemoryOnly: true,
             cloudKitDatabase: .none
-        )
+        ))
+    }
 
-        return try ModelContainer(
-            for: ConriculumPersistenceSchema.schema,
+    static func fileBacked(at url: URL) throws -> ModelContainer {
+        try make(configuration: ModelConfiguration(
+            "ConriculumCurrent",
+            schema: PersistenceSchema.schema,
+            url: url,
+            cloudKitDatabase: .none
+        ))
+    }
+
+    private static func make(
+        configuration: ModelConfiguration
+    ) throws -> ModelContainer {
+        try ModelContainer(
+            for: PersistenceSchema.schema,
             configurations: [configuration]
         )
     }

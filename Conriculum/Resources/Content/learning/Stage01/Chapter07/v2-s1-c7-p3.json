@@ -1,0 +1,371 @@
+{
+  "schemaVersion": 1,
+  "contentVersion": "v2",
+  "id": "v2.s1.c7.p3",
+  "stageID": "v2.s1",
+  "chapterID": "v2.s1.c7",
+  "order": 3,
+  "title": "클로저가 나중에 할 행동 찾기",
+  "goal": "중괄호로 전달된 클로저가 값처럼 건네지는 행동이며 즉시가 아니라 이벤트·변환 시점에 실행될 수 있음을 안다.",
+  "sourcePath": "Stage 1 - 코드의 단어와 모양에 익숙해지기/Chapter 7 - 이름 붙은 행동과 설계도 알아보기/03 클로저가 나중에 할 행동 찾기.md",
+  "blocks": [
+    {
+      "id": "03-클로저가-나중에-할-행동-찾기.block-1",
+      "order": 1,
+      "kind": "mission",
+      "title": "클리어 목표",
+      "markdown": "중괄호로 전달된 클로저가 값처럼 건네지는 행동이며 즉시가 아니라 이벤트·변환 시점에 실행될 수 있음을 안다.",
+      "activities": []
+    },
+    {
+      "id": "03-클로저가-나중에-할-행동-찾기.block-2",
+      "order": 2,
+      "kind": "wordSystem",
+      "title": "단어 체계",
+      "markdown": "",
+      "activities": [],
+      "wordSystem": {
+        "entries": [
+          {
+            "id": "03-클로저가-나중에-할-행동-찾기.block-2.word-1",
+            "term": "클로저",
+            "parentSystem": "행동 값",
+            "role": "이름 없이 묶어 전달할 수 있는 코드",
+            "firstThought": "누가 이 행동을 언제 부르나?"
+          },
+          {
+            "id": "03-클로저가-나중에-할-행동-찾기.block-2.word-2",
+            "term": "in",
+            "parentSystem": "클로저 경계",
+            "role": "입력 이름과 실행 본문을 나눔",
+            "firstThought": "왼쪽 입력이 오른쪽에서 어떻게 쓰이나?"
+          },
+          {
+            "id": "03-클로저가-나중에-할-행동-찾기.block-2.word-3",
+            "term": "trailing closure",
+            "parentSystem": "호출 표기",
+            "role": "마지막 행동 인자를 괄호 밖 중괄호로 전달",
+            "firstThought": "이 블록은 어느 호출에 붙나?"
+          }
+        ]
+      }
+    },
+    {
+      "id": "03-클로저가-나중에-할-행동-찾기.block-3",
+      "order": 3,
+      "kind": "scene",
+      "title": "장면 카드",
+      "markdown": "버튼을 만들 때 눌린 뒤 할 행동도 함께 건넨다.\n\n```swift\nButton(\"저장\") {\n    save()\n}\n```",
+      "activities": []
+    },
+    {
+      "id": "03-클로저가-나중에-할-행동-찾기.block-4",
+      "order": 4,
+      "kind": "game",
+      "title": "게임 1 · 첫 생각 카드",
+      "markdown": "`save()`는 언제 실행될 가능성이 가장 큰가?\n\n> [!game]- 활동 방식 · 판단 카드 고르기\n> 근거가 되는 카드를 모두 고른 뒤 답을 확인한다.\n\n<!-- conriculum-activity: choice; correct: 2 -->\n\n1. 코드 파일을 여는 즉시\n2. 버튼을 눌렀을 때\n3. 문자열을 읽을 때\n\n> [!check]- 정답과 근거\n> 버튼을 눌렀을 때. 중괄호 블록이 Button에 행동으로 전달된다.",
+      "activities": [
+        {
+          "id": "03-클로저가-나중에-할-행동-찾기.block-4.activity-1",
+          "kind": "singleChoice",
+          "promptMarkdown": "`save()`는 언제 실행될 가능성이 가장 큰가?",
+          "options": [
+            {
+              "id": "03-클로저가-나중에-할-행동-찾기.block-4.activity-1.option-1",
+              "title": "코드 파일을 여는 즉시"
+            },
+            {
+              "id": "03-클로저가-나중에-할-행동-찾기.block-4.activity-1.option-2",
+              "title": "버튼을 눌렀을 때"
+            },
+            {
+              "id": "03-클로저가-나중에-할-행동-찾기.block-4.activity-1.option-3",
+              "title": "문자열을 읽을 때"
+            }
+          ],
+          "pairs": [],
+          "correctOptionIDs": [
+            "03-클로저가-나중에-할-행동-찾기.block-4.activity-1.option-2"
+          ],
+          "correctFeedback": "버튼을 눌렀을 때. 중괄호 블록이 Button에 행동으로 전달된다.",
+          "incorrectFeedback": "아직 맞지 않는 연결이나 빠진 단서가 있습니다. 코드의 모양·자리·주변 단어를 다시 비교해 보세요."
+        }
+      ]
+    },
+    {
+      "id": "03-클로저가-나중에-할-행동-찾기.block-5",
+      "order": 5,
+      "kind": "game",
+      "title": "게임 2 · 구절 역할 지도",
+      "markdown": "> [!game]- 활동 방식 · 구절과 역할 연결하기\n> 왼쪽 카드와 오른쪽 카드를 직접 연결하고, 모든 연결을 마친 뒤 한 번에 확인한다.\n\n<!-- conriculum-activity: matching; source: 코드 구절; target: 붙일 역할 카드 -->\n\n| 코드 구절 | 맡은 역할 | 붙일 역할 카드 |\n| --- | --- | --- |\n| `Button(\"저장\")` | 받는 호출 | 버튼 생성 |\n| `{ ... }` | 클로저 | 나중 행동 묶음 |\n| `save()` | 클로저 본문 | 이벤트 뒤 실행 |",
+      "activities": [
+        {
+          "id": "03-클로저가-나중에-할-행동-찾기.block-5.activity-1",
+          "kind": "matching",
+          "promptMarkdown": "게임 2 · 구절 역할 지도",
+          "options": [],
+          "pairs": [
+            {
+              "id": "03-클로저가-나중에-할-행동-찾기.block-5.activity-1.pair-1",
+              "left": "`Button(\"저장\")`",
+              "right": "버튼 생성"
+            },
+            {
+              "id": "03-클로저가-나중에-할-행동-찾기.block-5.activity-1.pair-2",
+              "left": "`{ ... }`",
+              "right": "나중 행동 묶음"
+            },
+            {
+              "id": "03-클로저가-나중에-할-행동-찾기.block-5.activity-1.pair-3",
+              "left": "`save()`",
+              "right": "이벤트 뒤 실행"
+            }
+          ],
+          "correctOptionIDs": [],
+          "correctFeedback": "모든 카드가 원문의 역할 관계와 일치한다.",
+          "incorrectFeedback": "아직 맞지 않는 연결이나 빠진 단서가 있습니다. 코드의 모양·자리·주변 단어를 다시 비교해 보세요."
+        }
+      ]
+    },
+    {
+      "id": "03-클로저가-나중에-할-행동-찾기.block-6",
+      "order": 6,
+      "kind": "game",
+      "title": "게임 3 · 헷갈리는 카드 대조",
+      "markdown": "> [!game]- 활동 방식 · 대조 카드 연결하기\n> 왼쪽 카드와 오른쪽 카드를 직접 연결하고, 모든 연결을 마친 뒤 한 번에 확인한다.\n\n<!-- conriculum-activity: matching; source: 후보; target: 판별 단서 -->\n\n| 후보 | 결정적인 차이 | 판별 단서 |\n| --- | --- | --- |\n| 함수 선언 | 이름 붙은 행동 정의 | `func save()` |\n| 함수 호출 | 지금 행동 요청 | `save()` |\n| 클로저 전달 | 나중 실행할 행동 값 | `{ save() }` |\n\n### 수상한 카드\n\n“중괄호 안 코드는 항상 위 줄 다음에 즉시 실행된다.”\n\n> [!game]- 활동 방식 · 주장 판정하기\n> 주장이 앞의 대조 근거와 맞는지 판단한 뒤 확인한다.\n\n<!-- conriculum-activity: choice; correct: 2 -->\n\n1. 근거가 있다\n2. 근거가 없다\n\n> [!check]- 판정\n> 아니다. 버튼·비동기(기다리는 동안 다른 일을 진행할 수 있는 실행 방식) 콜백처럼 받은 쪽이 나중에 호출할 수 있다.",
+      "activities": [
+        {
+          "id": "03-클로저가-나중에-할-행동-찾기.block-6.activity-1",
+          "kind": "matching",
+          "promptMarkdown": "게임 3 · 헷갈리는 카드 대조",
+          "options": [],
+          "pairs": [
+            {
+              "id": "03-클로저가-나중에-할-행동-찾기.block-6.activity-1.pair-1",
+              "left": "함수 선언",
+              "right": "`func save()`"
+            },
+            {
+              "id": "03-클로저가-나중에-할-행동-찾기.block-6.activity-1.pair-2",
+              "left": "함수 호출",
+              "right": "`save()`"
+            },
+            {
+              "id": "03-클로저가-나중에-할-행동-찾기.block-6.activity-1.pair-3",
+              "left": "클로저 전달",
+              "right": "`{ save() }`"
+            }
+          ],
+          "correctOptionIDs": [],
+          "correctFeedback": "모든 카드가 원문의 역할 관계와 일치한다.",
+          "incorrectFeedback": "아직 맞지 않는 연결이나 빠진 단서가 있습니다. 코드의 모양·자리·주변 단어를 다시 비교해 보세요."
+        },
+        {
+          "id": "03-클로저가-나중에-할-행동-찾기.block-6.activity-2",
+          "kind": "singleChoice",
+          "promptMarkdown": "### 수상한 카드\n\n“중괄호 안 코드는 항상 위 줄 다음에 즉시 실행된다.”",
+          "options": [
+            {
+              "id": "03-클로저가-나중에-할-행동-찾기.block-6.activity-2.option-1",
+              "title": "근거가 있다"
+            },
+            {
+              "id": "03-클로저가-나중에-할-행동-찾기.block-6.activity-2.option-2",
+              "title": "근거가 없다"
+            }
+          ],
+          "pairs": [],
+          "correctOptionIDs": [
+            "03-클로저가-나중에-할-행동-찾기.block-6.activity-2.option-2"
+          ],
+          "correctFeedback": "아니다. 버튼·비동기(기다리는 동안 다른 일을 진행할 수 있는 실행 방식) 콜백처럼 받은 쪽이 나중에 호출할 수 있다.",
+          "incorrectFeedback": "아직 맞지 않는 연결이나 빠진 단서가 있습니다. 코드의 모양·자리·주변 단어를 다시 비교해 보세요."
+        }
+      ]
+    },
+    {
+      "id": "03-클로저가-나중에-할-행동-찾기.block-7",
+      "order": 7,
+      "kind": "game",
+      "title": "게임 4 · 다른 옷을 입은 코드",
+      "markdown": "### 1\n\n```swift\nlet doubled = numbers.map { number in\n number * 2\n}\n```\n\n**질문:** 현재 원소 이름은?\n\n> [!game]- 활동 방식 · 코드 단서 고르기\n> 답이 되는 코드 단서 카드 하나를 고르면 바로 확인한다.\n\n<!-- conriculum-activity: choice; correct: 1 -->\n\n**선택 카드:**\n\n1. `number`\n2. `doubled`\n3. `numbers`\n4. `.`\n5. `map`\n6. `{`\n7. `*`\n8. `2`\n\n> [!check]- 확인\n> `number`; in 뒤가 변환 본문.\n\n### 2\n\n```swift\nTask {\n await load()\n}\n```\n\n**질문:** 블록을 받는 이름은?\n\n> [!game]- 활동 방식 · 코드 단서 고르기\n> 답이 되는 코드 단서 카드 하나를 고르면 바로 확인한다.\n\n<!-- conriculum-activity: choice; correct: 1 -->\n\n**선택 카드:**\n\n1. `Task`\n2. `{`\n3. `await`\n4. `load`\n5. `()`\n6. `}`\n\n> [!check]- 확인\n> `Task`. 실행 시점은 Task가 관리한다.",
+      "activities": [
+        {
+          "id": "03-클로저가-나중에-할-행동-찾기.block-7.activity-1",
+          "kind": "singleChoice",
+          "promptMarkdown": "### 1\n\n```swift\nlet doubled = numbers.map { number in\n number * 2\n}\n```\n\n**질문:** 현재 원소 이름은?",
+          "options": [
+            {
+              "id": "03-클로저가-나중에-할-행동-찾기.block-7.activity-1.option-1",
+              "title": "`number`"
+            },
+            {
+              "id": "03-클로저가-나중에-할-행동-찾기.block-7.activity-1.option-2",
+              "title": "`doubled`"
+            },
+            {
+              "id": "03-클로저가-나중에-할-행동-찾기.block-7.activity-1.option-3",
+              "title": "`numbers`"
+            },
+            {
+              "id": "03-클로저가-나중에-할-행동-찾기.block-7.activity-1.option-4",
+              "title": "`.`"
+            },
+            {
+              "id": "03-클로저가-나중에-할-행동-찾기.block-7.activity-1.option-5",
+              "title": "`map`"
+            },
+            {
+              "id": "03-클로저가-나중에-할-행동-찾기.block-7.activity-1.option-6",
+              "title": "`{`"
+            },
+            {
+              "id": "03-클로저가-나중에-할-행동-찾기.block-7.activity-1.option-7",
+              "title": "`*`"
+            },
+            {
+              "id": "03-클로저가-나중에-할-행동-찾기.block-7.activity-1.option-8",
+              "title": "`2`"
+            }
+          ],
+          "pairs": [],
+          "correctOptionIDs": [
+            "03-클로저가-나중에-할-행동-찾기.block-7.activity-1.option-1"
+          ],
+          "correctFeedback": "`number`; in 뒤가 변환 본문.",
+          "incorrectFeedback": "아직 맞지 않는 연결이나 빠진 단서가 있습니다. 코드의 모양·자리·주변 단어를 다시 비교해 보세요."
+        },
+        {
+          "id": "03-클로저가-나중에-할-행동-찾기.block-7.activity-2",
+          "kind": "singleChoice",
+          "promptMarkdown": "### 2\n\n```swift\nTask {\n await load()\n}\n```\n\n**질문:** 블록을 받는 이름은?",
+          "options": [
+            {
+              "id": "03-클로저가-나중에-할-행동-찾기.block-7.activity-2.option-1",
+              "title": "`Task`"
+            },
+            {
+              "id": "03-클로저가-나중에-할-행동-찾기.block-7.activity-2.option-2",
+              "title": "`{`"
+            },
+            {
+              "id": "03-클로저가-나중에-할-행동-찾기.block-7.activity-2.option-3",
+              "title": "`await`"
+            },
+            {
+              "id": "03-클로저가-나중에-할-행동-찾기.block-7.activity-2.option-4",
+              "title": "`load`"
+            },
+            {
+              "id": "03-클로저가-나중에-할-행동-찾기.block-7.activity-2.option-5",
+              "title": "`()`"
+            },
+            {
+              "id": "03-클로저가-나중에-할-행동-찾기.block-7.activity-2.option-6",
+              "title": "`}`"
+            }
+          ],
+          "pairs": [],
+          "correctOptionIDs": [
+            "03-클로저가-나중에-할-행동-찾기.block-7.activity-2.option-1"
+          ],
+          "correctFeedback": "`Task`. 실행 시점은 Task가 관리한다.",
+          "incorrectFeedback": "아직 맞지 않는 연결이나 빠진 단서가 있습니다. 코드의 모양·자리·주변 단어를 다시 비교해 보세요."
+        }
+      ]
+    },
+    {
+      "id": "03-클로저가-나중에-할-행동-찾기.block-8",
+      "order": 8,
+      "kind": "boss",
+      "title": "보스 코드",
+      "markdown": "```swift\nButton(\"삭제\") {\n    confirm {\n        deleteNote()\n    }\n}\n```\n\n**클리어 과제:** 바깥·안쪽 클로저와 각 행동을 받을 호출을 연결한다.\n\n> [!game]- 활동 방식 · 보스 단서 모두 찾기\n> 질문에 답이 되는 코드 단서를 모두 고른 뒤 한 번에 확인한다.\n\n<!-- conriculum-activity: multiple-choice; correct: 1,2,3 -->\n\n**선택 카드 (복수 선택 가능):**\n\n1. `Button`\n2. `confirm`\n3. `deleteNote`\n4. `(`\n5. `\"삭제\"`\n6. `)`\n7. `{`\n8. `()`\n\n> [!check]- 보스 해설\n> 바깥 클로저는 Button, 안쪽 클로저는 confirm에 붙는다. deleteNote는 확인 행동이 실행할 호출이다.",
+      "activities": [
+        {
+          "id": "03-클로저가-나중에-할-행동-찾기.block-8.activity-1",
+          "kind": "multipleChoice",
+          "promptMarkdown": "```swift\nButton(\"삭제\") {\n    confirm {\n        deleteNote()\n    }\n}\n```\n\n**클리어 과제:** 바깥·안쪽 클로저와 각 행동을 받을 호출을 연결한다.",
+          "options": [
+            {
+              "id": "03-클로저가-나중에-할-행동-찾기.block-8.activity-1.option-1",
+              "title": "`Button`"
+            },
+            {
+              "id": "03-클로저가-나중에-할-행동-찾기.block-8.activity-1.option-2",
+              "title": "`confirm`"
+            },
+            {
+              "id": "03-클로저가-나중에-할-행동-찾기.block-8.activity-1.option-3",
+              "title": "`deleteNote`"
+            },
+            {
+              "id": "03-클로저가-나중에-할-행동-찾기.block-8.activity-1.option-4",
+              "title": "`(`"
+            },
+            {
+              "id": "03-클로저가-나중에-할-행동-찾기.block-8.activity-1.option-5",
+              "title": "`\"삭제\"`"
+            },
+            {
+              "id": "03-클로저가-나중에-할-행동-찾기.block-8.activity-1.option-6",
+              "title": "`)`"
+            },
+            {
+              "id": "03-클로저가-나중에-할-행동-찾기.block-8.activity-1.option-7",
+              "title": "`{`"
+            },
+            {
+              "id": "03-클로저가-나중에-할-행동-찾기.block-8.activity-1.option-8",
+              "title": "`()`"
+            }
+          ],
+          "pairs": [],
+          "correctOptionIDs": [
+            "03-클로저가-나중에-할-행동-찾기.block-8.activity-1.option-1",
+            "03-클로저가-나중에-할-행동-찾기.block-8.activity-1.option-2",
+            "03-클로저가-나중에-할-행동-찾기.block-8.activity-1.option-3"
+          ],
+          "correctFeedback": "바깥 클로저는 Button, 안쪽 클로저는 confirm에 붙는다. deleteNote는 확인 행동이 실행할 호출이다.",
+          "incorrectFeedback": "아직 맞지 않는 연결이나 빠진 단서가 있습니다. 코드의 모양·자리·주변 단어를 다시 비교해 보세요."
+        }
+      ]
+    },
+    {
+      "id": "03-클로저가-나중에-할-행동-찾기.block-9",
+      "order": 9,
+      "kind": "unlock",
+      "title": "지식 카드 해금",
+      "markdown": "",
+      "activities": [],
+      "knowledgeUnlock": {
+        "cards": [
+          {
+            "id": "03-클로저가-나중에-할-행동-찾기.block-9.card-1",
+            "title": "클로저",
+            "summary": "값처럼 전달할 수 있는 행동 블록"
+          },
+          {
+            "id": "03-클로저가-나중에-할-행동-찾기.block-9.card-2",
+            "title": "in",
+            "summary": "클로저 입력 이름과 본문을 나누는 표식"
+          },
+          {
+            "id": "03-클로저가-나중에-할-행동-찾기.block-9.card-3",
+            "title": "실행 시점",
+            "summary": "행동이 정의·전달된 때와 실제 실행 때를 구분"
+          }
+        ],
+        "completionCriteria": "다른 맥락에서의 구별, 헷갈리는 개념과의 대조, 처음 보는 보스 코드에 적용하는 과정을 모두 통과하면 클리어한다. 도움 사용 여부는 `많은 안내와 함께 / 단서와 함께 / 독립적으로` 중 하나로 남긴다.",
+        "beginnerHint": "중괄호를 보면 바로 실행이라고 정하지 말고, 여는 중괄호 앞의 이름이 이 행동을 언제 쓰는지 묻는다.",
+        "advancedTip": "escaping·캡처·동시성(여러 작업이 겹치는 시간을 안전하게 다루는 방식) 격리(공유 값에 접근할 수 있는 범위를 나누는 규칙)는 클로저의 수명과 안전성에 영향(한 변경 때문에 뒤따라 달라지는 것)을 준다. Stage 2에서는 실행 시점과 소유 경계를 함께 본다."
+      }
+    }
+  ],
+  "termRefs": [],
+  "knowledgeConceptIDs": [
+    "v2.concept.50d055d31163",
+    "v2.concept.daf22bea5078",
+    "v2.concept.7f5b67cb56c3",
+    "v2.concept.63c92ed18525"
+  ]
+}

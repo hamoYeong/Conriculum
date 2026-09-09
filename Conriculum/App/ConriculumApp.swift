@@ -19,10 +19,10 @@ struct ConriculumApp: App {
         store = Store(initialState: AppFeature.State()) {
             AppFeature()
         } withDependencies: {
-            $0.curriculumClient = assembly.curriculumClient
-            $0.knowledgeCatalogClient = assembly.knowledgeCatalogClient
-            $0.learningRecordClient = assembly.learningRecordClient
-            $0.personalKnowledgeClient = assembly.personalKnowledgeClient
+            $0.v1CurriculumClient = assembly.v1CurriculumClient
+            $0.v1KnowledgeCatalogClient = assembly.v1KnowledgeCatalogClient
+            $0.v1LearningRecordClient = assembly.v1LearningRecordClient
+            $0.v1PersonalKnowledgeClient = assembly.v1PersonalKnowledgeClient
         }
     }
 

@@ -10,22 +10,22 @@ struct HomeViewRenderingTests {
     @Test
     func emptyAndPopulatedPreviewsRenderAtAStandardWindowSize() async throws {
         let decoder = ContentResourceDecoder()
-        let chapter = try decoder.decode(Chapter.self, from: .chapter02)
-        let next = try decoder.decode(Chapter.self, from: .chapter(stageNumber: 1, chapterNumber: 3))
-        let liveSnapshot = HomeSnapshotComposer().compose(chapter: chapter,
+        let chapter = try decoder.decode(V1Chapter.self, from: .chapter02)
+        let next = try decoder.decode(V1Chapter.self, from: .chapter(stageNumber: 1, chapterNumber: 3))
+        let liveSnapshot = V1HomeSnapshotComposer().compose(chapter: chapter,
             catalog: try decoder.decode(KnowledgeCatalog.self, from: .valuesAndTypes),
             progress: nil, responses: [], evidence: [], revisions: [], availableChapters: [chapter, next])
-        let fixtures: [(name: String, snapshot: HomeSnapshot)] = [
+        let fixtures: [(name: String, v1Snapshot: V1HomeSnapshot)] = [
             ("available-chapters", liveSnapshot),
-            ("empty", HomePreviewFixtures.empty),
-            ("populated", HomePreviewFixtures.mock),
+            ("empty", V1HomePreviewFixtures.empty),
+            ("populated", V1HomePreviewFixtures.mock),
         ]
 
         for fixture in fixtures {
             let view = HomeView(
                 store: Store(
                     initialState: HomeFeature.State(
-                        snapshot: fixture.snapshot,
+                        v1Snapshot: fixture.v1Snapshot,
                         usesSnapshotAsPlaceholder: true
                     )
                 ) {
@@ -34,31 +34,63 @@ struct HomeViewRenderingTests {
             )
             .frame(width: 960, height: 900)
 
-            let hostingView = NSHostingView(rootView: view)
-            hostingView.frame = NSRect(x: 0, y: 0, width: 960, height: 900)
-            let window = NSWindow(contentRect: hostingView.frame, styleMask: [], backing: .buffered, defer: false)
-            window.contentView = hostingView
-            window.appearance = NSAppearance(named: .aqua)
-            window.orderFront(nil)
-            defer { window.orderOut(nil) }
-            try await Task.sleep(for: .milliseconds(150))
-            hostingView.layoutSubtreeIfNeeded()
-            let image = try #require(
-                hostingView.bitmapImageRepForCachingDisplay(
-                    in: hostingView.bounds
-                )
-            )
-            hostingView.cacheDisplay(in: hostingView.bounds, to: image)
-
-            #expect(image.size.width == 960)
-            #expect(image.size.height == 900)
-            #expect(sampledColorCount(in: image) > 2)
-
-            try writeCaptureIfRequested(
-                image,
-                name: fixture.name
-            )
+            try await assertRenders(view, name: fixture.name)
         }
+    }
+
+    @Test
+    func currentHomeWithStagePagerAndKnowledgeBookshelfRenders() async throws {
+        let manifest = try BundledContentStore().loadManifest()
+        let firstChapter = try #require(manifest.stages.first?.chapters.first)
+        var state = HomeFeature.State(
+            v1Snapshot: V1HomePreviewFixtures.mock,
+            usesSnapshotAsPlaceholder: true
+        )
+        state.selectedContentVersion = .v2
+        state.manifest = manifest
+        state.learningProgress = CourseProgress(
+            lastVisitedPageID: try #require(firstChapter.pages.first).id,
+            completedPageIDs: []
+        )
+
+        let view = HomeView(
+            store: Store(initialState: state) { HomeFeature() }
+        )
+        .frame(width: 960, height: 900)
+
+        try await assertRenders(view, name: "v2-stage-pager-and-bookshelf")
+    }
+
+    private func assertRenders<Content: View>(
+        _ view: Content,
+        name: String
+    ) async throws {
+        let hostingView = NSHostingView(rootView: view)
+        hostingView.frame = NSRect(x: 0, y: 0, width: 960, height: 900)
+        let window = NSWindow(
+            contentRect: hostingView.frame,
+            styleMask: [],
+            backing: .buffered,
+            defer: false
+        )
+        window.contentView = hostingView
+        window.appearance = NSAppearance(named: .aqua)
+        window.orderFront(nil)
+        defer { window.orderOut(nil) }
+        try await Task.sleep(for: .milliseconds(150))
+        hostingView.layoutSubtreeIfNeeded()
+        let image = try #require(
+            hostingView.bitmapImageRepForCachingDisplay(
+                in: hostingView.bounds
+            )
+        )
+        hostingView.cacheDisplay(in: hostingView.bounds, to: image)
+
+        #expect(image.size.width == 960)
+        #expect(image.size.height == 900)
+        #expect(sampledColorCount(in: image) > 2)
+
+        try writeCaptureIfRequested(image, name: name)
     }
 
     private func writeCaptureIfRequested(

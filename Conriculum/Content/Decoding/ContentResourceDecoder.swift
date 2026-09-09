@@ -6,9 +6,18 @@ import Foundation
 struct ContentResourceDecoder: Sendable {
     /// typed resource를 Bundle에서 찾아 읽고 요청한 Domain 타입으로 decode한다.
     /// 앱의 실제 호출부가 사용하는 `Bundle → Data → Value` 진입점이다.
-    func decode<Value: Decodable>(
+    func decode<Value: Decodable, Resource: BundledJSONResource>(
         _ type: Value.Type,
-        from resource: BundledContentResource,
+        from resource: Resource,
+        in bundle: Bundle = .main
+    ) throws -> Value {
+        try decodeResource(type, from: resource, in: bundle)
+    }
+
+    /// 다른 콘텐츠 버전의 리소스 주소를 주입해 같은 변환·오류 계약을 재사용한다.
+    func decodeResource<Value: Decodable, Resource: BundledJSONResource>(
+        _ type: Value.Type,
+        from resource: Resource,
         in bundle: Bundle = .main
     ) throws -> Value {
         let url = try resource.url(in: bundle)
@@ -25,7 +34,7 @@ struct ContentResourceDecoder: Sendable {
     ) throws -> Value {
         do {
             return try JSONDecoder().decode(type, from: data)
-        } catch let error as UnsupportedLearningSectionTagError {
+        } catch let error as V1UnsupportedLearningSectionTagError {
             throw ContentResourceDecodingError(
                 resource: resourceName,
                 fieldPath: formattedPath(error.codingPath),
@@ -94,4 +103,4 @@ struct ContentResourceDecodingError: Error, Equatable, Sendable, CustomStringCon
 }
 
 // MARK: - 다음 읽기: ConriculumTests/Content/ContentResourceDecoderTests.swift
-// MARK: - 그다음: Content/Validation/ContentValidator.swift
+// MARK: - 그다음: Content/V1/Validation/V1ContentValidator.swift
