@@ -118,6 +118,101 @@ struct ContentValidator: Sendable {
         }
     }
 
+    func validate(
+        catalog: KnowledgeCatalog,
+        manifest: ContentManifest
+    ) throws {
+        guard catalog.schemaVersion == 1 else {
+            throw ContentError.unsupportedSchema(catalog.schemaVersion)
+        }
+
+        var ids = Set<String>()
+        try register(catalog.id, in: &ids)
+        try validateOrders(catalog.collections.map(\.order), path: "collections")
+
+        let conceptIDs = Set(catalog.concepts.map { $0.id.rawValue })
+        guard conceptIDs.count == catalog.concepts.count else {
+            throw ContentError.duplicateID("concepts")
+        }
+        var membershipCount = Dictionary(
+            uniqueKeysWithValues: conceptIDs.map { ($0, 0) }
+        )
+        for collection in catalog.collections {
+            try register(collection.id.rawValue, in: &ids)
+            guard Set(collection.conceptIDs).count == collection.conceptIDs.count
+            else {
+                throw ContentError.duplicateID(
+                    "\(collection.id.rawValue).conceptIDs"
+                )
+            }
+            for conceptID in collection.conceptIDs {
+                guard conceptIDs.contains(conceptID.rawValue) else {
+                    throw ContentError.invalidReference(
+                        "\(collection.id.rawValue).conceptIDs"
+                    )
+                }
+                membershipCount[conceptID.rawValue, default: 0] += 1
+            }
+        }
+        guard membershipCount.values.allSatisfy({ $0 == 1 }) else {
+            throw ContentError.invalidReference("concepts.collectionMembership")
+        }
+
+        let chaptersByID = Dictionary(
+            uniqueKeysWithValues: manifest.chapters.map { ($0.id, $0) }
+        )
+        for concept in catalog.concepts {
+            var pageIDs = Set<String>()
+            for reference in concept.revisitPages ?? [] {
+                guard pageIDs.insert(reference.pageID.rawValue).inserted else {
+                    throw ContentError.duplicateID(
+                        "\(concept.id.rawValue).revisitPages"
+                    )
+                }
+                guard let chapter = chaptersByID[
+                    reference.chapterID.rawValue
+                ],
+                    chapter.order == reference.chapterOrder,
+                    chapter.title == reference.chapterTitle,
+                    let page = chapter.pages.first(where: {
+                        $0.id == reference.pageID.rawValue
+                    }),
+                    page.order == reference.pageOrder,
+                    page.title == reference.pageTitle
+                else {
+                    throw ContentError.invalidReference(
+                        "\(concept.id.rawValue).revisitPages"
+                    )
+                }
+            }
+        }
+
+        var directedEdges = Set<String>()
+        for relation in catalog.relations {
+            try register(relation.id.rawValue, in: &ids)
+            let sourceID = relation.sourceConceptID.rawValue
+            let targetID = relation.targetConceptID.rawValue
+            guard sourceID != targetID,
+                  conceptIDs.contains(sourceID),
+                  conceptIDs.contains(targetID)
+            else {
+                throw ContentError.invalidReference(
+                    "\(relation.id.rawValue).conceptIDs"
+                )
+            }
+            let edge = "\(sourceID)->\(targetID)"
+            let reverseEdge = "\(targetID)->\(sourceID)"
+            guard !directedEdges.contains(edge),
+                  !directedEdges.contains(reverseEdge)
+            else {
+                throw ContentError.invalidReference(
+                    "\(relation.id.rawValue).direction"
+                )
+            }
+            directedEdges.insert(edge)
+        }
+    }
+
     private func register(_ id: String, in ids: inout Set<String>) throws {
         guard ids.insert(id).inserted else { throw ContentError.duplicateID(id) }
     }

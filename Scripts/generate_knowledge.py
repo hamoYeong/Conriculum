@@ -82,11 +82,52 @@ def relation_targets(text: str) -> list[tuple[str, str]]:
     return results
 
 
+def attach_learning_references(
+    concepts: list[dict],
+    manifest_path: Path,
+    resources_root: Path,
+) -> None:
+    """Join Obsidian-derived concepts to their Obsidian-derived learning pages."""
+    manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    by_id = {item["id"]: item for item in concepts}
+    seen_pages: dict[str, set[str]] = {concept_id: set() for concept_id in by_id}
+
+    for stage in manifest["stages"]:
+        for chapter in stage["chapters"]:
+            for page_reference in chapter["pages"]:
+                page_path = resources_root / page_reference["resource"]
+                page = json.loads(page_path.read_text(encoding="utf-8"))
+                for concept_id_value in page.get("knowledgeConceptIDs", []):
+                    concept = by_id.get(concept_id_value)
+                    if concept is None:
+                        raise ValueError(
+                            f"Unknown learning-page knowledge link: "
+                            f"{page_reference['id']} -> {concept_id_value}"
+                        )
+                    if page_reference["id"] in seen_pages[concept_id_value]:
+                        continue
+                    seen_pages[concept_id_value].add(page_reference["id"])
+                    concept["revisitPages"].append({
+                        "chapterID": chapter["id"],
+                        "chapterOrder": chapter["order"],
+                        "chapterTitle": chapter["title"],
+                        "pageID": page_reference["id"],
+                        "pageOrder": page_reference["order"],
+                        "pageTitle": page_reference["title"],
+                        "kind": "direct",
+                        "connection": f"{page_reference['title']}에서 이 지식을 직접 사용한다.",
+                    })
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("source_root", type=Path)
     parser.add_argument("output", type=Path)
+    parser.add_argument("--manifest", type=Path)
+    parser.add_argument("--resources-root", type=Path)
     args = parser.parse_args()
+    if (args.manifest is None) != (args.resources_root is None):
+        parser.error("--manifest and --resources-root must be provided together")
     collections = []
     concepts = []
     for order, directory in enumerate(sorted(path for path in args.source_root.iterdir() if path.is_dir()), start=1):
@@ -129,6 +170,13 @@ def main() -> None:
                 "kind": "leadsTo",
                 "summary": summary,
             })
+
+    if args.manifest is not None:
+        attach_learning_references(
+            concepts,
+            manifest_path=args.manifest,
+            resources_root=args.resources_root,
+        )
 
     for item in concepts:
         item.pop("_path")

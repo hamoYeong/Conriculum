@@ -80,6 +80,10 @@ final class BundledContentStore {
             from: BundledContentResource.knowledgeCatalog,
             in: bundle
         )
+        try ContentValidator().validate(
+            catalog: catalog,
+            manifest: loadManifest()
+        )
         cachedKnowledgeCatalog = catalog
         return catalog
     }
