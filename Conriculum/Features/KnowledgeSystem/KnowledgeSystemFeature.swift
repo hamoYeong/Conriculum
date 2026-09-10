@@ -5,7 +5,6 @@ import Foundation
 struct KnowledgeSystemFeature {
     @ObservableState
     struct State: Equatable {
-        var contentVersion: ContentVersion = .v1
         var snapshot: KnowledgeSystemSnapshot?
         var isLoading = false
         var loadErrorMessage: String?
@@ -46,9 +45,7 @@ struct KnowledgeSystemFeature {
                 ]
                 .joined(separator: " ")
                 .localizedLowercase
-                return searchableText.localizedStandardContains(
-                    normalizedQuery
-                )
+                return searchableText.localizedStandardContains(normalizedQuery)
             }
         }
 
@@ -84,14 +81,9 @@ struct KnowledgeSystemFeature {
 
     enum Delegate: Equatable {
         case homeRequested
-        case v1LearningRequested(ChapterID, LearningPageID)
         case learningRequested(String)
     }
 
-    @Dependency(\.v1KnowledgeCatalogClient) var v1KnowledgeCatalogClient
-    @Dependency(\.v1PersonalKnowledgeClient) var v1PersonalKnowledgeClient
-    @Dependency(\.v1CurriculumClient) var v1CurriculumClient
-    @Dependency(\.v1LearningRecordClient) var v1LearningRecordClient
     @Dependency(\.contentClient) var contentClient
     @Dependency(\.progressClient) var progressClient
 
@@ -107,80 +99,27 @@ struct KnowledgeSystemFeature {
             case .retryButtonTapped:
                 state.isLoading = true
                 state.loadErrorMessage = nil
-                if state.contentVersion == .v2 {
-                    return .run { send in
-                        do {
-                            async let catalogRequest = contentClient
-                                .loadKnowledgeCatalog()
-                            async let progressRequest = progressClient.load()
-                            let catalog = try await catalogRequest
-                            let progress = try await progressRequest
-                            let learnedPageIDs = progress.completedPageIDs
-                            let learnedConceptIDs = Set(
-                                catalog.concepts.compactMap { concept in
-                                    let wasLearned = concept.revisitPages?.contains {
-                                        learnedPageIDs.contains($0.pageID.rawValue)
-                                    } == true
-                                    return wasLearned ? concept.id : nil
-                                }
-                            )
-                            let snapshot = await MainActor.run {
-                                KnowledgeSystemSnapshotComposer().compose(
-                                    catalog: catalog,
-                                    revisions: [],
-                                    personalRelations: [],
-                                    learnedConceptIDs: learnedConceptIDs
-                                )
-                            }
-                            await send(.loadResponse(.loaded(snapshot)))
-                        } catch {
-                            await send(.loadResponse(.failed(
-                                message: error.localizedDescription
-                            )))
-                        }
-                    }
-                    .cancellable(
-                        id: "KnowledgeSystemFeature.contentLoad",
-                        cancelInFlight: true
-                    )
-                }
                 return .run { send in
                     do {
-                        async let catalog = v1KnowledgeCatalogClient.loadCatalog()
-                        async let revisions = v1PersonalKnowledgeClient
-                            .loadAllRevisions()
-                        async let relations = v1PersonalKnowledgeClient
-                            .loadAllRelations()
-                        let loadedCatalog = try await catalog
-                        let loadedRevisions = try await revisions
-                        let loadedRelations = try await relations
-                        let chapters = try await v1CurriculumClient.loadChapters()
-                        var learnedIDs = Set<KnowledgeConceptID>()
-                        var personalIDs = Set<KnowledgeConceptID>()
-                        for chapter in chapters {
-                            let progress = try await v1LearningRecordClient.loadProgress(chapter.id)
-                            let historicalIDs = await V1LearningExposure.historicalPageIDs(chapter: chapter, progress: progress)
-                            for page in chapter.pages {
-                                let responses = try await v1LearningRecordClient.loadResponses(page.id)
-                                let evidence = try await v1LearningRecordClient.loadEvidence(page.id)
-                                if historicalIDs.contains(page.id) || evidence.contains(where: { $0.kind == .viewed && $0.pageID == page.id }) {
-                                    learnedIDs.formUnion(await V1LearningExposure.directConceptIDs(page: page))
-                                }
-                                learnedIDs.formUnion(await V1LearnedKnowledgeResolver.conceptIDs(
-                                    page: page, responses: responses
-                                ))
-                                personalIDs.formUnion(await V1LearnedKnowledgeResolver.personalConceptIDs(page: page, responses: responses))
+                        async let catalogRequest = contentClient.loadKnowledgeCatalog()
+                        async let progressRequest = progressClient.load()
+                        let catalog = try await catalogRequest
+                        let progress = try await progressRequest
+                        let learnedPageIDs = progress.completedPageIDs
+                        let learnedConceptIDs = Set(
+                            catalog.concepts.compactMap { concept in
+                                let wasLearned = concept.revisitPages?.contains {
+                                    learnedPageIDs.contains($0.pageID.rawValue)
+                                } == true
+                                return wasLearned ? concept.id : nil
                             }
-                        }
-                        let loadedLearnedIDs = learnedIDs
-                        let loadedPersonalIDs = personalIDs
+                        )
                         let snapshot = await MainActor.run {
                             KnowledgeSystemSnapshotComposer().compose(
-                                catalog: loadedCatalog,
-                                revisions: loadedRevisions,
-                                personalRelations: loadedRelations,
-                                learnedConceptIDs: loadedLearnedIDs,
-                                personalConceptIDs: loadedPersonalIDs
+                                catalog: catalog,
+                                revisions: [],
+                                personalRelations: [],
+                                learnedConceptIDs: learnedConceptIDs
                             )
                         }
                         await send(.loadResponse(.loaded(snapshot)))
@@ -191,7 +130,7 @@ struct KnowledgeSystemFeature {
                     }
                 }
                 .cancellable(
-                    id: "KnowledgeSystemFeature.load",
+                    id: "KnowledgeSystemFeature.contentLoad",
                     cancelInFlight: true
                 )
 
@@ -253,15 +192,7 @@ struct KnowledgeSystemFeature {
                 return .send(.delegate(.homeRequested))
 
             case let .learningPageTapped(reference):
-                if state.contentVersion == .v2 {
-                    return .send(.delegate(.learningRequested(
-                        reference.pageID.rawValue
-                    )))
-                }
-                return .send(.delegate(.v1LearningRequested(
-                    reference.chapterID,
-                    reference.pageID
-                )))
+                return .send(.delegate(.learningRequested(reference.pageID.rawValue)))
 
             case .delegate:
                 return .none

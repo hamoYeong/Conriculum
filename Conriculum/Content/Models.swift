@@ -1,9 +1,8 @@
 import Foundation
 
-/// ver.2 manifest는 ver.1 V1Chapter schema와 독립적으로 진입 순서와 리소스 소유권을 정의한다.
+/// manifest는 학습 진입 순서와 각 페이지 리소스의 소유권을 정의한다.
 struct ContentManifest: Codable, Equatable, Sendable {
     let schemaVersion: Int
-    let contentVersion: ContentVersion
     let id: String
     let locale: String
     let title: String
@@ -63,10 +62,9 @@ struct PageReference: Codable, Equatable, Identifiable, Sendable {
     let resource: String
 }
 
-/// Obsidian 페이지의 의미 있는 절을 보존한 ver.2 독립 페이지 schema.
+/// Obsidian 페이지의 의미 있는 절을 보존한 학습 페이지 schema.
 struct LessonPage: Codable, Equatable, Identifiable, Sendable {
     let schemaVersion: Int
-    let contentVersion: ContentVersion
     let id: String
     let stageID: String
     let chapterID: String

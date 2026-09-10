@@ -1,0 +1,341 @@
+{
+  "schemaVersion": 1,
+  "id": "s1.c4.p3",
+  "stageID": "s1",
+  "chapterID": "s1.c4",
+  "order": 3,
+  "title": "논리 연산자가 질문을 잇는 법 보기",
+  "goal": "`&&`, `||`, `!`가 Bool 질문을 함께 만족시키거나 대신 허용하거나 뒤집는 역할임을 안다.",
+  "sourcePath": "Stage 1 - 코드의 단어와 모양에 익숙해지기/Chapter 4 - 계산과 질문의 기호 알아보기/03 논리 연산자가 질문을 잇는 법 보기.md",
+  "blocks": [
+    {
+      "id": "03-논리-연산자가-질문을-잇는-법-보기.block-1",
+      "order": 1,
+      "kind": "mission",
+      "title": "클리어 목표",
+      "markdown": "`&&`, `||`, `!`가 Bool 질문을 함께 만족시키거나 대신 허용하거나 뒤집는 역할임을 안다.",
+      "activities": []
+    },
+    {
+      "id": "03-논리-연산자가-질문을-잇는-법-보기.block-2",
+      "order": 2,
+      "kind": "wordSystem",
+      "title": "단어 체계",
+      "markdown": "",
+      "activities": [],
+      "wordSystem": {
+        "entries": [
+          {
+            "id": "03-논리-연산자가-질문을-잇는-법-보기.block-2.word-1",
+            "term": "&&",
+            "parentSystem": "논리 AND",
+            "role": "양쪽 모두 참이어야 참",
+            "firstThought": "두 조건(참인지 거짓인지 답할 질문)을 모두 요구하나?"
+          },
+          {
+            "id": "03-논리-연산자가-질문을-잇는-법-보기.block-2.word-2",
+            "term": "`\\",
+            "parentSystem": "\\",
+            "role": "`",
+            "firstThought": "논리 OR"
+          },
+          {
+            "id": "03-논리-연산자가-질문을-잇는-법-보기.block-2.word-3",
+            "term": "!",
+            "parentSystem": "논리 NOT",
+            "role": "Bool 값을 반대로 뒤집음",
+            "firstThought": "어떤 질문을 부정하나?"
+          }
+        ]
+      }
+    },
+    {
+      "id": "03-논리-연산자가-질문을-잇는-법-보기.block-3",
+      "order": 3,
+      "kind": "scene",
+      "title": "장면 카드",
+      "markdown": "로그인했고 네트워크가 있을 때만 동기화할 수 있다.\n\n```swift\nlet canSync = isLoggedIn && hasNetwork\n```",
+      "activities": []
+    },
+    {
+      "id": "03-논리-연산자가-질문을-잇는-법-보기.block-4",
+      "order": 4,
+      "kind": "game",
+      "title": "게임 1 · 첫 생각 카드",
+      "markdown": "동기화 가능한 경우는?\n\n> [!game]- 활동 방식 · 판단 카드 고르기\n> 근거가 되는 카드를 모두 고른 뒤 답을 확인한다.\n\n<!-- conriculum-activity: choice; correct: 2 -->\n\n1. 둘 중 하나만 참\n2. 둘 다 참\n3. 둘 다 거짓\n\n> [!check]- 정답과 근거\n> 둘 다 참. `&&`는 두 조건을 함께 요구한다.",
+      "activities": [
+        {
+          "id": "03-논리-연산자가-질문을-잇는-법-보기.block-4.activity-1",
+          "kind": "singleChoice",
+          "promptMarkdown": "동기화 가능한 경우는?",
+          "options": [
+            {
+              "id": "03-논리-연산자가-질문을-잇는-법-보기.block-4.activity-1.option-1",
+              "title": "둘 중 하나만 참"
+            },
+            {
+              "id": "03-논리-연산자가-질문을-잇는-법-보기.block-4.activity-1.option-2",
+              "title": "둘 다 참"
+            },
+            {
+              "id": "03-논리-연산자가-질문을-잇는-법-보기.block-4.activity-1.option-3",
+              "title": "둘 다 거짓"
+            }
+          ],
+          "pairs": [],
+          "correctOptionIDs": [
+            "03-논리-연산자가-질문을-잇는-법-보기.block-4.activity-1.option-2"
+          ],
+          "correctFeedback": "둘 다 참. `&&`는 두 조건을 함께 요구한다.",
+          "incorrectFeedback": "아직 맞지 않는 연결이나 빠진 단서가 있습니다. 코드의 모양·자리·주변 단어를 다시 비교해 보세요."
+        }
+      ]
+    },
+    {
+      "id": "03-논리-연산자가-질문을-잇는-법-보기.block-5",
+      "order": 5,
+      "kind": "game",
+      "title": "게임 2 · 구절 역할 지도",
+      "markdown": "> [!game]- 활동 방식 · 구절과 역할 연결하기\n> 왼쪽 카드와 오른쪽 카드를 직접 연결하고, 모든 연결을 마친 뒤 한 번에 확인한다.\n\n<!-- conriculum-activity: matching; source: 코드 구절; target: 붙일 역할 카드 -->\n\n| 코드 구절 | 맡은 역할 | 붙일 역할 카드 |\n| --- | --- | --- |\n| `isLoggedIn` | 첫 Bool 질문 | 로그인 여부 |\n| `&&` | 결합 | 모두 참 요구 |\n| `hasNetwork` | 둘째 Bool 질문 | 네트워크 여부 |\n| 전체 | Bool 결과 | `canSync`에 연결 |",
+      "activities": [
+        {
+          "id": "03-논리-연산자가-질문을-잇는-법-보기.block-5.activity-1",
+          "kind": "matching",
+          "promptMarkdown": "게임 2 · 구절 역할 지도",
+          "options": [],
+          "pairs": [
+            {
+              "id": "03-논리-연산자가-질문을-잇는-법-보기.block-5.activity-1.pair-1",
+              "left": "`isLoggedIn`",
+              "right": "로그인 여부"
+            },
+            {
+              "id": "03-논리-연산자가-질문을-잇는-법-보기.block-5.activity-1.pair-2",
+              "left": "`&&`",
+              "right": "모두 참 요구"
+            },
+            {
+              "id": "03-논리-연산자가-질문을-잇는-법-보기.block-5.activity-1.pair-3",
+              "left": "`hasNetwork`",
+              "right": "네트워크 여부"
+            },
+            {
+              "id": "03-논리-연산자가-질문을-잇는-법-보기.block-5.activity-1.pair-4",
+              "left": "전체",
+              "right": "`canSync`에 연결"
+            }
+          ],
+          "correctOptionIDs": [],
+          "correctFeedback": "모든 카드가 원문의 역할 관계와 일치한다.",
+          "incorrectFeedback": "아직 맞지 않는 연결이나 빠진 단서가 있습니다. 코드의 모양·자리·주변 단어를 다시 비교해 보세요."
+        }
+      ]
+    },
+    {
+      "id": "03-논리-연산자가-질문을-잇는-법-보기.block-6",
+      "order": 6,
+      "kind": "game",
+      "title": "게임 3 · 헷갈리는 카드 대조",
+      "markdown": "> [!game]- 활동 방식 · 대조 카드 연결하기\n> 왼쪽 카드와 오른쪽 카드를 직접 연결하고, 모든 연결을 마친 뒤 한 번에 확인한다.\n\n<!-- conriculum-activity: matching; source: 후보; target: 판별 단서 -->\n\n| 후보 | 결정적인 차이 | 판별 단서 |\n| --- | --- | --- |\n| && | 모두 필요 | AND |\n| `\\|\\|` | 하나 이상 | OR |\n| ! | 하나를 반전 | NOT |\n\n### 수상한 카드\n\n“`||`는 양쪽 중 정확히 하나만 참이어야 한다.”\n\n> [!game]- 활동 방식 · 주장 판정하기\n> 주장이 앞의 대조 근거와 맞는지 판단한 뒤 확인한다.\n\n<!-- conriculum-activity: choice; correct: 2 -->\n\n1. 근거가 있다\n2. 근거가 없다\n\n> [!check]- 판정\n> 아니다. Swift의 `||`는 하나 이상이면 참이라 둘 다 참이어도 참이다.",
+      "activities": [
+        {
+          "id": "03-논리-연산자가-질문을-잇는-법-보기.block-6.activity-1",
+          "kind": "matching",
+          "promptMarkdown": "게임 3 · 헷갈리는 카드 대조",
+          "options": [],
+          "pairs": [
+            {
+              "id": "03-논리-연산자가-질문을-잇는-법-보기.block-6.activity-1.pair-1",
+              "left": "&&",
+              "right": "AND"
+            },
+            {
+              "id": "03-논리-연산자가-질문을-잇는-법-보기.block-6.activity-1.pair-2",
+              "left": "`\\",
+              "right": "`"
+            },
+            {
+              "id": "03-논리-연산자가-질문을-잇는-법-보기.block-6.activity-1.pair-3",
+              "left": "!",
+              "right": "NOT"
+            }
+          ],
+          "correctOptionIDs": [],
+          "correctFeedback": "모든 카드가 원문의 역할 관계와 일치한다.",
+          "incorrectFeedback": "아직 맞지 않는 연결이나 빠진 단서가 있습니다. 코드의 모양·자리·주변 단어를 다시 비교해 보세요."
+        },
+        {
+          "id": "03-논리-연산자가-질문을-잇는-법-보기.block-6.activity-2",
+          "kind": "singleChoice",
+          "promptMarkdown": "### 수상한 카드\n\n“`||`는 양쪽 중 정확히 하나만 참이어야 한다.”",
+          "options": [
+            {
+              "id": "03-논리-연산자가-질문을-잇는-법-보기.block-6.activity-2.option-1",
+              "title": "근거가 있다"
+            },
+            {
+              "id": "03-논리-연산자가-질문을-잇는-법-보기.block-6.activity-2.option-2",
+              "title": "근거가 없다"
+            }
+          ],
+          "pairs": [],
+          "correctOptionIDs": [
+            "03-논리-연산자가-질문을-잇는-법-보기.block-6.activity-2.option-2"
+          ],
+          "correctFeedback": "아니다. Swift의 `||`는 하나 이상이면 참이라 둘 다 참이어도 참이다.",
+          "incorrectFeedback": "아직 맞지 않는 연결이나 빠진 단서가 있습니다. 코드의 모양·자리·주변 단어를 다시 비교해 보세요."
+        }
+      ]
+    },
+    {
+      "id": "03-논리-연산자가-질문을-잇는-법-보기.block-7",
+      "order": 7,
+      "kind": "game",
+      "title": "게임 4 · 다른 옷을 입은 코드",
+      "markdown": "### 1\n\n```swift\nlet canEdit = isOwner || isAdmin\n```\n\n**질문:** 누가 편집 가능한가?\n\n> [!game]- 활동 방식 · 코드 단서 고르기\n> 답이 되는 코드 단서 카드 하나를 고르면 바로 확인한다.\n\n<!-- conriculum-activity: choice; correct: 1 -->\n\n**선택 카드:**\n\n1. `canEdit`\n2. `isOwner`\n3. `||`\n4. `isAdmin`\n\n> [!check]- 확인\n> 소유자 또는 관리자, 둘 다도 가능.\n\n### 2\n\n```swift\nlet needsLogin = !isLoggedIn\n```\n\n**질문:** 무엇을 뒤집나?\n\n> [!game]- 활동 방식 · 코드 단서 고르기\n> 답이 되는 코드 단서 카드 하나를 고르면 바로 확인한다.\n\n<!-- conriculum-activity: choice; correct: 1 -->\n\n**선택 카드:**\n\n1. `needsLogin`\n2. `isLoggedIn`\n\n> [!check]- 확인\n> 로그인 여부를 뒤집는다.",
+      "activities": [
+        {
+          "id": "03-논리-연산자가-질문을-잇는-법-보기.block-7.activity-1",
+          "kind": "singleChoice",
+          "promptMarkdown": "### 1\n\n```swift\nlet canEdit = isOwner || isAdmin\n```\n\n**질문:** 누가 편집 가능한가?",
+          "options": [
+            {
+              "id": "03-논리-연산자가-질문을-잇는-법-보기.block-7.activity-1.option-1",
+              "title": "`canEdit`"
+            },
+            {
+              "id": "03-논리-연산자가-질문을-잇는-법-보기.block-7.activity-1.option-2",
+              "title": "`isOwner`"
+            },
+            {
+              "id": "03-논리-연산자가-질문을-잇는-법-보기.block-7.activity-1.option-3",
+              "title": "`||`"
+            },
+            {
+              "id": "03-논리-연산자가-질문을-잇는-법-보기.block-7.activity-1.option-4",
+              "title": "`isAdmin`"
+            }
+          ],
+          "pairs": [],
+          "correctOptionIDs": [
+            "03-논리-연산자가-질문을-잇는-법-보기.block-7.activity-1.option-1"
+          ],
+          "correctFeedback": "소유자 또는 관리자, 둘 다도 가능.",
+          "incorrectFeedback": "아직 맞지 않는 연결이나 빠진 단서가 있습니다. 코드의 모양·자리·주변 단어를 다시 비교해 보세요."
+        },
+        {
+          "id": "03-논리-연산자가-질문을-잇는-법-보기.block-7.activity-2",
+          "kind": "singleChoice",
+          "promptMarkdown": "### 2\n\n```swift\nlet needsLogin = !isLoggedIn\n```\n\n**질문:** 무엇을 뒤집나?",
+          "options": [
+            {
+              "id": "03-논리-연산자가-질문을-잇는-법-보기.block-7.activity-2.option-1",
+              "title": "`needsLogin`"
+            },
+            {
+              "id": "03-논리-연산자가-질문을-잇는-법-보기.block-7.activity-2.option-2",
+              "title": "`isLoggedIn`"
+            }
+          ],
+          "pairs": [],
+          "correctOptionIDs": [
+            "03-논리-연산자가-질문을-잇는-법-보기.block-7.activity-2.option-1"
+          ],
+          "correctFeedback": "로그인 여부를 뒤집는다.",
+          "incorrectFeedback": "아직 맞지 않는 연결이나 빠진 단서가 있습니다. 코드의 모양·자리·주변 단어를 다시 비교해 보세요."
+        }
+      ]
+    },
+    {
+      "id": "03-논리-연산자가-질문을-잇는-법-보기.block-8",
+      "order": 8,
+      "kind": "boss",
+      "title": "보스 코드",
+      "markdown": "```swift\nlet canSubmit = hasTitle && !isSaving\nlet showHelp = isEmpty || hasError\n```\n\n**클리어 과제:** 각 결과가 참이 되는 조건을 카드로 조립한다.\n\n> [!game]- 활동 방식 · 보스 단서 모두 찾기\n> 답이 되는 코드 단서 카드 하나를 고르면 바로 확인한다.\n\n<!-- conriculum-activity: choice; correct: 1 -->\n\n**선택 카드:**\n\n1. `canSubmit`\n2. `hasTitle`\n3. `&&`\n4. `isSaving`\n5. `showHelp`\n6. `isEmpty`\n7. `||`\n8. `hasError`\n\n> [!check]- 보스 해설\n> 제목이 있고 저장 중이 아닐 때 제출, 비었거나 오류가 있으면 도움 표시.",
+      "activities": [
+        {
+          "id": "03-논리-연산자가-질문을-잇는-법-보기.block-8.activity-1",
+          "kind": "singleChoice",
+          "promptMarkdown": "```swift\nlet canSubmit = hasTitle && !isSaving\nlet showHelp = isEmpty || hasError\n```\n\n**클리어 과제:** 각 결과가 참이 되는 조건을 카드로 조립한다.",
+          "options": [
+            {
+              "id": "03-논리-연산자가-질문을-잇는-법-보기.block-8.activity-1.option-1",
+              "title": "`canSubmit`"
+            },
+            {
+              "id": "03-논리-연산자가-질문을-잇는-법-보기.block-8.activity-1.option-2",
+              "title": "`hasTitle`"
+            },
+            {
+              "id": "03-논리-연산자가-질문을-잇는-법-보기.block-8.activity-1.option-3",
+              "title": "`&&`"
+            },
+            {
+              "id": "03-논리-연산자가-질문을-잇는-법-보기.block-8.activity-1.option-4",
+              "title": "`isSaving`"
+            },
+            {
+              "id": "03-논리-연산자가-질문을-잇는-법-보기.block-8.activity-1.option-5",
+              "title": "`showHelp`"
+            },
+            {
+              "id": "03-논리-연산자가-질문을-잇는-법-보기.block-8.activity-1.option-6",
+              "title": "`isEmpty`"
+            },
+            {
+              "id": "03-논리-연산자가-질문을-잇는-법-보기.block-8.activity-1.option-7",
+              "title": "`||`"
+            },
+            {
+              "id": "03-논리-연산자가-질문을-잇는-법-보기.block-8.activity-1.option-8",
+              "title": "`hasError`"
+            }
+          ],
+          "pairs": [],
+          "correctOptionIDs": [
+            "03-논리-연산자가-질문을-잇는-법-보기.block-8.activity-1.option-1"
+          ],
+          "correctFeedback": "제목이 있고 저장 중이 아닐 때 제출, 비었거나 오류가 있으면 도움 표시.",
+          "incorrectFeedback": "아직 맞지 않는 연결이나 빠진 단서가 있습니다. 코드의 모양·자리·주변 단어를 다시 비교해 보세요."
+        }
+      ]
+    },
+    {
+      "id": "03-논리-연산자가-질문을-잇는-법-보기.block-9",
+      "order": 9,
+      "kind": "unlock",
+      "title": "지식 카드 해금",
+      "markdown": "",
+      "activities": [],
+      "knowledgeUnlock": {
+        "cards": [
+          {
+            "id": "03-논리-연산자가-질문을-잇는-법-보기.block-9.card-1",
+            "title": "논리 AND",
+            "summary": "두 Bool 조건을 모두 요구"
+          },
+          {
+            "id": "03-논리-연산자가-질문을-잇는-법-보기.block-9.card-2",
+            "title": "논리 OR",
+            "summary": "하나 이상의 Bool 조건을 허용"
+          },
+          {
+            "id": "03-논리-연산자가-질문을-잇는-법-보기.block-9.card-3",
+            "title": "논리 NOT",
+            "summary": "Bool 답을 반대로 바꿈"
+          }
+        ],
+        "completionCriteria": "다른 맥락에서의 구별, 헷갈리는 개념과의 대조, 처음 보는 보스 코드에 적용하는 과정을 모두 통과하면 클리어한다. 도움 사용 여부는 `많은 안내와 함께 / 단서와 함께 / 독립적으로` 중 하나로 남긴다.",
+        "beginnerHint": "기호를 만나면 양옆이 이미 예/아니오 질문인지 먼저 확인한다.",
+        "advancedTip": "`&&`와 `||`는 앞쪽만으로 결과가 정해지면 뒤쪽을 실행하지 않는 단축 평가를 한다. 부작용(계산 결과를 만드는 것 말고 저장된 내용·화면·앱 밖을 바꾸는 일) 있는 조건을 읽을 때 중요하다."
+      }
+    }
+  ],
+  "termRefs": [],
+  "knowledgeConceptIDs": [
+    "concept.daf760a167a8",
+    "concept.4546bb78ef25",
+    "concept.50d055d31163",
+    "concept.c06aff3f3e7d"
+  ]
+}

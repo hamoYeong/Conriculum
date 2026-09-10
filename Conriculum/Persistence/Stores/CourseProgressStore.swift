@@ -3,18 +3,15 @@ import SwiftData
 
 @MainActor
 final class CourseProgressStore {
-    private let contentVersion: ContentVersion
     private let modelContext: ModelContext
     private let now: () -> Date
     private let saveContext: (ModelContext) throws -> Void
 
     init(
         modelContainer: ModelContainer,
-        contentVersion: ContentVersion = .v2,
         now: @escaping () -> Date = Date.init,
         saveContext: @escaping (ModelContext) throws -> Void = { try $0.save() }
     ) {
-        self.contentVersion = contentVersion
         modelContext = ModelContext(modelContainer)
         self.now = now
         self.saveContext = saveContext
@@ -38,22 +35,22 @@ final class CourseProgressStore {
         guard metadata.count == 1 else {
             throw PersistenceMappingSupport.invalid(
                 record: CourseProgressRecord.recordName,
-                fieldPath: "contentVersion",
-                message: "must contain one record per content version"
+                fieldPath: "id",
+                message: "must contain one course progress record"
             )
         }
-        try record.validate(contentVersion: contentVersion)
+        try record.validate()
 
         var completedPageIDs: Set<String> = []
         var supportLevelsByPageID: [String: LearningSupportLevel] = [:]
         var loadedPageIDs: Set<String> = []
         for pageRecord in pages {
-            let value = try pageRecord.values(contentVersion: contentVersion)
+            let value = try pageRecord.values()
             guard loadedPageIDs.insert(value.pageID).inserted else {
                 throw PersistenceMappingSupport.invalid(
                     record: PageProgressRecord.recordName,
                     fieldPath: "pageID",
-                    message: "must be unique within a content version"
+                    message: "must be unique"
                 )
             }
             if value.isCompleted { completedPageIDs.insert(value.pageID) }
@@ -64,12 +61,12 @@ final class CourseProgressStore {
 
         var activityResponses: [String: GameResponse] = [:]
         for responseRecord in responses {
-            let response = try responseRecord.domainValue(contentVersion: contentVersion)
+            let response = try responseRecord.domainValue()
             guard activityResponses.updateValue(response, forKey: response.activityID) == nil else {
                 throw PersistenceMappingSupport.invalid(
                     record: GameResponseRecord.recordName,
                     fieldPath: "activityID",
-                    message: "must be unique within a content version"
+                    message: "must be unique"
                 )
             }
         }
@@ -111,12 +108,12 @@ final class CourseProgressStore {
         guard records.count <= 1 else {
             throw PersistenceMappingSupport.invalid(
                 record: CourseProgressRecord.recordName,
-                fieldPath: "contentVersion",
-                message: "must contain one record per content version"
+                fieldPath: "id",
+                message: "must contain one course progress record"
             )
         }
         if let record = records.first {
-            try record.validate(contentVersion: contentVersion)
+            try record.validate()
             try record.update(
                 lastVisitedPageID: progress.lastVisitedPageID,
                 updatedAt: timestamp
@@ -124,7 +121,6 @@ final class CourseProgressStore {
         } else {
             modelContext.insert(
                 try CourseProgressRecord(
-                    contentVersion: contentVersion,
                     lastVisitedPageID: progress.lastVisitedPageID,
                     updatedAt: timestamp
                 )
@@ -143,7 +139,7 @@ final class CourseProgressStore {
                 throw PersistenceMappingSupport.invalid(
                     record: PageProgressRecord.recordName,
                     fieldPath: "pageID",
-                    message: "must be unique within a content version"
+                    message: "must be unique"
                 )
             }
         }
@@ -154,7 +150,7 @@ final class CourseProgressStore {
             let isCompleted = progress.completedPageIDs.contains(pageID)
             let supportLevel = progress.supportLevelsByPageID[pageID]
             if let record = existing[pageID] {
-                _ = try record.values(contentVersion: contentVersion)
+                _ = try record.values()
                 record.update(
                     isCompleted: isCompleted,
                     supportLevel: supportLevel,
@@ -163,7 +159,6 @@ final class CourseProgressStore {
             } else {
                 modelContext.insert(
                     try PageProgressRecord(
-                        contentVersion: contentVersion,
                         pageID: pageID,
                         isCompleted: isCompleted,
                         supportLevel: supportLevel,
@@ -186,7 +181,7 @@ final class CourseProgressStore {
                 throw PersistenceMappingSupport.invalid(
                     record: GameResponseRecord.recordName,
                     fieldPath: "activityID",
-                    message: "must be unique within a content version"
+                    message: "must be unique"
                 )
             }
         }
@@ -200,12 +195,11 @@ final class CourseProgressStore {
                 )
             }
             if let record = existing[activityID] {
-                _ = try record.domainValue(contentVersion: contentVersion)
+                _ = try record.domainValue()
                 try record.update(from: response)
             } else {
                 modelContext.insert(
                     try GameResponseRecord(
-                        contentVersion: contentVersion,
                         domainValue: response
                     )
                 )
@@ -235,20 +229,15 @@ final class CourseProgressStore {
     }
 
     private func progressRecords(operation: String) throws -> [CourseProgressRecord] {
-        let version = contentVersion.rawValue
         return try records(
-            matching: FetchDescriptor<CourseProgressRecord>(
-                predicate: #Predicate { $0.contentVersion == version }
-            ),
+            matching: FetchDescriptor<CourseProgressRecord>(),
             operation: operation
         )
     }
 
     private func pageRecords(operation: String) throws -> [PageProgressRecord] {
-        let version = contentVersion.rawValue
         return try records(
             matching: FetchDescriptor<PageProgressRecord>(
-                predicate: #Predicate { $0.contentVersion == version },
                 sortBy: [SortDescriptor(\PageProgressRecord.pageID)]
             ),
             operation: operation
@@ -256,10 +245,8 @@ final class CourseProgressStore {
     }
 
     private func responseRecords(operation: String) throws -> [GameResponseRecord] {
-        let version = contentVersion.rawValue
         return try records(
             matching: FetchDescriptor<GameResponseRecord>(
-                predicate: #Predicate { $0.contentVersion == version },
                 sortBy: [SortDescriptor(\GameResponseRecord.activityID)]
             ),
             operation: operation

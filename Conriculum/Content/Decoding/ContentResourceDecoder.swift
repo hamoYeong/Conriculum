@@ -14,7 +14,7 @@ struct ContentResourceDecoder: Sendable {
         try decodeResource(type, from: resource, in: bundle)
     }
 
-    /// 다른 콘텐츠 버전의 리소스 주소를 주입해 같은 변환·오류 계약을 재사용한다.
+    /// 리소스 주소를 주입해 같은 변환·오류 계약을 재사용한다.
     func decodeResource<Value: Decodable, Resource: BundledJSONResource>(
         _ type: Value.Type,
         from resource: Resource,
@@ -34,12 +34,6 @@ struct ContentResourceDecoder: Sendable {
     ) throws -> Value {
         do {
             return try JSONDecoder().decode(type, from: data)
-        } catch let error as V1UnsupportedLearningSectionTagError {
-            throw ContentResourceDecodingError(
-                resource: resourceName,
-                fieldPath: formattedPath(error.codingPath),
-                message: "unsupported section tag '\(error.tag)'"
-            )
         } catch let DecodingError.keyNotFound(key, context) {
             throw ContentResourceDecodingError(
                 resource: resourceName,
@@ -85,10 +79,6 @@ struct ContentResourceDecoder: Sendable {
         return result.isEmpty ? "<root>" : result
     }
 
-    /// custom schema 오류가 가진 문자열 path에도 같은 출력 규칙을 적용한다.
-    private func formattedPath(_ components: [String]) -> String {
-        components.isEmpty ? "<root>" : components.joined(separator: ".")
-    }
 }
 
 /// decode 실패가 발생한 리소스·field·원인을 한 줄로 보고하는 오류.
@@ -103,4 +93,3 @@ struct ContentResourceDecodingError: Error, Equatable, Sendable, CustomStringCon
 }
 
 // MARK: - 다음 읽기: ConriculumTests/Content/ContentResourceDecoderTests.swift
-// MARK: - 그다음: Content/V1/Validation/V1ContentValidator.swift

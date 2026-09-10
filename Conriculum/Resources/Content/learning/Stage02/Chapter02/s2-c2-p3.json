@@ -1,0 +1,43 @@
+{
+  "schemaVersion": 1,
+  "id": "s2.c2.p3",
+  "stageID": "s2",
+  "chapterID": "s2.c2",
+  "order": 3,
+  "title": "컬렉션에서 여러 값의 역할 읽기",
+  "goal": "검색 결과 파이프라인에서 컬렉션 전체와 원소 하나, 전과 후를 구분한다. 완료 증거: `입력 컬렉션 → 변환 → 출력 컬렉션` 한 줄.",
+  "sourcePath": "Stage 2 - AI 구현을 의미 단위로 읽는 기초/Chapter 2 - 값과 상태의 흐름 읽기/03 컬렉션에서 여러 값의 역할 읽기.md",
+  "blocks": [
+    {
+      "id": "03-컬렉션에서-여러-값의-역할-읽기.block-1",
+      "order": 1,
+      "kind": "mission",
+      "title": "읽기 미션",
+      "markdown": "검색 결과 파이프라인에서 컬렉션 전체와 원소 하나, 전과 후를 구분한다. **완료 증거:** `입력 컬렉션 → 변환 → 출력 컬렉션` 한 줄.\n\n```swift\nlet results = allMemos\n    .filter { $0.title.localizedCaseInsensitiveContains(query) }\n    .sorted { $0.updatedAt > $1.updatedAt }\n```",
+      "activities": []
+    },
+    {
+      "id": "03-컬렉션에서-여러-값의-역할-읽기.block-2",
+      "order": 2,
+      "kind": "flow",
+      "title": "흐름 잇기",
+      "markdown": "`allMemos: [Memo] → Memo 하나씩 제목 확인 → 일부 Memo만 남김 → 날짜 비교로 순서 변경 → results: [Memo]`.\n\n> [!question] 막히면 · 초보자 연결\n> `$0`, `$1`이 배열 전체로 보인다면 [[지식 체계/02 값과 상태/컬렉션과 원소 흐름|컬렉션과 원소 흐름]]에서 전체와 원소를 분리한다.",
+      "activities": []
+    },
+    {
+      "id": "03-컬렉션에서-여러-값의-역할-읽기.block-3",
+      "order": 3,
+      "kind": "changeExperiment",
+      "title": "변경 실험",
+      "markdown": "`filter`와 `sorted`의 순서를 바꾸면 결과의 내용과 순서가 같은지, 처리해야 할 원소 수는 어떻게 달라질지 예상한다.\n\n> [!tip]- 이미 안다면 · 중간 타입과 비용\n> 긴 체인은 단계마다 `무엇이 몇 개가 되는가`를 표시한다. 큰 데이터에서는 필터를 먼저 하는 이유를 성능 가설로 남기되 실제 측정 전 사실로 확정하지 않는다.",
+      "activities": []
+    }
+  ],
+  "termRefs": [],
+  "knowledgeConceptIDs": [
+    "concept.50d055d31163",
+    "concept.d4ca67109cc0",
+    "concept.4c72a13ad43c",
+    "concept.4d57bcac9843"
+  ]
+}

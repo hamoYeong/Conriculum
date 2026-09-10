@@ -7,9 +7,9 @@ struct HomeStagePagerTests {
     @Test
     func chapterCardsDistinguishCompletedCurrentAndUpcoming() throws {
         let manifest = try BundledContentStore().loadManifest()
-        let firstChapter = try #require(manifest.stage(id: "v2.s1")?.chapters.first)
-        let currentChapter = try #require(manifest.stage(id: "v2.s1")?.chapters.dropFirst().first)
-        let upcomingChapter = try #require(manifest.stage(id: "v2.s2")?.chapters.first)
+        let firstChapter = try #require(manifest.stage(id: "s1")?.chapters.first)
+        let currentChapter = try #require(manifest.stage(id: "s1")?.chapters.dropFirst().first)
+        let upcomingChapter = try #require(manifest.stage(id: "s2")?.chapters.first)
         let currentPage = try #require(currentChapter.pages.first)
         let progress = CourseProgress(
             lastVisitedPageID: currentPage.id,
@@ -28,7 +28,7 @@ struct HomeStagePagerTests {
     @Test
     func freshProgressMarksFirstChapterCurrent() throws {
         let manifest = try BundledContentStore().loadManifest()
-        let firstChapter = try #require(manifest.stage(id: "v2.s1")?.chapters.first)
+        let firstChapter = try #require(manifest.stage(id: "s1")?.chapters.first)
         let resolver = ChapterStatusResolver(
             manifest: manifest,
             progress: .empty
@@ -40,7 +40,7 @@ struct HomeStagePagerTests {
     @Test
     func completingCurrentChapterAdvancesHighlightToNextChapter() throws {
         let manifest = try BundledContentStore().loadManifest()
-        let chapters = try #require(manifest.stage(id: "v2.s1")?.chapters)
+        let chapters = try #require(manifest.stage(id: "s1")?.chapters)
         let completedChapter = try #require(chapters.first)
         let nextChapter = try #require(chapters.dropFirst().first)
         let progress = CourseProgress(

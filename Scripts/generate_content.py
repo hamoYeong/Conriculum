@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Convert the Obsidian Stage 1/2 curriculum into the app's independent v2 JSON."""
+"""Convert the Obsidian Stage 1/2 curriculum into the app's JSON resources."""
 
 from __future__ import annotations
 
@@ -110,7 +110,7 @@ def build_knowledge_unlock(block_id: str, markdown: str) -> dict:
 
 def concept_id(title: str) -> str:
     digest = hashlib.sha1(title.encode("utf-8")).hexdigest()[:12]
-    return f"v2.concept.{digest}"
+    return f"concept.{digest}"
 
 
 def load_knowledge_titles(root: Path | None) -> list[str]:
@@ -353,7 +353,7 @@ def parse_page(
     for index, match in enumerate(matches, start=1):
         end = matches[index].start() if index < len(matches) else len(text)
         body = text[match.end() : end].strip()
-        body = re.sub(r"\n*\[\[학습 체계 ver\.2/.+?\]\].*$", "", body, flags=re.DOTALL).strip()
+        body = re.sub(r"\n*\[\[[^\]\n]+\]\]\s*$", "", body).strip()
         block_id = f"{page_path.stem.lower().replace(' ', '-')}.block-{index}"
         kind = block_kind(stage, match.group(1).strip())
         word_system = build_word_system(block_id, body) if kind == "wordSystem" else None
@@ -376,7 +376,7 @@ def parse_page(
             block["knowledgeUnlock"] = knowledge_unlock
         blocks.append(block)
     page_number = int(page_path.stem.split()[0])
-    page_id = f"v2.s{stage}.{chapter_id}.p{page_number}"
+    page_id = f"s{stage}.{chapter_id}.p{page_number}"
     goal_heading = "클리어 목표" if stage == 1 else "읽기 미션"
     goal = clean_inline(first_section(text, goal_heading))
     if len(goal) > 180:
@@ -402,10 +402,9 @@ def parse_page(
         }]
     return {
         "schemaVersion": 1,
-        "contentVersion": "v2",
         "id": page_id,
-        "stageID": f"v2.s{stage}",
-        "chapterID": f"v2.s{stage}.{chapter_id}",
+        "stageID": f"s{stage}",
+        "chapterID": f"s{stage}.{chapter_id}",
         "order": page_number,
         "title": title,
         "goal": goal,
@@ -476,7 +475,7 @@ def build_knowledge_catalog(stages: list[dict], pages: list[dict]) -> dict:
             })
             for left, right in zip(concept_ids, concept_ids[1:]):
                 relations.append({
-                    "id": f"v2.relation.{left.rsplit('.', 1)[-1]}.{right.rsplit('.', 1)[-1]}",
+                    "id": f"relation.{left.rsplit('.', 1)[-1]}.{right.rsplit('.', 1)[-1]}",
                     "sourceConceptID": left,
                     "targetConceptID": right,
                     "kind": "leadsTo",
@@ -485,8 +484,8 @@ def build_knowledge_catalog(stages: list[dict], pages: list[dict]) -> dict:
 
     return {
         "schemaVersion": 1,
-        "id": "learning-system-v2-knowledge.ko-KR",
-        "title": "ver.2 코드 읽기 지식",
+        "id": "learning-system-knowledge.ko-KR",
+        "title": "코드 읽기 지식",
         "collections": collections,
         "concepts": list(concepts.values()),
         "relations": relations,
@@ -516,7 +515,7 @@ def main() -> None:
         chapters = []
         for chapter_index, chapter_dir in enumerate(chapter_dirs, start=1):
             chapter_key = f"c{chapter_index}"
-            chapter_id = f"v2.s{stage_number}.{chapter_key}"
+            chapter_id = f"s{stage_number}.{chapter_key}"
             map_path = next(chapter_dir.glob("00*.md"))
             map_text = strip_frontmatter(map_path.read_text(encoding="utf-8"))
             summary = clean_inline(first_section(map_text, "목표"))
@@ -551,7 +550,7 @@ def main() -> None:
             chapters.append(
                 {
                     "id": chapter_id,
-                    "stageID": f"v2.s{stage_number}",
+                    "stageID": f"s{stage_number}",
                     "order": chapter_index,
                     "title": chapter_title(chapter_dir),
                     "summary": summary,
@@ -560,7 +559,7 @@ def main() -> None:
             )
         stages.append(
             {
-                "id": f"v2.s{stage_number}",
+                "id": f"s{stage_number}",
                 "order": stage_number,
                 "title": stage_title,
                 "summary": stage_summary,
@@ -571,8 +570,7 @@ def main() -> None:
 
     manifest = {
         "schemaVersion": 1,
-        "contentVersion": "v2",
-        "id": "learning-system-v2.ko-KR",
+        "id": "learning-system.ko-KR",
         "locale": "ko-KR",
         "title": "AI 코드 읽기",
         "stages": stages,

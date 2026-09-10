@@ -1,0 +1,391 @@
+{
+  "schemaVersion": 1,
+  "id": "s1.c8.p4",
+  "stageID": "s1",
+  "chapterID": "s1.c8",
+  "order": 4,
+  "title": "View·body·modifier의 첫 역할 알아보기",
+  "goal": "SwiftUI 타입에서 `View` 계약, `body` 화면 설명, modifier 사슬의 단계적 변형을 첫 역할 수준으로 읽는다.",
+  "sourcePath": "Stage 1 - 코드의 단어와 모양에 익숙해지기/Chapter 8 - Swift 앱의 자주 보이는 표식 알아보기/04 View body modifier의 첫 역할 알아보기.md",
+  "blocks": [
+    {
+      "id": "04-view-body-modifier의-첫-역할-알아보기.block-1",
+      "order": 1,
+      "kind": "mission",
+      "title": "클리어 목표",
+      "markdown": "SwiftUI 타입에서 `View` 계약, `body` 화면 설명, modifier 사슬의 단계적 변형을 첫 역할 수준으로 읽는다.",
+      "activities": []
+    },
+    {
+      "id": "04-view-body-modifier의-첫-역할-알아보기.block-2",
+      "order": 2,
+      "kind": "wordSystem",
+      "title": "단어 체계",
+      "markdown": "",
+      "activities": [],
+      "wordSystem": {
+        "entries": [
+          {
+            "id": "04-view-body-modifier의-첫-역할-알아보기.block-2.word-1",
+            "term": "View",
+            "parentSystem": "SwiftUI 계약",
+            "role": "타입이 화면 내용을 제공함",
+            "firstThought": "이 타입은 화면 조각인가?"
+          },
+          {
+            "id": "04-view-body-modifier의-첫-역할-알아보기.block-2.word-2",
+            "term": "body",
+            "parentSystem": "프로퍼티",
+            "role": "현재 상태에 따른 화면 설명을 제공",
+            "firstThought": "안에 어떤 화면 트리가 있나?"
+          },
+          {
+            "id": "04-view-body-modifier의-첫-역할-알아보기.block-2.word-3",
+            "term": "modifier",
+            "parentSystem": "호출 사슬",
+            "role": "앞 View에서 새 View를 만들어 설정 추가",
+            "firstThought": "어떤 설정이 차례로 붙나?"
+          }
+        ]
+      }
+    },
+    {
+      "id": "04-view-body-modifier의-첫-역할-알아보기.block-3",
+      "order": 3,
+      "kind": "scene",
+      "title": "장면 카드",
+      "markdown": "제목 화면에 글꼴과 색 스타일을 붙인다.\n\n```swift\nstruct TitleView: View {\n    var body: some View {\n        Text(\"오늘\").font(.title).foregroundStyle(.blue)\n    }\n}\n```",
+      "activities": []
+    },
+    {
+      "id": "04-view-body-modifier의-첫-역할-알아보기.block-4",
+      "order": 4,
+      "kind": "game",
+      "title": "게임 1 · 첫 생각 카드",
+      "markdown": "실제 화면 윤곽을 찾을 첫 범위는?\n\n> [!game]- 활동 방식 · 판단 카드 고르기\n> 근거가 되는 카드를 모두 고른 뒤 답을 확인한다.\n\n<!-- conriculum-activity: choice; correct: 2 -->\n\n1. import 줄\n2. body의 중괄호 안\n3. struct 이름만\n\n> [!check]- 정답과 근거\n> `body`의 중괄호 안. `Text`와 이어진 modifier가 화면 설명이다.",
+      "activities": [
+        {
+          "id": "04-view-body-modifier의-첫-역할-알아보기.block-4.activity-1",
+          "kind": "singleChoice",
+          "promptMarkdown": "실제 화면 윤곽을 찾을 첫 범위는?",
+          "options": [
+            {
+              "id": "04-view-body-modifier의-첫-역할-알아보기.block-4.activity-1.option-1",
+              "title": "import 줄"
+            },
+            {
+              "id": "04-view-body-modifier의-첫-역할-알아보기.block-4.activity-1.option-2",
+              "title": "body의 중괄호 안"
+            },
+            {
+              "id": "04-view-body-modifier의-첫-역할-알아보기.block-4.activity-1.option-3",
+              "title": "struct 이름만"
+            }
+          ],
+          "pairs": [],
+          "correctOptionIDs": [
+            "04-view-body-modifier의-첫-역할-알아보기.block-4.activity-1.option-2"
+          ],
+          "correctFeedback": "`body`의 중괄호 안. `Text`와 이어진 modifier가 화면 설명이다.",
+          "incorrectFeedback": "아직 맞지 않는 연결이나 빠진 단서가 있습니다. 코드의 모양·자리·주변 단어를 다시 비교해 보세요."
+        }
+      ]
+    },
+    {
+      "id": "04-view-body-modifier의-첫-역할-알아보기.block-5",
+      "order": 5,
+      "kind": "game",
+      "title": "게임 2 · 구절 역할 지도",
+      "markdown": "> [!game]- 활동 방식 · 구절과 역할 연결하기\n> 왼쪽 카드와 오른쪽 카드를 직접 연결하고, 모든 연결을 마친 뒤 한 번에 확인한다.\n\n<!-- conriculum-activity: matching; source: 코드 구절; target: 붙일 역할 카드 -->\n\n| 코드 구절 | 맡은 역할 | 붙일 역할 카드 |\n| --- | --- | --- |\n| `: View` | 계약 채택 | 화면 타입임을 알림 |\n| `body` | 화면 설명 자리 | View 결과 제공 |\n| `Text(\"오늘\")` | 기본 View | 글자 화면 |\n| `.font`, `.foregroundStyle` | modifier 사슬 | 글꼴·색 설정 |",
+      "activities": [
+        {
+          "id": "04-view-body-modifier의-첫-역할-알아보기.block-5.activity-1",
+          "kind": "matching",
+          "promptMarkdown": "게임 2 · 구절 역할 지도",
+          "options": [],
+          "pairs": [
+            {
+              "id": "04-view-body-modifier의-첫-역할-알아보기.block-5.activity-1.pair-1",
+              "left": "`: View`",
+              "right": "화면 타입임을 알림"
+            },
+            {
+              "id": "04-view-body-modifier의-첫-역할-알아보기.block-5.activity-1.pair-2",
+              "left": "`body`",
+              "right": "View 결과 제공"
+            },
+            {
+              "id": "04-view-body-modifier의-첫-역할-알아보기.block-5.activity-1.pair-3",
+              "left": "`Text(\"오늘\")`",
+              "right": "글자 화면"
+            },
+            {
+              "id": "04-view-body-modifier의-첫-역할-알아보기.block-5.activity-1.pair-4",
+              "left": "`.font`, `.foregroundStyle`",
+              "right": "글꼴·색 설정"
+            }
+          ],
+          "correctOptionIDs": [],
+          "correctFeedback": "모든 카드가 원문의 역할 관계와 일치한다.",
+          "incorrectFeedback": "아직 맞지 않는 연결이나 빠진 단서가 있습니다. 코드의 모양·자리·주변 단어를 다시 비교해 보세요."
+        }
+      ]
+    },
+    {
+      "id": "04-view-body-modifier의-첫-역할-알아보기.block-6",
+      "order": 6,
+      "kind": "game",
+      "title": "게임 3 · 헷갈리는 카드 대조",
+      "markdown": "> [!game]- 활동 방식 · 대조 카드 연결하기\n> 왼쪽 카드와 오른쪽 카드를 직접 연결하고, 모든 연결을 마친 뒤 한 번에 확인한다.\n\n<!-- conriculum-activity: matching; source: 후보; target: 판별 단서 -->\n\n| 후보 | 결정적인 차이 | 판별 단서 |\n| --- | --- | --- |\n| View 타입 | 화면 설계도 | `TitleView` |\n| body | 현재 화면 값 설명 | 프로퍼티 |\n| modifier | 앞 View 변형 | 점으로 이어진 호출 |\n\n### 수상한 카드\n\n“modifier는 원래 Text 객체를 제자리에서 차례로 바꾼다.”\n\n> [!game]- 활동 방식 · 주장 판정하기\n> 주장이 앞의 대조 근거와 맞는지 판단한 뒤 확인한다.\n\n<!-- conriculum-activity: choice; correct: 1 -->\n\n1. 근거가 있다\n2. 근거가 없다\n\n> [!check]- 판정\n> 그렇게 단정하지 않는다. 읽을 때는 앞 View를 바탕으로 설정이 적용된 새 View가 이어진다고 본다.",
+      "activities": [
+        {
+          "id": "04-view-body-modifier의-첫-역할-알아보기.block-6.activity-1",
+          "kind": "matching",
+          "promptMarkdown": "게임 3 · 헷갈리는 카드 대조",
+          "options": [],
+          "pairs": [
+            {
+              "id": "04-view-body-modifier의-첫-역할-알아보기.block-6.activity-1.pair-1",
+              "left": "View 타입",
+              "right": "`TitleView`"
+            },
+            {
+              "id": "04-view-body-modifier의-첫-역할-알아보기.block-6.activity-1.pair-2",
+              "left": "body",
+              "right": "프로퍼티"
+            },
+            {
+              "id": "04-view-body-modifier의-첫-역할-알아보기.block-6.activity-1.pair-3",
+              "left": "modifier",
+              "right": "점으로 이어진 호출"
+            }
+          ],
+          "correctOptionIDs": [],
+          "correctFeedback": "모든 카드가 원문의 역할 관계와 일치한다.",
+          "incorrectFeedback": "아직 맞지 않는 연결이나 빠진 단서가 있습니다. 코드의 모양·자리·주변 단어를 다시 비교해 보세요."
+        },
+        {
+          "id": "04-view-body-modifier의-첫-역할-알아보기.block-6.activity-2",
+          "kind": "singleChoice",
+          "promptMarkdown": "### 수상한 카드\n\n“modifier는 원래 Text 객체를 제자리에서 차례로 바꾼다.”",
+          "options": [
+            {
+              "id": "04-view-body-modifier의-첫-역할-알아보기.block-6.activity-2.option-1",
+              "title": "근거가 있다"
+            },
+            {
+              "id": "04-view-body-modifier의-첫-역할-알아보기.block-6.activity-2.option-2",
+              "title": "근거가 없다"
+            }
+          ],
+          "pairs": [],
+          "correctOptionIDs": [
+            "04-view-body-modifier의-첫-역할-알아보기.block-6.activity-2.option-1"
+          ],
+          "correctFeedback": "그렇게 단정하지 않는다. 읽을 때는 앞 View를 바탕으로 설정이 적용된 새 View가 이어진다고 본다.",
+          "incorrectFeedback": "아직 맞지 않는 연결이나 빠진 단서가 있습니다. 코드의 모양·자리·주변 단어를 다시 비교해 보세요."
+        }
+      ]
+    },
+    {
+      "id": "04-view-body-modifier의-첫-역할-알아보기.block-7",
+      "order": 7,
+      "kind": "game",
+      "title": "게임 4 · 다른 옷을 입은 코드",
+      "markdown": "### 1\n\n```swift\nText(\"저장\").padding()\n```\n\n**질문:** 기본 View와 modifier는?\n\n> [!game]- 활동 방식 · 코드 단서 고르기\n> 질문에 답이 되는 코드 단서를 모두 고른 뒤 한 번에 확인한다.\n\n<!-- conriculum-activity: multiple-choice; correct: 1,2 -->\n\n**선택 카드 (복수 선택 가능):**\n\n1. `Text`\n2. `padding`\n3. `(`\n4. `\"저장\"`\n5. `)`\n6. `.`\n7. `()`\n\n> [!check]- 확인\n> Text, padding.\n\n### 2\n\n```swift\nVStack { Text(\"위\"); Text(\"아래\") }\n```\n\n**질문:** 화면 트리의 부모·자식은?\n\n> [!game]- 활동 방식 · 코드 단서 고르기\n> 질문에 답이 되는 코드 단서를 모두 고른 뒤 한 번에 확인한다.\n\n<!-- conriculum-activity: multiple-choice; correct: 1,2 -->\n\n**선택 카드 (복수 선택 가능):**\n\n1. `VStack`\n2. `Text`\n3. `{`\n4. `(`\n5. `\"위\"`\n6. `)`\n7. `\"아래\"`\n8. `}`\n\n> [!check]- 확인\n> VStack이 부모, Text 둘이 자식.",
+      "activities": [
+        {
+          "id": "04-view-body-modifier의-첫-역할-알아보기.block-7.activity-1",
+          "kind": "multipleChoice",
+          "promptMarkdown": "### 1\n\n```swift\nText(\"저장\").padding()\n```\n\n**질문:** 기본 View와 modifier는?",
+          "options": [
+            {
+              "id": "04-view-body-modifier의-첫-역할-알아보기.block-7.activity-1.option-1",
+              "title": "`Text`"
+            },
+            {
+              "id": "04-view-body-modifier의-첫-역할-알아보기.block-7.activity-1.option-2",
+              "title": "`padding`"
+            },
+            {
+              "id": "04-view-body-modifier의-첫-역할-알아보기.block-7.activity-1.option-3",
+              "title": "`(`"
+            },
+            {
+              "id": "04-view-body-modifier의-첫-역할-알아보기.block-7.activity-1.option-4",
+              "title": "`\"저장\"`"
+            },
+            {
+              "id": "04-view-body-modifier의-첫-역할-알아보기.block-7.activity-1.option-5",
+              "title": "`)`"
+            },
+            {
+              "id": "04-view-body-modifier의-첫-역할-알아보기.block-7.activity-1.option-6",
+              "title": "`.`"
+            },
+            {
+              "id": "04-view-body-modifier의-첫-역할-알아보기.block-7.activity-1.option-7",
+              "title": "`()`"
+            }
+          ],
+          "pairs": [],
+          "correctOptionIDs": [
+            "04-view-body-modifier의-첫-역할-알아보기.block-7.activity-1.option-1",
+            "04-view-body-modifier의-첫-역할-알아보기.block-7.activity-1.option-2"
+          ],
+          "correctFeedback": "Text, padding.",
+          "incorrectFeedback": "아직 맞지 않는 연결이나 빠진 단서가 있습니다. 코드의 모양·자리·주변 단어를 다시 비교해 보세요."
+        },
+        {
+          "id": "04-view-body-modifier의-첫-역할-알아보기.block-7.activity-2",
+          "kind": "multipleChoice",
+          "promptMarkdown": "### 2\n\n```swift\nVStack { Text(\"위\"); Text(\"아래\") }\n```\n\n**질문:** 화면 트리의 부모·자식은?",
+          "options": [
+            {
+              "id": "04-view-body-modifier의-첫-역할-알아보기.block-7.activity-2.option-1",
+              "title": "`VStack`"
+            },
+            {
+              "id": "04-view-body-modifier의-첫-역할-알아보기.block-7.activity-2.option-2",
+              "title": "`Text`"
+            },
+            {
+              "id": "04-view-body-modifier의-첫-역할-알아보기.block-7.activity-2.option-3",
+              "title": "`{`"
+            },
+            {
+              "id": "04-view-body-modifier의-첫-역할-알아보기.block-7.activity-2.option-4",
+              "title": "`(`"
+            },
+            {
+              "id": "04-view-body-modifier의-첫-역할-알아보기.block-7.activity-2.option-5",
+              "title": "`\"위\"`"
+            },
+            {
+              "id": "04-view-body-modifier의-첫-역할-알아보기.block-7.activity-2.option-6",
+              "title": "`)`"
+            },
+            {
+              "id": "04-view-body-modifier의-첫-역할-알아보기.block-7.activity-2.option-7",
+              "title": "`\"아래\"`"
+            },
+            {
+              "id": "04-view-body-modifier의-첫-역할-알아보기.block-7.activity-2.option-8",
+              "title": "`}`"
+            }
+          ],
+          "pairs": [],
+          "correctOptionIDs": [
+            "04-view-body-modifier의-첫-역할-알아보기.block-7.activity-2.option-1",
+            "04-view-body-modifier의-첫-역할-알아보기.block-7.activity-2.option-2"
+          ],
+          "correctFeedback": "VStack이 부모, Text 둘이 자식.",
+          "incorrectFeedback": "아직 맞지 않는 연결이나 빠진 단서가 있습니다. 코드의 모양·자리·주변 단어를 다시 비교해 보세요."
+        }
+      ]
+    },
+    {
+      "id": "04-view-body-modifier의-첫-역할-알아보기.block-8",
+      "order": 8,
+      "kind": "boss",
+      "title": "보스 코드",
+      "markdown": "```swift\nstruct EmptyView: View {\n    var body: some View {\n        VStack {\n            Image(systemName: \"tray\")\n            Text(\"항목 없음\").font(.headline)\n        }\n        .padding()\n    }\n}\n```\n\n**클리어 과제:** 타입 계약·body·부모와 자식·각 modifier 대상을 표시한다.\n\n> [!game]- 활동 방식 · 보스 단서 모두 찾기\n> 질문에 답이 되는 코드 단서를 모두 고른 뒤 한 번에 확인한다.\n\n<!-- conriculum-activity: multiple-choice; correct: 1,2,3,4,5,6,7,8 -->\n\n**선택 카드 (복수 선택 가능):**\n\n1. `EmptyView`\n2. `View`\n3. `body`\n4. `VStack`\n5. `Image`\n6. `Text`\n7. `font`\n8. `padding`\n\n> [!check]- 보스 해설\n> EmptyView가 View를 따르고 body가 VStack을 돌려준다. VStack 안에 Image·Text, font는 Text에, padding은 VStack 결과에 적용된다.",
+      "activities": [
+        {
+          "id": "04-view-body-modifier의-첫-역할-알아보기.block-8.activity-1",
+          "kind": "multipleChoice",
+          "promptMarkdown": "```swift\nstruct EmptyView: View {\n    var body: some View {\n        VStack {\n            Image(systemName: \"tray\")\n            Text(\"항목 없음\").font(.headline)\n        }\n        .padding()\n    }\n}\n```\n\n**클리어 과제:** 타입 계약·body·부모와 자식·각 modifier 대상을 표시한다.",
+          "options": [
+            {
+              "id": "04-view-body-modifier의-첫-역할-알아보기.block-8.activity-1.option-1",
+              "title": "`EmptyView`"
+            },
+            {
+              "id": "04-view-body-modifier의-첫-역할-알아보기.block-8.activity-1.option-2",
+              "title": "`View`"
+            },
+            {
+              "id": "04-view-body-modifier의-첫-역할-알아보기.block-8.activity-1.option-3",
+              "title": "`body`"
+            },
+            {
+              "id": "04-view-body-modifier의-첫-역할-알아보기.block-8.activity-1.option-4",
+              "title": "`VStack`"
+            },
+            {
+              "id": "04-view-body-modifier의-첫-역할-알아보기.block-8.activity-1.option-5",
+              "title": "`Image`"
+            },
+            {
+              "id": "04-view-body-modifier의-첫-역할-알아보기.block-8.activity-1.option-6",
+              "title": "`Text`"
+            },
+            {
+              "id": "04-view-body-modifier의-첫-역할-알아보기.block-8.activity-1.option-7",
+              "title": "`font`"
+            },
+            {
+              "id": "04-view-body-modifier의-첫-역할-알아보기.block-8.activity-1.option-8",
+              "title": "`padding`"
+            }
+          ],
+          "pairs": [],
+          "correctOptionIDs": [
+            "04-view-body-modifier의-첫-역할-알아보기.block-8.activity-1.option-1",
+            "04-view-body-modifier의-첫-역할-알아보기.block-8.activity-1.option-2",
+            "04-view-body-modifier의-첫-역할-알아보기.block-8.activity-1.option-3",
+            "04-view-body-modifier의-첫-역할-알아보기.block-8.activity-1.option-4",
+            "04-view-body-modifier의-첫-역할-알아보기.block-8.activity-1.option-5",
+            "04-view-body-modifier의-첫-역할-알아보기.block-8.activity-1.option-6",
+            "04-view-body-modifier의-첫-역할-알아보기.block-8.activity-1.option-7",
+            "04-view-body-modifier의-첫-역할-알아보기.block-8.activity-1.option-8"
+          ],
+          "correctFeedback": "EmptyView가 View를 따르고 body가 VStack을 돌려준다. VStack 안에 Image·Text, font는 Text에, padding은 VStack 결과에 적용된다.",
+          "incorrectFeedback": "아직 맞지 않는 연결이나 빠진 단서가 있습니다. 코드의 모양·자리·주변 단어를 다시 비교해 보세요."
+        }
+      ]
+    },
+    {
+      "id": "04-view-body-modifier의-첫-역할-알아보기.block-9",
+      "order": 9,
+      "kind": "unlock",
+      "title": "지식 카드 해금",
+      "markdown": "",
+      "activities": [],
+      "knowledgeUnlock": {
+        "cards": [
+          {
+            "id": "04-view-body-modifier의-첫-역할-알아보기.block-9.card-1",
+            "title": "View",
+            "summary": "SwiftUI 화면 조각이 따르는 계약"
+          },
+          {
+            "id": "04-view-body-modifier의-첫-역할-알아보기.block-9.card-2",
+            "title": "body",
+            "summary": "화면 내용을 돌려주는 프로퍼티"
+          },
+          {
+            "id": "04-view-body-modifier의-첫-역할-알아보기.block-9.card-3",
+            "title": "modifier",
+            "summary": "앞 View에 설정을 적용해 새 View를 잇는 호출"
+          },
+          {
+            "id": "04-view-body-modifier의-첫-역할-알아보기.block-9.card-4",
+            "title": "View 트리",
+            "summary": "부모와 자식 화면의 중첩 구조"
+          }
+        ],
+        "completionCriteria": "다른 맥락에서의 구별, 헷갈리는 개념과의 대조, 처음 보는 보스 코드에 적용하는 과정을 모두 통과하면 클리어한다. 도움 사용 여부는 `많은 안내와 함께 / 단서와 함께 / 독립적으로` 중 하나로 남긴다.",
+        "beginnerHint": "가장 안쪽 화면 이름을 찾고 중괄호를 따라 바깥 부모로 올라간 뒤 점 사슬을 읽는다.",
+        "advancedTip": "`some View`는 구체 타입을 숨기는 불투명 반환 타입이다. modifier 순서는 결과 타입과 레이아웃(화면 요소의 크기와 위치를 정하는 방식)·그리기 의미를 바꿀 수 있다."
+      }
+    }
+  ],
+  "termRefs": [],
+  "knowledgeConceptIDs": [
+    "concept.4c72a13ad43c",
+    "concept.fa72d7932292",
+    "concept.ad7c4cc1526f",
+    "concept.50d055d31163"
+  ]
+}

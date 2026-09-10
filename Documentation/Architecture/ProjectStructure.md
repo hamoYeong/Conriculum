@@ -1,96 +1,72 @@
 # 프로젝트 폴더 구조 원칙
 
-## 기준 버전
+## 기준
 
-ver.2가 현재 제품 기준이다. 따라서 버전 접두사가 없는 폴더, 파일, Swift 타입은 현재 구현을 뜻한다. ver.1 전용 구현은 각 레이어 아래의 `V1/` 폴더에 두고 파일과 최상위 타입에도 `V1` 접두사를 붙인다.
-
-콘텐츠 ID와 저장 키의 `v2` 표기는 소스 구조 접두사가 아니라 이미 저장된 데이터의 정체성이다. `v2.s1.c1` 같은 ID와 `learning.progress.v2` 같은 키는 마이그레이션 없이 이름을 바꾸지 않는다.
+앱에는 하나의 학습 체계만 존재한다. 소스 코드의 폴더, 파일, Swift 타입과 콘텐츠 ID에는 버전 접두사를 붙이지 않는다.
 
 ## 폴더가 깊어지는 순서
 
-폴더는 아래 네 기준을 순서대로 적용해 깊어진다.
+폴더는 아래 기준을 순서대로 적용해 깊어진다.
 
 1. 레이어: `App`, `Content`, `Dependencies`, `Domain`, `Features`, `Persistence`, `Resources`
-2. 버전 소유권: 현재 또는 공유 구현은 바로 배치하고, ver.1 전용 구현만 `V1/` 아래에 배치한다.
-3. 기능 또는 역할: 예를 들어 `Content/Decoding`, `Content/Loading`, `Features/Home`, `Features/Learning`으로 나눈다.
-4. 세부 구현: 서로 함께 바뀌는 파일이 세 개 이상이거나 별도 테스트 경계가 필요할 때만 한 단계 더 나눈다.
+2. 기능 또는 역할: 예를 들어 `Content/Decoding`, `Content/Loading`, `Features/Home`, `Features/Learning`으로 나눈다.
+3. 세부 구현: 서로 함께 바뀌는 파일이 세 개 이상이거나 별도 테스트 경계가 필요할 때만 한 단계 더 나눈다.
 
-즉, 파일 종류만 같다는 이유로 먼저 묶지 않는다. 어느 레이어의 어떤 버전이 어떤 기능을 담당하는지 바깥 폴더부터 읽히게 한다.
+파일 종류만 같다는 이유로 먼저 묶지 않는다. 어느 레이어가 어떤 기능을 담당하는지 바깥 폴더부터 읽히게 한다.
 
 ## 현재 구조
 
 ```text
 Conriculum/
-├── App/                         # 현재와 V1을 조립하고 화면 전환을 소유
+├── App/                         # 의존성 조립과 화면 전환
 ├── Content/
-│   ├── Models.swift             # 현재 학습 JSON 모델
-│   ├── Decoding/                # 버전 공용 JSON 디코딩 기반
-│   ├── Loading/                 # 현재 번들 콘텐츠 로딩
-│   ├── Validation/              # 현재 콘텐츠 검증
-│   └── V1/                      # V1 로딩·스키마·검증
-├── Dependencies/
-│   ├── ContentClient.swift      # 현재 콘텐츠 의존성
-│   ├── ProgressClient.swift     # 현재 진행 의존성
-│   └── V1/                      # V1 전용 클라이언트
+│   ├── Models.swift             # 학습 JSON 모델
+│   ├── Decoding/                # JSON 디코딩과 오류 문맥
+│   ├── Loading/                 # 번들 콘텐츠 로딩
+│   └── Validation/              # 콘텐츠 무결성 검증
+├── Dependencies/                # 콘텐츠와 진행 기록 의존성
 ├── Domain/
-│   ├── LearningRecords/         # 현재 진행·응답·도움 수준 도메인 모델
-│   ├── Knowledge/               # 현재와 V1이 함께 쓰는 지식 모델
-│   └── V1/                      # V1 커리큘럼·학습 기록·프로필
+│   ├── Identifiers/             # 안정적인 타입 ID
+│   ├── Knowledge/               # 기본·개인 지식 모델
+│   ├── LearningRecords/         # 진행·응답·도움 수준
+│   └── Workspace/               # 학습 화면 상태 값
 ├── Features/
-│   ├── Home/                    # 버전 선택과 현재 홈
-│   ├── Learning/                # 현재 학습 화면과 Stage 컴포넌트
-│   ├── KnowledgeSystem/         # 버전별 카탈로그를 받는 책장 셸
-│   ├── Shared/                  # 양쪽 학습 화면이 실제로 함께 쓰는 UI
-│   └── V1/                      # V1 홈 표현·학습 컴포넌트·워크스페이스
+│   ├── Home/                    # 학습 지도와 진입점
+│   ├── Learning/                # 학습 화면과 Stage 컴포넌트
+│   ├── Knowledge/               # 개념 상세 공용 표현
+│   ├── KnowledgeSystem/         # 지식 책장
+│   └── Shared/                  # 공용 학습 UI
 ├── Persistence/
-│   ├── Models/                  # 현재 진행·완료 증거·게임 응답 레코드
-│   ├── Mapping/                 # 현재 도메인 ↔ SwiftData 변환과 검증
-│   ├── Stores/                  # 현재 진행 단위 원자적 저장
+│   ├── Models/                  # SwiftData 레코드
+│   ├── Mapping/                 # 도메인 ↔ 레코드 변환
+│   ├── Stores/                  # 진행 단위 원자적 저장
 │   ├── PersistenceContainerFactory.swift
-│   ├── PersistenceEnvironmentRegistry.swift
-│   └── V1/                      # V1 SwiftData 컨테이너·스토어·레코드·매핑
+│   └── PersistenceEnvironmentRegistry.swift
 └── Resources/
-    ├── Content/                 # 현재 manifest, learning, knowledge
-    └── V1/                      # V1 manifest, curriculum, catalog
+    └── Content/                 # manifest, learning, knowledge
 ```
 
-테스트는 제품 코드의 동일한 경로를 거울처럼 따른다. 예를 들어 `Features/Learning`은 `ConriculumTests/Features/Learning`, `Features/V1/Workspace`는 `ConriculumTests/Features/V1/Workspace`에서 검증한다.
+테스트는 제품 코드의 경로를 거울처럼 따른다. 예를 들어 `Features/Learning`은 `ConriculumTests/Features/Learning`에서 검증한다.
 
 ## 의존 방향
 
 ```text
-App ────────> 현재 기능
- └──────────> V1 호환 기능
-
-현재 기능 ──> Shared
-V1 기능 ───> Shared
-Shared ──X─> V1
-현재 기능 ─X─> V1
+App ────────> Features
+Features ───> Dependencies, Domain, Shared
+Dependencies ──> Content, Persistence
+Content, Persistence ──> Domain
+Shared ──X─> 개별 Feature
 ```
 
-`App`은 버전 선택과 두 구현의 조립을 위해 양쪽을 알 수 있다. 공유 레이어는 어느 한 버전의 타입에 의존하지 않아야 한다. 현재 구현이 V1 타입을 필요로 한다면 공유 추출이 덜 되었거나 조립 책임이 `App` 밖으로 새어 나온 것으로 본다.
-
-V1 SwiftData `@Model` 클래스의 Swift 타입 이름은 예외적으로 기존 이름을 유지한다. 클래스 이름 변경이 저장 스키마의 엔티티 정체성을 바꿔 기존 사용자 기록을 잃게 만들 수 있기 때문이다. 대신 파일명과 상위 폴더로 V1 소유권을 표시하며, 컨테이너·환경·스토어처럼 스키마 정체성이 아닌 타입에는 `V1` 접두사를 붙인다.
-
-현재와 V1의 SwiftData는 스키마뿐 아니라 컨테이너도 분리한다. 접두사가 없는 현재 저장소는 `ConriculumCurrent`, V1 저장소는 기존 `Conriculum` 구성을 사용한다. 한쪽 모델이나 마이그레이션 실패가 다른 버전의 기록을 변경하지 않는 것이 경계의 기준이다.
-
-## V1 제거 준비 기준
-
-V1 제거 작업은 다음 경계를 순서대로 삭제할 수 있어야 한다.
-
-- 제품과 테스트의 모든 `V1/` 폴더
-- `App`과 `Home`에 남아 있는 V1 라우트, 토글 분기, 의존성 조립
-- `Resources/V1`과 `Persistence/V1`
-- `ContentVersion.v1` 및 V1 설정 복원 코드
-
-이 과정에서 접두사가 없는 현재 `Content`, `Learning`, `KnowledgeSystem` 구현과 `Shared`는 수정 없이 남는 것이 목표다. V1 삭제 전까지는 V1 저장 기록을 자동 이전하거나 삭제하지 않는다.
+상위 조립 계층은 하위 기능을 알 수 있지만, 공용 UI와 도메인 모델은 특정 화면에 의존하지 않는다.
 
 ## 새 파일 배치 질문
 
-새 파일을 추가할 때 아래 순서로 판단한다.
-
-1. 현재 제품만 쓰는가? 버전 접두사 없이 해당 레이어와 기능 폴더에 둔다.
-2. V1만 쓰는가? 같은 레이어의 `V1/` 아래에 두고 파일과 최상위 타입에 `V1`을 붙인다.
-3. 양쪽이 실제로 쓰는가? 버전 폴더 밖의 `Shared` 또는 역할별 공용 폴더에 둔다.
-4. 단지 미래에 공유할 것 같은가? 아직 공유하지 말고 현재 소유 위치에 둔다.
-5. 폴더를 더 만들 만큼 응집된 파일이 세 개 이상인가? 아니라면 기존 기능 폴더에 둔다.
+1. 앱 전환과 의존성 조립인가? `App`에 둔다.
+2. JSON 모델·로딩·검증인가? `Content`에 둔다.
+3. 외부 효과를 기능에 제공하는가? `Dependencies`에 둔다.
+4. UI와 무관한 제품 값인가? `Domain`에 둔다.
+5. 사용자가 보는 하나의 기능인가? `Features/<기능>`에 둔다.
+6. 여러 기능이 실제로 쓰는 UI인가? `Features/Shared`에 둔다.
+7. 저장 모델·매핑·트랜잭션인가? `Persistence`에 둔다.
+8. 폴더를 더 만들 만큼 응집된 파일이 세 개 이상인가? 아니라면 기존 기능 폴더에 둔다.

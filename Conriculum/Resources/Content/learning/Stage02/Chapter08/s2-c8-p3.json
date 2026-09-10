@@ -1,0 +1,43 @@
+{
+  "schemaVersion": 1,
+  "id": "s2.c8.p3",
+  "stageID": "s2",
+  "chapterID": "s2.c8",
+  "order": 3,
+  "title": "한 변경의 영향 범위와 검증 지점 찾기",
+  "goal": "“물 주기를 취소할 수 있게 해 줘”의 영향을 수정 파일 목록보다 책임 흐름으로 찾는다. 완료 증거: 바뀌는 것·유지할 것·검증할 것 세 칸.",
+  "sourcePath": "Stage 2 - AI 구현을 의미 단위로 읽는 기초/Final Chapter - AI 구현을 검토하고 안전하게 바꾸기/03 한 변경의 영향 범위와 검증 지점 찾기.md",
+  "blocks": [
+    {
+      "id": "03-한-변경의-영향-범위와-검증-지점-찾기.block-1",
+      "order": 1,
+      "kind": "mission",
+      "title": "읽기 미션",
+      "markdown": "“물 주기를 취소할 수 있게 해 줘”의 영향을 수정 파일 목록보다 책임 흐름으로 찾는다. **완료 증거:** 바뀌는 것·유지할 것·검증할 것 세 칸.",
+      "activities": []
+    },
+    {
+      "id": "03-한-변경의-영향-범위와-검증-지점-찾기.block-2",
+      "order": 2,
+      "kind": "support",
+      "title": "양방향 추적",
+      "markdown": "```text\n역방향: 다음 날짜 ← lastWateredAt ← WateringRecord ← recordWatering action\n순방향: undo action → 기록 삭제/복원 → Plant 상태 → 저장 → Query → 화면\n```\n\n> [!question] 막히면 · 초보자 연결\n> 컴파일 오류가 날 파일만 찾고 있다면 [[지식 체계/07 구조와 변경/변경 영향|변경 영향]]에서 타입·상태·외부 계약·저장 데이터 경계를 확인한다.",
+      "activities": []
+    },
+    {
+      "id": "03-한-변경의-영향-범위와-검증-지점-찾기.block-3",
+      "order": 3,
+      "kind": "support",
+      "title": "중심 활동",
+      "markdown": "- 변경: 취소 action, 복원할 이전 값 또는 기록, 저장 처리, 피드백.\n- 유지: 다른 식물 기록, 정렬 규칙, 앱 재실행 뒤 일관성.\n- 검증: 취소 전후 날짜, 저장 round-trip, 연속 취소, 실패 복구.\n\n> [!tip]- 이미 안다면 · 가장 작은 의미 있는 테스트\n> 먼저 날짜 복원 규칙을 작은 테스트로 확인하고, 영속 경계가 달라지므로 실제 저장소 통합 테스트를 추가한다. [[지식 체계/07 구조와 변경/테스트 증거|테스트 증거]]",
+      "activities": []
+    }
+  ],
+  "termRefs": [],
+  "knowledgeConceptIDs": [
+    "concept.47f024303e8d",
+    "concept.c03639a5c779",
+    "concept.4c72a13ad43c",
+    "concept.50d055d31163"
+  ]
+}

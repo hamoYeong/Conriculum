@@ -8,10 +8,7 @@ import Testing
 struct LearningWorkspaceTests {
     @Test
     func singleChoiceStoresAttemptsAndShowsImmediateJudgment() async throws {
-        let page = try BundledContentStore().loadPage(id: .init(
-            version: .v2,
-            rawValue: "v2.s1.c1.p1"
-        ))
+        let page = try BundledContentStore().loadPage(id: "s1.c1.p1")
         let activity = try #require(page.blocks.flatMap(\.activities).first)
         let wrongOption = try #require(activity.options.first(where: {
             !activity.correctOptionIDs.contains($0.id)
@@ -64,10 +61,7 @@ struct LearningWorkspaceTests {
 
     @Test
     func multipleChoiceWaitsForSubmitBeforeShowingFeedback() async throws {
-        let page = try BundledContentStore().loadPage(id: .init(
-            version: .v2,
-            rawValue: "v2.s1.c1.p1"
-        ))
+        let page = try BundledContentStore().loadPage(id: "s1.c1.p1")
         let activity = try #require(page.blocks.flatMap(\.activities).first {
             $0.kind == .multipleChoice
         })
@@ -105,10 +99,7 @@ struct LearningWorkspaceTests {
 
     @Test
     func matchingShowsFeedbackOnlyAfterEveryPairIsConnected() async throws {
-        let page = try BundledContentStore().loadPage(id: .init(
-            version: .v2,
-            rawValue: "v2.s1.c1.p1"
-        ))
+        let page = try BundledContentStore().loadPage(id: "s1.c1.p1")
         let activity = try #require(page.blocks.flatMap(\.activities).first {
             $0.kind == .matching
         })
@@ -158,10 +149,7 @@ struct LearningWorkspaceTests {
         let content = BundledContentStore()
         let manifest = try content.loadManifest()
         let catalog = try content.loadKnowledgeCatalog()
-        let page = try content.loadPage(id: .init(
-            version: .v2,
-            rawValue: "v2.s1.c1.p1"
-        ))
+        let page = try content.loadPage(id: "s1.c1.p1")
         let conceptID = try #require(page.knowledgeConceptIDs.first)
         let store = TestStore(
             initialState: LearningFeature.State(pageID: page.id)

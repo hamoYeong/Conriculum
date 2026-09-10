@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Generate the v2 bookshelf solely from the Obsidian knowledge-system-v2 folder."""
+"""Generate the bookshelf from the Obsidian knowledge-system folder."""
 
 from __future__ import annotations
 
@@ -31,7 +31,7 @@ def clean(value: str) -> str:
 
 
 def concept_id(title: str) -> str:
-    return "v2.concept." + hashlib.sha1(title.encode("utf-8")).hexdigest()[:12]
+    return "concept." + hashlib.sha1(title.encode("utf-8")).hexdigest()[:12]
 
 
 def first_sentence(value: str) -> str:
@@ -77,7 +77,7 @@ def parse_concept(path: Path) -> dict:
 def relation_targets(text: str) -> list[tuple[str, str]]:
     body = section(text, "다음 연결")
     results = []
-    for match in re.finditer(r"\[\[지식 체계 ver\.2/([^\]|]+)(?:\|([^\]]+))?\]\](?:\s*—\s*(.+))?", body):
+    for match in re.finditer(r"\[\[([^\]|]+)(?:\|([^\]]+))?\]\](?:\s*—\s*(.+))?", body):
         results.append((Path(match.group(1)).stem, clean(match.group(3) or "다음 판단 기준으로 이어진다.")))
     return results
 
@@ -143,7 +143,7 @@ def main() -> None:
         collection_title = title_match.group(1).strip() if title_match else directory.name
         summary = first_sentence(section(guide_text, "이 분류의 역할") or section(guide_text, "목적"))
         collections.append({
-            "id": f"v2.knowledge.collection.{order}",
+            "id": f"knowledge.collection.{order}",
             "order": order,
             "title": collection_title,
             "summary": summary or f"{collection_title}에 필요한 코드 읽기 기준",
@@ -164,7 +164,7 @@ def main() -> None:
             if not target:
                 raise ValueError(f"Unknown next knowledge link: {source['title']} -> {target_title}")
             relations.append({
-                "id": f"v2.relation.{source['id'].split('.')[-1]}.{target['id'].split('.')[-1]}",
+                "id": f"relation.{source['id'].split('.')[-1]}.{target['id'].split('.')[-1]}",
                 "sourceConceptID": source["id"],
                 "targetConceptID": target["id"],
                 "kind": "leadsTo",
@@ -184,8 +184,8 @@ def main() -> None:
         item.pop("_stem")
     catalog = {
         "schemaVersion": 1,
-        "id": "learning-system-v2-knowledge.ko-KR",
-        "title": "ver.2 코드 읽기 지식",
+        "id": "learning-system-knowledge.ko-KR",
+        "title": "코드 읽기 지식",
         "collections": collections,
         "concepts": concepts,
         "relations": relations,

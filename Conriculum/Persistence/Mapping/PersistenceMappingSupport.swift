@@ -51,11 +51,10 @@ enum PersistenceMappingSupport {
     }
 
     static func storageID(
-        contentVersion: ContentVersion,
         value: String,
         namespace: String
     ) -> String {
-        "\(namespace):\(contentVersion.rawValue):\(value.utf8.count):\(value)"
+        "\(namespace):\(value.utf8.count):\(value)"
     }
 
     static func invalid(

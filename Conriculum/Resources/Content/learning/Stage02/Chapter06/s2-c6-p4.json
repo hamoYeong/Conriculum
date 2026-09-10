@@ -1,0 +1,43 @@
+{
+  "schemaVersion": 1,
+  "id": "s2.c6.p4",
+  "stageID": "s2",
+  "chapterID": "s2.c6",
+  "order": 4,
+  "title": "SwiftData 저장·조회·삭제 흐름 읽기",
+  "goal": "SwiftData 메모 화면에서 조회 결과와 변경 문맥의 역할을 분리한다. 완료 증거: container에서 화면까지 저장·조회·삭제 화살표.",
+  "sourcePath": "Stage 2 - AI 구현을 의미 단위로 읽는 기초/Chapter 6 - 저장과 외부 데이터 경계 읽기/04 SwiftData 저장 조회 삭제 흐름 읽기.md",
+  "blocks": [
+    {
+      "id": "04-swiftdata-저장-조회-삭제-흐름-읽기.block-1",
+      "order": 1,
+      "kind": "mission",
+      "title": "읽기 미션",
+      "markdown": "SwiftData 메모 화면에서 조회 결과와 변경 문맥의 역할을 분리한다. **완료 증거:** container에서 화면까지 저장·조회·삭제 화살표.\n\n```swift\n@Query(sort: \\Memo.createdAt, order: .reverse) private var memos: [Memo]\n@Environment(\\.modelContext) private var context\n\nvar body: some View {\n    List(memos) { memo in Text(memo.title) }\n    Button(\"추가\") { context.insert(Memo(title: draft)) }\n    Button(\"삭제\") { context.delete(selectedMemo) }\n}\n```",
+      "activities": []
+    },
+    {
+      "id": "04-swiftdata-저장-조회-삭제-흐름-읽기.block-2",
+      "order": 2,
+      "kind": "flow",
+      "title": "흐름 잇기",
+      "markdown": "model container → environment의 context → insert/delete와 변경 추적 → Query 결과 갱신 → List 표시. 배열 append가 저장을 담당하지 않는다.\n\n> [!question] 막히면 · 초보자 연결\n> `@Query`와 context가 같은 일처럼 보이면 [[지식 체계/06 외부 세계와 부작용/SwiftData 모델과 문맥|SwiftData 모델과 문맥]]을 연다.",
+      "activities": []
+    },
+    {
+      "id": "04-swiftdata-저장-조회-삭제-흐름-읽기.block-3",
+      "order": 3,
+      "kind": "changeExperiment",
+      "title": "변경 실험",
+      "markdown": "container 설정이 없다면 어디에서 문제가 드러날지, 삭제 취소 기능을 넣으면 어느 책임 조각이 추가될지 예상한다.\n\n> [!tip]- 이미 안다면 · 자동 저장을 가정하지 않기\n> ModelContext는 변경을 추적하지만 저장 시점과 오류 처리는 앱 계약에 맞춰 확인한다. 중요한 트랜잭션은 명시적 save와 실패 UI가 필요한지 검토한다.",
+      "activities": []
+    }
+  ],
+  "termRefs": [],
+  "knowledgeConceptIDs": [
+    "concept.091255424ade",
+    "concept.534ea64e457f",
+    "concept.fe8294523602",
+    "concept.893af0d64616"
+  ]
+}

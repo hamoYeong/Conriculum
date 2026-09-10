@@ -14,7 +14,7 @@ enum PersistenceSchema {
 enum PersistenceContainerFactory {
     static func live() throws -> ModelContainer {
         try make(configuration: ModelConfiguration(
-            "ConriculumCurrent",
+            "Conriculum",
             schema: PersistenceSchema.schema,
             cloudKitDatabase: .none
         ))
@@ -22,7 +22,7 @@ enum PersistenceContainerFactory {
 
     static func inMemory() throws -> ModelContainer {
         try make(configuration: ModelConfiguration(
-            "ConriculumCurrentInMemory",
+            "ConriculumInMemory",
             schema: PersistenceSchema.schema,
             isStoredInMemoryOnly: true,
             cloudKitDatabase: .none
@@ -31,7 +31,7 @@ enum PersistenceContainerFactory {
 
     static func fileBacked(at url: URL) throws -> ModelContainer {
         try make(configuration: ModelConfiguration(
-            "ConriculumCurrent",
+            "Conriculum",
             schema: PersistenceSchema.schema,
             url: url,
             cloudKitDatabase: .none

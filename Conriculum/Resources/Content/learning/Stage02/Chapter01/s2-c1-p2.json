@@ -1,0 +1,43 @@
+{
+  "schemaVersion": 1,
+  "id": "s2.c1.p2",
+  "stageID": "s2",
+  "chapterID": "s2.c1",
+  "order": 2,
+  "title": "코드에서 역할 단서 찾기",
+  "goal": "어제 본 메모 화면 코드를 40초 동안 훑고 `입력`, `상태`, `변환`, `출력` 후보를 하나씩 찍는다. 완료 증거: 중요한 단서 3개와 각 단서가 만든 가설.",
+  "sourcePath": "Stage 2 - AI 구현을 의미 단위로 읽는 기초/Chapter 1 - 코드를 의미 단위로 훑어보기/02 코드에서 역할 단서 찾기.md",
+  "blocks": [
+    {
+      "id": "02-코드에서-역할-단서-찾기.block-1",
+      "order": 1,
+      "kind": "mission",
+      "title": "읽기 미션",
+      "markdown": "어제 본 메모 화면 코드를 40초 동안 훑고 `입력`, `상태`, `변환`, `출력` 후보를 하나씩 찍는다. **완료 증거:** 중요한 단서 3개와 각 단서가 만든 가설.\n\n```swift\n@State private var hidesCompleted = false\nlet memos: [Memo]\nvar visibleMemos: [Memo] { /* filter */ }\nToggle(\"완료 숨기기\", isOn: $hidesCompleted)\nText(\"할 일 \\(visibleMemos.count)개\")\n```",
+      "activities": []
+    },
+    {
+      "id": "02-코드에서-역할-단서-찾기.block-2",
+      "order": 2,
+      "kind": "clueScan",
+      "title": "단서 스캔",
+      "markdown": "1. 이름만 보고 역할을 예상한다.\n2. `@State`, `[Memo]`, `$` 표식으로 가설을 보정한다.\n3. 실제로 읽고 쓰는 줄을 찾아 가설을 확인한다.\n\n> [!question] 막히면 · 초보자 연결\n> `@State`와 `$`가 낯설면 지금은 “보관되는 상태”와 “그 상태를 바꾸는 연결”로만 읽는다. [[지식 체계/05 화면과 생명주기/State와 Binding|State와 Binding]]",
+      "activities": []
+    },
+    {
+      "id": "02-코드에서-역할-단서-찾기.block-3",
+      "order": 3,
+      "kind": "closure",
+      "title": "확인과 마무리",
+      "markdown": "`memos`는 바깥에서 들어오는 입력, `hidesCompleted`는 화면이 소유한 상태, `visibleMemos`는 변환, `Text`는 출력이다. 이 설명에서 코드가 직접 증명한 사실과 이름에서 추정한 것을 구분한다.\n\n> [!tip]- 이미 안다면 · 이름을 믿지 않는 읽기\n> `visibleMemos`가 실제로 정렬까지 한다면 이름이 책임을 충분히 말하지 못한다. 이름과 사용처가 어긋나는 지점을 품질 단서로 기록한다. [[지식 체계/01 방향과 단서/사실 추정 질문 구분하기|사실·추정·질문]]",
+      "activities": []
+    }
+  ],
+  "termRefs": [],
+  "knowledgeConceptIDs": [
+    "concept.8a008c70e4f2",
+    "concept.24b928f5af76",
+    "concept.fe8294523602",
+    "concept.63c92ed18525"
+  ]
+}
